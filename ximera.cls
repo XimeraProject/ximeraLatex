@@ -113,7 +113,7 @@
 
 
 %% image environment
-\NewEnviron{image}{
+\NewEnviron{image}[1][]{
 \[
 \BODY
 \]}
