@@ -15,10 +15,7 @@
 %
 % This work has the LPPL maintenance status "author-maintained".
 % 
-% This work consists of the files ximera.cls and ximeradoc.tex.
-
-
-% The user's guide for ximera.cls is in the file ximeradoc.tex.
+% This work consists of the files ximera.cls
 
 
 %%% Bart Snapp

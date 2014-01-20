@@ -40,7 +40,8 @@ account, you can go on to the next step. Otherwise go to:
 
 `https://github.com/`
 
-and create an account.
+and create an account. Choose the free plan, and no organization is
+needed.
 
 
 ### Obtain a git client
@@ -84,7 +85,11 @@ Depending on your operating system, these command may be different.
 
 #### For Mac or Windows
 
-NEEDS WORK
+When you start your cline, it will ask if you want to use SSH, and you
+do. When it asks which local repositories you want to use, just click
+"Done."
+
+Visit the repo on Github.com and click the "Clone in Desktop" button.
 
 
 #### For Linux
@@ -135,12 +140,14 @@ use your own. Inside of this directory, you should have
 * A LICENSE, you can simply copy the one from ximeraLatex
 
 * A symbolic-link, or short-cut, called ximera.cls, pointed at the
-  file ximera.cls found in ximeraLatex. In Linux (and Mac) you can
+  file ximera.cls found in ximeraLatex. In Linux and Mac you can
   produce this via:
 
 `/ximeraUserActivities/$ ln -s /PATH/TO/ximeraLatex/ximera.cls`
 
-where "/PATH/TO" is actually the path to ximeraLatex.
+where "/PATH/TO" is actually the path to ximeraLatex. Note, it
+currently does not seem that a OSX Alias will work, it must be a
+symbolic link.
 
 * A directory for each individual activity, named the same as the
   activity (without the .tex suffix) with a directory structure
@@ -150,7 +157,7 @@ where "/PATH/TO" is actually the path to ximeraLatex.
   exampleActivityCollection.tex
 
 
-#### Creating the repository
+#### Creating the repository in Linux
 
 Goto GitHub, click ``+'' and Create New Repository Give it a title,
 and a short description.
@@ -169,6 +176,16 @@ Now we will push your current directory to this repo. Once you are within your r
 
 where YOUR-GIT-USER is your GitHub username and REPO-NAME is the name
 of the repository you created.
+
+
+#### Creating the repository via a client
+
+Drag and drop you new folder on to the (probably empty) repository
+window. Then push to GitHub with the button in the upper right hand
+corner. You want to always allow GitHub to use your SSH KeyChain.
+
+You can confirm a repository was made by going to GitHub and viewing
+your user profile.
 
 
 
