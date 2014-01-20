@@ -148,6 +148,28 @@ where "/PATH/TO" is actually the path to ximeraLatex.
   exampleActivityCollection.tex
 
 
+#### Creating the repository
+
+Goto GitHub, click ``+'' and Create New Repository Give it a title,
+and a short description.
+
+Ignore the ``initialize this repo with a README''
+
+Click ``Create repository''
+
+Now we will push your current directory to this repo. Once you are within your repo:
+
+`git init`
+`git add .`
+`git commit -m 'first push'`
+`git remote add origin git@github.com:YOUR-GIT-USER/REPO-NAME.git`
+`git push -u origin master`
+
+where YOUR-GIT-USER is your GitHub username and REPO-NAME is the name
+of the repository you created.
+
+
+
 Writing an activity
 -------------------------------
 
