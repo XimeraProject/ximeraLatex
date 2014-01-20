@@ -34,6 +34,7 @@ Here is a schematic of the directory tree:
 \dirtree{%
 .1 ximeraActivities.
 .2 ximera.cls\DTcomment{A symbolic link to ximeraLatex/ximera.cls}.
+.2 preamble.tex.
 .2 firstActivity.
 .3 ximera.cls\DTcomment{A symbolic link to ximeraLatex/ximera.cls}.. 
 .3 firstActivity.tex.
@@ -44,6 +45,7 @@ The file \code{firstActivity.tex} is simply a wrapper for \code{firstActivitySou
 
 \begin{Verbatim}
   \documentclass{ximera}
+  \input{../preamble.tex}
   \begin{document}
   \input{firstActivitySource.tex}
   \end{document}
@@ -378,6 +380,7 @@ command. If the video is a YouTube video, it is best to use the
 \dirtree{%
 .1 ximeraActivities.
 .2 course.tex.
+.2 preamble.tex.
 .2 ximera.cls\DTcomment{A symbolic link to ximeraLatex/ximera.cls}.
 .2 firstActivity.
 .3 ximera.cls\DTcomment{A symbolic link to ximeraLatex/ximera.cls}.
@@ -397,6 +400,7 @@ The file \code{course.tex} contains the following code:
 
 \begin{Verbatim}
   \documentclass{ximera}
+  \input{preamble.tex}
   \begin{document}
   \title{The Title of the Course}
   \author{The authors}
