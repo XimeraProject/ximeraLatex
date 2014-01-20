@@ -30,6 +30,9 @@ Contents of the repository
   exampleActivity2.tex, exampleActivity2Source.tex. These are example
   files.
 
+* A generic preamble file for user-defined macros. Warning:
+  Environments cannot be defined here.
+
 Directions for download
 -----------------------
 
