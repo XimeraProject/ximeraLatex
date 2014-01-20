@@ -123,6 +123,8 @@ ximera.cls and some examples. Hence you must build your activities in
 a new directory. In fact, you should build them in your own GitHub
 repo.
 
+#### Create your working directory
+
 To start, make a directory where your activities will live. Give this
 directory a descriptive name, ximeraActivities, or something
 similar. For example purposes, we will use this name, but you should
