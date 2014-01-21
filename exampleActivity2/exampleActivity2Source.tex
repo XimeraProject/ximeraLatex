@@ -1,94 +1,41 @@
-\shortdescription{In this activity we give a second description} 
+\shortdescription{In this activity we give a second example.} 
 \activitytitle{Second Example}
+\prerequisites{none}
+\outcomes{ximeraLatex}
 
 
-\begin{theorem}[Hello]
-\end{theorem}
+Here we have a multipart question with free-response.
 
-\begin{proof}[solution] Obvious!\link{http:lkjflkdjf}
-\end{proof}
-
-
-\begin{exercise}
-Given that $f(x)=-5 x^4+2 x^3+x^2-3 x+2$, evaluate $f(3.9)$.\video{hello}
+\begin{question} 
+Suppose you are standing on a bridge that is 60 meters above
+sea-level. You toss a ball up into the air with an initial velocity of
+30 meters per second.  If $t$ is the time (in seconds) after we toss
+the ball, then the height at time $t$ is approximately $f(t) = -5 t^2
++30t+60$. What does $f(2)$ mean in our context?
 \begin{solution}
 \begin{hint}
-$f(3.9)=-5 (3.9)^4+2 (3.9)^3+(3.9)^2-3 (3.9)+2$.
+We want an answer in the context of the problem. 
 \end{hint}
-\begin{hint}
-$f(3.9)=-1032.57$.
-\end{hint}
-The value of the function $f(x) = -5 x^4+2 x^3+x^2-3 x+2$, evaluated at $x=3.9$, is $\answer{-1032.57}$.
+\answer[free-response]{The value $f(2)$ is the height of the ball after $2$ seconds.}
 \end{solution}
-\end{exercise}
-
-
-\begin{question}
-\begin{multiple-choice}
-\choice[correct]{Hello!}
-\choice{NO!}
-\end{multiple-choice}
+Now suppose $t$ is such that $f(t) = 100$. What does this mean in our
+context?
 \begin{solution}
 \begin{hint}
-Hello is always right!
+We want an answer in the context of the problem. 
 \end{hint}
+\answer[free-response]{These value of $t$ are the times when the ball is at 100 meters above sea level.}
 \end{solution}
-\end{question}
-
-
-
-
-
-\begin{question}
-In the plot below, is $B$ a function of $z$?
-\[
-\begin{tikzpicture}
-\begin{axis}[
-            clip=false,
-            axis lines =center, xlabel=$z$, ylabel=$B$,
-              every axis y label/.style={at=(current axis.above origin),anchor=south},
-              every axis x label/.style={at=(current axis.right of origin),anchor=west},
-            domain=-5:5,
-            grid = major,
-          ]
-          \addplot [very thick, smooth] {4 + (-5/4 + (35*(-4 + x))/12)*x};
-        \end{axis}
-\end{tikzpicture}
-\]
-\begin{multiple-choice}
-\choice[correct]{Yes.}
-\choice{No.}
-\end{multiple-choice}
+Finally, if $h$ is a small positive value what is the meaning of
+$f(t+h)$? How does this compare to the meaning of $f(t)+h$?
 \begin{solution}
 \begin{hint}
-For each input, how many outputs are there?
+We want an answer in the context of the problem. 
 \end{hint}
-\end{solution}
-Use the plot to compute $B(0)$
-\begin{solution}
-\begin{hint}
-To start, find $0$ on the horizontal axis. 
-\end{hint}
-\begin{hint}
-Now from this position, move up or down until you reach the curve. The value of $B(0)$ is the height of the curve at the point $z=0$.
-\end{hint}
-The value of $B(0)$ is \answer{$4$}.
-\end{solution}
-Is $B^{-1}$ a function of $z$ on the domain $[-10,141]$?
-\begin{multiple-choice}
-\choice{Yes.}
-\choice[correct]{No.}
-\end{multiple-choice}
-\begin{solution}
-\begin{hint}
-For each input of $B^{-1}$, how many outputs are there?
-\end{hint}
-\end{solution}
-Restrict the domain of $B$ to $[3,5]$ and compute $B^{-1}(4)$.
-\begin{solution}
-\begin{hint}
-Since we are looking at $B^{-1}$, now we must find $-1$ on the vertical axis. 
-\end{hint}
-The value of $B^{-1}(-1)$ is \answer{$4$}.
+\answer[free-response]{The value $f(t+h)$ gives the height of the ball
+  slightly after time $t$. On the other hand, the value $f(t)+h$ gives
+  a height just higher than the ball at time $t$.}
 \end{solution}
 \end{question}
+
+If you like, check out this video\youtube{http://www.youtube.com/watch?v=0aQpLSu2fMs}.
