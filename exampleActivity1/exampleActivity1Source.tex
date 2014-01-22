@@ -6,10 +6,23 @@
 To start we can have theorem environments:
 
 \begin{theorem}
-Given a right triangle
-
-
-We have that
+Given a right triangle:
+\begin{image}
+\begin{tikzpicture}[geometryDiagrams]
+\coordinate (A) at (0,2);
+\coordinate (B) at (0,5);
+\coordinate (C) at (6.5,2);
+\tkzMarkRightAngle(C,A,B)
+\tkzDefMidPoint(A,B) \tkzGetPoint{a}
+\tkzDefMidPoint(A,C) \tkzGetPoint{b}
+\tkzDefMidPoint(B,C) \tkzGetPoint{c}
+\draw (A)--(B)--(C)--cycle;
+\tkzLabelPoints[above](c)
+\tkzLabelPoints[below](b)
+\tkzLabelPoints[left](a)
+\end{tikzpicture}
+\end{image}
+We have that:
 \[
 a^2 + b^2 = c^2
 \]
