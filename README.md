@@ -88,7 +88,7 @@ Depending on your operating system, these command may be different.
 
 #### For Mac or Windows
 
-When you start your cline, it will ask if you want to use SSH, and you
+When you start your client, it will ask if you want to use SSH, and you
 do. When it asks which local repositories you want to use, just click
 "Done."
 
@@ -117,6 +117,19 @@ All of these documents should compile at this point. If they do not,
 then you probably need to upgrade your LaTeX distribution.
 
 
+Setting up your local directories
+---------------------------------
+
+#### For Linux or Mac
+
+Create the directory structure:
+
+`~/texmf/tex/latex/`
+
+and move ximeraLatex to `~/texmf/tex/latex/`. This will allow all of
+your documents to find ximera.cls
+
+
 Creating your GitHub repository
 -------------------------------
 
@@ -141,16 +154,6 @@ use your own. Inside of this directory, you should have
 * A README.md file giving a brief explanation of what these files are.
 
 * A LICENSE, you can simply copy the one from ximeraLatex
-
-* A symbolic-link, or short-cut, called ximera.cls, pointed at the
-  file ximera.cls found in ximeraLatex. In Linux and Mac you can
-  produce this via:
-
-`/ximeraUserActivities/$ ln -s /PATH/TO/ximeraLatex/ximera.cls`
-
-where "/PATH/TO" is actually the path to ximeraLatex. Note, it
-currently does not seem that a OSX Alias will work, it must be a
-symbolic link.
 
 * A directory for each individual activity, named the same as the
   activity (without the .tex suffix) with a directory structure
