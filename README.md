@@ -100,6 +100,20 @@ Visit the repo on Github.com and click the "Clone in Desktop" button.
 `$ git clone git@github.com:bartsnapp/ximeraLatex.git`
 
 
+
+Setting up your local directories
+---------------------------------
+
+#### For Linux or Mac
+
+Create the directory structure:
+
+`~/texmf/tex/latex/`
+
+and move ximeraLatex to `~/texmf/tex/latex/`. This will allow all of
+your documents to find ximera.cls
+
+
 ### Check the ximeraLatex directory
 
 Now you should have a directory called ximeraLatex. You may rename
@@ -114,20 +128,7 @@ this directory or move it to any location on your computer.
 * Compile ximeraLatex/exampleActivity2/exampleActivity2.tex
 
 All of these documents should compile at this point. If they do not,
-then you probably need to upgrade your LaTeX distribution.
-
-
-Setting up your local directories
----------------------------------
-
-#### For Linux or Mac
-
-Create the directory structure:
-
-`~/texmf/tex/latex/`
-
-and move ximeraLatex to `~/texmf/tex/latex/`. This will allow all of
-your documents to find ximera.cls
+something is probably wrong.
 
 
 Creating your GitHub repository
