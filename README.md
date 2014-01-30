@@ -196,7 +196,10 @@ window. Then push to GitHub with the button in the upper right hand
 corner. You want to always allow GitHub to use your SSH KeyChain.
 
 You can confirm a repository was made by going to GitHub and viewing
-your user profile.
+your user profile. To add new files to the repository, go to the
+"Repository" heading in the Git client and click "open in finder."
+From there one can add files by dragging and dropping, and then
+syncing.
 
 
 
