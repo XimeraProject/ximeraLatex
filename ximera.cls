@@ -197,6 +197,20 @@
 \dottedcontents{activitytitle}[3.8em]{}{2.3em}{1pc}
 
 
+\usepackage{authblk}
+\let\abstract\relax
+\let\endabstract\relax
+\NewEnviron{abstract}{\xdef\theabstract{\BODY}}
+
+
+\newcounter{title}
+\makeatletter
+\renewcommand\@maketitle{%
+\setcounter{title}{1}
+{\flushleft\LARGE\bfseries \ifnonumbers\theactivitytitle\fi\ifnonumbers\hspace{1em}\else\hspace{0em}\fi\@title \par }
+\vskip .6em\noindent\textit\theabstract\setcounter{problem}{0} \par\vspace{2em}
+}
+\makeatother
 
 % ---------------------------------------------------------------------
 % ---------------------------------------------------------------------
