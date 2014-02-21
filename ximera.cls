@@ -58,6 +58,10 @@
 \RequirePackage{amsthm}
 \RequirePackage{pgfplots}
 
+
+
+
+
 \newif\ifhandout
 \handoutfalse
 \DeclareOption{handout}{\handouttrue}
@@ -91,7 +95,8 @@
 \LoadClass{article}
 \RequirePackage{titlesec} 
 \RequirePackage{titletoc} 
-
+\RequirePackage{titling}
+\RequirePackage{fancyvrb}
 
 \newcommand{\answer}[1][]{}
 \newcommand{\prerequisites}[1]{}
@@ -178,39 +183,54 @@
 %% \postdate{\vskip -3em}
 
 
-\newcommand{\activitytitlebreak}{\clearpage}
+%% \newcommand{\activitytitlebreak}{\clearpage}
 
-\newcommand*{\activityshortdescription}{}
-\newcommand{\shortdescription}[1]{\def\activityshortdescription{#1}}
+%% \newcommand*{\activityshortdescription}{}
+%% \newcommand{\shortdescription}[1]{\def\activityshortdescription{#1}}
 
-\titleclass{\activitytitle}{straight}[\section]
-\newcounter{activitytitle}
-\titleformat{\activitytitle}
-            {\bfseries\LARGE\raggedright}
-            {\ifnonumbers\theactivitytitle\fi}{\ifnonumbers1em\else 0em\fi}
-            {}
-            [\normalfont\small\itshape\raggedright\activityshortdescription\setcounter{problem}{0}]
-\titlespacing*{\activitytitle}{0pt}{0pt}{2em}
-\renewcommand{\theactivitytitle}{\arabic{activitytitle}}
+%% \titleclass{\activitytitle}{straight}[\section]
+%% \newcounter{activitytitle}
+%% \titleformat{\activitytitle}
+%%             {\bfseries\LARGE\raggedright}
+%%             {\ifnonumbers\theactivitytitle\fi}{\ifnonumbers1em\else 0em\fi}
+%%             {}
+%%             [\normalfont\small\itshape\raggedright\activityshortdescription\setcounter{problem}{0}]
+%% \titlespacing*{\activitytitle}{0pt}{0pt}{2em}
+%% \renewcommand{\theactivitytitle}{\arabic{activitytitle}}
 
-\contentsmargin{2.55em}
-\dottedcontents{activitytitle}[3.8em]{}{2.3em}{1pc}
+%% \contentsmargin{2.55em}
+%% \dottedcontents{title}[3.8em]{}{2.3em}{1pc}
 
 
-\usepackage{authblk}
+
 \let\abstract\relax
 \let\endabstract\relax
 \NewEnviron{abstract}{\xdef\theabstract{\BODY}}
 
 
-\newcounter{title}
+\newcounter{titlenumber}
+\renewcommand{\thetitlenumber}{\arabic{titlenumber}}
+\setcounter{titlenumber}{1}
+
 \makeatletter
 \renewcommand\@maketitle{%
-\setcounter{title}{1}
-{\flushleft\LARGE\bfseries \ifnonumbers\theactivitytitle\fi\ifnonumbers\hspace{1em}\else\hspace{0em}\fi\@title \par }
-\vskip .6em\noindent\textit\theabstract\setcounter{problem}{0} \par\vspace{2em}
-}
+{\flushleft\LARGE\bfseries {\ifnonumbers\thetitlenumber\fi}{\ifnonumbers\hspace{1em}\else\hspace{0em}\fi}\@title \par }
+\vskip .6em\noindent\textit\theabstract\setcounter{problem}{0}\addtocounter{titlenumber}{1}\par\vspace{2em}}
 \makeatother
+
+
+% ---------------------------------------------------------------------
+% ---------------------------------------------------------------------
+%
+%                    **************
+%                    ** SUBFILES **
+%                    **************
+%
+%
+%
+
+%See: http://ctan.mackichan.com/macros/latex2e/contrib/subfiles/subfiles.pdf
+
 
 % ---------------------------------------------------------------------
 % ---------------------------------------------------------------------
@@ -226,7 +246,7 @@
 
 
 
-\newcounter{problem}
+\newcounter{problem} %% for the 
 \newcounter{problemType}
 
 % ---------------------------------------------------------------------
@@ -386,6 +406,16 @@
 }
 
 
+
+
+%% python answer environment
+%% I think the verbatim is killing the \BODY
+%\DefineVerbatimEnvironment{MyVerbatim}{Verbatim}{gobble=2,numbers=left,numbersep=2mm,frame=lines,framerule=0.8mm}
+\NewEnviron{python}[1][]{
+%  \begin{verbatim}
+    \BODY
+%  \end{verbatim}
+}
 
 
 
