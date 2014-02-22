@@ -46,22 +46,6 @@
 \ProvidesClass{ximera}[\filedate\space Version \fileversion\space by
   Bart Snapp]
 
-%\RequirePackage{hyperref} %% this breaks something!
-\RequirePackage{environ}
-\RequirePackage{url}
-\RequirePackage{xcolor}
-%\RequirePackage{ifmtarg}% http://ctan.org/pkg/ifmtarg
-\RequirePackage{xifthen}% http://ctan.org/pkg/xifthen
-\RequirePackage{multido}% http://ctan.org/pkg/multido
-\RequirePackage{amssymb}
-\RequirePackage{amsmath}
-\RequirePackage{amsthm}
-\RequirePackage{pgfplots}
-
-
-
-
-
 \newif\ifhandout
 \handoutfalse
 \DeclareOption{handout}{\handouttrue}
@@ -86,17 +70,34 @@
 \DeclareOption{space}{\spacetrue}
 %% This basically works for exercises, though page breaks are weird. 
 
-
-
 \DeclareOption*{%
   \PassOptionsToClass{\CurrentOption}{article}%
 }
 \ProcessOptions\relax
 \LoadClass{article}
+
+
+
 \RequirePackage{titlesec} 
 \RequirePackage{titletoc} 
-\RequirePackage{titling}
-\RequirePackage{fancyvrb}
+\RequirePackage{titling}  
+\RequirePackage{url}
+\RequirePackage{xcolor}
+\RequirePackage{pgfplots}
+%% %\RequirePackage{fancyvrb}
+\RequirePackage{environ}
+\RequirePackage{xcolor}
+\RequirePackage{amssymb}
+\RequirePackage{amsmath}
+\RequirePackage{amsthm}
+\RequirePackage{xifthen}% http://ctan.org/pkg/xifthen
+\RequirePackage{multido}% http://ctan.org/pkg/multido
+%% %\RequirePackage{listings}
+\RequirePackage{comment}
+
+
+
+
 
 \newcommand{\answer}[1][]{}
 \newcommand{\prerequisites}[1]{}
@@ -255,7 +256,7 @@
 % The decoration for these envrionments were inspired by
 % http://tex.stackexchange.com/questions/11098/nice-formatting-for-theorems?lq=1
 
-\makeatletter%
+%\makeatletter%
 \newcommand{\hang}{% top theorem decoration
   \begingroup%
   \setlength{\unitlength}{.005\linewidth}% \linewidth/200
@@ -291,30 +292,50 @@
 % ---------------------------------------------------------------------
 % Problem environments: Exercise, Question, Exploration
 
-%\@ifnotmtarg{#1}{\ (#1)}}
 
 
-\NewEnviron{exercise}[1][2in]{%
-  \ifshuffle\iffirstproblem  % this format is shown in shuffle
-  \par\addvspace{3ex}\noindent\nobreak
-  \refstepcounter{problem}\refstepcounter{problemType}\postdisplaypenalty=10000 %
-    {\sffamily\bfseries\upshape Exercise \ifhandout\theproblem\else\theproblem.\theproblemType\fi} \ \slshape\ignorespaces%
-    \BODY % Typeset theorem body/content
-    \ifhandout\ifspace\par\addvspace{#1}\nobreak\fi\fi
-    \par\addvspace{.5ex}\nobreak\noindent\hung\par\addvspace{.4ex}%
-    \addtocounter{problem}{-1}
-    \fi
-    \ifhandout\global\firstproblemfalse\fi % No more problem environments are displayed after this one
-    \else 
-    \par\addvspace{2ex}\noindent\nobreak % this format is shown when stand-alone
-    \refstepcounter{problem}\postdisplaypenalty=10000 %
-    {\sffamily\bfseries\upshape Exercise \theproblem\slshape} \ \ignorespaces%
-    \BODY % Typeset theorem body/content
-    \ifhandout\ifspace\par\addvspace{#1}\nobreak\fi\fi
-    \par\addvspace{.5ex}\nobreak\noindent\hung\par\addvspace{.4ex}%
-    \fi  
-    \ifnewpage\newpage\fi
-}
+%%% shuffle environment
+\newif\iffirstproblem% Condition for first problem
+\NewEnviron{shuffle}[1][]{
+  \shuffletrue
+  \firstproblemtrue % Allow first problem environment to be set
+  \BODY
+  \refstepcounter{problem}\setcounter{problemType}{0}\global\shufflefalse}
+
+
+
+%\ifshuffle\iffirstproblem
+\newenvironment{exercise}[1][2in]
+{\def\spaceatend{#1}\refstepcounter{problem}\refstepcounter{problemType}
+\begin{trivlist}\item[\hskip\labelsep\sffamily\bfseries Exercise \ifhandout\theproblem\else\theproblem.\theproblemType\fi]
+\slshape}
+{\ifhandout\ifspace\vspace{\spaceatend}\fi\fi\par\addvspace{.5ex}\nobreak\noindent\hung\addtocounter{problem}{-1}\ifhandout\global\firstproblemfalse\fi\end{trivlist}}
+
+
+
+%% \NewEnviron{exercise}[1][2in]{%
+%%   \ifshuffle\iffirstproblem  % this format is shown in shuffle
+%%   \par\addvspace{3ex}\noindent\nobreak
+%%   \refstepcounter{problem}\refstepcounter{problemType}\postdisplaypenalty=10000 %
+%%     {\sffamily\bfseries\upshape Exercise \ifhandout\theproblem\else\theproblem.\theproblemType\fi} \ \slshape\ignorespaces%
+%%     \BODY % Typeset theorem body/content
+%%     \ifhandout\ifspace\par\addvspace{#1}\nobreak\fi\fi
+%%     \par\addvspace{.5ex}\nobreak\noindent\hung\par\addvspace{.4ex}%
+%%     \addtocounter{problem}{-1}
+%%     \fi
+%%     \ifhandout\global\firstproblemfalse\fi % No more problem environments are displayed after this one
+
+
+%%     \else 
+%%     \par\addvspace{2ex}\noindent\nobreak % this format is shown when stand-alone
+%%     \refstepcounter{problem}\postdisplaypenalty=10000 %
+%%     {\sffamily\bfseries\upshape Exercise \theproblem\slshape} \ \ignorespaces%
+%%     \BODY % Typeset theorem body/content
+%%     \ifhandout\ifspace\par\addvspace{#1}\nobreak\fi\fi
+%%     \par\addvspace{.5ex}\nobreak\noindent\hung\par\addvspace{.4ex}%
+%%     \fi  
+%%     \ifnewpage\newpage\fi
+%% }
 
 
 \NewEnviron{question}[1][2in]{%
@@ -363,15 +384,12 @@
     \ifnewpage\newpage\fi
 }
 
-
-\NewEnviron{solution}{%
-  \ifhandout\relax\else\par\noindent\par\nobreak\noindent
-  \postdisplaypenalty=10000 %
-    {\small\itshape\bfseries Solution} \ \upshape\ignorespaces%
-    \small\BODY % Typeset theorem body/content
-    \par\addvspace{1ex}\nobreak\noindent
-    \fi
-    }
+%% Solution environment
+\ifhandout %% WARNING - \begin{solution} and \end{solution} cannot have spaces before them
+\excludecomment{solution}
+\else
+\newenvironment{solution}{\begin{trivlist}\item[\hskip \labelsep\small\itshape\bfseries Solution\hspace{2ex}]\upshape\small}{\end{trivlist}}
+\fi
 
 \NewEnviron{hint}{%
   \ifhints\par\addvspace{.5ex}\nobreak\noindent
@@ -381,41 +399,25 @@
                  \par\addvspace{.5ex}\nobreak\noindent%
                  \fi}
 
-\makeatother
 
 
 
-%%% shuffle environment
-\newif\iffirstproblem% Condition for first problem
-\NewEnviron{shuffle}[1][]{
-  \shuffletrue
-  \firstproblemtrue % Allow first problem environment to be set
-  \BODY
-  \refstepcounter{problem}\setcounter{problemType}{0}\global\shufflefalse}
            
 
 
 %% multiple choice environment
 \renewcommand{\theenumi}{$(\mathrm{\alph{enumi}})$}
 \renewcommand{\labelenumi}{\theenumi}
+\newenvironment{multiple-choice}[1][]{\item[\hskip 0pt]\begin{enumerate}}{\end{enumerate}}
 
-\NewEnviron{multiple-choice}[1][]{
-  \begin{enumerate}
-    \BODY
-  \end{enumerate}
-}
 
 
 
 
 %% python answer environment
-%% I think the verbatim is killing the \BODY
-%\DefineVerbatimEnvironment{MyVerbatim}{Verbatim}{gobble=2,numbers=left,numbersep=2mm,frame=lines,framerule=0.8mm}
-\NewEnviron{python}[1][]{
-%  \begin{verbatim}
-    \BODY
-%  \end{verbatim}
-}
+%% You cannot use Envrion with the fancyvrb package if you want nested environments
+
+\newenvironment{python}{\begin{verbatim}}{\end{verbatim}}
 
 
 
