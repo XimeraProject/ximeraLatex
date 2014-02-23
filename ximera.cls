@@ -92,7 +92,7 @@
 \RequirePackage{amsthm}
 \RequirePackage{xifthen}% http://ctan.org/pkg/xifthen
 \RequirePackage{multido}% http://ctan.org/pkg/multido
-%% %\RequirePackage{listings}
+\RequirePackage{listings}
 \RequirePackage{comment}
 
 
@@ -296,115 +296,90 @@
 
 %%% shuffle environment
 \newif\iffirstproblem% Condition for first problem
-\NewEnviron{shuffle}[1][]{
-  \shuffletrue\setcounter{problemType}{0}
-  \firstproblemtrue % Allow first problem environment to be set
-  \BODY
-  \refstepcounter{problem}\global\shufflefalse}
+\firstproblemtrue
+
+\newenvironment{shuffle}[1][]
+{\shuffletrue\setcounter{problemType}{0}}
+{\refstepcounter{problem}
+\shufflefalse
+\global\firstproblemtrue}
 
 
-
-%\ifshuffle\iffirstproblem
 \newenvironment{exercise}[1][2in]
-{\def\spaceatend{#1}\refstepcounter{problem}\refstepcounter{problemType}
+{\iffirstproblem
+\def\spaceatend{#1}\refstepcounter{problem}\refstepcounter{problemType}
 \begin{trivlist}\item[\hskip\labelsep\sffamily\bfseries 
 Exercise \ifhandout\theproblem\else\ifshuffle\theproblem.\theproblemType\else\theproblem\fi\fi]
-\slshape}
-{\ifhandout\ifspace\vspace{\spaceatend}\fi\fi %% space at end
+\slshape
+\else\setbox0\vbox\bgroup\fi} %% removes exercise if in shuffle and not first problem
+{\iffirstproblem
+\ifhandout\ifspace\vspace{\spaceatend}\fi\fi %% space at end
 \par\addvspace{.5ex}\nobreak\noindent\hung %% line at the bottom
 \ifshuffle\addtocounter{problem}{-1}\fi %% the problem does not increase within shuffle
-\ifhandout\global\firstproblemfalse\fi %% removes other problems from shuffle in handout
+\ifhandout\ifshuffle\global\firstproblemfalse\fi\fi %% removes other problems from shuffle in handout
 \ifhandout\ifnewpage\newpage\fi\fi %% adds newpage
-\end{trivlist}}
+\end{trivlist}
+\else\egroup\fi}
 
 
 
-%% \NewEnviron{exercise}[1][2in]{%
-%%   \ifshuffle\iffirstproblem  % this format is shown in shuffle
-%%   \par\addvspace{3ex}\noindent\nobreak
-%%   \refstepcounter{problem}\refstepcounter{problemType}\postdisplaypenalty=10000 %
-%%     {\sffamily\bfseries\upshape Exercise \ifhandout\theproblem\else\theproblem.\theproblemType\fi} \ \slshape\ignorespaces%
-%%     \BODY % Typeset theorem body/content
-%%     \ifhandout\ifspace\par\addvspace{#1}\nobreak\fi\fi
-%%     \par\addvspace{.5ex}\nobreak\noindent\hung\par\addvspace{.4ex}%
-%%     \addtocounter{problem}{-1}
-%%     \fi
-%%     \ifhandout\global\firstproblemfalse\fi % No more problem environments are displayed after this one
-
-
-%%     \else 
-%%     \par\addvspace{2ex}\noindent\nobreak % this format is shown when stand-alone
-%%     \refstepcounter{problem}\postdisplaypenalty=10000 %
-%%     {\sffamily\bfseries\upshape Exercise \theproblem\slshape} \ \ignorespaces%
-%%     \BODY % Typeset theorem body/content
-%%     \ifhandout\ifspace\par\addvspace{#1}\nobreak\fi\fi
-%%     \par\addvspace{.5ex}\nobreak\noindent\hung\par\addvspace{.4ex}%
-%%     \fi  
-%%     \ifnewpage\newpage\fi
-%% }
-
-
-\NewEnviron{question}[1][2in]{%
-  \ifshuffle\iffirstproblem  % this format is shown in shuffle
-  \par\addvspace{3ex}\noindent\nobreak
-  \refstepcounter{problem}\refstepcounter{problemType}\postdisplaypenalty=10000 %
-    {\sffamily\bfseries\upshape Question \ifhandout\theproblem\else\theproblem.\theproblemType\fi} \ \slshape\ignorespaces%
-    \BODY % Typeset theorem body/content
-    \ifhandout\ifspace\par\addvspace{#1}\nobreak\fi\fi
-    \par\addvspace{.5ex}\nobreak\noindent\hung\par\addvspace{.4ex}%
-    \addtocounter{problem}{-1}
-    \fi
-    \ifhandout\global\firstproblemfalse\fi % No more problem environments are displayed after this one
-    \else 
-    \par\addvspace{2ex}\noindent\nobreak % this format is shown when stand-alone
-    \refstepcounter{problem}\postdisplaypenalty=10000 %
-    {\sffamily\bfseries\upshape Question \theproblem\slshape} \ \ignorespaces%
-    \BODY % Typeset theorem body/content
-    \ifhandout\ifspace\par\addvspace{#1}\nobreak\fi\fi
-    \par\addvspace{.5ex}\nobreak\noindent\hung\par\addvspace{.4ex}%
-    \fi
-    \ifnewpage\newpage\fi
-}
+\newenvironment{question}[1][2in]
+{\iffirstproblem
+\def\spaceatend{#1}\refstepcounter{problem}\refstepcounter{problemType}
+\begin{trivlist}\item[\hskip\labelsep\sffamily\bfseries 
+Question \ifhandout\theproblem\else\ifshuffle\theproblem.\theproblemType\else\theproblem\fi\fi]
+\slshape
+\else\setbox0\vbox\bgroup\fi} %% removes exercise if in shuffle and not first problem
+{\iffirstproblem
+\ifhandout\ifspace\vspace{\spaceatend}\fi\fi %% space at end
+\par\addvspace{.5ex}\nobreak\noindent\hung %% line at the bottom
+\ifshuffle\addtocounter{problem}{-1}\fi %% the problem does not increase within shuffle
+\ifhandout\ifshuffle\global\firstproblemfalse\fi\fi %% removes other problems from shuffle in handout
+\ifhandout\ifnewpage\newpage\fi\fi %% adds newpage
+\end{trivlist}
+\else\egroup\fi}
 
 
 
-\NewEnviron{exploration}[1][2in]{%
-  \ifshuffle\iffirstproblem  % this format is shown in shuffle
-  \par\addvspace{3ex}\noindent\nobreak
-  \refstepcounter{problem}\refstepcounter{problemType}\postdisplaypenalty=10000 %
-    {\sffamily\bfseries\upshape Exploration \ifhandout\theproblem\else\theproblem.\theproblemType\fi} \ \slshape\ignorespaces%
-    \BODY % Typeset theorem body/content
-    \ifhandout\ifspace\par\addvspace{#1}\nobreak\fi\fi
-    \par\addvspace{.5ex}\nobreak\noindent\hung\par\addvspace{.4ex}%
-    \addtocounter{problem}{-1}
-    \fi
-    \ifhandout\global\firstproblemfalse\fi % No more problem environments are displayed after this one
-    \else 
-    \par\addvspace{2ex}\noindent\nobreak % this format is shown when stand-alone
-    \refstepcounter{problem}\postdisplaypenalty=10000 %
-    {\sffamily\bfseries\upshape Exploration \theproblem\slshape} \ \ignorespaces%
-    \BODY % Typeset theorem body/content
-    \ifhandout\ifspace\par\addvspace{#1}\nobreak\fi\fi
-    \par\addvspace{.5ex}\nobreak\noindent\hung\par\addvspace{.4ex}%
-    \fi
-    \ifnewpage\newpage\fi
-}
+\newenvironment{exploration}[1][2in]
+{\iffirstproblem
+\def\spaceatend{#1}\refstepcounter{problem}\refstepcounter{problemType}
+\begin{trivlist}\item[\hskip\labelsep\sffamily\bfseries 
+Exploration \ifhandout\theproblem\else\ifshuffle\theproblem.\theproblemType\else\theproblem\fi\fi]
+\slshape
+\else\setbox0\vbox\bgroup\fi} %% removes exercise if in shuffle and not first problem
+{\iffirstproblem
+\ifhandout\ifspace\vspace{\spaceatend}\fi\fi %% space at end
+\par\addvspace{.5ex}\nobreak\noindent\hung %% line at the bottom
+\ifshuffle\addtocounter{problem}{-1}\fi %% the problem does not increase within shuffle
+\ifhandout\ifshuffle\global\firstproblemfalse\fi\fi %% removes other problems from shuffle in handout
+\ifhandout\ifnewpage\newpage\fi\fi %% adds newpage
+\end{trivlist}
+\else\egroup\fi}
+
+
+
 
 %% Solution environment
-\ifhandout %% WARNING - \begin{solution} and \end{solution} cannot have spaces before them
-\excludecomment{solution}
-\else
-\newenvironment{solution}{\begin{trivlist}\item[\hskip \labelsep\small\itshape\bfseries Solution\hspace{2ex}]\upshape\small}{\end{trivlist}}
-\fi
+\newenvironment{solution}{
+\ifhandout\setbox0\vbox\bgroup\else
+\begin{trivlist}\item[\hskip \labelsep\small\itshape\bfseries Solution\hspace{2ex}]
+\par\noindent\upshape\small
+\fi}
+{\ifhandout\egroup\else
+\end{trivlist}
+\fi}
 
-\NewEnviron{hint}{%
-  \ifhints\par\addvspace{.5ex}\nobreak\noindent
-  \postdisplaypenalty=10000 %
-                 {\small\slshape\bfseries\color{gray} Hint:\small\color{gray}} \ \slshape\ignorespaces%
-                 \BODY % Typeset theorem body/content
-                 \par\addvspace{.5ex}\nobreak\noindent%
-                 \fi}
 
+\newenvironment{hint}{
+\ifhints
+\begin{trivlist}\item[\hskip \labelsep\small\slshape\bfseries\color{gray} Hint:\hspace{2ex}]
+\small\slshape\color{gray}
+\else\setbox0\vbox\bgroup
+\fi}
+{\ifhints
+\end{trivlist}
+\else\egroup\fi}
 
 
 
@@ -421,10 +396,12 @@ Exercise \ifhandout\theproblem\else\ifshuffle\theproblem.\theproblemType\else\th
 
 
 %% python answer environment
-%% You cannot use Envrion with the fancyvrb package if you want nested environments
+%% You cannot use Envrion with the fancyvrb/listings package if you want nested environments
 
-\DefineVerbatimEnvironment{python}{Verbatim}{}
-
+\DefineVerbatimEnvironment{python}{Verbatim}{numbers=left,frame=lines,label=Python,labelposition=topline}
+%% \lstnewenvironment{python}
+%% {\lstset{language=python,numbers=left}}
+%% {}
 
 
 
