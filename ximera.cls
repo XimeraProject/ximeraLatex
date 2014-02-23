@@ -84,7 +84,7 @@
 \RequirePackage{url}
 \RequirePackage{xcolor}
 \RequirePackage{pgfplots}
-%% %\RequirePackage{fancyvrb}
+\RequirePackage{fancyvrb}
 \RequirePackage{environ}
 \RequirePackage{xcolor}
 \RequirePackage{amssymb}
@@ -297,19 +297,25 @@
 %%% shuffle environment
 \newif\iffirstproblem% Condition for first problem
 \NewEnviron{shuffle}[1][]{
-  \shuffletrue
+  \shuffletrue\setcounter{problemType}{0}
   \firstproblemtrue % Allow first problem environment to be set
   \BODY
-  \refstepcounter{problem}\setcounter{problemType}{0}\global\shufflefalse}
+  \refstepcounter{problem}\global\shufflefalse}
 
 
 
 %\ifshuffle\iffirstproblem
 \newenvironment{exercise}[1][2in]
 {\def\spaceatend{#1}\refstepcounter{problem}\refstepcounter{problemType}
-\begin{trivlist}\item[\hskip\labelsep\sffamily\bfseries Exercise \ifhandout\theproblem\else\theproblem.\theproblemType\fi]
+\begin{trivlist}\item[\hskip\labelsep\sffamily\bfseries 
+Exercise \ifhandout\theproblem\else\ifshuffle\theproblem.\theproblemType\else\theproblem\fi\fi]
 \slshape}
-{\ifhandout\ifspace\vspace{\spaceatend}\fi\fi\par\addvspace{.5ex}\nobreak\noindent\hung\addtocounter{problem}{-1}\ifhandout\global\firstproblemfalse\fi\end{trivlist}}
+{\ifhandout\ifspace\vspace{\spaceatend}\fi\fi %% space at end
+\par\addvspace{.5ex}\nobreak\noindent\hung %% line at the bottom
+\ifshuffle\addtocounter{problem}{-1}\fi %% the problem does not increase within shuffle
+\ifhandout\global\firstproblemfalse\fi %% removes other problems from shuffle in handout
+\ifhandout\ifnewpage\newpage\fi\fi %% adds newpage
+\end{trivlist}}
 
 
 
@@ -417,7 +423,8 @@
 %% python answer environment
 %% You cannot use Envrion with the fancyvrb package if you want nested environments
 
-\newenvironment{python}{\begin{verbatim}}{\end{verbatim}}
+\DefineVerbatimEnvironment{python}{Verbatim}{}
+
 
 
 
