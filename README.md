@@ -1,5 +1,12 @@
+CAUTION
+=======
+
+With the impending launch of a several variables calculus course, 
+this repo now has two branches--master and development. 
+
+
 Greetings!
-=========
+==========
 
 In this repository, we hope to supply potential authors of Ximera
 activities with all the resources they need to get started.
