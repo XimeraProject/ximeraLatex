@@ -29,8 +29,9 @@ interactive content though \LaTeX\ documents.
 We'll start with a directory \code{ximeraActivities}. Within this
 directory, we need \code{ximera.cls} and at least one directory for
 each activity, say \code{firstActivity}. Within first activity we have
-two files, \code{firstActivity.tex} and \code{firstActivitySource.tex}.
+one files, \code{firstActivity.tex} named exactly as the folder containing it.
 Here is a schematic of the directory tree:
+
 \dirtree{%
 .1 ximeraActivities.
 .2 ximera.cls\DTcomment{A symbolic link to ximeraLatex/ximera.cls}.
@@ -46,8 +47,11 @@ The file \code{firstActivity.tex} is simply a wrapper for \code{firstActivitySou
 \begin{Verbatim}
   \documentclass{ximera}
   \input{../preamble.tex}
+  \title{First activity}
   \begin{document}
-  \input{firstActivitySource.tex}
+  \begin{abstract}
+  \end{abstract}
+  \maketitle
   \end{document}
 \end{Verbatim}
 
