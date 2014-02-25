@@ -2,6 +2,10 @@
 
 \input{preamble.tex}
 
+\let\masterdocument\document
+\let\endmasterdocument\enddocument
+
+\renewcommand{\documentclass}{\includecomment}
 \begin{document}
 \title{A sample collection of activities}
 \author{Bart Snapp}
@@ -9,8 +13,11 @@
 
 \tableofcontents
 
+\renewenvironment{document}{}{}
+
 \input{./firstExample/firstExample.tex}
 
 \input{./secondExample/secondExample.tex}
+\renewenvironment{document}{\begin{masterdocument}}{\end{masterdocument}}
 
 \end{document}

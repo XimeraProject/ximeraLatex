@@ -59,4 +59,26 @@ Here is a picture of a llama:
 
 If you like, check out this video\youtube{http://www.youtube.com/watch?v=0aQpLSu2fMs}.
 
+
+\begin{exploration}
+Write a Python script that will compute factorial for you.
+\begin{solution}
+\begin{python}
+def honest_factorial(x):
+  result = 1
+  for i in range(1,x+1):
+    result *= i
+  return result
+
+def verifier():
+  for i in range(10,20):
+    if factorial(i) != honest_factorial(i):
+      raise "Your function failed for input " + str(i)
+  return True
+\end{python}
+\end{solution}
+\end{exploration}
+
+
 \end{document}
+
