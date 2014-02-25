@@ -126,6 +126,14 @@
 \NewEnviron{interactive}[1][]{\BODY}
 
 
+%% these may be changed in the future to work more like interactive.
+%% expression-answer envrironment
+\NewEnviron{expression-answer}[1][]{}
+
+%% matrix-answer envrironment
+\NewEnviron{matrix-answer}[1][]{}
+
+
 
 
 %                         *****************
