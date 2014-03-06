@@ -111,13 +111,22 @@ Visit the repo on Github.com and click the "Clone in Desktop" button.
 Setting up your local directories
 ---------------------------------
 
-#### For Linux or Mac
+#### For Linux
 
 Create the directory structure:
 
 `~/texmf/tex/latex/`
 
 and move ximeraLatex to `~/texmf/tex/latex/`. This will allow all of
+your documents to find ximera.cls
+
+#### For Mac
+
+Create the directory structure:
+
+`~/Library/texmf/tex/latex/`
+
+and move ximeraLatex to `~/Library/texmf/tex/latex/`. This will allow all of
 your documents to find ximera.cls
 
 
