@@ -1,6 +1,5 @@
-% ximera.cls
-%
-% A LaTeX2e document class for preparing exams.
+% A LaTeX2e document class for preparing handouts and online material
+% via Ximera.
 
 %% ximera.cls
 %% Copyright (c) 2013 Bart Snapp and Jim Fowler
@@ -54,9 +53,9 @@
 \newpagefalse
 \DeclareOption{newpage}{\newpagetrue}
 
-\newif\ifnonumbers
-\nonumberstrue
-\DeclareOption{nonumbers}{\nonumbersfalse}
+\newif\ifnumbers
+\numbersfalse
+\DeclareOption{numbers}{\numberstrue}
 
 \newif\ifhints
 \hintstrue
@@ -185,31 +184,8 @@
 %
 %
 
-%% \pretitle{\begin{flushleft}\LARGE\bfseries}
-%% \posttitle{\par\end{flushleft}}
-%% \predate{}
-%% \date{}
-%% \postdate{\vskip -3em}
-
 
 %% \newcommand{\activitytitlebreak}{\clearpage}
-
-%% \newcommand*{\activityshortdescription}{}
-%% \newcommand{\shortdescription}[1]{\def\activityshortdescription{#1}}
-
-%% \titleclass{\activitytitle}{straight}[\section]
-%% \newcounter{activitytitle}
-%% \titleformat{\activitytitle}
-%%             {\bfseries\LARGE\raggedright}
-%%             {\ifnonumbers\theactivitytitle\fi}{\ifnonumbers1em\else 0em\fi}
-%%             {}
-%%             [\normalfont\small\itshape\raggedright\activityshortdescription\setcounter{problem}{0}]
-%% \titlespacing*{\activitytitle}{0pt}{0pt}{2em}
-%% \renewcommand{\theactivitytitle}{\arabic{activitytitle}}
-
-%% \contentsmargin{2.55em}
-%% \dottedcontents{title}[3.8em]{}{2.3em}{1pc}
-
 
 
 \let\abstract\relax
@@ -223,7 +199,7 @@
 
 \makeatletter
 \renewcommand\@maketitle{%
-{\flushleft\LARGE\bfseries {\ifnonumbers\thetitlenumber\fi}{\ifnonumbers\hspace{1em}\else\hspace{0em}\fi}\@title \par }
+{\flushleft\LARGE\bfseries {\ifnumbers\thetitlenumber\fi}{\ifnumbers\hspace{1em}\else\hspace{0em}\fi}\@title \par }
 \vskip .6em\noindent\textit\theabstract\setcounter{problem}{0}\addtocounter{titlenumber}{1}\par\vspace{2em}}
 \makeatother
 
