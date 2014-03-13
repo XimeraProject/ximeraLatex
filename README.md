@@ -135,7 +135,9 @@ directory, go to:
 4. Find `C:\localtexmf\` and click "OK"
 5. Click "apply" "OK" and then you are ready to go. 
 
-This will allow all of your documents to find ximera.cls
+This will allow all of your documents to find ximera.cls. Note, it is
+important that none of the directories containing ximeraLatex have
+spaces in their names.
 
 #### ximeraLatex vs. ximera.cls
 
