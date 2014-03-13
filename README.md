@@ -234,9 +234,8 @@ Writing an activity
 
 Now it is time to write your first activity. All activities should be
 in their own directory, with all supporting documents also in this
-directory. In particular, you will need a symbolic link to
-ximeraLatex/ximera.cls in each directory. This will provide maximum
-flexibility and modularity of your activity.
+directory. This will provide maximum flexibility and modularity of
+your activity.
 
 If you follow the directory structure suggested in ximeraLatex and in
 ximeraLatex/documentation/ximeraInPractice.pdf (assuming you've
