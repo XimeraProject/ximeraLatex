@@ -1,23 +1,28 @@
-\documentclass{ximera}
+\documentclass[numbers]{ximera}
 
-\input{preamble.tex}
+\input{./firstExample/preamble.tex}
+\input{./secondExample/preamble.tex}
 
 \let\masterdocument\document
 \let\endmasterdocument\enddocument
 
-\renewcommand{\documentclass}{\includecomment}
-\begin{document}
+
+\begin{masterdocument}
 \title{A sample collection of activities}
+\begin{abstract}
+\end{abstract}
 \author{Bart Snapp}
 \maketitle
 
 \tableofcontents
 
+
+\renewcommand{\documentclass}{\setbox0\vbox}
+\renewcommand{\include}{\setbox0\vbox}
 \renewenvironment{document}{}{}
 
 \input{./firstExample/firstExample.tex}
 
 \input{./secondExample/secondExample.tex}
-\renewenvironment{document}{\begin{masterdocument}}{\end{masterdocument}}
 
-\end{document}
+\end{masterdocument}
