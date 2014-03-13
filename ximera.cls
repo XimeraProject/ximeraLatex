@@ -101,7 +101,7 @@
 
 
 
-\newcommand{\preambleinput}{\input}
+\newcommand{\preambleinput}{\input} % allows us to "turn off" preambles
 \newcommand{\answer}[1][]{}
 \newcommand{\prerequisites}[1]{}
 \newcommand{\outcomes}[1]{}
