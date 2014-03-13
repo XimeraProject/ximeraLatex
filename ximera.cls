@@ -101,7 +101,7 @@
 
 
 
-
+\newcommand{\preambleinput}{\input}
 \newcommand{\answer}[1][]{}
 \newcommand{\prerequisites}[1]{}
 \newcommand{\outcomes}[1]{}

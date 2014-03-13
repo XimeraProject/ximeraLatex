@@ -1,7 +1,7 @@
 \documentclass[numbers]{ximera}
 
-\include{./firstExample/preamble.tex}
-\include{./secondExample/preamble.tex}
+\input{./firstExample/preamble.tex}
+\input{./secondExample/preamble.tex}
 
 \let\masterdocument\document
 \let\endmasterdocument\enddocument
@@ -18,7 +18,7 @@
 
 
 \renewcommand{\documentclass}{\setbox0\vbox}
-\renewcommand{\include}{\setbox0\vbox}
+\renewcommand{\preambleinput}{\setbox0\vbox}
 \renewenvironment{document}{}{}
 
 \input{./firstExample/firstExample.tex}
