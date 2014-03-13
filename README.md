@@ -88,7 +88,7 @@ Depending on your operating system, these command may be different.
 
 #### For Mac or Windows
 
-When you start your client, it will ask if you want to use SSH, and you
+When you start your client, it may ask if you want to use SSH, and you
 do. When it asks which local repositories you want to use, just click
 "Done."
 
@@ -126,17 +126,16 @@ your documents to find ximera.cls
 
 Create the directory structure:
 
-`C:/localtexmf/`
+`C:\localtexmf\`
 
-and move ximeraLatex to `C:/localtexmf/`. To MiKteX to notice this
+and move ximeraLatex to `C:\localtexmf\`. To MiKteX to notice this
 directory, goto:
 
-1. Start -> All programs -> MiKTeX -> Maintenance (Admin)
-2. Settings (Admin)
-3. Now select the tab "root"
-4. Click "Add" because you are going to add a path
-5. Find `C:/localtexmf/` and click "OK"
-6. Click "apply" "OK" and then you are ready to go. 
+1. Start -> All programs -> MiKTeX Folder -> Maintenance (Admin) Folder -> Settings (Admin)
+2. Now select the tab "Root"
+3. Click "Add" because you are going to add a path
+4. Find `C:\localtexmf\` and click "OK"
+5. Click "apply" "OK" and then you are ready to go. 
 
 This will allow all of your documents to find ximera.cls
 
@@ -149,9 +148,9 @@ this directory or move it to any location on your computer.
 
 * Compile ximeraLatex/exampleActivityCollection.tex
 
-* Compile ximeraLatex/exampleActivity1/exampleActivity1.tex
+* Compile ximeraLatex/firstExample/firstExample.tex
 
-* Compile ximeraLatex/exampleActivity2/exampleActivity2.tex
+* Compile ximeraLatex/secondActivity/secondExample.tex
 
 All of these documents should compile at this point. If they do not,
 something is probably wrong.
