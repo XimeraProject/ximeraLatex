@@ -25,13 +25,11 @@ Contents of the repository
 * A file named exampleActivityCollection.tex, a file for testing
   purposes.
 
-* Two test directories exampleActivity1 and exampleActivity2 that
-  contain exampleActivity1.tex, exampleActivity1Source.tex and
-  exampleActivity2.tex, exampleActivity2Source.tex. These are example
-  files.
+* Two test directories firstExample and secondExample that contain
+  firstExample.tex, secondExample.tex. These are example files.
 
-* A generic preamble file for user-defined macros. Warning:
-  Environments cannot be defined here.
+* A generic preamble file for each of the .tex files containing
+  user-defined macros. Warning: Environments cannot be defined here.
 
 Directions for download
 -----------------------
@@ -139,7 +137,7 @@ directory, go to:
 
 This will allow all of your documents to find ximera.cls
 
-#### ximeraLatex vs ximera.cls
+#### ximeraLatex vs. ximera.cls
 
 While one could simply move ximera.cls to the directory on the path,
 we suggest that the entire ximeraLatex directory should be moved as
@@ -170,15 +168,15 @@ Creating your GitHub repository
 -------------------------------
 
 Now that you have the ximera.cls file and can compile
-exampleActivityCollection.tex, /exampleActivity1/exampleActivity1.tex,
-and /exampleActivity2/exampleActivity2.tex it is time to get started
-on your own GitHub repo.
+exampleActivityCollection.tex, /firstExample/firstExample.tex, and
+/firstExample/firstExample.tex it is time to get started on your own
+GitHub repo.
 
-You cannot build your Ximera activities in ximeraLatex. The directory
-ximeraLatex's sole purpose is to give you the most recent version of
-ximera.cls and some examples. Hence you must build your activities in
-a new directory. In fact, you should build them in your own GitHub
-repo.
+You should not build your Ximera activities in ximeraLatex. The
+directory ximeraLatex's sole purpose is to give you the most recent
+version of ximera.cls and some examples. Hence you must build your
+activities in a new directory. In fact, you should build them in your
+own GitHub repo.
 
 #### Create your working directory
 
