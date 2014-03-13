@@ -128,16 +128,26 @@ Create the directory structure:
 
 `C:\localtexmf\`
 
-and move ximeraLatex to `C:\localtexmf\`. To MiKteX to notice this
-directory, goto:
+and move ximeraLatex to `C:\localtexmf\`. For MiKteX to notice this
+directory, go to:
 
 1. Start -> All programs -> MiKTeX Folder -> Maintenance (Admin) Folder -> Settings (Admin)
-2. Now select the tab "Root"
+2. Now select the tab "Roots"
 3. Click "Add" because you are going to add a path
 4. Find `C:\localtexmf\` and click "OK"
 5. Click "apply" "OK" and then you are ready to go. 
 
 This will allow all of your documents to find ximera.cls
+
+#### ximeraLatex vs ximera.cls
+
+While one could simply move ximera.cls to the directory on the path,
+we suggest that the entire ximeraLatex directory should be moved as
+described above. This will allow users to update to the most recent
+version of the ximera.cls and discourage users from working directly
+in ximeraLatex. When building activities, each activity should be in
+its own directory.
+
 
 ### Check the ximeraLatex directory
 
@@ -191,7 +201,7 @@ use your own. Inside of this directory, you should have
 
 #### Creating the repository in Linux
 
-Goto GitHub, click ``+'' and Create New Repository Give it a title,
+Go to GitHub, click ``+'' and Create New Repository Give it a title,
 and a short description.
 
 Ignore the ``initialize this repo with a README''
