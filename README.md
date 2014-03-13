@@ -122,6 +122,24 @@ Create the directory structure:
 and move ximeraLatex to `~/Library/texmf/tex/latex/`. This will allow all of
 your documents to find ximera.cls
 
+#### For Windows
+
+Create the directory structure:
+
+`C:/localtexmf/`
+
+and move ximeraLatex to `C:/localtexmf/`. To MiKteX to notice this
+directory, goto:
+
+1. Start -> All programs -> MiKTeX -> Maintenance (Admin)
+2. Settings (Admin)
+3. Now select the tab "root"
+4. Click "Add" because you are going to add a path
+5. Find `C:/localtexmf/` and click "OK"
+6. Click "apply" "OK" and then you are ready to go. 
+
+This will allow all of your documents to find ximera.cls
+
 ### Check the ximeraLatex directory
 
 Now you should have a directory called ximeraLatex. You may rename
