@@ -22,7 +22,7 @@
 %%% The Ohio State University
 
 
-\def\fileversion{.5}
+\def\fileversion{.55}
 \def\filedate{2013/09/16}
 
 
@@ -202,22 +202,10 @@
 
 \makeatletter
 \renewcommand\@maketitle{%
-{\flushleft\LARGE\bfseries {\ifnumbers\thetitlenumber\fi}{\ifnumbers\hspace{1em}\else\hspace{0em}\fi}\@title \par }
-\vskip .6em\noindent\textit\theabstract\setcounter{problem}{0}\addtocounter{titlenumber}{1}\par\vspace{2em}}
+  \addcontentsline{toc}{section}{\@title} %% attempting to make contents
+  {\flushleft\LARGE\bfseries {\ifnumbers\thetitlenumber\fi}{\ifnumbers\hspace{1em}\else\hspace{0em}\fi}\@title \par }
+  \vskip .6em\noindent\textit\theabstract\setcounter{problem}{0}\addtocounter{titlenumber}{1}\par\vspace{2em}}
 \makeatother
-
-
-% ---------------------------------------------------------------------
-% ---------------------------------------------------------------------
-%
-%                    **************
-%                    ** SUBFILES **
-%                    **************
-%
-%
-%
-
-%See: http://ctan.mackichan.com/macros/latex2e/contrib/subfiles/subfiles.pdf
 
 
 % ---------------------------------------------------------------------

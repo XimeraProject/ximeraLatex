@@ -9,13 +9,19 @@
 
 
 
-\title{A sample collection of activities}
-\author{Bart Snapp}
-
 \begin{masterdocument}
-\begin{abstract}
-\end{abstract}
-\maketitle
+
+\begin{titlepage}
+    \vspace*{1in}
+    \begin{center}
+      {\Huge \bfseries Example activity collection}\\[0.5cm]
+      {\Large Bart Snapp}\\[0.4cm]
+      This document was typeset on \today.
+    \end{center}
+    %\vspace*{\fill}
+  \end{titlepage}
+
+\newpage
 
 \tableofcontents
 
@@ -23,6 +29,8 @@
 \renewcommand{\documentclass}{\setbox0\vbox}
 \renewcommand{\preambleinput}{\setbox0\vbox}
 \renewenvironment{document}{}{}
+
+
 
 \input{./firstExample/firstExample.tex}
 
