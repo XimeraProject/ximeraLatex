@@ -137,46 +137,6 @@
 
 
 
-
-%                         *****************
-%                         ** PAGE LAYOUT **
-%                         *****************
-
-
-% We set the parameters in terms of \paperwidth and \paperheight
-% so that the options
-
-% a4paper
-% a5paper
-% b5paper
-% letterpaper
-% legalpaper
-% executivepaper
-% landscape
-
-% will all work:
-
-%% \setlength{\textwidth}{\paperwidth}
-%% \addtolength{\textwidth}{-2in}
-%% \setlength{\oddsidemargin}{0pt}
-%% \setlength{\evensidemargin}{0pt}
-
-%% \setlength{\headheight}{15pt}
-%% \setlength{\headsep}{15pt}
-%% \setlength{\topmargin}{0in}
-%% \addtolength{\topmargin}{-\headheight}
-%% \addtolength{\topmargin}{-\headsep}
-%% \setlength{\footskip}{29pt}
-%% \setlength{\textheight}{\paperheight}
-%% \addtolength{\textheight}{-2.2in}
-
-%% \setlength{\marginparwidth}{.5in}
-%% \setlength{\marginparsep}{5pt}
-
-%\setlength{\topsep}{10pt}
-
-
-
 % ---------------------------------------------------------------------
 % ---------------------------------------------------------------------
 %
@@ -202,7 +162,7 @@
 
 \makeatletter
 \renewcommand\@maketitle{%
-  \addcontentsline{toc}{section}{\@title} %% puts titles in the toc
+  \addcontentsline{toc}{subsection}{\@title} %% puts titles in the toc
   {\flushleft\LARGE\bfseries {\ifnumbers\thetitlenumber\fi}{\ifnumbers\hspace{1em}\else\hspace{0em}\fi}\@title \par }
   \vskip .6em\noindent\textit\theabstract\setcounter{problem}{0}\addtocounter{titlenumber}{1}\par\vspace{2em}}
 \makeatother
@@ -364,7 +324,9 @@ Exploration \ifhandout\theproblem\else\ifshuffle\theproblem.\theproblemType\else
 %% multiple choice environment
 \renewcommand{\theenumi}{$(\mathrm{\alph{enumi}})$}
 \renewcommand{\labelenumi}{\theenumi}
-\newenvironment{multiple-choice}[1][]{\item[\hskip 0pt]\begin{enumerate}}{\end{enumerate}}
+\newenvironment{multiple-choice}[1][]
+{\begin{enumerate}}
+{\end{enumerate}}
 
 
 
