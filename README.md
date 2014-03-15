@@ -2,7 +2,8 @@ Greetings!
 ==========
 
 In this repository, we hope to supply potential authors of Ximera
-activities with all the resources they need to get started.
+activities with all the resources they need to get started. Note,
+there will be many changes until May 1st.
 
 
 Contents of the repository
