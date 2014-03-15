@@ -1,10 +1,3 @@
-CAUTION
-=======
-
-With the impending launch of a several variables calculus course, 
-this repo now has two branches--master and development. 
-
-
 Greetings!
 ==========
 
@@ -32,13 +25,11 @@ Contents of the repository
 * A file named exampleActivityCollection.tex, a file for testing
   purposes.
 
-* Two test directories exampleActivity1 and exampleActivity2 that
-  contain exampleActivity1.tex, exampleActivity1Source.tex and
-  exampleActivity2.tex, exampleActivity2Source.tex. These are example
-  files.
+* Two test directories firstExample and secondExample that contain
+  firstExample.tex, secondExample.tex. These are example files.
 
-* A generic preamble file for user-defined macros. Warning:
-  Environments cannot be defined here.
+* A generic preamble file for each of the .tex files containing
+  user-defined macros. Warning: Environments cannot be defined here.
 
 Directions for download
 -----------------------
@@ -95,7 +86,7 @@ Depending on your operating system, these command may be different.
 
 #### For Mac or Windows
 
-When you start your client, it will ask if you want to use SSH, and you
+When you start your client, it may ask if you want to use SSH, and you
 do. When it asks which local repositories you want to use, just click
 "Done."
 
@@ -129,6 +120,34 @@ Create the directory structure:
 and move ximeraLatex to `~/Library/texmf/tex/latex/`. This will allow all of
 your documents to find ximera.cls
 
+#### For Windows
+
+Create the directory structure:
+
+`C:\localtexmf\tex\latex\`
+
+and move ximeraLatex to `C:\localtexmf\tex\latex\`. For MiKteX to notice this
+directory, go to:
+
+1. Start -> All programs -> MiKTeX Folder -> Maintenance (Admin) Folder -> Settings (Admin)
+2. Now select the tab "Roots"
+3. Click "Add" because you are going to add a path
+4. Find `C:\localtexmf\` and click "OK"
+5. Click "apply" "OK" and then you are ready to go. 
+
+This will allow all of your documents to find ximera.cls. Note, it is
+important that none of the directories containing ximeraLatex have
+spaces in their names.
+
+#### ximeraLatex vs. ximera.cls
+
+While one could simply move ximera.cls to the directory on the path,
+we suggest that the entire ximeraLatex directory should be moved as
+described above. This will allow users to update to the most recent
+version of the ximera.cls and discourage users from working directly
+in ximeraLatex. When building activities, each activity should be in
+its own directory.
+
 
 ### Check the ximeraLatex directory
 
@@ -139,9 +158,9 @@ this directory or move it to any location on your computer.
 
 * Compile ximeraLatex/exampleActivityCollection.tex
 
-* Compile ximeraLatex/exampleActivity1/exampleActivity1.tex
+* Compile ximeraLatex/firstExample/firstExample.tex
 
-* Compile ximeraLatex/exampleActivity2/exampleActivity2.tex
+* Compile ximeraLatex/secondActivity/secondExample.tex
 
 All of these documents should compile at this point. If they do not,
 something is probably wrong.
@@ -151,15 +170,15 @@ Creating your GitHub repository
 -------------------------------
 
 Now that you have the ximera.cls file and can compile
-exampleActivityCollection.tex, /exampleActivity1/exampleActivity1.tex,
-and /exampleActivity2/exampleActivity2.tex it is time to get started
-on your own GitHub repo.
+exampleActivityCollection.tex, /firstExample/firstExample.tex, and
+/firstExample/firstExample.tex it is time to get started on your own
+GitHub repo.
 
-You cannot build your Ximera activities in ximeraLatex. The directory
-ximeraLatex's sole purpose is to give you the most recent version of
-ximera.cls and some examples. Hence you must build your activities in
-a new directory. In fact, you should build them in your own GitHub
-repo.
+You should not build your Ximera activities in ximeraLatex. The
+directory ximeraLatex's sole purpose is to give you the most recent
+version of ximera.cls and some examples. Hence you must build your
+activities in a new directory. In fact, you should build them in your
+own GitHub repo.
 
 #### Create your working directory
 
@@ -182,7 +201,7 @@ use your own. Inside of this directory, you should have
 
 #### Creating the repository in Linux
 
-Goto GitHub, click ``+'' and Create New Repository Give it a title,
+Go to GitHub, click ``+'' and Create New Repository Give it a title,
 and a short description.
 
 Ignore the ``initialize this repo with a README''
@@ -224,9 +243,8 @@ Writing an activity
 
 Now it is time to write your first activity. All activities should be
 in their own directory, with all supporting documents also in this
-directory. In particular, you will need a symbolic link to
-ximeraLatex/ximera.cls in each directory. This will provide maximum
-flexibility and modularity of your activity.
+directory. This will provide maximum flexibility and modularity of
+your activity.
 
 If you follow the directory structure suggested in ximeraLatex and in
 ximeraLatex/documentation/ximeraInPractice.pdf (assuming you've

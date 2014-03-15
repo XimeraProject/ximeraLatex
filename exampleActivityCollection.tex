@@ -1,18 +1,37 @@
-\documentclass{ximera}
+\documentclass[numbers,handout]{ximera}
+
+\input{./firstExample/preamble.tex}
+\input{./secondExample/preamble.tex}
+\input{./preamble.tex}
+
+\let\masterdocument\document
+\let\endmasterdocument\enddocument
 
 
 
-\input{preamble.tex}
+\begin{masterdocument}
 
-\begin{document}
-\title{A sample collection of activities}
-\author{Bart Snapp}
-\maketitle
+\begin{titlepage}
+    \vspace*{1in}
+    \begin{center}
+      {\Huge \bfseries Example activity collection}\\[0.5cm]
+      {\Large Bart Snapp}\\[0.4cm]
+      This document was typeset on \today.
+    \end{center}
+    %\vspace*{\fill}
+  \end{titlepage}
 
 \tableofcontents
 
-\input{./exampleActivity1/exampleActivity1Source.tex}
 
-\input{./exampleActivity2/exampleActivity2Source.tex}
+\renewcommand{\documentclass}{\setbox0\vbox}
+\renewcommand{\preambleinput}{\setbox0\vbox}
+\renewenvironment{document}{}{}
 
-\end{document}
+
+
+\input{./firstExample/firstExample.tex}
+
+\input{./secondExample/secondExample.tex}
+
+\end{masterdocument}

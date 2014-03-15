@@ -1,6 +1,5 @@
-% ximera.cls
-%
-% A LaTeX2e document class for preparing exams.
+% A LaTeX2e document class for preparing handouts and online material
+% via Ximera.
 
 %% ximera.cls
 %% Copyright (c) 2013 Bart Snapp and Jim Fowler
@@ -23,7 +22,7 @@
 %%% The Ohio State University
 
 
-\def\fileversion{.5}
+\def\fileversion{.55}
 \def\filedate{2013/09/16}
 
 
@@ -46,18 +45,6 @@
 \ProvidesClass{ximera}[\filedate\space Version \fileversion\space by
   Bart Snapp]
 
-%\RequirePackage{hyperref} %% this breaks something!
-\RequirePackage{environ}
-\RequirePackage{url}
-\RequirePackage{xcolor}
-%\RequirePackage{ifmtarg}% http://ctan.org/pkg/ifmtarg
-\RequirePackage{xifthen}% http://ctan.org/pkg/xifthen
-\RequirePackage{multido}% http://ctan.org/pkg/multido
-\RequirePackage{amssymb}
-\RequirePackage{amsmath}
-\RequirePackage{amsthm}
-\RequirePackage{pgfplots}
-
 \newif\ifhandout
 \handoutfalse
 \DeclareOption{handout}{\handouttrue}
@@ -66,9 +53,9 @@
 \newpagefalse
 \DeclareOption{newpage}{\newpagetrue}
 
-\newif\ifnonumbers
-\nonumberstrue
-\DeclareOption{nonumbers}{\nonumbersfalse}
+\newif\ifnumbers
+\numbersfalse
+\DeclareOption{numbers}{\numberstrue}
 
 \newif\ifhints
 \hintstrue
@@ -84,22 +71,43 @@
 
 
 
+
+
 \DeclareOption*{%
   \PassOptionsToClass{\CurrentOption}{article}%
 }
 \ProcessOptions\relax
 \LoadClass{article}
+
+
+
 \RequirePackage{titlesec} 
 \RequirePackage{titletoc} 
+\RequirePackage{titling}  
+\RequirePackage{url}
+\RequirePackage{xcolor}
+\RequirePackage{pgfplots}
+\RequirePackage{fancyvrb}
+\RequirePackage{environ}
+\RequirePackage{xcolor}
+\RequirePackage{amssymb}
+\RequirePackage{amsmath}
+\RequirePackage{amsthm}
+\RequirePackage{xifthen}% http://ctan.org/pkg/xifthen
+\RequirePackage{multido}% http://ctan.org/pkg/multido
+\RequirePackage{listings}
+\RequirePackage{comment}
 
 
+
+
+\newcommand{\preambleinput}{\input} % allows us to "turn off" preambles
 \newcommand{\answer}[1][]{}
 \newcommand{\prerequisites}[1]{}
 \newcommand{\outcomes}[1]{}
 \newcommand{\video}[1]{\footnote{Video link: \url{#1}}}
 \newcommand{\youtube}[1]{\footnote{YouTube link: \url{#1}}}
 \newcommand{\link}[1]{\footnote{Link: \url{#1}}}
-
 
 \newboolean{correct}
 \setboolean{correct}{true}
@@ -120,44 +128,12 @@
 \NewEnviron{interactive}[1][]{\BODY}
 
 
+%% these may be changed in the future to work more like interactive.
+%% expression-answer envrironment
+\NewEnviron{expression-answer}[1][]{}
 
-
-%                         *****************
-%                         ** PAGE LAYOUT **
-%                         *****************
-
-
-% We set the parameters in terms of \paperwidth and \paperheight
-% so that the options
-
-% a4paper
-% a5paper
-% b5paper
-% letterpaper
-% legalpaper
-% executivepaper
-% landscape
-
-% will all work:
-
-%% \setlength{\textwidth}{\paperwidth}
-%% \addtolength{\textwidth}{-2in}
-%% \setlength{\oddsidemargin}{0pt}
-%% \setlength{\evensidemargin}{0pt}
-
-%% \setlength{\headheight}{15pt}
-%% \setlength{\headsep}{15pt}
-%% \setlength{\topmargin}{0in}
-%% \addtolength{\topmargin}{-\headheight}
-%% \addtolength{\topmargin}{-\headsep}
-%% \setlength{\footskip}{29pt}
-%% \setlength{\textheight}{\paperheight}
-%% \addtolength{\textheight}{-2.2in}
-
-%% \setlength{\marginparwidth}{.5in}
-%% \setlength{\marginparsep}{5pt}
-
-%\setlength{\topsep}{10pt}
+%% matrix-answer envrironment
+\NewEnviron{matrix-answer}[1][]{}
 
 
 
@@ -171,31 +147,25 @@
 %
 %
 
-%% \pretitle{\begin{flushleft}\LARGE\bfseries}
-%% \posttitle{\par\end{flushleft}}
-%% \predate{}
-%% \date{}
-%% \postdate{\vskip -3em}
+
+%% \newcommand{\activitytitlebreak}{\clearpage}
 
 
-\newcommand{\activitytitlebreak}{\clearpage}
+\let\abstract\relax
+\let\endabstract\relax
+\NewEnviron{abstract}{\xdef\theabstract{\BODY}}
 
-\newcommand*{\activityshortdescription}{}
-\newcommand{\shortdescription}[1]{\def\activityshortdescription{#1}}
 
-\titleclass{\activitytitle}{straight}[\section]
-\newcounter{activitytitle}
-\titleformat{\activitytitle}
-            {\bfseries\LARGE\raggedright}
-            {\ifnonumbers\theactivitytitle\fi}{\ifnonumbers1em\else 0em\fi}
-            {}
-            [\normalfont\small\itshape\raggedright\activityshortdescription\setcounter{problem}{0}]
-\titlespacing*{\activitytitle}{0pt}{0pt}{2em}
-\renewcommand{\theactivitytitle}{\arabic{activitytitle}}
+\newcounter{titlenumber}
+\renewcommand{\thetitlenumber}{\arabic{titlenumber}}
+\setcounter{titlenumber}{1}
 
-\contentsmargin{2.55em}
-\dottedcontents{activitytitle}[3.8em]{}{2.3em}{1pc}
-
+\makeatletter
+\renewcommand\@maketitle{%
+  \addcontentsline{toc}{subsection}{\@title} %% puts titles in the toc
+  {\flushleft\LARGE\bfseries {\ifnumbers\thetitlenumber\fi}{\ifnumbers\hspace{1em}\else\hspace{0em}\fi}\@title \par }
+  \vskip .6em\noindent\textit\theabstract\setcounter{problem}{0}\addtocounter{titlenumber}{1}\par\vspace{2em}}
+\makeatother
 
 
 % ---------------------------------------------------------------------
@@ -212,7 +182,7 @@
 
 
 
-\newcounter{problem}
+\newcounter{problem} %% for the 
 \newcounter{problemType}
 
 % ---------------------------------------------------------------------
@@ -221,7 +191,7 @@
 % The decoration for these envrionments were inspired by
 % http://tex.stackexchange.com/questions/11098/nice-formatting-for-theorems?lq=1
 
-\makeatletter%
+%\makeatletter%
 \newcommand{\hang}{% top theorem decoration
   \begingroup%
   \setlength{\unitlength}{.005\linewidth}% \linewidth/200
@@ -257,121 +227,118 @@
 % ---------------------------------------------------------------------
 % Problem environments: Exercise, Question, Exploration
 
-%\@ifnotmtarg{#1}{\ (#1)}}
-
-
-\NewEnviron{exercise}[1][2in]{%
-  \ifshuffle\iffirstproblem  % this format is shown in shuffle
-  \par\addvspace{3ex}\noindent\nobreak
-  \refstepcounter{problem}\refstepcounter{problemType}\postdisplaypenalty=10000 %
-    {\sffamily\bfseries\upshape Exercise \ifhandout\theproblem\else\theproblem.\theproblemType\fi} \ \slshape\ignorespaces%
-    \BODY % Typeset theorem body/content
-    \ifhandout\ifspace\par\addvspace{#1}\nobreak\fi\fi
-    \par\addvspace{.5ex}\nobreak\noindent\hung\par\addvspace{.4ex}%
-    \addtocounter{problem}{-1}
-    \fi
-    \ifhandout\global\firstproblemfalse\fi % No more problem environments are displayed after this one
-    \else 
-    \par\addvspace{2ex}\noindent\nobreak % this format is shown when stand-alone
-    \refstepcounter{problem}\postdisplaypenalty=10000 %
-    {\sffamily\bfseries\upshape Exercise \theproblem\slshape} \ \ignorespaces%
-    \BODY % Typeset theorem body/content
-    \ifhandout\ifspace\par\addvspace{#1}\nobreak\fi\fi
-    \par\addvspace{.5ex}\nobreak\noindent\hung\par\addvspace{.4ex}%
-    \fi  
-    \ifnewpage\newpage\fi
-}
-
-
-\NewEnviron{question}[1][2in]{%
-  \ifshuffle\iffirstproblem  % this format is shown in shuffle
-  \par\addvspace{3ex}\noindent\nobreak
-  \refstepcounter{problem}\refstepcounter{problemType}\postdisplaypenalty=10000 %
-    {\sffamily\bfseries\upshape Question \ifhandout\theproblem\else\theproblem.\theproblemType\fi} \ \slshape\ignorespaces%
-    \BODY % Typeset theorem body/content
-    \ifhandout\ifspace\par\addvspace{#1}\nobreak\fi\fi
-    \par\addvspace{.5ex}\nobreak\noindent\hung\par\addvspace{.4ex}%
-    \addtocounter{problem}{-1}
-    \fi
-    \ifhandout\global\firstproblemfalse\fi % No more problem environments are displayed after this one
-    \else 
-    \par\addvspace{2ex}\noindent\nobreak % this format is shown when stand-alone
-    \refstepcounter{problem}\postdisplaypenalty=10000 %
-    {\sffamily\bfseries\upshape Question \theproblem\slshape} \ \ignorespaces%
-    \BODY % Typeset theorem body/content
-    \ifhandout\ifspace\par\addvspace{#1}\nobreak\fi\fi
-    \par\addvspace{.5ex}\nobreak\noindent\hung\par\addvspace{.4ex}%
-    \fi
-    \ifnewpage\newpage\fi
-}
-
-
-
-\NewEnviron{exploration}[1][2in]{%
-  \ifshuffle\iffirstproblem  % this format is shown in shuffle
-  \par\addvspace{3ex}\noindent\nobreak
-  \refstepcounter{problem}\refstepcounter{problemType}\postdisplaypenalty=10000 %
-    {\sffamily\bfseries\upshape Exploration \ifhandout\theproblem\else\theproblem.\theproblemType\fi} \ \slshape\ignorespaces%
-    \BODY % Typeset theorem body/content
-    \ifhandout\ifspace\par\addvspace{#1}\nobreak\fi\fi
-    \par\addvspace{.5ex}\nobreak\noindent\hung\par\addvspace{.4ex}%
-    \addtocounter{problem}{-1}
-    \fi
-    \ifhandout\global\firstproblemfalse\fi % No more problem environments are displayed after this one
-    \else 
-    \par\addvspace{2ex}\noindent\nobreak % this format is shown when stand-alone
-    \refstepcounter{problem}\postdisplaypenalty=10000 %
-    {\sffamily\bfseries\upshape Exploration \theproblem\slshape} \ \ignorespaces%
-    \BODY % Typeset theorem body/content
-    \ifhandout\ifspace\par\addvspace{#1}\nobreak\fi\fi
-    \par\addvspace{.5ex}\nobreak\noindent\hung\par\addvspace{.4ex}%
-    \fi
-    \ifnewpage\newpage\fi
-}
-
-
-\NewEnviron{solution}{%
-  \ifhandout\relax\else\par\noindent\par\nobreak\noindent
-  \postdisplaypenalty=10000 %
-    {\small\itshape\bfseries Solution} \ \upshape\ignorespaces%
-    \small\BODY % Typeset theorem body/content
-    \par\addvspace{1ex}\nobreak\noindent
-    \fi
-    }
-
-\NewEnviron{hint}{%
-  \ifhints\par\addvspace{.5ex}\nobreak\noindent
-  \postdisplaypenalty=10000 %
-                 {\small\slshape\bfseries\color{gray} Hint:\small\color{gray}} \ \slshape\ignorespaces%
-                 \BODY % Typeset theorem body/content
-                 \par\addvspace{.5ex}\nobreak\noindent%
-                 \fi}
-
-\makeatother
-
 
 
 %%% shuffle environment
 \newif\iffirstproblem% Condition for first problem
-\NewEnviron{shuffle}[1][]{
-  \shuffletrue
-  \firstproblemtrue % Allow first problem environment to be set
-  \BODY
-  \refstepcounter{problem}\setcounter{problemType}{0}\global\shufflefalse}
+\firstproblemtrue
+
+\newenvironment{shuffle}[1][]
+{\shuffletrue\setcounter{problemType}{0}}
+{\refstepcounter{problem}
+\shufflefalse
+\global\firstproblemtrue}
+
+
+\newenvironment{exercise}[1][2in]
+{\iffirstproblem
+\def\spaceatend{#1}\refstepcounter{problem}\refstepcounter{problemType}
+\begin{trivlist}\item[\hskip\labelsep\sffamily\bfseries 
+Exercise \ifhandout\theproblem\else\ifshuffle\theproblem.\theproblemType\else\theproblem\fi\fi]
+\slshape
+\else\setbox0\vbox\bgroup\fi} %% removes exercise if in shuffle and not first problem
+{\iffirstproblem
+\ifhandout\ifspace\vspace{\spaceatend}\fi\fi %% space at end
+\par\addvspace{.5ex}\nobreak\noindent\hung %% line at the bottom
+\ifshuffle\addtocounter{problem}{-1}\fi %% the problem does not increase within shuffle
+\ifhandout\ifshuffle\global\firstproblemfalse\fi\fi %% removes other problems from shuffle in handout
+\ifhandout\ifnewpage\newpage\fi\fi %% adds newpage
+\end{trivlist}
+\else\egroup\fi}
+
+
+
+\newenvironment{question}[1][2in]
+{\iffirstproblem
+\def\spaceatend{#1}\refstepcounter{problem}\refstepcounter{problemType}
+\begin{trivlist}\item[\hskip\labelsep\sffamily\bfseries 
+Question \ifhandout\theproblem\else\ifshuffle\theproblem.\theproblemType\else\theproblem\fi\fi]
+\slshape
+\else\setbox0\vbox\bgroup\fi} %% removes exercise if in shuffle and not first problem
+{\iffirstproblem
+\ifhandout\ifspace\vspace{\spaceatend}\fi\fi %% space at end
+\par\addvspace{.5ex}\nobreak\noindent\hung %% line at the bottom
+\ifshuffle\addtocounter{problem}{-1}\fi %% the problem does not increase within shuffle
+\ifhandout\ifshuffle\global\firstproblemfalse\fi\fi %% removes other problems from shuffle in handout
+\ifhandout\ifnewpage\newpage\fi\fi %% adds newpage
+\end{trivlist}
+\else\egroup\fi}
+
+
+
+\newenvironment{exploration}[1][2in]
+{\iffirstproblem
+\def\spaceatend{#1}\refstepcounter{problem}\refstepcounter{problemType}
+\begin{trivlist}\item[\hskip\labelsep\sffamily\bfseries 
+Exploration \ifhandout\theproblem\else\ifshuffle\theproblem.\theproblemType\else\theproblem\fi\fi]
+\slshape
+\else\setbox0\vbox\bgroup\fi} %% removes exercise if in shuffle and not first problem
+{\iffirstproblem
+\ifhandout\ifspace\vspace{\spaceatend}\fi\fi %% space at end
+\par\addvspace{.5ex}\nobreak\noindent\hung %% line at the bottom
+\ifshuffle\addtocounter{problem}{-1}\fi %% the problem does not increase within shuffle
+\ifhandout\ifshuffle\global\firstproblemfalse\fi\fi %% removes other problems from shuffle in handout
+\ifhandout\ifnewpage\newpage\fi\fi %% adds newpage
+\end{trivlist}
+\else\egroup\fi}
+
+
+
+
+%% Solution environment
+\newenvironment{solution}{
+\ifhandout\setbox0\vbox\bgroup\else
+\begin{trivlist}\item[\hskip \labelsep\small\itshape\bfseries Solution\hspace{2ex}]
+\par\noindent\upshape\small
+\fi}
+{\ifhandout\egroup\else
+\end{trivlist}
+\fi}
+
+
+\newenvironment{hint}{
+\ifhints
+\begin{trivlist}\item[\hskip \labelsep\small\slshape\bfseries\color{gray} Hint:\hspace{2ex}]
+\small\slshape\color{gray}
+\else\setbox0\vbox\bgroup
+\fi}
+{\ifhints
+\end{trivlist}
+\else\egroup\fi}
+
+
+
            
 
 
 %% multiple choice environment
 \renewcommand{\theenumi}{$(\mathrm{\alph{enumi}})$}
 \renewcommand{\labelenumi}{\theenumi}
-
-\NewEnviron{multiple-choice}[1][]{
-  \begin{enumerate}
-    \BODY
-  \end{enumerate}
-}
+\newenvironment{multiple-choice}[1][]
+{\begin{enumerate}}
+{\end{enumerate}}
 
 
+
+
+
+%% python answer environment
+%% You cannot use Envrion with the fancyvrb/listings package if you want nested environments
+
+\DefineVerbatimEnvironment{python}{Verbatim}{numbers=left,frame=lines,label=Python,labelposition=topline}
+%% \lstnewenvironment{python}
+%% {\lstset{language=python,numbers=left}}
+%% {}
 
 
 
