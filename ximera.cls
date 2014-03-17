@@ -135,6 +135,9 @@
 %% matrix-answer envrironment
 \NewEnviron{matrix-answer}[1][]{}
 
+%% free-response answer envrironment
+\NewEnviron{free-response}[1][]{}
+
 
 
 % ---------------------------------------------------------------------
@@ -150,11 +153,11 @@
 
 %% \newcommand{\activitytitlebreak}{\clearpage}
 
-
+\makeatletter
 \let\abstract\relax
 \let\endabstract\relax
-\NewEnviron{abstract}{\xdef\theabstract{\BODY}}
-
+\NewEnviron{abstract}{\protected@xdef\theabstract{\BODY}}
+\makeatother
 
 \newcounter{titlenumber}
 \renewcommand{\thetitlenumber}{\arabic{titlenumber}}
