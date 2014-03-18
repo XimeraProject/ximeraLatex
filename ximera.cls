@@ -101,7 +101,7 @@
 
 
 
-\newcommand{\preambleinput}{\input} % allows us to "turn off" preambles
+
 \newcommand{\answer}[1][]{}
 \newcommand{\prerequisites}[1]{}
 \newcommand{\outcomes}[1]{}
@@ -114,7 +114,7 @@
 \newcommand{\choice}[2][]{\item #2\ifthenelse{\boolean{#1}}{\ifhandout \else \quad\checkmark\fi}{}}
 
 
-\everymath{\displaystyle} %makes everymath display style could be optional
+\everymath{\displaystyle} %makes everymath display style, could be optional
 
 
 %% image environment
@@ -385,6 +385,7 @@ Exploration \ifhandout\theproblem\else\ifshuffle\theproblem.\theproblemType\else
 \newtheorem{remark}[theorem]{Remark}
 \newtheorem{summary}[theorem]{Summary}
 \newtheorem{paradox}[theorem]{Paradox}
+\newtheorem{warning}[theorem]{Warning}
 
 \renewenvironment{proof}[1][\proofname]{\begin{trivlist}\item[\hskip \labelsep \itshape \bfseries #1{}\hspace{2ex}]}
 {\qed\end{trivlist}}
