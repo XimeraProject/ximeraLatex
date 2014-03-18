@@ -6,6 +6,22 @@ activities with all the resources they need to get started. Note,
 there will be many changes until May 1st.
 
 
+Philosophy
+----------
+
+Since Ximera is built on LaTeX source, we want to use LaTeX as a
+method of validating the code authors write. Hence, if you want to
+write a Ximera online activity, the first step is constructing LaTeX
+documents.
+
+Once you have the LaTeX documents, and you have checked them for
+typos, accuracty, etc, the fact that they compile should be reasonable
+evidence that they will display correctly in Ximera.
+
+Now it is time to deploy to the Ximera website. This feature is not
+yet available, but it will be available in the coming months.
+
+
 Contents of the repository
 ---------------------------
 
@@ -31,6 +47,7 @@ Contents of the repository
 
 * A generic preamble file for each of the .tex files containing
   user-defined macros. Warning: Environments cannot be defined here.
+
 
 Directions for download
 -----------------------
@@ -97,7 +114,6 @@ Visit the repo on Github.com and click the "Clone in Desktop" button.
 #### For Linux
 
 `$ git clone git@github.com:bartsnapp/ximeraLatex.git`
-
 
 
 Setting up your local directories
@@ -238,7 +254,6 @@ From there one can add files by dragging and dropping, and then
 syncing.
 
 
-
 Writing an activity
 -------------------------------
 
@@ -251,7 +266,6 @@ If you follow the directory structure suggested in ximeraLatex and in
 ximeraLatex/documentation/ximeraInPractice.pdf (assuming you've
 compiled it!) you will be able to compile each activity on its own, or
 as a collection.
-
 
 
 Staying up-to-date
