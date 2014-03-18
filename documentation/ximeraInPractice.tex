@@ -8,6 +8,7 @@
 
 \newcommand\code[1]{{\bfseries\texttt{#1}}}
 \newcommand\ximera{\textsl{Ximera}}
+\newcommand\home{$\boldsymbol\sim$}
 
 
 \fvset{commandchars=+(),formatcom=\color{blue!50!black}}
@@ -16,65 +17,140 @@
 \title{\ximera\: Markup in Practice}
 \maketitle
 
+\textbf{WARNING} This document is currently under development. 
+
+
 \tableofcontents
 
 The goal of the \ximera\ Project is to allow authors to write online
 interactive content though \LaTeX\ documents.
 
 
+\section{Philosophy}
+
+Since Ximera is built on \LaTeX\ source, we want to use \LaTeX\ as a
+method of validating the code authors write. Hence, if you want to
+write a Ximera online activity, the first step is constructing
+\LaTeX\ documents. Once you have the \LaTeX\ documents, and you have
+checked them for typos, accuracy, etc, the fact that they compile
+should be reasonable evidence that they will display correctly in
+\ximera.
+
+
 \section{Setup}
 
+The directory \code{ximeraLatex} contains example files and
+\code{ximera.cls}. To get started, you need to put \code{ximeraLatex}
+someplace where your installation of \LaTeX\ will find it. This
+dependes on your system, but we can give some advice:
 
+\subsection{For Linux}
 
-We'll start with a directory \code{ximeraActivities}. Within this
-directory, we need \code{ximera.cls} and at least one directory for
-each activity, say \code{firstActivity}. Within first activity we have
-one files, \code{firstActivity.tex} named exactly as the folder containing it.
-Here is a schematic of the directory tree:
+Create the directory structure \code{\home/texmf/tex/latex/} and place
+\code{ximeraLatex} in \code{\home/texmf/tex/latex/}.
 
 \dirtree{%
-.1 ximeraActivities.
-.2 ximera.cls\DTcomment{A symbolic link to ximeraLatex/ximera.cls}.
-.2 preamble.tex.
-.2 firstActivity.
-.3 ximera.cls\DTcomment{A symbolic link to ximeraLatex/ximera.cls}.. 
-.3 firstActivity.tex.
-.3 firstActivitySource.tex.
+.1 \home\DTcomment{Your home directory}.
+.2 texmf.
+.3 tex.
+.4 latex.
+.5 ximeraLatex.
 }
 
-The file \code{firstActivity.tex} is simply a wrapper for \code{firstActivitySource.tex} and contains the following code:
+
+\subsection{For Mac}
+
+Create the directory structure \code{\home/Library/texmf/tex/latex/} and place
+\code{ximeraLatex} in \code{\home/Library/texmf/tex/latex/}.
+
+\dirtree{%
+.1 \home\DTcomment{Your home directory}.
+.2 Library.
+.3 texmf.
+.4 tex.
+.5 latex.
+.6 ximeraLatex.
+}
+
+\subsection{For Windows (MiKTeX)}
+
+
+Create the directory structure \code{C:\textbackslash
+  localtexmf\textbackslash tex\textbackslash latex\textbackslash} and
+place \code{ximeraLatex} in \code{C:\textbackslash localtexmf\textbackslash tex\textbackslash latex\textbackslash}.
+
+\dirtree{%
+.1 C:.
+.2 localtexmf.
+.3 tex.
+.4 latex.
+.5 ximeraLatex.
+}
+For MiKteX to notice this directory, go to:
+\begin{enumerate}
+\item Start $\rightarrow$ All programs $\rightarrow$ MiKTeX Folder $\rightarrow$ Maintenance (Admin) Folder $\rightarrow$ Settings (Admin).
+\item Now select the tab ``Roots.''
+\item Click ``Add'' because you are going to add a path.
+\item Find \code{C:\textbackslash localtexmf\textbackslash} and click
+  ``OK.''
+\item Click "apply" "OK" and then you are ready to go.
+\end{enumerate}
+This will allow all of your documents to find \code{ximera.cls}. Note,
+it is important that none of the directories containing ximeraLatex
+have spaces in their names.
+
+\subsection{Test your system}
+
+At this point we think that
+\code{ximeraLatex/firstExample/firstExample.tex},
+\code{ximeraLatex/secondExample/secondExample.tex}, and
+\code{ximeraLatex/exampleActivityCollection.tex} should compile.
+
+
+\section{Writing a new activity}
+
+Now let's write a new activity. The basic structure of the document is:
 
 \begin{Verbatim}
   \documentclass{ximera}
-  \input{../preamble.tex}
-  \title{First activity}
+  \preambleinput{preamble.tex}
+  \title{New activity}
   \begin{document}
   \begin{abstract}
+    An attempt to write a new activity.
   \end{abstract}
   \maketitle
   \end{document}
 \end{Verbatim}
 
-On the other hand, \code{firstActivitySource.tex} should look something
-like: 
+Note, the \code{abstract} needs to be short. We suggest a single
+sentence.
+
+Here the file \code{preamble.tex} contains all of your user-defined
+commands. Note, if environments are defined here, they probably will
+not work in \ximera. If you have a need for an environment that is not
+supplied in \code{ximera.cls}, then you should contact us at
+\code{ximera@math.osu.edu}.
+
+To help navigate the collection of activities, authors should try to
+include prerequisites, and outcomes.  Each prerequisite and outcome
+should be without spaces, and every attempt should be made to use
+already available tags for the prerequisites and outcomes
+needed/delivered by this activity. 
 
 \begin{Verbatim}
-  +color(red)\shortdescription{An example of syntax.} 
-  +color(red)\activitytitle{The Title} 
+  \documentclass{ximera}
+  \preambleinput{preamble.tex}
   +color(red)\prerequisites{prereq1,prereq2}
   +color(red)\outcomes{outcome1,outcome2}
-  Your document.
+  \title{New activity}
+  \begin{document}
+  \begin{abstract}
+    An attempt to write a new activity.
+  \end{abstract}
+  \maketitle
+  \end{document}
 \end{Verbatim}
-To help navigate the collection of activities, authors should try to
-include a short-description, title, prerequisites, and outcomes.  The
-short-description should be a one sentence description of the activity,
-and must come before the title. Each prerequisite and outcome should
-be without spaces, and every attempt should be made to use already
-available tags for the prerequisites and outcomes needed/delivered by
-this activity. These may appear anywhere in the document.
-
-While this may seem to be a strange directory structure, we think it
-allows for flexible use of the source, see Section~\ref{S:Course}.
 
 
 
