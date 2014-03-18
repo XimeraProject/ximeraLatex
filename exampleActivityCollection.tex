@@ -6,8 +6,7 @@
 
 \let\masterdocument\document
 \let\endmasterdocument\enddocument
-
-
+\let\masterinput\input
 
 \begin{masterdocument}
 
@@ -25,13 +24,13 @@
 
 
 \renewcommand{\documentclass}{\setbox0\vbox}
-\renewcommand{\preambleinput}{\setbox0\vbox}
+\renewcommand{\input}{\setbox0\vbox}
 \renewenvironment{document}{}{}
 
 
 
-\input{./firstExample/firstExample.tex}
+\masterinput{./firstExample/firstExample.tex}
 
-\input{./secondExample/secondExample.tex}
+\masterinput{./secondExample/secondExample.tex}
 
 \end{masterdocument}
