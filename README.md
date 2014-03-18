@@ -15,7 +15,7 @@ write a Ximera online activity, the first step is constructing LaTeX
 documents.
 
 Once you have the LaTeX documents, and you have checked them for
-typos, accuracty, etc, the fact that they compile should be reasonable
+typos, accuracy, etc, the fact that they compile should be reasonable
 evidence that they will display correctly in Ximera.
 
 Now it is time to deploy to the Ximera website. This feature is not
