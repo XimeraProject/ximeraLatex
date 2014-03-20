@@ -109,6 +109,8 @@
 \newcommand{\youtube}[1]{\footnote{YouTube link: \url{#1}}}
 \newcommand{\link}[1]{\footnote{Link: \url{#1}}}
 
+\renewcommand{\labelsep}{3ex} %% Space after thm/problem label
+
 \newboolean{correct}
 \setboolean{correct}{true}
 \newcommand{\choice}[2][]{\item #2\ifthenelse{\boolean{#1}}{\ifhandout \else \quad\checkmark\fi}{}}
@@ -356,15 +358,13 @@ Exploration \ifhandout\theproblem\else\ifshuffle\theproblem.\theproblemType\else
 %
 
 
-
-
 \newtheoremstyle{SlantTheorem}
 	{\topsep}{\topsep}              %%% space between body and thm
 	{\slshape}                      %%% Thm body font
 	{}                              %%% Indent amount (empty = no indent)
 	{\bfseries}            %%% Thm head font
 	{}                              %%% Punctuation after thm head
-	{3ex}                           %%% Space after thm head
+	{\labelsep}                           %%% Space after thm head
 	{\thmname{#1}\thmnumber{ #2}\thmnote{ \bfseries(#3)}}%%% Thm head spec
 \theoremstyle{SlantTheorem}
 \newtheorem{theorem}{Theorem}
@@ -386,6 +386,7 @@ Exploration \ifhandout\theproblem\else\ifshuffle\theproblem.\theproblemType\else
 \newtheorem{summary}[theorem]{Summary}
 \newtheorem{paradox}[theorem]{Paradox}
 \newtheorem{warning}[theorem]{Warning}
+\newtheorem{observation}[theorem]{Observation}
 
 \renewenvironment{proof}[1][\proofname]{\begin{trivlist}\item[\hskip \labelsep \itshape \bfseries #1{}\hspace{2ex}]}
 {\qed\end{trivlist}}
