@@ -138,7 +138,7 @@
 \NewEnviron{matrix-answer}[1][]{}
 
 %% free-response answer envrironment
-\NewEnviron{free-response}[1][]{}
+\NewEnviron{free-response}[1][]{\BODY}
 
 
 
