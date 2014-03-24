@@ -98,7 +98,7 @@
 \RequirePackage{listings}
 \RequirePackage{comment}
 
-
+%\usepackage[hypertexnames=false]{hyperref}
 
 
 
@@ -187,8 +187,8 @@
 
 
 
-\newcounter{problem} %% for the 
-\newcounter{problemType}
+\newcounter{problem} %% for the main problem
+\newcounter{problemType} %% for variations within shuffle
 
 % ---------------------------------------------------------------------
 % Problem environment decorations
