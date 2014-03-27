@@ -134,8 +134,10 @@ Create the directory structure:
 
 `~/Library/texmf/tex/latex/`
 
-and move ximeraLatex to `~/Library/texmf/tex/latex/`. This will allow all of
-your documents to find ximera.cls
+and move ximeraLatex to `~/Library/texmf/tex/latex/`. This will allow
+all of your documents to find ximera.cls. Once you move ximerLatex,
+you will need to tell your GitHub client where to look for it, you can
+do this using "find files."
 
 #### For Windows
 
@@ -154,7 +156,9 @@ directory, go to:
 
 This will allow all of your documents to find ximera.cls. Note, it is
 important that none of the directories containing ximeraLatex have
-spaces in their names.
+spaces in their names. Once you move ximerLatex, you will need to tell
+your GitHub client where to look for it, you can do this using "find
+files."
 
 #### ximeraLatex vs. ximera.cls
 
@@ -168,8 +172,10 @@ its own directory.
 
 ### Check the ximeraLatex directory
 
-Now you should have a directory called ximeraLatex. You may rename
-this directory or move it to any location on your computer.
+Now you should have a directory called ximeraLatex. If you are running
+windows (MiKTeX), you will need to copy (or move) the files listed
+below to a directory that MiKTeX expects to find *.tex files in, for
+example, a subdirectory of "Documents."
 
 * Compile ximeraLatex/documentation/ximeraInPractice.tex
 
