@@ -104,8 +104,9 @@ have spaces in their names.
 At this point we think that
 \code{ximeraLatex/firstExample/firstExample.tex},
 \code{ximeraLatex/secondExample/secondExample.tex}, and
-\code{ximeraLatex/exampleActivityCollection.tex} should compile.
-
+\code{ximeraLatex/exampleActivityCollection.tex} should compile.  If
+you are running windows, then it may be the case that you need to make
+copies of these files---and compile them elsewhere.
 
 \section{Writing a new activity}
 
@@ -113,7 +114,7 @@ Now let's write a new activity. The basic structure of the document is:
 
 \begin{Verbatim}
   \documentclass{ximera}
-  \preambleinput{preamble.tex}
+  \input{preamble.tex}
   \title{New activity}
   \begin{document}
   \begin{abstract}
@@ -140,7 +141,7 @@ needed/delivered by this activity.
 
 \begin{Verbatim}
   \documentclass{ximera}
-  \preambleinput{preamble.tex}
+  \input{preamble.tex}
   +color(red)\prerequisites{prereq1,prereq2}
   +color(red)\outcomes{outcome1,outcome2}
   \title{New activity}
@@ -265,18 +266,19 @@ online student, as well as any \code{hints}, see below.
 \begin{Verbatim}
   \begin{question}
     A multiple choice question.
+    \begin{solution}
     \begin{multiple-choice}[3]
       \choice[correct]{Choice a.}
       \choice{Choice b.}
       \choice[correct]{Choice c.}
       \choice{Choice d.}
     \end{multiple-choice}
-    \begin{solution}
        Select the best answer above. 
     \end{solution}
   \end{question}
 \end{Verbatim}
-
+Note, the \code{multiple-choice} list needs to go inside the
+\code{solution}.
 
 \section{Questions with multiple-parts and hints}
 
@@ -323,13 +325,14 @@ Or with a multiple-choice question:
 
 \begin{Verbatim}
   \begin{question}
+    A question.
+    \begin{solution}
     \begin{multiple-choice}[3]
       \choice[correct]{Choice a.}
       \choice{Choice b.}
       \choice[correct]{Choice c.}
       \choice{Choice d.}
     \end{multiple-choice}
-    \begin{solution}
       Select the best answer above. 
       +color(red)\begin{hint}
         A hint.
@@ -452,45 +455,45 @@ command. If the video is a YouTube video, it is best to use the
 \end{Verbatim}
 
 
-\section{Building a course}\label{S:Course}
+%% \section{Building a course}\label{S:Course}
 
 
 
 
-\dirtree{%
-.1 ximeraActivities.
-.2 course.tex.
-.2 preamble.tex.
-.2 ximera.cls\DTcomment{A symbolic link to ximeraLatex/ximera.cls}.
-.2 firstActivity.
-.3 ximera.cls\DTcomment{A symbolic link to ximeraLatex/ximera.cls}.
-.3 firstActivity.tex.
-.3 firstActivitySource.tex.
-.2 secondActivity.
-.3 ximera.cls\DTcomment{A symbolic link to ximeraLatex/ximera.cls}.
-.3 secondActivity.tex.
-.3 secondActivitySource.tex.
-.2 thirdActivity.
-.3 ximera.cls\DTcomment{A symbolic link to ximeraLatex/ximera.cls}.
-.3 thirdActivity.tex.
-.3 thirdActivitySource.tex.
-}
+%% \dirtree{%
+%% .1 ximeraActivities.
+%% .2 course.tex.
+%% .2 preamble.tex.
+%% .2 ximera.cls\DTcomment{A symbolic link to ximeraLatex/ximera.cls}.
+%% .2 firstActivity.
+%% .3 ximera.cls\DTcomment{A symbolic link to ximeraLatex/ximera.cls}.
+%% .3 firstActivity.tex.
+%% .3 firstActivitySource.tex.
+%% .2 secondActivity.
+%% .3 ximera.cls\DTcomment{A symbolic link to ximeraLatex/ximera.cls}.
+%% .3 secondActivity.tex.
+%% .3 secondActivitySource.tex.
+%% .2 thirdActivity.
+%% .3 ximera.cls\DTcomment{A symbolic link to ximeraLatex/ximera.cls}.
+%% .3 thirdActivity.tex.
+%% .3 thirdActivitySource.tex.
+%% }
 
-The file \code{course.tex} contains the following code:
+%% The file \code{course.tex} contains the following code:
 
-\begin{Verbatim}
-  \documentclass{ximera}
-  \input{preamble.tex}
-  \begin{document}
-  \title{The Title of the Course}
-  \author{The authors}
-  \maketitle
-  \tableofcontents
-  \input{./firstActivity/firstActivitySource.tex}
-  \input{./secondActivity/secondActivitySource.tex}
-  \input{./thirdActivity/thirdActivitySource.tex}
-\end{document}
-\end{Verbatim}
+%% \begin{Verbatim}
+%%   \documentclass{ximera}
+%%   \input{preamble.tex}
+%%   \begin{document}
+%%   \title{The Title of the Course}
+%%   \author{The authors}
+%%   \maketitle
+%%   \tableofcontents
+%%   \input{./firstActivity/firstActivitySource.tex}
+%%   \input{./secondActivity/secondActivitySource.tex}
+%%   \input{./thirdActivity/thirdActivitySource.tex}
+%% \end{document}
+%% \end{Verbatim}
 
 
 The document class allows for some optional arguments:
@@ -501,8 +504,8 @@ The document class allows for some optional arguments:
   inches of blank space below each problem. Note: Each problem
   environment also has an optional argument where the author can
   change the amount of space displayed.
-\item[nonumbers] To be used when producing exactly 1 activity. Here no
-  section numbers are needed.
+\item[numbers] To be used when producing a compilation of
+  activities. 
 \end{description}
 
 
