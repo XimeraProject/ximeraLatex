@@ -81,7 +81,7 @@
 
 
 
-\RequirePackage{titlesec} 
+\RequirePackage[pagestyles]{titlesec} 
 \RequirePackage{titletoc} 
 \RequirePackage{titling}  
 \RequirePackage{url}
@@ -97,6 +97,7 @@
 \RequirePackage{multido}% http://ctan.org/pkg/multido
 \RequirePackage{listings}
 \RequirePackage{comment}
+\RequirePackage[hmarginratio=1:1,height=584pt,width=360pt,tmargin=117pt]{geometry}
 
 %\usepackage[hypertexnames=false]{hyperref}
 
@@ -111,12 +112,24 @@
 
 \renewcommand{\labelsep}{3ex} %% Space after thm/problem label
 
+%% correct answers for multiple choice
 \newboolean{correct}
 \setboolean{correct}{true}
 \newcommand{\choice}[2][]{\item #2\ifthenelse{\boolean{#1}}{\ifhandout \else \quad\checkmark\fi}{}}
 
+%% makes everymath display style, could be optional
+\everymath{\displaystyle} 
 
-\everymath{\displaystyle} %makes everymath display style, could be optional
+%% header
+\makeatletter
+\newpagestyle{main}{
+\sethead[\textsl{\thetitlenumber\quad\@title}][][] % even
+{}{}{\textsl{\thetitlenumber\quad\@title}} % odd
+\setfoot[\thepage][][] % even
+{}{}{\thepage} % odd
+}
+\pagestyle{main}
+\makeatother
 
 
 %% image environment
@@ -171,6 +184,8 @@
   {\flushleft\LARGE\bfseries {\ifnumbers\thetitlenumber\fi}{\ifnumbers\hspace{1em}\else\hspace{0em}\fi}\@title \par }
   \vskip .6em\noindent\textit\theabstract\setcounter{problem}{0}\addtocounter{titlenumber}{1}\par\vspace{2em}}
 \makeatother
+
+
 
 
 % ---------------------------------------------------------------------
