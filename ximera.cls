@@ -89,7 +89,6 @@
 \RequirePackage{pgfplots}
 \RequirePackage{fancyvrb}
 \RequirePackage{environ}
-\RequirePackage{xcolor}
 \RequirePackage{amssymb}
 \RequirePackage{amsmath}
 \RequirePackage{amsthm}
