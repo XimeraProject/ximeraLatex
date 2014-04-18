@@ -22,7 +22,7 @@
 %%% The Ohio State University
 
 
-\def\fileversion{.55}
+\def\fileversion{.56}
 \def\filedate{2013/09/16}
 
 
@@ -165,8 +165,6 @@
 %
 
 
-%% \newcommand{\activitytitlebreak}{\clearpage}
-
 \makeatletter
 \let\abstract\relax
 \let\endabstract\relax
@@ -175,13 +173,13 @@
 
 \newcounter{titlenumber}
 \renewcommand{\thetitlenumber}{\arabic{titlenumber}}
-\setcounter{titlenumber}{1}
+\setcounter{titlenumber}{0}
 
 \makeatletter
 \renewcommand\@maketitle{%
-  \addcontentsline{toc}{subsection}{\@title} %% puts titles in the toc
+  \addtocounter{titlenumber}{1}\addcontentsline{toc}{subsection}{\@title} %% puts titles in the toc
   {\flushleft\LARGE\bfseries {\ifnumbers\thetitlenumber\fi}{\ifnumbers\hspace{1em}\else\hspace{0em}\fi}\@title \par }
-  \vskip .6em\noindent\textit\theabstract\setcounter{problem}{0}\addtocounter{titlenumber}{1}\par\vspace{2em}}
+  \vskip .6em\noindent\textit\theabstract\setcounter{problem}{0}\par\vspace{2em}}
 \makeatother
 
 
