@@ -148,6 +148,13 @@
 
 %% matrix-answer envrironment
 \NewEnviron{matrix-answer}[1][]{}
+%%
+%% \DefineVerbatimEnvironment{matrixanswer}{Verbatim}{numbers=left,frame=lines,label=Matrix Answer,labelposition=topline}
+%% \newenvironment{matrix-answer}[1][]
+%% {\begin{matrixanswer}}
+%% {\end{matrixanswer}}
+
+
 
 %% free-response answer envrironment
 \NewEnviron{free-response}[1][]{\BODY}
@@ -345,6 +352,11 @@ Exploration \ifhandout\theproblem\else\ifshuffle\theproblem.\theproblemType\else
 {\begin{enumerate}}
 {\end{enumerate}}
 
+%% In the future we need this to (optionally) be desplayed in the
+%% problem, while the actual code lives in the solution. Here is how this
+%% could be implemented: Like the title/maketitle commands, the
+%% multiple-choice could be stored in \themultiplechoice, flip a boolean,
+%% and execute \makemultiplechoice at the \end of the problem. 
 
 
 
