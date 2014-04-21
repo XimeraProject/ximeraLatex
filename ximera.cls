@@ -147,22 +147,21 @@
 \NewEnviron{expression-answer}[1][]{}
 
 %% matrix-answer envrironment
-\NewEnviron{matrix-answer}[1][]{}
-%%
-%% \DefineVerbatimEnvironment{matrixanswer}{Verbatim}{numbers=left,frame=lines,label=Matrix Answer,labelposition=topline}
-%% \newenvironment{matrix-answer}[1][]
-%% {\begin{matrixanswer}}
-%% {\end{matrixanswer}}
+\NewEnviron{matrix-answer}[1][]{} %% should be depreciated
 
-%% \DefineVerbatimEnvironment{matrixanswer}{Verbatim}{
-%%   numbers=left,
-%%   frame=lines,
-%%   label=My-Environ,
-%%   labelposition=topline,
-%% }
-%% \newenvironment{matrix-answer}[1][]
-%% {\begin{matrixanswer}}
-%% {\end{matrixanswer}}
+%% \newenvironment{matrixanswer}[1][]
+%%   {
+%%     % First, we tell fancyvrb that we're inside a verbatim environment.
+%%     \VerbatimEnvironment
+%%     % Now we start the actual environment:
+%%     \begin{Verbatim}[
+%%         numbers=left,
+%%         frame=lines,
+%%         label=Matrix Answer,
+%%         labelposition=topline,
+%%       ]%
+%%   }
+%%   {\end{Verbatim}}
 
 
 
