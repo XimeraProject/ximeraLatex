@@ -154,6 +154,18 @@
 %% {\begin{matrixanswer}}
 %% {\end{matrixanswer}}
 
+%% \DefineVerbatimEnvironment{matrixanswer}{Verbatim}{
+%%   numbers=left,
+%%   frame=lines,
+%%   label=My-Environ,
+%%   labelposition=topline,
+%% }
+%% \newenvironment{matrix-answer}[1][]
+%% {\begin{matrixanswer}}
+%% {\end{matrixanswer}}
+
+
+
 
 
 %% free-response answer envrironment
@@ -332,8 +344,8 @@ Exploration \ifhandout\theproblem\else\ifshuffle\theproblem.\theproblemType\else
 
 \newenvironment{hint}{
 \ifhints
-\begin{trivlist}\item[\hskip \labelsep\small\slshape\bfseries\color{gray} Hint:\hspace{2ex}]
-\small\slshape\color{gray}
+\begin{trivlist}\item[\hskip \labelsep\small\slshape\bfseries\color{black} Hint:\hspace{2ex}]
+\small\slshape\color{black}
 \else\setbox0\vbox\bgroup
 \fi}
 {\ifhints
@@ -391,26 +403,26 @@ Exploration \ifhandout\theproblem\else\ifshuffle\theproblem.\theproblemType\else
 	{\labelsep}                           %%% Space after thm head
 	{\thmname{#1}\thmnumber{ #2}\thmnote{ \bfseries(#3)}}%%% Thm head spec
 \theoremstyle{SlantTheorem}
-\newtheorem{theorem}{Theorem}
-\newtheorem{acknowledgement}[theorem]{Acknowledgement}
-\newtheorem{algorithm}[theorem]{Algorithm}
-\newtheorem{axiom}[theorem]{Axiom}
-\newtheorem{claim}[theorem]{Claim}
-\newtheorem{conclusion}[theorem]{Conclusion}
-\newtheorem{condition}[theorem]{Condition}
-\newtheorem{conjecture}[theorem]{Conjecture}
-\newtheorem{corollary}[theorem]{Corollary}
-\newtheorem{criterion}[theorem]{Criterion}
-\newtheorem{definition}[theorem]{Definition}
-\newtheorem{example}[theorem]{Example}
-\newtheorem{lemma}[theorem]{Lemma}
-\newtheorem{notation}[theorem]{Notation}
-\newtheorem{proposition}[theorem]{Proposition}
-\newtheorem{remark}[theorem]{Remark}
-\newtheorem{summary}[theorem]{Summary}
-\newtheorem{paradox}[theorem]{Paradox}
-\newtheorem{warning}[theorem]{Warning}
-\newtheorem{observation}[theorem]{Observation}
+\newtheorem{theorem}[problem]{Theorem}
+\newtheorem{acknowledgement}[problem]{Acknowledgement}
+\newtheorem{algorithm}[problem]{Algorithm}
+\newtheorem{axiom}[problem]{Axiom}
+\newtheorem{claim}[problem]{Claim}
+\newtheorem{conclusion}[problem]{Conclusion}
+\newtheorem{condition}[problem]{Condition}
+\newtheorem{conjecture}[problem]{Conjecture}
+\newtheorem{corollary}[problem]{Corollary}
+\newtheorem{criterion}[problem]{Criterion}
+\newtheorem{definition}[problem]{Definition}
+\newtheorem{example}[problem]{Example}
+\newtheorem{lemma}[problem]{Lemma}
+\newtheorem{notation}[problem]{Notation}
+\newtheorem{proposition}[problem]{Proposition}
+\newtheorem{remark}[problem]{Remark}
+\newtheorem{summary}[problem]{Summary}
+\newtheorem{paradox}[problem]{Paradox}
+\newtheorem{warning}[problem]{Warning}
+\newtheorem{observation}[problem]{Observation}
 
 \renewenvironment{proof}[1][\proofname]{\begin{trivlist}\item[\hskip \labelsep \itshape \bfseries #1{}\hspace{2ex}]}
 {\qed\end{trivlist}}
