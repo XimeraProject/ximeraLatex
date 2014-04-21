@@ -195,9 +195,11 @@
 
 \makeatletter
 \renewcommand\@maketitle{%
-  \addtocounter{titlenumber}{1}\addcontentsline{toc}{subsection}{\@title} %% puts titles in the toc
+  \addtocounter{titlenumber}{1}\addcontentsline{toc}{subsection}{\thetitlenumber~\@title} %% puts titles in the toc
   {\flushleft\LARGE\bfseries {\ifnumbers\thetitlenumber\fi}{\ifnumbers\hspace{1em}\else\hspace{0em}\fi}\@title \par }
-  \vskip .6em\noindent\textit\theabstract\setcounter{problem}{0}\par\vspace{2em}}
+  \vskip .6em\noindent\textit\theabstract\setcounter{problem}{0}\par\vspace{2em}
+  \aftergroup\@afterindentfalse
+  \aftergroup\@afterheading}
 \makeatother
 
 
