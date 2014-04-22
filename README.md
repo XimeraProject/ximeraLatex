@@ -148,11 +148,12 @@ Create the directory structure:
 and move ximeraLatex to `C:\localtexmf\tex\latex\`. For MiKteX to notice this
 directory, go to:
 
-1. Start -> All programs -> MiKTeX Folder -> Maintenance (Admin) Folder -> Settings (Admin)
-2. Now select the tab "Roots"
-3. Click "Add" because you are going to add a path
-4. Find `C:\localtexmf\` and click "OK"
+1. Start -> All programs -> MiKTeX Folder -> Maintenance (Admin) Folder -> Settings (Admin).
+2. Now select the tab "Roots."
+3. Click "Add" because you are going to add a path.
+4. Find `C:\localtexmf\` and click "OK."
 5. Click "apply" "OK" and then you are ready to go. 
+6. Open Miktex Settings (Admin). Click Refresh FNDB.
 
 This will allow all of your documents to find ximera.cls. Note, it is
 important that none of the directories containing ximeraLatex have
@@ -261,7 +262,7 @@ syncing.
 
 
 Writing an activity
--------------------------------
+-------------------
 
 Now it is time to write your first activity. All activities should be
 in their own directory, with all supporting documents also in this
