@@ -144,18 +144,17 @@
 
 %% these may be changed in the future to work more like interactive.
 %% expression-answer envrironment
-\NewEnviron{expression-answer}[1][]{}
+\NewEnviron{expression-answer}[1][]{} %% should be depreciated
 
 %% matrix-answer envrironment
 \NewEnviron{matrix-answer}[1][]{} %% should be depreciated
 
-\newenvironment{matrixanswer}[1][]
+\newenvironment{matrixAnswer}[1][]
   {
     % First, we tell fancyvrb that we're inside a verbatim environment.
     \VerbatimEnvironment
     % Now we start the actual environment:
     \begin{Verbatim}[
-        numbers=left,
         frame=lines,
         label=Matrix Answer,
         labelposition=topline,
@@ -168,7 +167,8 @@
 
 
 %% free-response answer envrironment
-\NewEnviron{free-response}[1][]{\BODY}
+\NewEnviron{free-response}[1][]{\BODY} %% should be depreciated
+\NewEnviron{freeResponse}[1][]{\BODY}
 
 
 
@@ -334,11 +334,11 @@ Exploration \ifhandout\theproblem\else\ifshuffle\theproblem.\theproblemType\else
 
 %% Solution environment
 \newenvironment{solution}{
-\ifhandout\setbox0\vbox\bgroup\else
+\ifhandout\unskip\setbox0\vbox\bgroup\else
 \begin{trivlist}\item[\hskip \labelsep\small\itshape\bfseries Solution\hspace{2ex}]
 \par\noindent\upshape\small
 \fi}
-{\ifhandout\egroup\else
+{\ifhandout\egroup\unskip\else
 \end{trivlist}
 \fi}
 
