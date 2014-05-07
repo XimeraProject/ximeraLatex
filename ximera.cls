@@ -101,6 +101,7 @@
 %\usepackage[hypertexnames=false]{hyperref}
 
 
+\renewcommand{\section}{\subsection}
 
 \newcommand{\answer}[1][]{}
 \newcommand{\prerequisites}[1]{}
