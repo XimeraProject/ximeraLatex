@@ -102,6 +102,7 @@
 
 
 \renewcommand{\section}{\subsection}
+\renewcommand{\subsection}{\subsubsection}
 
 \newcommand{\answer}[1][]{}
 \newcommand{\prerequisites}[1]{}
