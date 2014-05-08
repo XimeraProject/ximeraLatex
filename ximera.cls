@@ -123,8 +123,8 @@
 %% header
 \makeatletter
 \newpagestyle{main}{
-\sethead[\textsl{\thetitlenumber\quad\@title}][][] % even
-{}{}{\textsl{\thetitlenumber\quad\@title}} % odd
+\sethead[\textsl{\ifnumbers\thetitlenumber\quad\fi\@title}][][] % even
+{}{}{\textsl{\ifnumbers\thetitlenumber\quad\fi\@title}} % odd
 \setfoot[\thepage][][] % even
 {}{}{\thepage} % odd
 }
