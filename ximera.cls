@@ -336,11 +336,11 @@ Exploration \ifhandout\theproblem\else\ifshuffle\theproblem.\theproblemType\else
 
 %% Solution environment
 \newenvironment{solution}{
-\ifhandout\unskip\setbox0\vbox\bgroup\else
+\ifhandout\setbox0\vbox\bgroup\else
 \begin{trivlist}\item[\hskip \labelsep\small\itshape\bfseries Solution\hspace{2ex}]
 \par\noindent\upshape\small
 \fi}
-{\ifhandout\egroup\unskip\else
+{\ifhandout\egroup\else
 \end{trivlist}
 \fi}
 
