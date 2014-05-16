@@ -362,15 +362,21 @@ Exploration \ifhandout\theproblem\else\ifshuffle\theproblem.\theproblemType\else
 %% multiple choice environment
 \renewcommand{\theenumi}{$(\mathrm{\alph{enumi}})$}
 \renewcommand{\labelenumi}{\theenumi}
-\newenvironment{multiple-choice}[1][]
+\newenvironment{multiple-choice}[1][] %% should be depreciated
+{\begin{enumerate}}
+{\end{enumerate}}
+
+\newenvironment{multipleChoice}[1][]
 {\begin{enumerate}}
 {\end{enumerate}}
 
 %% In the future we need this to (optionally) be desplayed in the
-%% problem, while the actual code lives in the solution. Here is how this
-%% could be implemented: Like the title/maketitle commands, the
-%% multiple-choice could be stored in \themultiplechoice, flip a boolean,
-%% and execute \makemultiplechoice at the \end of the problem. 
+%% problem, while the actual code lives in the solution. Here is how
+%% this could be implemented: Like the title/maketitle commands, the
+%% multiple-choice could be stored in \themultiplechoice, flip a
+%% boolean, and execute \makemultiplechoice at the \end of the
+%% problem.  We should also make a command called "\showchoices" that
+%% will show choices in the handout.
 
 
 
