@@ -106,6 +106,7 @@
 \newcommand{\answer}[1][]{}
 \newcommand{\prerequisites}[1]{}
 \newcommand{\outcomes}[1]{}
+\newcommand{\outcome}[1]{}
 \newcommand{\video}[1]{\footnote{Video link: \url{#1}}}
 \newcommand{\youtube}[1]{\footnote{YouTube link: \url{#1}}}
 \newcommand{\link}[1]{\footnote{Link: \url{#1}}}
@@ -183,6 +184,8 @@
 %
 %
 
+
+%% We should add outcomes as a footnote here
 
 \makeatletter
 \let\abstract\relax
