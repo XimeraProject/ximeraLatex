@@ -49,6 +49,10 @@
 \handoutfalse
 \DeclareOption{handout}{\handouttrue}
 
+\newif\ifnooutcomes
+\handoutfalse
+\DeclareOption{nooutcomes}{\nooutcomestrue}
+
 \newif\ifnewpage
 \newpagefalse
 \DeclareOption{newpage}{\newpagetrue}
@@ -203,7 +207,7 @@
   \addtocounter{titlenumber}{1}\addcontentsline{toc}{subsection}{\thetitlenumber~\@title} %% puts titles in the toc
   {\flushleft\LARGE\bfseries {\ifnumbers\thetitlenumber\fi}{\ifnumbers\hspace{1em}\else\hspace{0em}\fi}\@title \par }
   \vskip .6em\noindent\textit\theabstract\setcounter{problem}{0}\par\vspace{2em}
-  \let\thefootnote\relax\footnote{Learning outcomes: \theoutcomes} 
+  \ifnooutcomes\else\ifhandout\else\let\thefootnote\relax\footnote{Learning outcomes: \theoutcomes}\fi\fi 
   \aftergroup\@afterindentfalse
   \aftergroup\@afterheading}
 \makeatother
