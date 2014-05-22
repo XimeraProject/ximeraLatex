@@ -105,8 +105,11 @@
                                   
 \newcommand{\answer}[1][]{}
 \newcommand{\prerequisites}[1]{}
-\newcommand{\outcomes}[1]{}
-\newcommand{\outcome}[1]{}
+\def\theoutcomes{}
+\newcommand{\outcome}[1]{\edef\theoutcomes{\theoutcomes #1~}}
+%% \newcommand{\outcomes}[1]{}
+%% \newcommand{\outcome}[1]{}
+%\newcommand{\outcome}[1]{\def\theoutcome{#1}} will need something fancy see line 206
 \newcommand{\video}[1]{\footnote{Video link: \url{#1}}}
 \newcommand{\youtube}[1]{\footnote{YouTube link: \url{#1}}}
 \newcommand{\link}[1]{\footnote{Link: \url{#1}}}
@@ -185,8 +188,6 @@
 %
 
 
-%% We should add outcomes as a footnote here
-
 \makeatletter
 \let\abstract\relax
 \let\endabstract\relax
@@ -202,6 +203,7 @@
   \addtocounter{titlenumber}{1}\addcontentsline{toc}{subsection}{\thetitlenumber~\@title} %% puts titles in the toc
   {\flushleft\LARGE\bfseries {\ifnumbers\thetitlenumber\fi}{\ifnumbers\hspace{1em}\else\hspace{0em}\fi}\@title \par }
   \vskip .6em\noindent\textit\theabstract\setcounter{problem}{0}\par\vspace{2em}
+  \let\thefootnote\relax\footnote{Learning outcomes: \theoutcomes} 
   \aftergroup\@afterindentfalse
   \aftergroup\@afterheading}
 \makeatother
