@@ -134,16 +134,19 @@ supplied in \code{ximera.cls}, then you should contact us at
 \code{ximera@math.osu.edu}.
 
 To help navigate the collection of activities, authors should try to
-include prerequisites, and outcomes.  Each prerequisite and outcome
-should be without spaces, and every attempt should be made to use
-already available tags for the prerequisites and outcomes
-needed/delivered by this activity. 
+include learning prerequisites, and learning outcomes.  Each
+prerequisite and outcome should be without spaces, and every attempt
+should be made to use already available tags for the prerequisites and
+outcomes needed/delivered by this activity.
+
 
 \begin{Verbatim}
   \documentclass{ximera}
   \input{preamble.tex}
-  +color(red)\prerequisites{prereq1,prereq2}
-  +color(red)\outcomes{outcome1,outcome2}
+  +color(red)\prerequisites{prereq1} % doesn't work!
+  +color(red)\prerequisites{prereq2} % doesn't work!
+  +color(red)\outcomes{outcome1}
+  +color(red)\outcomes{outcome2}
   \title{New activity}
   \begin{document}
   \begin{abstract}
