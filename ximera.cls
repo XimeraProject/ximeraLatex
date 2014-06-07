@@ -111,9 +111,6 @@
 \newcommand{\prerequisites}[1]{}
 \def\theoutcomes{}
 \newcommand{\outcome}[1]{\edef\theoutcomes{\theoutcomes #1~}}
-%% \newcommand{\outcomes}[1]{}
-%% \newcommand{\outcome}[1]{}
-%\newcommand{\outcome}[1]{\def\theoutcome{#1}} will need something fancy see line 206
 \newcommand{\video}[1]{\footnote{Video link: \url{#1}}}
 \newcommand{\youtube}[1]{\footnote{YouTube link: \url{#1}}}
 \newcommand{\link}[1]{\footnote{Link: \url{#1}}}
