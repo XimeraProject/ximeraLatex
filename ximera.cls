@@ -89,7 +89,7 @@
 \RequirePackage{titletoc} 
 \RequirePackage{titling}  
 \RequirePackage{url}
-\RequirePackage{xcolor}
+\RequirePackage[table]{xcolor}
 \RequirePackage{pgfplots}
 \RequirePackage{fancyvrb}
 \RequirePackage{environ}
