@@ -346,6 +346,16 @@ Exploration \ifhandout\theproblem\else\ifshuffle\theproblem.\theproblemType\else
 \end{trivlist}
 \fi}
 
+%% Solution environment
+\newenvironment{prompt}{
+\ifhandout\setbox0\vbox\bgroup\else\color{gray!50!black}
+%\begin{trivlist}\item[]
+%\noindent\upshape\small
+\fi}
+{\ifhandout\egroup\else
+%\end{trivlist}
+\fi}
+
 
 \newenvironment{hint}{
 \ifhandout\setbox0\vbox\bgroup\else
