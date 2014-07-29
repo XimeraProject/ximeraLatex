@@ -107,7 +107,8 @@
 
 \renewcommand{\section}{\subsection}
                                   
-\newcommand{\answer}[1][]{}
+%\newcommand{\answer}[1][]{\fbox{#1}}
+\newcommand{\answer}[1]{\fbox{#1}}
 \newcommand{\prerequisites}[1]{}
 \def\theoutcomes{}
 \newcommand{\outcome}[1]{\edef\theoutcomes{\theoutcomes #1~}}
@@ -385,6 +386,13 @@ Exploration \ifhandout\theproblem\else\ifshuffle\theproblem.\theproblemType\else
 %% will show choices in the handout.
 
 
+%% code answer environment
+%% You cannot use Envrion with the fancyvrb/listings package if you want nested environments
+
+\DefineVerbatimEnvironment{code}{Verbatim}{numbers=left,frame=lines,label=Code,labelposition=topline}
+%% \lstnewenvironment{python}
+%% {\lstset{language=python,numbers=left}}
+%% {}
 
 
 %% python answer environment
