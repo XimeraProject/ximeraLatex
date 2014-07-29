@@ -61,10 +61,6 @@
 \numbersfalse
 \DeclareOption{numbers}{\numberstrue}
 
-\newif\ifhints
-\hintstrue
-\DeclareOption{nohints}{\hintsfalse}
-
 \newif\ifshuffle
 \shufflefalse
 
@@ -108,7 +104,7 @@
 \renewcommand{\section}{\subsection}
                                   
 %\newcommand{\answer}[1][]{\fbox{#1}}
-\newcommand{\answer}[1]{\ifhandout\else \,\fbox{$#1$}\fi}
+\newcommand{\answer}[1]{\ifhandout\else \,\fbox{\ensuremath{#1}}\fi}
 \newcommand{\prerequisites}[1]{}
 \def\theoutcomes{}
 \newcommand{\outcome}[1]{\edef\theoutcomes{\theoutcomes #1~}}
@@ -352,14 +348,13 @@ Exploration \ifhandout\theproblem\else\ifshuffle\theproblem.\theproblemType\else
 
 
 \newenvironment{hint}{
-\ifhints
+\ifhandout\setbox0\vbox\bgroup\else
 \begin{trivlist}\item[\hskip \labelsep\small\slshape\bfseries\color{black} Hint:\hspace{2ex}]
 \small\slshape\color{black}
-\else\setbox0\vbox\bgroup
 \fi}
-{\ifhints
+{\ifhandout\egroup\else
 \end{trivlist}
-\else\egroup\fi}
+\fi}
 
 
 
