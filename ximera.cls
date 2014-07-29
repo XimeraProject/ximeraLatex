@@ -108,7 +108,7 @@
 \renewcommand{\section}{\subsection}
                                   
 %\newcommand{\answer}[1][]{\fbox{#1}}
-\newcommand{\answer}[1]{\fbox{#1}}
+\newcommand{\answer}[1]{\ifhandout \else \fbox{#1}\fi}
 \newcommand{\prerequisites}[1]{}
 \def\theoutcomes{}
 \newcommand{\outcome}[1]{\edef\theoutcomes{\theoutcomes #1~}}
