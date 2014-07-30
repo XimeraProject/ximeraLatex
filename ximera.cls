@@ -80,7 +80,7 @@
 \LoadClass{article}
 
 
-
+\RequirePackage{enumitem}
 \RequirePackage[pagestyles]{titlesec} 
 \RequirePackage{titletoc} 
 \RequirePackage{titling}  
@@ -368,8 +368,9 @@ Exploration \ifhandout\theproblem\else\ifshuffle\theproblem.\theproblemType\else
 
 
 
-           
+%% hide flag for enumerate environment
 
+%\SetEnumitemKey{hide}{}
 
 %% multiple choice environment
 \renewcommand{\theenumi}{$(\mathrm{\alph{enumi}})$}
