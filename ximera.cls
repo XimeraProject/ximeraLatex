@@ -450,6 +450,8 @@ Exploration \ifhandout\theproblem\else\ifshuffle\theproblem.\theproblemType\else
 \newtheorem{paradox}[problem]{Paradox}
 \newtheorem{warning}[problem]{Warning}
 \newtheorem{observation}[problem]{Observation}
+\newtheorem{idea}[problem]{Idea}
+\newtheorem{fact}[problem]{Fact}
 
 \renewenvironment{proof}[1][\proofname]{\begin{trivlist}\item[\hskip \labelsep \itshape \bfseries #1{}\hspace{2ex}]}
 {\qed\end{trivlist}}
