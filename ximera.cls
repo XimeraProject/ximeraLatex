@@ -356,6 +356,7 @@ Exploration \ifhandout\theproblem\else\ifshuffle\theproblem.\theproblemType\else
 %\end{trivlist}
 \fi}
 
+%% hint environment should be depecrated
 
 \newenvironment{hint}{
 \ifhandout\setbox0\vbox\bgroup\else
@@ -366,7 +367,10 @@ Exploration \ifhandout\theproblem\else\ifshuffle\theproblem.\theproblemType\else
 \end{trivlist}
 \fi}
 
+%% hints environment definition
 
+\newlist{hints}{enumerate}{3}
+\setlist[hints]{label=\slshape\bfseries Hint:}
 
 %% hide flag for enumerate environment
 
