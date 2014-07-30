@@ -370,7 +370,7 @@ Exploration \ifhandout\theproblem\else\ifshuffle\theproblem.\theproblemType\else
 
 %% hide flag for enumerate environment
 
-%\SetEnumitemKey{hide}{}
+\SetEnumitemKey{hide}{}
 
 %% multiple choice environment
 \renewcommand{\theenumi}{$(\mathrm{\alph{enumi}})$}
