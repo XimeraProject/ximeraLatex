@@ -79,7 +79,7 @@
 \ProcessOptions\relax
 \LoadClass{article}
 
-
+\RequirePackage[colorlinks=true,urlcolor=blue]{hyperref}
 \RequirePackage{enumitem}
 \RequirePackage[pagestyles]{titlesec} 
 \RequirePackage{titletoc} 
