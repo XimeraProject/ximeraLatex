@@ -1,5 +1,4 @@
 \documentclass{article}
-\usepackage{fancyvrb}
 \usepackage{xcolor}
 \usepackage{listings}
 \usepackage{enumitem}
@@ -7,9 +6,8 @@
 
 \newcommand\code[1]{\texttt{#1}}
 
-\setlist[itemize]{align=left, itemsep=0pt, itemindent=10pt}
 \newcommand{\doc}[3]{\noindent \fbox{\code{#1}}
-\begin{itemize}
+\begin{itemize}[align=left, itemsep=0pt, itemindent=10pt]
 	\item[\textbf{Print:}] #2
 	\item[\textbf{Online:}] #3
 \end{itemize}}
@@ -22,8 +20,6 @@
 	morekeywords={answer},
 	breaklines=true}
 	
-\fvset{commandchars=+(),formatcom=\color{blue!50!black}}
-
 \title{Using the \code{ximera} class}
 \author{The Ximera Project}
 
