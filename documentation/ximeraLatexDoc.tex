@@ -40,6 +40,11 @@ Each \code{.tex} document written in the \code{ximera} class is an \emph{activit
 \documentclass{ximera}
 \title{Our Sample Activity}
 \begin{document}
+\begin{abstract}
+A sample document.
+\end{abstract}
+\maketitle
+
 Let's multiply!
 \begin{question}
 	What is $3 \times 2$? \answer{6}
@@ -54,6 +59,16 @@ Note that every \code{ximera} document must have a \code{title}.
 {hides the contents of \code{prompt}, \code{hints}, and \code{answer}}
 {no effect.}
 
+
+\doc{space}
+{adds space for student work after problems}
+{no effect.}
+
+
+\doc{newpage}
+{places each new problem on a new page}
+{no effect.}
+
 \section{Content}
 
 To include an image, use the \code{image} environment.
@@ -63,7 +78,10 @@ To include an image, use the \code{image} environment.
 \end{image}
 \end{lstlisting}
 
-The image environment also supports very basic TikZ images, provided they do not rely on information outside of the \code{tikzpicture} environment.
+The image environment is simply a generic way to indicate that an
+image is present, and mostly deals with spaceing within the
+document. When including basic TikZ images, please ensure they do not
+rely on information outside of the \code{tikzpicture} environment.
 \begin{lstlisting}
 \begin{image}
 	\begin{tikzpicture}
@@ -85,6 +103,8 @@ There is support for interactive javascript content via the \code{interactive} e
 	Some static content.
 \end{interactive}
 \end{lstlisting}
+This is not currently supported on the Ximera server. 
+
 
 \section{Questions and Answers}
 
