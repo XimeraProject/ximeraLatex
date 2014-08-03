@@ -145,8 +145,8 @@
 
 \renewcommand{\section}{\subsection} % where is this used?
 
-%% makes everymath display style, could be optional
-\everymath{\displaystyle} % where is this used, what does it do?
+%% makes everymath display style even when inline, could be optional
+\everymath{\displaystyle} 
                      
 % --------------------------------------------------------------------
 % --------------------------------------------------------------------
