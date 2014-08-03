@@ -271,6 +271,21 @@ leftmargin=0pt, itemindent=*, itemsep=0pt, topsep=5pt, itemsep=5pt}
 %% problem.  We should also make a command called "\showchoices" that
 %% will show choices in the handout.
 
+\newenvironment{matrixAnswer}[1][]
+  {
+    % First, we tell fancyvrb that we're inside a verbatim environment.
+    \VerbatimEnvironment
+    % Now we start the actual environment:
+    \begin{Verbatim}[
+        frame=lines,
+        label=Matrix Answer,
+        labelposition=topline,
+      ]%
+  }
+  {\end{Verbatim}}
+
+\NewEnviron{freeResponse}[1][]{\BODY}
+
 
 %% code answer environment
 %% You cannot use Envrion with the fancyvrb/listings package if you want nested environments
@@ -424,26 +439,8 @@ leftmargin=0pt, itemindent=*, itemsep=0pt, topsep=5pt, itemsep=5pt}
 %% matrix-answer envrironment
 \NewEnviron{matrix-answer}[1][]{} %% should be depreciated
 
-\newenvironment{matrixAnswer}[1][]
-  {
-    % First, we tell fancyvrb that we're inside a verbatim environment.
-    \VerbatimEnvironment
-    % Now we start the actual environment:
-    \begin{Verbatim}[
-        frame=lines,
-        label=Matrix Answer,
-        labelposition=topline,
-      ]%
-  }
-  {\end{Verbatim}}
-
-
-
-
-
 %% free-response answer envrironment
 \NewEnviron{free-response}[1][]{\BODY} %% should be depreciated
-\NewEnviron{freeResponse}[1][]{\BODY}
 
 
 %\newenvironment{hint}{
