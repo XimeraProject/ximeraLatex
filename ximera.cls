@@ -203,7 +203,7 @@
 \newcommand{\problemName}{Problem }
 
 \newlist{problemList}{enumerate}{1}
-\setlist[problemList]{resume=problemseries,label={\textbf{\problemName \arabic*.}},
+\setlist[problemList]{align=left, resume=\thetitle,label={\textbf{\problemName \arabic*.}},
 leftmargin=0pt, itemindent=*, itemsep=0pt, topsep=5pt, itemsep=5pt}
 
 \newenvironment{problem}
