@@ -88,7 +88,7 @@
 \RequirePackage{titling}  
 \RequirePackage{url}
 \RequirePackage[table]{xcolor}
-\RequirePackage{tikz}
+\RequirePackage{pgfplots}
 \RequirePackage{fancyvrb}
 \RequirePackage{environ}
 \RequirePackage{amssymb}
