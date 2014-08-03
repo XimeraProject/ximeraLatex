@@ -34,7 +34,7 @@
 
 The goal of the Ximera Project is to allow authors to write online interactive content though \LaTeX\ documents.  The \code{ximera} class provides the structure for a \LaTeX\ document to be displayed in a dynamic online environment.
 
-Each \code{.tex} document written in the \code{ximera} class is an \emph{activity}.  Generally, an activity will be composed of \emph{content} and \emph{questions}.  Content is material served to the student, while questions require a response from the student.  The basic structure of an activity is:
+Each \code{.tex} document written in the \code{ximera} class is an \emph{activity}.  Generally, an activity will be composed of \emph{content} and \emph{problems}.  Content is material served to the student, while problems require a response from the student.  The basic structure of an activity is:
 
 \begin{lstlisting}
 \documentclass{ximera}
@@ -46,9 +46,9 @@ A sample document.
 \maketitle
 
 Let's multiply!
-\begin{question}
+\begin{problem}
 	What is $3 \times 2$? \answer{6}
-\end{question}
+\end{problem}
 \end{document}
 \end{lstlisting}
 Note that every \code{ximera} document must have a \code{title}.
@@ -106,60 +106,60 @@ There is support for interactive javascript content via the \code{interactive} e
 This is not currently supported on the Ximera server. 
 
 
-\section{Questions and Answers}
+\section{Problems and Answers}
 
-A \code{question} environment collects at least one \code{answer} from the student.
+A \code{problem} environment collects at least one \code{answer} from the student.
 \begin{lstlisting}
-\begin{question}
+\begin{problem}
 	What is $3 \times 2$? \answer{6}
-\end{question}
+\end{problem}
 \end{lstlisting}
-Online this displays the question ``What is $3 \times 2$?'' followed by an answer box.  The answer box will accept any answer that evaluates to 6, such as \fbox{$12 - 6$}.
+Online this displays the problem ``What is $3 \times 2$?'' followed by an answer box.  The answer box will accept any answer that evaluates to 6, such as \fbox{$12 - 6$}.
 
 A \code{prompt} environment helps to give an online answer structure.  For example,
 \begin{lstlisting}
-\begin{question}
+\begin{problem}
 	If Jack earned 12 dollars and spent 3 dollars, how many dollars does Jack have left?
 	\begin{prompt}
 		Jack has \answer{9} dollars left.
 	\end{prompt}
-\end{question}
+\end{problem}
 \end{lstlisting}
 The \code{prompt} environment is hidden in \code{handout} mode.
 
 
-\subsection{Questions with Multiple Parts}
+\subsection{Problems with Multiple Parts}
 
-A \code{question} can contain multiple \code{answer} commands, which must all be correct for the Ximera server to consider the question complete.
+A \code{problem} can contain multiple \code{answer} commands, which must all be correct for the Ximera server to consider the problem complete.
 
 \begin{lstlisting}
-\begin{question}
+\begin{problem}
 	There are \answer{60} minutes in an hour, \answer{24} hours in a day, 
 		and \answer{7} days in a week.
-\end{question}
+\end{problem}
 \end{lstlisting}
 
-To display parts of a question in a list, use \code{enumerate}.
+To display parts of a problem in a list, use \code{parts}.
 \begin{lstlisting}
-\begin{question}
-	\begin{enumerate}
+\begin{problem}
+	\begin{parts}
 		\item How many minutes in an hour? \answer{60}
 		\item How many hours in a day? \answer{24}
 		\item How many days in a week? \answer{7}
-	\end{enumerate}
-\end{question}
+	\end{parts}
+\end{problem}
 \end{lstlisting}
 
-To force an online student to complete the parts sequentially, add the \code{hide} key to enumerate.  Initially only the first \code{item} will be shown.  A correct submission to all answers in an \code{item} reveals the next one.  The question is considered complete only when all answers have been correctly submitted.
+To force an online student to complete the parts sequentially, add the \code{hide} key to \code{parts}.  Initially only the first \code{item} will be shown.  A correct submission to all answers in an \code{item} reveals the next one.  The problem is considered complete only when all answers have been correctly submitted.
 
 \begin{lstlisting}
-\begin{question}
-	\begin{enumerate}[hide]
+\begin{problem}
+	\begin{parts}[hide]
 		\item How many minutes in an hour? \answer{60}
 		\item How many hours in a day? \answer{24}
 		\item How many days in a week? \answer{7}
-	\end{enumerate}
-\end{question}
+	\end{parts}
+\end{problem}
 \end{lstlisting}
 
 
@@ -167,14 +167,14 @@ To force an online student to complete the parts sequentially, add the \code{hid
 
 A \code{hints} environment is a list of hints.
 \begin{lstlisting}
-\begin{question}
+\begin{problem}
 	What is $3 \times 2$? \answer{6}
 	\begin{hints}
 		\item Try multiplying.
 		\item Try 6.
 	\end{hints}
-\end{question}
+\end{problem}
 \end{lstlisting}
-Online this adds a ``Show Hint'' button to the question, which reveals the list of hints one at a time.
+Online this adds a ``Show Hint'' button to the problem, which reveals the list of hints one at a time.
 
 \end{document}
