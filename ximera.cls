@@ -98,10 +98,15 @@
 \RequirePackage{multido}% http://ctan.org/pkg/multido
 \RequirePackage{listings}
 \RequirePackage{comment}
-\RequirePackage[margin=1in]{geometry}
+
+%\RequirePackage[margin=1in]{geometry} 
+
+% the article document class is made to have lines of text that are
+% not too long. 
+
+% http://tex.stackexchange.com/questions/71172/why-are-default-latex-margins-so-big
 
 
-%\usepackage[hypertexnames=false]{hyperref}
 
 % ---------------------------------------------------------------------
 % ---------------------------------------------------------------------
@@ -200,32 +205,32 @@
 
 \SetEnumitemKey{hide}{} % hide flag for list environments
 
-\newcommand{\problemName}{Problem }
+%% \newcommand{\problemName}{Problem }
 
-\newlist{problemList}{enumerate}{1}
-\setlist[problemList]{align=left, resume=\thetitle,label={\textbf{\problemName \arabic*.}},
-leftmargin=0pt, itemindent=*, itemsep=0pt, topsep=5pt, itemsep=5pt}
+%% \newlist{problemList}{enumerate}{1}
+%% \setlist[problemList]{align=left, resume=\thetitle,label={\textbf{\problemName \arabic*.}},
+%% leftmargin=0pt, itemindent=*, itemsep=0pt, topsep=5pt, itemsep=5pt}
 
-\newenvironment{problem}
-{\renewcommand{\problemName}{Problem }\begin{problemList} \item}
-{\end{problemList}}
+%% \newenvironment{problem}
+%% {\renewcommand{\problemName}{Problem }\begin{problemList} \item}
+%% {\end{problemList}}
 
-\newenvironment{question}
-{\renewcommand{\problemName}{Question }\begin{problemList} \item}
-{\end{problemList}}
+%% \newenvironment{question}
+%% {\renewcommand{\problemName}{Question }\begin{problemList} \item}
+%% {\end{problemList}}
 
-\newenvironment{exploration}
-{\renewcommand{\problemName}{Exploration }\begin{problemList} \item}
-{\end{problemList}}
+%% \newenvironment{exploration}
+%% {\renewcommand{\problemName}{Exploration }\begin{problemList} \item}
+%% {\end{problemList}}
 
-\newenvironment{exercise}
-{\renewcommand{\problemName}{Exercise }\begin{problemList} \item}
-{\end{problemList}}
+%% \newenvironment{exercise}
+%% {\renewcommand{\problemName}{Exercise }\begin{problemList} \item}
+%% {\end{problemList}}
 
 \newlist{parts}{enumerate}{1}
 \setlist[parts]{label={\textbf{\alph*)}}, leftmargin=*, itemindent=0pt, itemsep=0pt, topsep=5pt, itemsep=5pt}
 
-%% Solution environment
+%% Prompt environment
 \newenvironment{prompt}{
 \ifhandout\setbox0\vbox\bgroup\else\color{gray!50!black}
 \fi}
@@ -234,12 +239,12 @@ leftmargin=0pt, itemindent=*, itemsep=0pt, topsep=5pt, itemsep=5pt}
 
 %% hints environment definition
 
-\newlist{hintList}{itemize}{2}
-\setlist[hintList]{label=\textsl{\textbf{Hint:}}, leftmargin=*, itemindent=0pt, itemsep=0pt, topsep=5pt, itemsep=5pt}
-\NewEnviron{hints}{\ifhandout \else \begin{hintList} \BODY \end{hintList} \fi}
+%% \newlist{hintList}{itemize}{2}
+%% \setlist[hintList]{label=\textsl{\textbf{Hint:}}, leftmargin=*, itemindent=0pt, itemsep=0pt, topsep=5pt, itemsep=5pt}
+%% \NewEnviron{hints}{\ifhandout \else \begin{hintList} \BODY \end{hintList} \fi}
 
-% use of hint should be discouraged
-\NewEnviron{hint}{\ifhandout \else \begin{hintList} \item \BODY \end{hintList} \fi}
+%% % use of hint should be discouraged
+%% \NewEnviron{hint}{\ifhandout \else \begin{hintList} \item \BODY \end{hintList} \fi}
 
 % ---------------------------------------------------------------------
 % ---------------------------------------------------------------------
@@ -363,53 +368,53 @@ leftmargin=0pt, itemindent=*, itemsep=0pt, topsep=5pt, itemsep=5pt}
 \global\firstproblemtrue}
 
 
-%\newenvironment{exercise}[1][2in]
-%{\iffirstproblem
-%\def\spaceatend{#1}\refstepcounter{problem}\refstepcounter{problemType}
-%\begin{trivlist}\item[\hskip\labelsep\sffamily\bfseries 
-%Exercise \ifhandout\theproblem\else\ifshuffle\theproblem.\theproblemType\else\theproblem\fi\fi]
-%\slshape
-%\else\setbox0\vbox\bgroup\fi} %% removes exercise if in shuffle and not first problem
-%{\iffirstproblem
-%\ifhandout\ifspace\vspace{\spaceatend}\fi\fi %% space at end
-%\par\addvspace{.5ex}\nobreak\noindent\hung %% line at the bottom
-%\ifshuffle\addtocounter{problem}{-1}\fi %% the problem does not increase within shuffle
-%\ifhandout\ifshuffle\global\firstproblemfalse\fi\fi %% removes other problems from shuffle in handout
-%\ifhandout\ifnewpage\newpage\fi\fi %% adds newpage
-%\end{trivlist}
-%\else\egroup\fi}
+\newenvironment{exercise}[1][2in]
+{\iffirstproblem
+\def\spaceatend{#1}\refstepcounter{problem}\refstepcounter{problemType}
+\begin{trivlist}\item[\hskip\labelsep\sffamily\bfseries 
+Exercise \ifhandout\theproblem\else\ifshuffle\theproblem.\theproblemType\else\theproblem\fi\fi]
+\slshape
+\else\setbox0\vbox\bgroup\fi} %% removes exercise if in shuffle and not first problem
+{\iffirstproblem
+\ifhandout\ifspace\vspace{\spaceatend}\fi\fi %% space at end
+\par\addvspace{.5ex}\nobreak\noindent\hung %% line at the bottom
+\ifshuffle\addtocounter{problem}{-1}\fi %% the problem does not increase within shuffle
+\ifhandout\ifshuffle\global\firstproblemfalse\fi\fi %% removes other problems from shuffle in handout
+\ifhandout\ifnewpage\newpage\fi\fi %% adds newpage
+\end{trivlist}
+\else\egroup\fi}
 
-%\newenvironment{question}[1][2in]
-%{\iffirstproblem
-%\def\spaceatend{#1}\refstepcounter{problem}\refstepcounter{problemType}
-%\begin{trivlist}\item[\hskip\labelsep\sffamily\bfseries 
-%Question \ifhandout\theproblem\else\ifshuffle\theproblem.\theproblemType\else\theproblem\fi\fi]
-%\slshape
-%\else\setbox0\vbox\bgroup\fi} %% removes exercise if in shuffle and not first problem
-%{\iffirstproblem
-%\ifhandout\ifspace\vspace{\spaceatend}\fi\fi %% space at end
-%\par\addvspace{.5ex}\nobreak\noindent\hung %% line at the bottom
-%\ifshuffle\addtocounter{problem}{-1}\fi %% the problem does not increase within shuffle
-%\ifhandout\ifshuffle\global\firstproblemfalse\fi\fi %% removes other problems from shuffle in handout
-%\ifhandout\ifnewpage\newpage\fi\fi %% adds newpage
-%\end{trivlist}
-%\else\egroup\fi}
+\newenvironment{question}[1][2in]
+{\iffirstproblem
+\def\spaceatend{#1}\refstepcounter{problem}\refstepcounter{problemType}
+\begin{trivlist}\item[\hskip\labelsep\sffamily\bfseries 
+Question \ifhandout\theproblem\else\ifshuffle\theproblem.\theproblemType\else\theproblem\fi\fi]
+\slshape
+\else\setbox0\vbox\bgroup\fi} %% removes exercise if in shuffle and not first problem
+{\iffirstproblem
+\ifhandout\ifspace\vspace{\spaceatend}\fi\fi %% space at end
+\par\addvspace{.5ex}\nobreak\noindent\hung %% line at the bottom
+\ifshuffle\addtocounter{problem}{-1}\fi %% the problem does not increase within shuffle
+\ifhandout\ifshuffle\global\firstproblemfalse\fi\fi %% removes other problems from shuffle in handout
+\ifhandout\ifnewpage\newpage\fi\fi %% adds newpage
+\end{trivlist}
+\else\egroup\fi}
 
-%\newenvironment{exploration}[1][2in]
-%{\iffirstproblem
-%\def\spaceatend{#1}\refstepcounter{problem}\refstepcounter{problemType}
-%\begin{trivlist}\item[\hskip\labelsep\sffamily\bfseries 
-%Exploration \ifhandout\theproblem\else\ifshuffle\theproblem.\theproblemType\else\theproblem\fi\fi]
-%\slshape
-%\else\setbox0\vbox\bgroup\fi} %% removes exercise if in shuffle and not first problem
-%{\iffirstproblem
-%\ifhandout\ifspace\vspace{\spaceatend}\fi\fi %% space at end
-%\par\addvspace{.5ex}\nobreak\noindent\hung %% line at the bottom
-%\ifshuffle\addtocounter{problem}{-1}\fi %% the problem does not increase within shuffle
-%\ifhandout\ifshuffle\global\firstproblemfalse\fi\fi %% removes other problems from shuffle in handout
-%\ifhandout\ifnewpage\newpage\fi\fi %% adds newpage
-%\end{trivlist}
-%\else\egroup\fi}
+\newenvironment{exploration}[1][2in]
+{\iffirstproblem
+\def\spaceatend{#1}\refstepcounter{problem}\refstepcounter{problemType}
+\begin{trivlist}\item[\hskip\labelsep\sffamily\bfseries 
+Exploration \ifhandout\theproblem\else\ifshuffle\theproblem.\theproblemType\else\theproblem\fi\fi]
+\slshape
+\else\setbox0\vbox\bgroup\fi} %% removes exercise if in shuffle and not first problem
+{\iffirstproblem
+\ifhandout\ifspace\vspace{\spaceatend}\fi\fi %% space at end
+\par\addvspace{.5ex}\nobreak\noindent\hung %% line at the bottom
+\ifshuffle\addtocounter{problem}{-1}\fi %% the problem does not increase within shuffle
+\ifhandout\ifshuffle\global\firstproblemfalse\fi\fi %% removes other problems from shuffle in handout
+\ifhandout\ifnewpage\newpage\fi\fi %% adds newpage
+\end{trivlist}
+\else\egroup\fi}
 
 
 
@@ -443,14 +448,14 @@ leftmargin=0pt, itemindent=*, itemsep=0pt, topsep=5pt, itemsep=5pt}
 \NewEnviron{free-response}[1][]{\BODY} %% should be depreciated
 
 
-%\newenvironment{hint}{
-%\ifhandout\setbox0\vbox\bgroup\else
-%\begin{trivlist}\item[\hskip \labelsep\small\slshape\bfseries\color{black} Hint:\hspace{2ex}]
-%\small\slshape\color{black}
-%\fi}
-%{\ifhandout\egroup\else
-%\end{trivlist}
-%\fi}
+\newenvironment{hint}{
+\ifhandout\setbox0\vbox\bgroup\else
+\begin{trivlist}\item[\hskip \labelsep\small\slshape\bfseries\color{black} Hint:\hspace{2ex}]
+\small\slshape\color{black}
+\fi}
+{\ifhandout\egroup\else
+\end{trivlist}
+\fi}
 
 \newcounter{problem} %% for the main problem
 \newcounter{problemType} %% for variations within shuffle
