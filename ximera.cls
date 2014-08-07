@@ -56,7 +56,7 @@
 \DeclareOption{handout}{\handouttrue}
 
 \newif\ifnooutcomes
-\nooutcomestrue
+\nooutcomesfalse
 \DeclareOption{nooutcomes}{\nooutcomestrue}
 
 \newif\ifnewpage
