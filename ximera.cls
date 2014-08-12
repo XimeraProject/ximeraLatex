@@ -89,6 +89,7 @@
 \RequirePackage{url}
 \RequirePackage[table]{xcolor}
 \RequirePackage{pgfplots}
+\usetikzlibrary{calc}
 \RequirePackage{fancyvrb}
 \RequirePackage{environ}
 \RequirePackage{amssymb}
