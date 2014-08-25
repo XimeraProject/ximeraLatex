@@ -99,7 +99,10 @@
 \RequirePackage{multido}% http://ctan.org/pkg/multido
 \RequirePackage{listings}
 \RequirePackage{comment}
-
+\oddsidemargin 62pt
+\evensidemargin 62pt
+\textwidth 345pt
+\headheight 14pt
 %\RequirePackage[margin=1in]{geometry} 
 
 % the article document class is made to have lines of text that are
