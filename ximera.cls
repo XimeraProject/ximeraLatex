@@ -280,8 +280,13 @@
 %% problem.  We should also make a command called "\showchoices" that
 %% will show choices in the handout.
 
-\newenvironment{matrixAnswer}[1][]
-  {
+\NewEnviron{freeResponse}[1][]{\BODY}
+
+\ifhandout
+	\excludecomment{matrixAnswer}
+\else
+	\newenvironment{matrixAnswer}[1][]
+	{
     % First, we tell fancyvrb that we're inside a verbatim environment.
     \VerbatimEnvironment
     % Now we start the actual environment:
@@ -290,10 +295,9 @@
         label=Matrix Answer,
         labelposition=topline,
       ]%
-  }
-  {\end{Verbatim}}
-
-\NewEnviron{freeResponse}[1][]{\BODY}
+	}
+	{\end{Verbatim}}
+\fi
 
 
 %% code answer environment
