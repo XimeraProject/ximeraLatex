@@ -99,10 +99,10 @@
 \RequirePackage{multido}% http://ctan.org/pkg/multido
 \RequirePackage{listings}
 \RequirePackage{comment}
-\oddsidemargin 62pt
-\evensidemargin 62pt
-\textwidth 345pt
-\headheight 14pt
+\oddsidemargin 62pt %% so we don't get weird margins in 2-sided mode
+\evensidemargin 62pt %% so we don't get weird margins in 2-sided mode
+\textwidth 345pt %% so we don't get weird margins in 2-sided mode
+\headheight 14pt %% so we don't get weird margins in 2-sided mode
 %\RequirePackage[margin=1in]{geometry} 
 
 % the article document class is made to have lines of text that are
@@ -293,8 +293,11 @@
   }
   {\end{Verbatim}}
 
-\NewEnviron{freeResponse}[1][]{\BODY}
-
+\newenvironment{freeResponse}{
+\ifhandout\setbox0\vbox\bgroup\else
+\fi}
+{\ifhandout\egroup
+\fi}
 
 %% code answer environment
 %% You cannot use Envrion with the fancyvrb/listings package if you want nested environments
