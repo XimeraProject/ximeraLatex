@@ -299,8 +299,10 @@
 
 \newenvironment{freeResponse}{
 \ifhandout\setbox0\vbox\bgroup\else
+\begin{trivlist}\item[\hskip \labelsep\bfseries Free Response:\hspace{2ex}]
 \fi}
-{\ifhandout\egroup
+{\ifhandout\egroup\else
+\end{trivlist}
 \fi}
 
 %% code answer environment
@@ -479,8 +481,8 @@ Exploration \ifhandout\theproblem\else\ifshuffle\theproblem.\theproblemType\else
 
 \newenvironment{hint}{
 \ifhandout\setbox0\vbox\bgroup\else
-\begin{trivlist}\item[\hskip \labelsep\small\slshape\bfseries\color{black} Hint:\hspace{2ex}]
-\small\slshape\color{black}
+\begin{trivlist}\item[\hskip \labelsep\small\slshape\bfseries Hint:\hspace{2ex}]
+\small\slshape
 \fi}
 {\ifhandout\egroup\else
 \end{trivlist}
