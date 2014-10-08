@@ -59,6 +59,11 @@
 \nooutcomesfalse
 \DeclareOption{nooutcomes}{\nooutcomestrue}
 
+\newif\ifhints
+\hintsfalse
+\DeclareOption{hints}{\hintstrue}
+
+
 \newif\ifnewpage
 \newpagefalse
 \DeclareOption{newpage}{\newpagetrue}
@@ -479,14 +484,36 @@ Exploration \ifhandout\theproblem\else\ifshuffle\theproblem.\theproblemType\else
 \NewEnviron{free-response}[1][]{\BODY} %% should be depreciated
 
 
+
+\ifhandout
+\newenvironment{hint}{\setbox0\vbox\bgroup}
+{\egroup}
+
+\else
+
 \newenvironment{hint}{
-\ifhandout\setbox0\vbox\bgroup\else
 \begin{trivlist}\item[\hskip \labelsep\small\slshape\bfseries Hint:\hspace{2ex}]
-\small\slshape
-\fi}
-{\ifhandout\egroup\else
-\end{trivlist}
-\fi}
+\small\slshape}
+{\end{trivlist}}
+\fi
+
+\ifhints
+\renewenvironment{hint}{
+\begin{trivlist}\item[\hskip \labelsep\small\slshape\bfseries Hint:\hspace{2ex}]
+\small\slshape}
+{\end{trivlist}}
+\fi
+
+
+
+%% \newenvironment{hint}{
+%% \ifhandout\setbox0\vbox\bgroup\else
+%% \begin{trivlist}\item[\hskip \labelsep\small\slshape\bfseries Hint:\hspace{2ex}]
+%% \small\slshape
+%% \fi}
+%% {\ifhandout\egroup\else
+%% \end{trivlist}
+%% \fi}
 
 \newcounter{problem} %% for the main problem
 \newcounter{problemType} %% for variations within shuffle
