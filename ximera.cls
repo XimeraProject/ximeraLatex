@@ -453,6 +453,24 @@ Exploration \ifhandout\theproblem\else\ifshuffle\theproblem.\theproblemType\else
 \else\egroup\fi}
 
 
+\newenvironment{xarmaBoost}[1][2in]
+{\iffirstproblem
+\def\spaceatend{#1}\refstepcounter{problem}\refstepcounter{problemType}
+\begin{trivlist}\item[\hskip\labelsep\sffamily\bfseries 
+Xarma Boost \ifhandout\theproblem\else\ifshuffle\theproblem.\theproblemType\else\theproblem\fi\fi]
+\slshape
+\else\setbox0\vbox\bgroup\fi} %% removes exercise if in shuffle and not first problem
+{\iffirstproblem
+\ifhandout\ifspace\vspace{\spaceatend}\fi\fi %% space at end
+\par\addvspace{.5ex}\nobreak\noindent\hung %% line at the bottom
+\ifshuffle\addtocounter{problem}{-1}\fi %% the problem does not increase within shuffle
+\ifhandout\ifshuffle\global\firstproblemfalse\fi\fi %% removes other problems from shuffle in handout
+\ifhandout\ifnewpage\newpage\fi\fi %% adds newpage
+\end{trivlist}
+\else\egroup\fi}
+
+
+
 
 
 %% Solution environment
