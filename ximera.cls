@@ -126,6 +126,9 @@
 \setlength{\parindent}{0pt}
 \setlength{\parskip}{5pt}
 
+\makeatletter
+\renewcommand{\title}[1][]{{\protected@xdef\@pretitle{#1}}\protected@xdef\@title}
+\makeatother
 
 \makeatletter
 \let\abstract\relax
@@ -150,6 +153,7 @@
 \makeatletter
 \renewcommand\@maketitle{%
   \addtocounter{titlenumber}{1}\addcontentsline{toc}{subsection}{\thetitlenumber~\@title} %% puts titles in the toc
+  {\flushleft\large\bfseries \@pretitle\par\vspace{-1em}}
   {\flushleft\LARGE\bfseries {\ifnumbers\thetitlenumber\fi}{\ifnumbers\hspace{1em}\else\hspace{0em}\fi}\@title \par }
   \vskip .6em\noindent\textit\theabstract\setcounter{problem}{0}\par\vspace{2em}
   \ifnooutcomes\else\ifhandout\else\let\thefootnote\relax\footnote{Learning outcomes: \theoutcomes}\fi\fi 
