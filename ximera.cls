@@ -161,7 +161,11 @@
   \aftergroup\@afterheading}
 \makeatother
 
-\renewcommand{\section}{\subsection} % where is this used?
+\ifnumbers
+\renewcommand{\section}{\subsection} 
+\else
+\renewcommand{\section}{\subsection*} 
+\fi
 
 %% makes everymath display style even when inline, could be optional
 \everymath{\displaystyle} 
