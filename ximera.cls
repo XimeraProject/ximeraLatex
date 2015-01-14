@@ -23,7 +23,7 @@
 
 
 \def\fileversion{.57}
-\def\filedate{2013/09/16}
+\def\filedate{2015/01/14}
 
 
 % ---------------------------------------------------------------------
@@ -269,8 +269,14 @@
 % ---------------------------------------------------------------------
 % ---------------------------------------------------------------------
 
+\newboolean{given}
+\setboolean{given}{true}
+\newcommand{\answer}[2][false]{%
+  \ifthenelse{\boolean{#1}}%
+             {\ifhandout$#2$\else$\underset{\tiny{\text{given}}}{\fbox{\ensuremath{#2}}}$\fi}%     
+             {\ifhandout\else\fbox{\ensuremath{#2}}\fi}%
+             {}}
 
-\newcommand{\answer}[1]{\ifhandout\else \,\fbox{\ensuremath{#1}}\fi}
 
 %% multiple choice environment
 \renewcommand{\theenumi}{$(\mathrm{\alph{enumi}})$}  % this hack should be fixed via enumitem
@@ -310,13 +316,24 @@
 	{\end{Verbatim}}
 \fi
 
-\newenvironment{freeResponse}{
-\ifhandout\setbox0\vbox\bgroup\else
-\begin{trivlist}\item[\hskip \labelsep\bfseries Free Response:\hspace{2ex}]
-\fi}
-{\ifhandout\egroup\else
-\end{trivlist}
-\fi}
+
+\ifhandout
+\newenvironment{freeResponse}[1][false]%
+{%
+\def\givenatend{\boolean{#1}}\ifthenelse{\boolean{#1}}{\begin{trivlist}\item}{\setbox0\vbox\bgroup}{}
+}
+{%
+\ifthenelse{\givenatend}{\end{trivlist}}{\egroup}{}
+}
+\else
+\newenvironment{freeResponse}[1][false]%
+{%
+\ifthenelse{\boolean{#1}}{\begin{trivlist}\item[\hskip \labelsep\bfseries Free Response (Given):\hspace{2ex}]}
+{\begin{trivlist}\item[\hskip \labelsep\bfseries Free Response:\hspace{2ex}]}
+{}
+}
+{\end{trivlist}}
+\fi
 
 %% code answer environment
 %% You cannot use Envrion with the fancyvrb/listings package if you want nested environments
@@ -491,7 +508,7 @@ Xarma Boost \ifhandout\theproblem\else\ifshuffle\theproblem.\theproblemType\else
 \end{trivlist}
 \fi}
 
-\newenvironment{multiple-choice}[1][] %% should be depreciated
+\newenvironment{multiple-choice}[1][] %% should be deprecated
 {\begin{enumerate}}
 {\end{enumerate}}
 
@@ -501,13 +518,13 @@ Xarma Boost \ifhandout\theproblem\else\ifshuffle\theproblem.\theproblemType\else
 
 %% these may be changed in the future to work more like interactive.
 %% expression-answer envrironment
-\NewEnviron{expression-answer}[1][]{} %% should be depreciated
+\NewEnviron{expression-answer}[1][]{} %% should be deprecated
 
 %% matrix-answer envrironment
-\NewEnviron{matrix-answer}[1][]{} %% should be depreciated
+\NewEnviron{matrix-answer}[1][]{} %% should be deprecated
 
 %% free-response answer envrironment
-\NewEnviron{free-response}[1][]{\BODY} %% should be depreciated
+\NewEnviron{free-response}[1][]{\BODY} %% should be deprecated
 
 
 
