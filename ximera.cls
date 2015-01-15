@@ -94,6 +94,7 @@
 \RequirePackage{url}
 \RequirePackage[table]{xcolor}
 \RequirePackage{pgfplots}
+\usepgfplotslibrary{groupplots}
 \usetikzlibrary{calc}
 \RequirePackage{fancyvrb}
 \RequirePackage{environ}
