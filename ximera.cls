@@ -80,11 +80,32 @@
 \DeclareOption{space}{\spacetrue}
 %% This basically works for exercises, though page breaks are weird. 
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% tikzexport will activate standalone with "tikz"
+%
+% this exports each tikzpicture as a separate page in the PDF, which
+% is run in a sandboxed copy of pdflatex
+%
+\newif\iftikzexport
+\tikzexportfalse
+\DeclareOption{tikzexport}{%
+  \tikzexporttrue%
+}
+
 \DeclareOption*{%
   \PassOptionsToClass{\CurrentOption}{article}%
 }
 \ProcessOptions\relax
 \LoadClass{article}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% externalize tikz images
+\PassOptionsToPackage{table}{xcolor}
+\RequirePackage{tikz}
+\iftikzexport
+  \usetikzlibrary{external}
+  \tikzexternalize[prefix=./]
+\fi
 
 \RequirePackage[colorlinks=true,urlcolor=blue]{hyperref}
 \RequirePackage{enumitem}
@@ -92,7 +113,7 @@
 \RequirePackage{titletoc} 
 \RequirePackage{titling}  
 \RequirePackage{url}
-\RequirePackage[table]{xcolor}
+\RequirePackage{xcolor}
 \RequirePackage{pgfplots}
 \usepgfplotslibrary{groupplots}
 \usetikzlibrary{calc}
