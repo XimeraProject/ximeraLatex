@@ -230,6 +230,8 @@
 \newtheorem{paradox}{Paradox}
 \newtheorem{warning}{Warning}
 \newtheorem{observation}{Observation}
+\newtheorem{template}{Template}
+
 
 \renewenvironment{proof}[1][\proofname]{\begin{trivlist}\item[\hskip \labelsep \itshape \bfseries #1{}\hspace{2ex}]}
 {\qed\end{trivlist}}
