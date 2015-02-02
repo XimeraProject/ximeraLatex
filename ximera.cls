@@ -160,7 +160,9 @@
 
 \newcounter{titlenumber}
 \renewcommand{\thetitlenumber}{\arabic{titlenumber}}
+\renewcommand{\thesection}{\arabic{titlenumber}} %% Makes section numbers work
 \setcounter{titlenumber}{0}
+
 
 \makeatletter
 \newpagestyle{main}{
