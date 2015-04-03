@@ -149,8 +149,11 @@
 \setlength{\parskip}{5pt}
 
 \makeatletter
-\renewcommand{\title}[1][]{{\protected@xdef\@pretitle{#1}}\protected@xdef\@title}
+\let\title\relax
+\newcommand{\title}[1][]{{\protected@xdef\@pretitle{#1}}\protected@xdef\@title}
 \makeatother
+
+\title{}
 
 \makeatletter
 \let\abstract\relax
