@@ -137,8 +137,15 @@
 
 % http://tex.stackexchange.com/questions/71172/why-are-default-latex-margins-so-big
 
+% ---------------------------------------------------------------------
+% ---------------------------------------------------------------------
+% Exercise Headers
+% ---------------------------------------------------------------------
+% ---------------------------------------------------------------------
 
-
+\newcommand{\license}{\excludecomment}
+\newcommand{\acknowledgement}{\excludecomment}
+             
 % ---------------------------------------------------------------------
 % ---------------------------------------------------------------------
 % Print Formatting
@@ -216,7 +223,7 @@
 \]}
 
 \newtheorem{theorem}{Theorem}
-\newtheorem{acknowledgement}{Acknowledgement}
+%\newtheorem{acknowledgement}{Acknowledgement}
 \newtheorem{algorithm}{Algorithm}
 \newtheorem{axiom}{Axiom}
 \newtheorem{claim}{Claim}
