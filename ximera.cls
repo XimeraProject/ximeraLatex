@@ -145,6 +145,7 @@
 
 \newcommand{\license}{\excludecomment}
 \newcommand{\acknowledgement}{\excludecomment}
+\renewcommand{\tag}{\excludecomment}
              
 % ---------------------------------------------------------------------
 % ---------------------------------------------------------------------
