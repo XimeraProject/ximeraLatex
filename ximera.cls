@@ -365,7 +365,7 @@
 \else
 \newenvironment{freeResponse}[1][false]%
 {%
-\ifthenelse{\boolean{#1}}{\begin{trivlist}\item[\hskip \labelsep\bfseries Free Response (Given):\hspace{2ex}]}
+  \ifthenelse{\boolean{#1}}{\begin{trivlist}\item[\hskip \labelsep\bfseries Free Response (Given):\hspace{2ex}]}
 {\begin{trivlist}\item[\hskip \labelsep\bfseries Free Response:\hspace{2ex}]}
 {}
 }
@@ -564,7 +564,21 @@ Xarma Boost \ifhandout\theproblem\else\ifshuffle\theproblem.\theproblemType\else
 \NewEnviron{free-response}[1][]{\BODY} %% should be deprecated
 
 
+%% Feedback
+\ifhandout
+\newenvironment{feedback}{\setbox0\vbox\bgroup}
+               {\egroup}
+               
+               \else
+               
+               \newenvironment{feedback}[1][attempt]
+                              {\begin{trivlist}\item[\hskip \labelsep\small\slshape\bfseries Feedback (#1):\hspace{2ex}]\small\slshape}
+               {\end{trivlist}}
+               \fi
+               
 
+
+%% Hints
 \ifhandout
 \newenvironment{hint}{\setbox0\vbox\bgroup}
 {\egroup}
