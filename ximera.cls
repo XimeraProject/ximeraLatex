@@ -599,6 +599,18 @@ Xarma Boost \ifhandout\theproblem\else\ifshuffle\theproblem.\theproblemType\else
 \fi
 
 
+%% Dialogue
+
+
+
+\newenvironment{dialogue}{%
+   \renewcommand\descriptionlabel[1]{\hspace{\labelsep}\textbf{##1:}}
+   \begin{description}%
+}{%
+   \end{description}%
+}
+
+
 
 %% \newenvironment{hint}{
 %% \ifhandout\setbox0\vbox\bgroup\else
