@@ -325,8 +325,8 @@
 \newcommand{\choice}[2][]{\item #2\ifthenelse{\boolean{#1}}{\ifhandout \else \quad\checkmark\fi}{}}
 
 \newenvironment{multipleChoice}[1][]
-{\begin{enumerate}}
-{\end{enumerate}}
+{\begin{trivlist}\item[\hskip \labelsep\small\bfseries Multiple Choice:]\hfil\begin{enumerate}}
+{\end{enumerate}\end{trivlist}}
 
 %% In the future we need this to (optionally) be desplayed in the
 %% problem, while the actual code lives in the solution. Here is how
