@@ -285,6 +285,7 @@ To keep your file up-to-date, you may need to periodically sync or
 pull the the ximera.cls within the ximeraLatex directory.
 
 `ximeraLatex$ git fetch --all`
+
 `ximeraLatex$ git reset --hard origin/master`
 
 will reset your ximeraLatex directory. Note it will also overwrite
