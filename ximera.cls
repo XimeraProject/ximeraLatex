@@ -310,7 +310,7 @@
 \setboolean{given}{true}
 \newcommand{\answer}[2][false]{%
   \ifthenelse{\boolean{#1}}%
-             {\ifhandout #2\else\underset{\tiny given}{\fbox{\ensuremath{#2}}}\fi}%     
+             {\ifhandout #2\else\underset{\scriptstyle\mathrm{given}}{\fbox{\ensuremath{#2}}}\fi}%     
              {\ifhandout\else\fbox{\ensuremath{#2}}\fi}%
              {}}
 
