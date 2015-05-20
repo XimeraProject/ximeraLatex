@@ -235,6 +235,7 @@
 \newtheorem{criterion}{Criterion}
 \newtheorem{definition}{Definition}
 \newtheorem{example}{Example}
+\newtheorem*{explanation}{Explanation}
 \newtheorem{lemma}{Lemma}
 \newtheorem{notation}{Notation}
 \newtheorem{proposition}{Proposition}
