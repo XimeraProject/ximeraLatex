@@ -328,6 +328,13 @@
 {\begin{trivlist}\item[\hskip \labelsep\small\bfseries Multiple Choice:]\hfil\begin{enumerate}}
 {\end{enumerate}\end{trivlist}}
 
+\newenvironment{multipleResponse}[1][]
+{\begin{trivlist}\item[\hskip \labelsep\small\bfseries Multiple Response:]\hfil\begin{enumerate}}
+{\end{enumerate}\end{trivlist}}
+
+
+
+
 %% In the future we need this to (optionally) be desplayed in the
 %% problem, while the actual code lives in the solution. Here is how
 %% this could be implemented: Like the title/maketitle commands, the
