@@ -1,0 +1,112 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% ximera.4ht
+% Copyright (C) 2014
+%
+% This work may be distributed and/or modified under the
+% conditions of the LaTeX Project Public License, either
+% version 1.3c of this license or (at your option) any
+% later version. The latest version of this license is
+% in
+%   http://www.latex-project.org/lppl.txt
+% and version 1.3c or later is part of all distributions
+% of LaTeX version 2005/12/01 or later.
+%
+% This Current Maintainer of this work
+% is Jim Fowler.
+%
+% If you modify this program your changing its signature
+% with a directive of the following form will be
+% appreciated.
+%            \message{signature}
+%
+% fowler@math.osu.edu
+% http://kisonecat.com/
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\immediate\write-1{version 2014-01-26-09:44}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\newcommand{\ConfigureQuestionEnv}[2]{%
+\renewenvironment{#1}{}{}%
+\ConfigureEnv{#1}{\ifvmode \IgnorePar\fi \EndP\HCode{<div class="#2">}}{\HCode{</div>}\IgnoreIndent}{}{}%
+}
+
+\ConfigureQuestionEnv{problem}{problem}
+\ConfigureQuestionEnv{exercise}{exercise}
+\ConfigureQuestionEnv{question}{question}
+\ConfigureQuestionEnv{exploration}{exploration}
+\ConfigureQuestionEnv{xarmaBoost}{xarma-boost}
+\ConfigureQuestionEnv{hint}{hint}
+\ConfigureQuestionEnv{solution}{solution}
+
+\ConfigureQuestionEnv{freeResponse}{free-response}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% respondables
+
+\renewcommand{\answer}[2][false]{\HCode{<span class="answer">}#2\HCode{</span>}}
+
+
+%% correct answers for multiple choice
+\newboolean{correct}
+\setboolean{correct}{true}
+\newcommand{\choice}[2][]{\item #2\ifthenelse{\boolean{#1}}{\ifhandout \else \quad\checkmark\fi}{}}
+
+\newboolean{correct}
+\setboolean{correct}{true}
+\newcommand{\choice}[2][]{\item #2\ifthenelse{\boolean{#1}}{\ifhandout \else \quad\checkmark\fi}{}}
+\renewenvironment{multipleChoice}[1][]{\begin{itemize}}{\end{itemize}}
+\renewenvironment{multipleResponse}[1][]{\begin{itemize}}{\end{itemize}}
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\newcommand{\ConfigureTheoremEnv}[1]{%
+\renewenvironment{#1}{}{}%
+\ConfigureEnv{#1}{\HCode{<div class="theorem-like #1">}}{\HCode{</div>}}{}{}%
+}
+
+\ConfigureTheoremEnv{theorem}
+\ConfigureTheoremEnv{acknowledgement}
+\ConfigureTheoremEnv{algorithm}
+\ConfigureTheoremEnv{axiom}
+\ConfigureTheoremEnv{claim}
+\ConfigureTheoremEnv{conclusion}
+\ConfigureTheoremEnv{condition}
+\ConfigureTheoremEnv{conjecture}
+\ConfigureTheoremEnv{corollary}
+\ConfigureTheoremEnv{criterion}
+\ConfigureTheoremEnv{definition}
+\ConfigureTheoremEnv{example}
+\ConfigureTheoremEnv{lemma}
+\ConfigureTheoremEnv{notation}
+\ConfigureTheoremEnv{proposition}
+\ConfigureTheoremEnv{remark}
+\ConfigureTheoremEnv{summary}
+\ConfigureTheoremEnv{paradox}
+\ConfigureTheoremEnv{warning}
+\ConfigureTheoremEnv{observation}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Eliminate some formatting that we'll handle later with CSS
+
+\renewcommand{\maketitle}{}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% dialogue environment
+
+\renewenvironment{dialogue}{\begin{description}}{\end{description}}
+
+\ConfigureList{dialogue}%
+   {\EndP\HCode{<dl \a:LRdir class="dialogue">}%
+      \PushMacro\end:itm
+\global\let\end:itm=\empty}
+   {\PopMacro\end:itm \global\let\end:itm \end:itm
+\EndP\HCode{</dd></dl>}\ShowPar}
+   {\end:itm \global\def\end:itm{\EndP\Tg</dd>}\HCode{<dt
+        class="actor">}\bgroup \bf}
+   {\egroup\EndP\HCode{</dt><dd\Hnewline class="speech">}}
+
+
+\Hinput{ximera}
+\endinput

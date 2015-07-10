@@ -90,6 +90,13 @@
 \tikzexportfalse
 \DeclareOption{tikzexport}{%
   \tikzexporttrue%
+  \handoutfalse%
+  \shufflefalse%
+  \spacefalse%  
+  \numbersfalse%
+  \newpagefalse%
+  \hintsfalse%
+  \nooutcomesfalse%
 }
 
 \DeclareOption*{%
