@@ -193,7 +193,7 @@
 \makeatother
 
 \makeatletter
-\renewcommand\@maketitle{%
+\renewcommand\maketitle{%
   \addtocounter{titlenumber}{1}\addcontentsline{toc}{subsection}{\thetitlenumber~\@title} %% puts titles in the toc
   {\flushleft\large\bfseries \@pretitle\par\vspace{-1em}}
   {\flushleft\LARGE\bfseries {\ifnumbers\thetitlenumber\fi}{\ifnumbers\hspace{1em}\else\hspace{0em}\fi}\@title \par }
