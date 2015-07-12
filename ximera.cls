@@ -16,15 +16,12 @@
 % 
 % This work consists of the files ximera.cls
 
-
 %%% Bart Snapp
 %%% Department of Mathematics
 %%% The Ohio State University
 
-
 \def\fileversion{.57}
 \def\filedate{2015/01/14}
-
 
 % ---------------------------------------------------------------------
 % ---------------------------------------------------------------------
@@ -114,7 +111,12 @@
   \tikzexternalize[prefix=./]
 \fi
 
-\RequirePackage[colorlinks=true,urlcolor=blue]{hyperref}
+% Don't use hyperref when using Tex4ht
+\ifdefined\HCode
+\else
+  \RequirePackage[colorlinks=true,urlcolor=blue]{hyperref}
+\fi
+
 \RequirePackage{enumitem}
 \RequirePackage[pagestyles]{titlesec} 
 \RequirePackage{titletoc} 
@@ -614,9 +616,8 @@ Xarma Boost \ifhandout\theproblem\else\ifshuffle\theproblem.\theproblemType\else
 \fi
 
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Dialogue
-
-
 
 \newenvironment{dialogue}{%
    \renewcommand\descriptionlabel[1]{\hspace{\labelsep}\textbf{##1:}}
@@ -624,8 +625,6 @@ Xarma Boost \ifhandout\theproblem\else\ifshuffle\theproblem.\theproblemType\else
 }{%
    \end{description}%
 }
-
-
 
 %% \newenvironment{hint}{
 %% \ifhandout\setbox0\vbox\bgroup\else
@@ -639,20 +638,17 @@ Xarma Boost \ifhandout\theproblem\else\ifshuffle\theproblem.\theproblemType\else
 \newcounter{problem} %% for the main problem
 \newcounter{problemType} %% for variations within shuffle
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% When using mathjax, it is useful to dump all the newcommands to a "jax" file
+\newwrite\myfile
+\immediate\openout\myfile=\jobname.jax
 
-% SlantTheorem appears not to be used
-%\newtheoremstyle{SlantTheorem}
-%	{\topsep}{\topsep}              %%% space between body and thm
-%	{\slshape}                      %%% Thm body font
-%	{}                              %%% Indent amount (empty = no indent)
-%	{\bfseries}            %%% Thm head font
-%	{}                              %%% Punctuation after thm head
-%	{\labelsep}                           %%% Space after thm head
-%	{\thmname{#1}\thmnumber{ #2}\thmnote{ \bfseries(#3)}}%%% Thm head spec
-%\theoremstyle{SlantTheorem}
+\makeatletter
 
-%---------------------------------------------------------------------
-%---------------------------------------------------------------------
-%---------------------------------------------------------------------
-%---------------------------------------------------------------------
-%---------------------------------------------------------------------
+\let\@oldargdef\@argdef
+\long\def\@argdef#1[#2]#3{%
+\immediate\write\myfile{\unexpanded{\newcommand}{\unexpanded{#1}}[\unexpanded{#2}]{\unexpanded{#3}}}%
+\@oldargdef#1[#2]{#3}%
+}
+\makeatother
+
