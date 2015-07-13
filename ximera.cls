@@ -657,15 +657,20 @@ Xarma Boost \ifhandout\theproblem\else\ifshuffle\theproblem.\theproblemType\else
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % When using mathjax, it is useful to dump all the newcommands to a "jax" file
-\newwrite\myfile
-\immediate\openout\myfile=\jobname.jax
 
-\makeatletter
+\ifdefined\HCode
+  \else
+    \newwrite\myfile
+    \immediate\openout\myfile=\jobname.jax
+
+    \makeatletter
 
 \let\@oldargdef\@argdef
 \long\def\@argdef#1[#2]#3{%
 \immediate\write\myfile{\unexpanded{\newcommand}{\unexpanded{#1}}[\unexpanded{#2}]{\unexpanded{#3}}}%
 \@oldargdef#1[#2]{#3}%
 }
-\makeatother
+
+    \makeatother
+\fi
 
