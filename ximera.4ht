@@ -24,10 +24,10 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \immediate\write-1{version 2014-01-26-09:44}
 
-
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \newcommand{\ConfigureQuestionEnv}[2]{%
-\renewenvironment{#1}{}{}%
+% refstepcounter ensures that labels get updated within these environments
+\renewenvironment{#1}{\refstepcounter{problem}}{}%
 \ConfigureEnv{#1}{\ifvmode \IgnorePar\fi \EndP\HCode{<div class="#2">}}{\HCode{</div>}\IgnoreIndent}{}{}%
 }
 
@@ -48,13 +48,13 @@
 
 
 %% correct answers for multiple choice
-\newboolean{correct}
-\setboolean{correct}{true}
-\newcommand{\choice}[2][]{\item #2\ifthenelse{\boolean{#1}}{\ifhandout \else \quad\checkmark\fi}{}}
+%\newboolean{correct}
+%\setboolean{correct}{true}
+\renewcommand{\choice}[2][]{\item #2\ifthenelse{\boolean{#1}}{\ifhandout \else \quad\checkmark\fi}{}}
 
-\newboolean{correct}
-\setboolean{correct}{true}
-\newcommand{\choice}[2][]{\item #2\ifthenelse{\boolean{#1}}{\ifhandout \else \quad\checkmark\fi}{}}
+%\newboolean{correct}
+%\setboolean{correct}{true}
+\renewcommand{\choice}[2][]{\item #2\ifthenelse{\boolean{#1}}{\ifhandout \else \quad\checkmark\fi}{}}
 \renewenvironment{multipleChoice}[1][]{\begin{itemize}}{\end{itemize}}
 \renewenvironment{multipleResponse}[1][]{\begin{itemize}}{\end{itemize}}
 
@@ -107,6 +107,13 @@
         class="actor">}\bgroup \bf}
    {\egroup\EndP\HCode{</dt><dd\Hnewline class="speech">}}
 
+%\let\oldnewcommand\newcommand
+%\def\newcommand#1{
+  %\hook{#1}
+%  \immediate\write\@auxout{\unexpanded{\newcommand}}
+%  \immediate\write\@auxout{\unexpanded{#1}}
+%  \oldnewcommand{#1}
+%}
 
 \Hinput{ximera}
 \endinput
