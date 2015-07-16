@@ -355,9 +355,13 @@
 {\begin{trivlist}\item[\hskip \labelsep\small\bfseries Multiple Choice:]\hfil\begin{enumerate}}
 {\end{enumerate}\end{trivlist}}
 
-\newenvironment{multipleResponse}[1][]
-{\begin{trivlist}\item[\hskip \labelsep\small\bfseries Multiple Response:]\hfil\begin{enumerate}}
+\newenvironment{selectAll}[1][]
+{\begin{trivlist}\item[\hskip \labelsep\small\bfseries Select All Correct Answers:]\hfil\begin{enumerate}}
 {\end{enumerate}\end{trivlist}}
+
+%% \newenvironment{multipleResponse}[1][]
+%% {\begin{trivlist}\item[\hskip \labelsep\small\bfseries Multiple Response:]\hfil\begin{enumerate}}
+%% {\end{enumerate}\end{trivlist}}
 
 
 
