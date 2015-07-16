@@ -16,15 +16,12 @@
 % 
 % This work consists of the files ximera.cls
 
-
 %%% Bart Snapp
 %%% Department of Mathematics
 %%% The Ohio State University
 
-
 \def\fileversion{.57}
 \def\filedate{2015/01/14}
-
 
 % ---------------------------------------------------------------------
 % ---------------------------------------------------------------------
@@ -81,15 +78,21 @@
 %% This basically works for exercises, though page breaks are weird. 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% tikzexport will activate standalone with "tikz"
+% tikzexport will generate SVGs and PNGs for tikzpictures
 %
-% this exports each tikzpicture as a separate page in the PDF, which
-% is run in a sandboxed copy of pdflatex
+% This option is automatically chosen when compiling inside the Ximera sandbox
 %
 \newif\iftikzexport
 \tikzexportfalse
 \DeclareOption{tikzexport}{%
   \tikzexporttrue%
+  \handoutfalse%
+  \shufflefalse%
+  \spacefalse%  
+  \numbersfalse%
+  \newpagefalse%
+  \hintsfalse%
+  \nooutcomesfalse%
 }
 
 \DeclareOption*{%
@@ -102,12 +105,35 @@
 % externalize tikz images
 \PassOptionsToPackage{table}{xcolor}
 \RequirePackage{tikz}
+
 \iftikzexport
   \usetikzlibrary{external}
-  \tikzexternalize[prefix=./]
+
+  \ifdefined\HCode
+    % in htlatex, just include the svg files
+    \def\pgfsys@imagesuffixlist{.svg}
+    \tikzexternalize[prefix=./,mode=graphics if exists]
+  \else
+    % in pdflatex, actually generate the svg files
+    \tikzset{
+      /tikz/external/system call={
+        pdflatex \tikzexternalcheckshellescape -halt-on-error -interaction=batchmode -jobname "\image" "\texsource";
+        pdf2svg \image.pdf \image.svg ;
+        mudraw -r 150 -c rgbalpha -o \image.png \image.pdf ;
+      }
+    }
+    \tikzexternalize[prefix=./]
+  \fi
+
 \fi
 
-\RequirePackage[colorlinks=true,urlcolor=blue]{hyperref}
+
+% Don't use hyperref when using Tex4ht
+\ifdefined\HCode
+\else
+  \RequirePackage[colorlinks=true,urlcolor=blue]{hyperref}
+\fi
+
 \RequirePackage{enumitem}
 \RequirePackage[pagestyles]{titlesec} 
 \RequirePackage{titletoc} 
@@ -611,9 +637,8 @@ Xarma Boost \ifhandout\theproblem\else\ifshuffle\theproblem.\theproblemType\else
 \fi
 
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Dialogue
-
-
 
 \newenvironment{dialogue}{%
    \renewcommand\descriptionlabel[1]{\hspace{\labelsep}\textbf{##1:}}
@@ -621,8 +646,6 @@ Xarma Boost \ifhandout\theproblem\else\ifshuffle\theproblem.\theproblemType\else
 }{%
    \end{description}%
 }
-
-
 
 %% \newenvironment{hint}{
 %% \ifhandout\setbox0\vbox\bgroup\else
@@ -636,20 +659,22 @@ Xarma Boost \ifhandout\theproblem\else\ifshuffle\theproblem.\theproblemType\else
 \newcounter{problem} %% for the main problem
 \newcounter{problemType} %% for variations within shuffle
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% When using mathjax, it is useful to dump all the newcommands to a "jax" file
 
-% SlantTheorem appears not to be used
-%\newtheoremstyle{SlantTheorem}
-%	{\topsep}{\topsep}              %%% space between body and thm
-%	{\slshape}                      %%% Thm body font
-%	{}                              %%% Indent amount (empty = no indent)
-%	{\bfseries}            %%% Thm head font
-%	{}                              %%% Punctuation after thm head
-%	{\labelsep}                           %%% Space after thm head
-%	{\thmname{#1}\thmnumber{ #2}\thmnote{ \bfseries(#3)}}%%% Thm head spec
-%\theoremstyle{SlantTheorem}
+\ifdefined\HCode
+  \else
+    \newwrite\myfile
+    \immediate\openout\myfile=\jobname.jax
 
-%---------------------------------------------------------------------
-%---------------------------------------------------------------------
-%---------------------------------------------------------------------
-%---------------------------------------------------------------------
-%---------------------------------------------------------------------
+    \makeatletter
+
+\let\@oldargdef\@argdef
+\long\def\@argdef#1[#2]#3{%
+\immediate\write\myfile{\unexpanded{\newcommand}{\unexpanded{#1}}[\unexpanded{#2}]{\unexpanded{#3}}}%
+\@oldargdef#1[#2]{#3}%
+}
+
+    \makeatother
+\fi
+
