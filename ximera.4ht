@@ -25,10 +25,14 @@
 \immediate\write-1{version 2014-01-26-09:44}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Use an "identification" counter to assign IDs to the various problem-related DOM elements
+\newcounter{identification}
+\setcounter{identification}{0}
+
 \newcommand{\ConfigureQuestionEnv}[2]{%
 % refstepcounter ensures that labels get updated within these environments
 \renewenvironment{#1}{\refstepcounter{problem}}{}%
-\ConfigureEnv{#1}{\ifvmode \IgnorePar\fi \EndP\HCode{<div class="#2">}}{\HCode{</div>}\IgnoreIndent}{}{}%
+\ConfigureEnv{#1}{\stepcounter{identification}\ifvmode \IgnorePar\fi \EndP\HCode{<div class="#2" id="problem\arabic{identification}">}}{\HCode{</div>}\IgnoreIndent}{}{}%
 }
 
 \ConfigureQuestionEnv{problem}{problem}
@@ -38,7 +42,6 @@
 \ConfigureQuestionEnv{xarmaBoost}{xarma-boost}
 \ConfigureQuestionEnv{hint}{hint}
 \ConfigureQuestionEnv{solution}{solution}
-
 \ConfigureQuestionEnv{freeResponse}{free-response}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -57,7 +60,6 @@
 \renewcommand{\choice}[2][]{\item #2\ifthenelse{\boolean{#1}}{\ifhandout \else \quad\checkmark\fi}{}}
 \renewenvironment{multipleChoice}[1][]{\begin{itemize}}{\end{itemize}}
 \renewenvironment{multipleResponse}[1][]{\begin{itemize}}{\end{itemize}}
-
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -106,14 +108,6 @@
    {\end:itm \global\def\end:itm{\EndP\Tg</dd>}\HCode{<dt
         class="actor">}\bgroup \bf}
    {\egroup\EndP\HCode{</dt><dd\Hnewline class="speech">}}
-
-%\let\oldnewcommand\newcommand
-%\def\newcommand#1{
-  %\hook{#1}
-%  \immediate\write\@auxout{\unexpanded{\newcommand}}
-%  \immediate\write\@auxout{\unexpanded{#1}}
-%  \oldnewcommand{#1}
-%}
 
 \Hinput{ximera}
 \endinput
