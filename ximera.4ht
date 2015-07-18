@@ -32,7 +32,7 @@
 \newcommand{\ConfigureQuestionEnv}[2]{%
 % refstepcounter ensures that labels get updated within these environments
 \renewenvironment{#1}{\refstepcounter{problem}}{}%
-\ConfigureEnv{#1}{\stepcounter{identification}\ifvmode \IgnorePar\fi \EndP\HCode{<div class="#2" id="problem\arabic{identification}">}}{\HCode{</div>}\IgnoreIndent}{}{}%
+\ConfigureEnv{#1}{\stepcounter{identification}\ifvmode \IgnorePar\fi \EndP\HCode{<div class="problem #2" id="problem\arabic{identification}">}}{\HCode{</div>}\IgnoreIndent}{}{}%
 }
 
 \ConfigureQuestionEnv{problem}{problem}
@@ -49,17 +49,21 @@
 
 \renewcommand{\answer}[2][false]{\HCode{<span class="answer">}#2\HCode{</span>}}
 
-
 %% correct answers for multiple choice
 %\newboolean{correct}
 %\setboolean{correct}{true}
-\renewcommand{\choice}[2][]{\item #2\ifthenelse{\boolean{#1}}{\ifhandout \else \quad\checkmark\fi}{}}
+\newcounter{choiceId}
+\renewcommand{\choice}[2][]{\stepcounter{choiceId}\ifvmode \IgnorePar\fi \EndP% 
+\ifthenelse{\boolean{#1}}{\HCode{<span class="choice correct" id="choice\arabic{choiceId}">}}
+{\HCode{<span class="choice" id="choice\arabic{choiceId}">}}#2\HCode{</span>}}
 
-%\newboolean{correct}
-%\setboolean{correct}{true}
-\renewcommand{\choice}[2][]{\item #2\ifthenelse{\boolean{#1}}{\ifhandout \else \quad\checkmark\fi}{}}
-\renewenvironment{multipleChoice}[1][]{\begin{itemize}}{\end{itemize}}
-\renewenvironment{multipleResponse}[1][]{\begin{itemize}}{\end{itemize}}
+
+\renewenvironment{multipleChoice}{\setcounter{choiceId}{0}\refstepcounter{problem}}{}%
+\ConfigureEnv{multipleChoice}{\stepcounter{identification}\ifvmode \IgnorePar\fi \EndP\HCode{<div class="multiple-choice" id="problem\arabic{identification}">}}{\HCode{</div>}\IgnoreIndent}{}{}
+
+\renewenvironment{selectAll}{\setcounter{choiceId}{0}\refstepcounter{problem}}{}%
+\ConfigureEnv{selectAll}{\stepcounter{identification}\ifvmode \IgnorePar\fi \EndP\HCode{<div class="select-all" id="problem\arabic{identification}">}}{\HCode{</div>}\IgnoreIndent}{}{}
+
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -108,6 +112,17 @@
    {\end:itm \global\def\end:itm{\EndP\Tg</dd>}\HCode{<dt
         class="actor">}\bgroup \bf}
    {\egroup\EndP\HCode{</dt><dd\Hnewline class="speech">}}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% video environments
+
+\renewcommand{\youtube}[1]{\HCode{<div class="youtube" data-url="#1"></div>}}
+\renewcommand{\video}[1]{\HCode{<div class="video" data-url="#1"></div>}}
+
+\renewcommand*{\link}[2][]{%
+\ifthenelse{\equal{#1}{}}%
+{\HCode{<a href="#2">}LINK\HCode{</a>}}
+{\HCode{<a href="#2">}#1\HCode{</a>}}}
 
 \Hinput{ximera}
 \endinput

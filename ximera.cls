@@ -239,9 +239,21 @@
 
 \def\theoutcomes{}
 \newcommand{\outcome}[1]{\edef\theoutcomes{\theoutcomes #1~}}
+
+% --------------------------------------------------------------------
+% Videos
+
 \newcommand{\video}[1]{\footnote{Video link: \url{#1}}}
 \newcommand{\youtube}[1]{\footnote{YouTube link: \url{#1}}}
-\newcommand{\link}[1]{\footnote{Link: \url{#1}}}
+
+% --------------------------------------------------------------------
+% Hyperlinks to outside documents
+
+\newcommand*{\link}[2][]{#1%
+\ifthenelse{\equal{#1}{}}%
+{\footnote{Link: \url{#2}}}%
+{\footnote{See #1 at \url{#2}}}}
+                              
 
 %% image environment
 \NewEnviron{image}[1][]{
