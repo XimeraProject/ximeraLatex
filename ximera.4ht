@@ -47,7 +47,7 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % respondables
 
-\renewcommand{\answer}[2][false]{\HCode{<span class="answer">}#2\HCode{</span>}}
+\renewcommand{\answer}[2][false]{\HCode{<span class="answer respondable">}#2\HCode{</span>}}
 
 %% correct answers for multiple choice
 %\newboolean{correct}
@@ -57,13 +57,15 @@
 \ifthenelse{\boolean{#1}}{\HCode{<span class="choice correct" id="choice\arabic{choiceId}">}}
 {\HCode{<span class="choice" id="choice\arabic{choiceId}">}}#2\HCode{</span>}}
 
+% You might expect a \setcounter{choiceId}{0} here --- that would be
+% wrong, because then the generated IDs would no longer be unique.
+%
+% You might also expect these to be "problem environments" but they aren't -- they're respondables
+\renewenvironment{multipleChoice}{\refstepcounter{problem}}{}%
+\ConfigureEnv{multipleChoice}{\stepcounter{identification}\ifvmode \IgnorePar\fi \EndP\HCode{<div class="multiple-choice" id="problem\arabic{identification}">}}{\HCode{</div>}\IgnoreIndent}{}{}
 
-\renewenvironment{multipleChoice}{\setcounter{choiceId}{0}\refstepcounter{problem}}{}%
-\ConfigureEnv{multipleChoice}{\stepcounter{identification}\ifvmode \IgnorePar\fi \EndP\HCode{<div class="multiple-choice problem-environment" id="problem\arabic{identification}">}}{\HCode{</div>}\IgnoreIndent}{}{}
-
-\renewenvironment{selectAll}{\setcounter{choiceId}{0}\refstepcounter{problem}}{}%
-\ConfigureEnv{selectAll}{\stepcounter{identification}\ifvmode \IgnorePar\fi \EndP\HCode{<div class="select-all problem-environment" id="problem\arabic{identification}">}}{\HCode{</div>}\IgnoreIndent}{}{}
-
+\renewenvironment{selectAll}{\refstepcounter{problem}}{}%
+\ConfigureEnv{selectAll}{\stepcounter{identification}\ifvmode \IgnorePar\fi \EndP\HCode{<div class="select-all" id="problem\arabic{identification}">}}{\HCode{</div>}\IgnoreIndent}{}{}
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
