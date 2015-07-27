@@ -239,9 +239,21 @@
 
 \def\theoutcomes{}
 \newcommand{\outcome}[1]{\edef\theoutcomes{\theoutcomes #1~}}
+
+% --------------------------------------------------------------------
+% Videos
+
 \newcommand{\video}[1]{\footnote{Video link: \url{#1}}}
 \newcommand{\youtube}[1]{\footnote{YouTube link: \url{#1}}}
-\newcommand{\link}[1]{\footnote{Link: \url{#1}}}
+
+% --------------------------------------------------------------------
+% Hyperlinks to outside documents
+
+\newcommand*{\link}[2][]{#1%
+\ifthenelse{\equal{#1}{}}%
+{\footnote{Link: \url{#2}}}%
+{\footnote{See #1 at \url{#2}}}}
+                              
 
 %% image environment
 \NewEnviron{image}[1][]{
@@ -667,6 +679,9 @@ Xarma Boost \ifhandout\theproblem\else\ifshuffle\theproblem.\theproblemType\else
 
 \newcounter{problem} %% for the main problem
 \newcounter{problemType} %% for variations within shuffle
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% When designing new elements, it is nice to be able to wrap things in a class
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % When using mathjax, it is useful to dump all the newcommands to a "jax" file

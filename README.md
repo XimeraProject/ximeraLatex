@@ -291,3 +291,5 @@ pull the the ximera.cls within the ximeraLatex directory.
 will reset your ximeraLatex directory. Note it will also overwrite
 *any* modifications you have made in this directory. You should not be
 building your activities in this directory.
+
+
