@@ -3,6 +3,7 @@
 %% space
 %% newpage
 %% numbers
+%% nooutcomes
 
 \input{preamble.tex} %% we can turn off input when making a master document
 
@@ -205,6 +206,13 @@ The value of $b(-2)$ is \answer{$4$}.
 \end{solution}
 \end{question}
 \end{shuffle}
+
+\begin{question}
+Enter the matrix  \(\begin{bmatrix} x & y \\ xy & z+1 \end{bmatrix}\)
+\begin{matrixAnswer}[name=M]
+  correctMatrix = [['x','y'],['xy','z+1']]
+\end{matrixAnswer}
+\end{question}
 
 
 

@@ -152,8 +152,8 @@ directory, go to:
 2. Now select the tab "Roots."
 3. Click "Add" because you are going to add a path.
 4. Find `C:\localtexmf\` and click "OK."
-5. Click "apply" "OK" and then you are ready to go. 
-6. Open Miktex Settings (Admin). Click Refresh FNDB.
+5. Click "apply" then "OK."
+6. Reopen Miktex Settings (Admin). Click Refresh FNDB.
 
 This will allow all of your documents to find ximera.cls. Note, it is
 important that none of the directories containing ximeraLatex have
@@ -285,8 +285,11 @@ To keep your file up-to-date, you may need to periodically sync or
 pull the the ximera.cls within the ximeraLatex directory.
 
 `ximeraLatex$ git fetch --all`
+
 `ximeraLatex$ git reset --hard origin/master`
 
 will reset your ximeraLatex directory. Note it will also overwrite
 *any* modifications you have made in this directory. You should not be
 building your activities in this directory.
+
+

@@ -16,16 +16,12 @@
 % 
 % This work consists of the files ximera.cls
 
-
 %%% Bart Snapp
 %%% Department of Mathematics
 %%% The Ohio State University
 
-
 \def\fileversion{.57}
-\def\filedate{2013/09/16}
-
-
+\def\filedate{2015/01/14}
 
 % ---------------------------------------------------------------------
 % ---------------------------------------------------------------------
@@ -40,6 +36,13 @@
 % --------------------------------------------------------------------
 % --------------------------------------------------------------------
 
+
+% --------------------------------------------------------------------
+% --------------------------------------------------------------------
+% Class Options
+% --------------------------------------------------------------------
+% --------------------------------------------------------------------
+
 \NeedsTeXFormat{LaTeX2e}
 
 \ProvidesClass{ximera}[\filedate\space Version \fileversion\space by
@@ -50,8 +53,13 @@
 \DeclareOption{handout}{\handouttrue}
 
 \newif\ifnooutcomes
-\handoutfalse
+\nooutcomesfalse
 \DeclareOption{nooutcomes}{\nooutcomestrue}
+
+\newif\ifhints
+\hintsfalse
+\DeclareOption{hints}{\hintstrue}
+
 
 \newif\ifnewpage
 \newpagefalse
@@ -69,9 +77,23 @@
 \DeclareOption{space}{\spacetrue}
 %% This basically works for exercises, though page breaks are weird. 
 
-
-
-
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% tikzexport will generate SVGs and PNGs for tikzpictures
+%
+% This option is automatically chosen when compiling inside the Ximera sandbox
+%
+\newif\iftikzexport
+\tikzexportfalse
+\DeclareOption{tikzexport}{%
+  \tikzexporttrue%
+  \handoutfalse%
+  \shufflefalse%
+  \spacefalse%  
+  \numbersfalse%
+  \newpagefalse%
+  \hintsfalse%
+  \nooutcomesfalse%
+}
 
 \DeclareOption*{%
   \PassOptionsToClass{\CurrentOption}{article}%
@@ -79,14 +101,48 @@
 \ProcessOptions\relax
 \LoadClass{article}
 
-\RequirePackage[colorlinks=true,urlcolor=blue]{hyperref}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% externalize tikz images
+\PassOptionsToPackage{table}{xcolor}
+\RequirePackage{tikz}
+
+\iftikzexport
+  \usetikzlibrary{external}
+
+  \ifdefined\HCode
+    % in htlatex, just include the svg files
+    \def\pgfsys@imagesuffixlist{.svg}
+    \tikzexternalize[prefix=./,mode=graphics if exists]
+  \else
+    % in pdflatex, actually generate the svg files
+    \tikzset{
+      /tikz/external/system call={
+        pdflatex \tikzexternalcheckshellescape -halt-on-error -interaction=batchmode -jobname "\image" "\texsource";
+        pdf2svg \image.pdf \image.svg ;
+        mudraw -r 150 -c rgbalpha -o \image.png \image.pdf ;
+      }
+    }
+    \tikzexternalize[prefix=./]
+  \fi
+
+\fi
+
+
+% Don't use hyperref when using Tex4ht
+\ifdefined\HCode
+\else
+  \RequirePackage[colorlinks=true,urlcolor=blue]{hyperref}
+\fi
+
 \RequirePackage{enumitem}
 \RequirePackage[pagestyles]{titlesec} 
 \RequirePackage{titletoc} 
 \RequirePackage{titling}  
 \RequirePackage{url}
-\RequirePackage[table]{xcolor}
+\RequirePackage{xcolor}
 \RequirePackage{pgfplots}
+\usepgfplotslibrary{groupplots}
+\usetikzlibrary{calc}
 \RequirePackage{fancyvrb}
 \RequirePackage{environ}
 \RequirePackage{amssymb}
@@ -96,33 +152,55 @@
 \RequirePackage{multido}% http://ctan.org/pkg/multido
 \RequirePackage{listings}
 \RequirePackage{comment}
-\RequirePackage[hmarginratio=1:1,height=584pt,width=360pt,tmargin=117pt]{geometry}
+\oddsidemargin 62pt %% so we don't get weird margins in 2-sided mode
+\evensidemargin 62pt %% so we don't get weird margins in 2-sided mode
+\textwidth 345pt %% so we don't get weird margins in 2-sided mode
+\headheight 14pt %% so we don't get weird margins in 2-sided mode
+%\RequirePackage[margin=1in]{geometry} 
 
-%\usepackage[hypertexnames=false]{hyperref}
+% the article document class is made to have lines of text that are
+% not too long. 
+
+% http://tex.stackexchange.com/questions/71172/why-are-default-latex-margins-so-big
+
+% ---------------------------------------------------------------------
+% ---------------------------------------------------------------------
+% Exercise Headers
+% ---------------------------------------------------------------------
+% ---------------------------------------------------------------------
+
+\newcommand{\license}{\excludecomment}
+\newcommand{\acknowledgement}{\excludecomment}
+\renewcommand{\tag}{\excludecomment}
+             
+% ---------------------------------------------------------------------
+% ---------------------------------------------------------------------
+% Print Formatting
+% ---------------------------------------------------------------------
+% ---------------------------------------------------------------------
+
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{5pt}
+
+\makeatletter
+\let\title\relax
+\newcommand{\title}[1][]{{\protected@xdef\@pretitle{#1}}\protected@xdef\@title}
+\makeatother
+
+\title{}
+
+\makeatletter
+\let\abstract\relax
+\let\endabstract\relax
+\NewEnviron{abstract}{\protected@xdef\theabstract{\BODY}}
+\makeatother
+
+\newcounter{titlenumber}
+\renewcommand{\thetitlenumber}{\arabic{titlenumber}}
+\renewcommand{\thesection}{\arabic{titlenumber}} %% Makes section numbers work
+\setcounter{titlenumber}{0}
 
 
-\renewcommand{\section}{\subsection}
-                                  
-%\newcommand{\answer}[1][]{\fbox{#1}}
-\newcommand{\answer}[1]{\ifhandout\else \,\fbox{\ensuremath{#1}}\fi}
-\newcommand{\prerequisites}[1]{}
-\def\theoutcomes{}
-\newcommand{\outcome}[1]{\edef\theoutcomes{\theoutcomes #1~}}
-\newcommand{\video}[1]{\footnote{Video link: \url{#1}}}
-\newcommand{\youtube}[1]{\footnote{YouTube link: \url{#1}}}
-\newcommand{\link}[1]{\footnote{Link: \url{#1}}}
-
-\renewcommand{\labelsep}{3ex} %% Space after thm/problem label
-
-%% correct answers for multiple choice
-\newboolean{correct}
-\setboolean{correct}{true}
-\newcommand{\choice}[2][]{\item #2\ifthenelse{\boolean{#1}}{\ifhandout \else \quad\checkmark\fi}{}}
-
-%% makes everymath display style, could be optional
-\everymath{\displaystyle} 
-
-%% header
 \makeatletter
 \newpagestyle{main}{
 \sethead[\textsl{\ifnumbers\thetitlenumber\quad\fi\@title}][][] % even
@@ -133,6 +211,49 @@
 \pagestyle{main}
 \makeatother
 
+\makeatletter
+\renewcommand\maketitle{%
+  \addtocounter{titlenumber}{1}\addcontentsline{toc}{subsection}{\thetitlenumber~\@title} %% puts titles in the toc
+  {\flushleft\large\bfseries \@pretitle\par\vspace{-1em}}
+  {\flushleft\LARGE\bfseries {\ifnumbers\thetitlenumber\fi}{\ifnumbers\hspace{1em}\else\hspace{0em}\fi}\@title \par }
+  \vskip .6em\noindent\textit\theabstract\setcounter{problem}{0}\setcounter{subsection}{0}\par\vspace{2em}
+  \ifnooutcomes\else\ifhandout\else\let\thefootnote\relax\footnote{Learning outcomes: \theoutcomes}\fi\fi 
+  \aftergroup\@afterindentfalse
+  \aftergroup\@afterheading}
+\makeatother
+
+\ifnumbers
+\renewcommand{\section}{\subsection} 
+\else
+\renewcommand{\section}{\subsection*} 
+\fi
+
+%% makes everymath display style even when inline, could be optional
+\everymath{\displaystyle} 
+                     
+% --------------------------------------------------------------------
+% --------------------------------------------------------------------
+% Content
+% --------------------------------------------------------------------
+% --------------------------------------------------------------------
+
+\def\theoutcomes{}
+\newcommand{\outcome}[1]{\edef\theoutcomes{\theoutcomes #1~}}
+
+% --------------------------------------------------------------------
+% Videos
+
+\newcommand{\video}[1]{\footnote{Video link: \url{#1}}}
+\newcommand{\youtube}[1]{\footnote{YouTube link: \url{#1}}}
+
+% --------------------------------------------------------------------
+% Hyperlinks to outside documents
+
+\newcommand*{\link}[2][]{#1%
+\ifthenelse{\equal{#1}{}}%
+{\footnote{Link: \url{#2}}}%
+{\footnote{See #1 at \url{#2}}}}
+                              
 
 %% image environment
 \NewEnviron{image}[1][]{
@@ -140,20 +261,136 @@
 \BODY
 \]}
 
+\newtheorem{theorem}{Theorem}
+%\newtheorem{acknowledgement}{Acknowledgement}
+\newtheorem{algorithm}{Algorithm}
+\newtheorem{axiom}{Axiom}
+\newtheorem{claim}{Claim}
+\newtheorem{conclusion}{Conclusion}
+\newtheorem{condition}{Condition}
+\newtheorem{conjecture}{Conjecture}
+\newtheorem{corollary}{Corollary}
+\newtheorem{criterion}{Criterion}
+\newtheorem{definition}{Definition}
+\newtheorem{example}{Example}
+\newtheorem*{explanation}{Explanation}
+\newtheorem{lemma}{Lemma}
+\newtheorem{notation}{Notation}
+\newtheorem{proposition}{Proposition}
+\newtheorem{remark}{Remark}
+\newtheorem{summary}{Summary}
+\newtheorem{paradox}{Paradox}
+\newtheorem{warning}{Warning}
+\newtheorem{observation}{Observation}
+\newtheorem{template}{Template}
 
-%% interactive envrironment
-\NewEnviron{interactive}[1][]{\BODY}
+
+\renewenvironment{proof}[1][\proofname]{\begin{trivlist}\item[\hskip \labelsep \itshape \bfseries #1{}\hspace{2ex}]}
+{\qed\end{trivlist}}
+
+\renewcommand{\qedsymbol}{$\blacksquare$}
+
+% ---------------------------------------------------------------------
+% ---------------------------------------------------------------------
+% Problems
+% ---------------------------------------------------------------------
+% ---------------------------------------------------------------------
+
+\SetEnumitemKey{hide}{} % hide flag for list environments
+
+%% \newcommand{\problemName}{Problem }
+
+%% \newlist{problemList}{enumerate}{1}
+%% \setlist[problemList]{align=left, resume=\thetitle,label={\textbf{\problemName \arabic*.}},
+%% leftmargin=0pt, itemindent=*, itemsep=0pt, topsep=5pt, itemsep=5pt}
+
+%% \newenvironment{problem}
+%% {\renewcommand{\problemName}{Problem }\begin{problemList} \item}
+%% {\end{problemList}}
+
+%% \newenvironment{question}
+%% {\renewcommand{\problemName}{Question }\begin{problemList} \item}
+%% {\end{problemList}}
+
+%% \newenvironment{exploration}
+%% {\renewcommand{\problemName}{Exploration }\begin{problemList} \item}
+%% {\end{problemList}}
+
+%% \newenvironment{exercise}
+%% {\renewcommand{\problemName}{Exercise }\begin{problemList} \item}
+%% {\end{problemList}}
+
+\newlist{parts}{enumerate}{1}
+\setlist[parts]{label={\textbf{\alph*)}}, leftmargin=*, itemindent=0pt, itemsep=0pt, topsep=5pt, itemsep=5pt}
+
+%% Prompt environment
+\newenvironment{prompt}{
+\ifhandout\setbox0\vbox\bgroup\else\color{gray!50!black}
+\fi}
+{\ifhandout\egroup
+\fi}
+
+%% hints environment definition
+
+%% \newlist{hintList}{itemize}{2}
+%% \setlist[hintList]{label=\textsl{\textbf{Hint:}}, leftmargin=*, itemindent=0pt, itemsep=0pt, topsep=5pt, itemsep=5pt}
+%% \NewEnviron{hints}{\ifhandout \else \begin{hintList} \BODY \end{hintList} \fi}
+
+%% % use of hint should be discouraged
+%% \NewEnviron{hint}{\ifhandout \else \begin{hintList} \item \BODY \end{hintList} \fi}
+
+% ---------------------------------------------------------------------
+% ---------------------------------------------------------------------
+% Answers
+% ---------------------------------------------------------------------
+% ---------------------------------------------------------------------
+
+\newboolean{given}
+\setboolean{given}{true}
+\newcommand{\answer}[2][false]{%
+  \ifthenelse{\boolean{#1}}%
+             {\ifhandout #2\else\underset{\scriptstyle\mathrm{given}}{\fbox{\ensuremath{#2}}}\fi}%     
+             {\ifhandout\else\fbox{\ensuremath{#2}}\fi}%
+             {}}
 
 
-%% these may be changed in the future to work more like interactive.
-%% expression-answer envrironment
-\NewEnviron{expression-answer}[1][]{} %% should be depreciated
+%% multiple choice environment
+\renewcommand{\theenumi}{$(\mathrm{\alph{enumi}})$}  % this hack should be fixed via enumitem
+\renewcommand{\labelenumi}{\theenumi}
 
-%% matrix-answer envrironment
-\NewEnviron{matrix-answer}[1][]{} %% should be depreciated
+%% correct answers for multiple choice
+\newboolean{correct}
+\setboolean{correct}{true}
+\newcommand{\choice}[2][]{\item #2\ifthenelse{\boolean{#1}}{\ifhandout \else \quad\checkmark\fi}{}}
 
-\newenvironment{matrixAnswer}[1][]
-  {
+\newenvironment{multipleChoice}[1][]
+{\begin{trivlist}\item[\hskip \labelsep\small\bfseries Multiple Choice:]\hfil\begin{enumerate}}
+{\end{enumerate}\end{trivlist}}
+
+\newenvironment{selectAll}[1][]
+{\begin{trivlist}\item[\hskip \labelsep\small\bfseries Select All Correct Answers:]\hfil\begin{enumerate}}
+{\end{enumerate}\end{trivlist}}
+
+%% \newenvironment{multipleResponse}[1][]
+%% {\begin{trivlist}\item[\hskip \labelsep\small\bfseries Multiple Response:]\hfil\begin{enumerate}}
+%% {\end{enumerate}\end{trivlist}}
+
+
+
+
+%% In the future we need this to (optionally) be desplayed in the
+%% problem, while the actual code lives in the solution. Here is how
+%% this could be implemented: Like the title/maketitle commands, the
+%% multiple-choice could be stored in \themultiplechoice, flip a
+%% boolean, and execute \makemultiplechoice at the \end of the
+%% problem.  We should also make a command called "\showchoices" that
+%% will show choices in the handout.
+
+\ifhandout
+	\excludecomment{matrixAnswer}
+\else
+	\newenvironment{matrixAnswer}[1][]
+	{
     % First, we tell fancyvrb that we're inside a verbatim environment.
     \VerbatimEnvironment
     % Now we start the actual environment:
@@ -162,72 +399,50 @@
         label=Matrix Answer,
         labelposition=topline,
       ]%
-  }
-  {\end{Verbatim}}
+	}
+	{\end{Verbatim}}
+\fi
 
 
+\ifhandout
+\newenvironment{freeResponse}[1][false]%
+{%
+\def\givenatend{\boolean{#1}}\ifthenelse{\boolean{#1}}{\begin{trivlist}\item}{\setbox0\vbox\bgroup}{}
+}
+{%
+\ifthenelse{\givenatend}{\end{trivlist}}{\egroup}{}
+}
+\else
+\newenvironment{freeResponse}[1][false]%
+{%
+  \ifthenelse{\boolean{#1}}{\begin{trivlist}\item[\hskip \labelsep\bfseries Free Response (Given):\hspace{2ex}]}
+{\begin{trivlist}\item[\hskip \labelsep\bfseries Free Response:\hspace{2ex}]}
+{}
+}
+{\end{trivlist}}
+\fi
+
+%% code answer environment
+%% You cannot use Envrion with the fancyvrb/listings package if you want nested environments
+
+\DefineVerbatimEnvironment{code}{Verbatim}{numbers=left,frame=lines,label=Code,labelposition=topline}
+%% \lstnewenvironment{python}
+%% {\lstset{language=python,numbers=left}}
+%% {}
 
 
+%% python answer environment
+%% You cannot use Envrion with the fancyvrb/listings package if you want nested environments
 
-%% free-response answer envrironment
-\NewEnviron{free-response}[1][]{\BODY} %% should be depreciated
-\NewEnviron{freeResponse}[1][]{\BODY}
-
-
-
-% ---------------------------------------------------------------------
-% ---------------------------------------------------------------------
-%
-%                    ******************************************
-%                    ** ACTIVITY-TITLE AND SHORT-DESCRIPTION **
-%                    ******************************************
-%
-%
-%
-
-
-\makeatletter
-\let\abstract\relax
-\let\endabstract\relax
-\NewEnviron{abstract}{\protected@xdef\theabstract{\BODY}}
-\makeatother
-
-\newcounter{titlenumber}
-\renewcommand{\thetitlenumber}{\arabic{titlenumber}}
-\setcounter{titlenumber}{0}
-
-\makeatletter
-\renewcommand\@maketitle{%
-  \addtocounter{titlenumber}{1}\addcontentsline{toc}{subsection}{\thetitlenumber~\@title} %% puts titles in the toc
-  {\flushleft\LARGE\bfseries {\ifnumbers\thetitlenumber\fi}{\ifnumbers\hspace{1em}\else\hspace{0em}\fi}\@title \par }
-  \vskip .6em\noindent\textit\theabstract\setcounter{problem}{0}\par\vspace{2em}
-  \ifnooutcomes\else\ifhandout\else\let\thefootnote\relax\footnote{Learning outcomes: \theoutcomes}\fi\fi 
-  \aftergroup\@afterindentfalse
-  \aftergroup\@afterheading}
-\makeatother
-
+\DefineVerbatimEnvironment{python}{Verbatim}{numbers=left,frame=lines,label=Python,labelposition=topline}
+%% \lstnewenvironment{python}
+%% {\lstset{language=python,numbers=left}}
+%% {}
 
 
 
 % ---------------------------------------------------------------------
-% ---------------------------------------------------------------------
-%
-%                    ***************************
-%                    ** PROBLEM ENVIRONMENTS **
-%                    ***************************
-%
-%
-
-
-
-
-
-
-\newcounter{problem} %% for the main problem
-\newcounter{problemType} %% for variations within shuffle
-
-% ---------------------------------------------------------------------
-% Problem environment decorations
+% Problem environment decorations (these should be user invoked, not default)
 
 % The decoration for these envrionments were inspired by
 % http://tex.stackexchange.com/questions/11098/nice-formatting-for-theorems?lq=1
@@ -264,11 +479,13 @@
   \endgroup%
 }%
 
+% --------------------------------------------------------------------
+% --------------------------------------------------------------------
+% Commands that should be deprecated or replaced
+% --------------------------------------------------------------------
+% --------------------------------------------------------------------
 
-% ---------------------------------------------------------------------
-% Problem environments: Exercise, Question, Exploration
-
-
+\newcommand{\prerequisites}[1]{}
 
 %%% shuffle environment
 \newif\iffirstproblem% Condition for first problem
@@ -298,6 +515,22 @@ Exercise \ifhandout\theproblem\else\ifshuffle\theproblem.\theproblemType\else\th
 \else\egroup\fi}
 
 
+\newenvironment{problem}[1][2in]
+{\iffirstproblem
+\def\spaceatend{#1}\refstepcounter{problem}\refstepcounter{problemType}
+\begin{trivlist}\item[\hskip\labelsep\sffamily\bfseries 
+Problem \ifhandout\theproblem\else\ifshuffle\theproblem.\theproblemType\else\theproblem\fi\fi]
+\slshape
+\else\setbox0\vbox\bgroup\fi} %% removes exercise if in shuffle and not first problem
+{\iffirstproblem
+\ifhandout\ifspace\vspace{\spaceatend}\fi\fi %% space at end
+\par\addvspace{.5ex}\nobreak\noindent\hung %% line at the bottom
+\ifshuffle\addtocounter{problem}{-1}\fi %% the problem does not increase within shuffle
+\ifhandout\ifshuffle\global\firstproblemfalse\fi\fi %% removes other problems from shuffle in handout
+\ifhandout\ifnewpage\newpage\fi\fi %% adds newpage
+\end{trivlist}
+\else\egroup\fi}
+
 
 \newenvironment{question}[1][2in]
 {\iffirstproblem
@@ -314,8 +547,6 @@ Question \ifhandout\theproblem\else\ifshuffle\theproblem.\theproblemType\else\th
 \ifhandout\ifnewpage\newpage\fi\fi %% adds newpage
 \end{trivlist}
 \else\egroup\fi}
-
-
 
 \newenvironment{exploration}[1][2in]
 {\iffirstproblem
@@ -334,6 +565,24 @@ Exploration \ifhandout\theproblem\else\ifshuffle\theproblem.\theproblemType\else
 \else\egroup\fi}
 
 
+\newenvironment{xarmaBoost}[1][2in]
+{\iffirstproblem
+\def\spaceatend{#1}\refstepcounter{problem}\refstepcounter{problemType}
+\begin{trivlist}\item[\hskip\labelsep\sffamily\bfseries 
+Xarma Boost \ifhandout\theproblem\else\ifshuffle\theproblem.\theproblemType\else\theproblem\fi\fi]
+\slshape
+\else\setbox0\vbox\bgroup\fi} %% removes exercise if in shuffle and not first problem
+{\iffirstproblem
+\ifhandout\ifspace\vspace{\spaceatend}\fi\fi %% space at end
+\par\addvspace{.5ex}\nobreak\noindent\hung %% line at the bottom
+\ifshuffle\addtocounter{problem}{-1}\fi %% the problem does not increase within shuffle
+\ifhandout\ifshuffle\global\firstproblemfalse\fi\fi %% removes other problems from shuffle in handout
+\ifhandout\ifnewpage\newpage\fi\fi %% adds newpage
+\end{trivlist}
+\else\egroup\fi}
+
+
+
 
 
 %% Solution environment
@@ -346,128 +595,101 @@ Exploration \ifhandout\theproblem\else\ifshuffle\theproblem.\theproblemType\else
 \end{trivlist}
 \fi}
 
-%% Solution environment
-\newenvironment{prompt}{
-\ifhandout\setbox0\vbox\bgroup\else\color{gray!50!black}
-%\begin{trivlist}\item[]
-%\noindent\upshape\small
-\fi}
-{\ifhandout\egroup\else
-%\end{trivlist}
-\fi}
+\newenvironment{multiple-choice}[1][] %% should be deprecated
+{\begin{enumerate}}
+{\end{enumerate}}
 
-%% hint environment should be depecrated
+%% interactive envrironment
+\NewEnviron{interactive}[1][]{\BODY}
+
+
+%% these may be changed in the future to work more like interactive.
+%% expression-answer envrironment
+\NewEnviron{expression-answer}[1][]{} %% should be deprecated
+
+%% matrix-answer envrironment
+\NewEnviron{matrix-answer}[1][]{} %% should be deprecated
+
+%% free-response answer envrironment
+\NewEnviron{free-response}[1][]{\BODY} %% should be deprecated
+
+
+%% Feedback
+\ifhandout
+\newenvironment{feedback}{\setbox0\vbox\bgroup}
+               {\egroup}
+               
+               \else
+               
+               \newenvironment{feedback}[1][attempt]
+                              {\begin{trivlist}\item[\hskip \labelsep\small\slshape\bfseries Feedback (#1):\hspace{2ex}]\small\slshape}
+               {\end{trivlist}}
+               \fi
+               
+
+
+%% Hints
+\ifhandout
+\newenvironment{hint}{\setbox0\vbox\bgroup}
+{\egroup}
+
+\else
 
 \newenvironment{hint}{
-\ifhandout\setbox0\vbox\bgroup\else
-\begin{trivlist}\item[\hskip \labelsep\small\slshape\bfseries\color{black} Hint:\hspace{2ex}]
-\small\slshape\color{black}
-\fi}
-{\ifhandout\egroup\else
-\end{trivlist}
-\fi}
+\begin{trivlist}\item[\hskip \labelsep\small\slshape\bfseries Hint:\hspace{2ex}]
+\small\slshape}
+{\end{trivlist}}
+\fi
 
-%% hints environment definition
-
-\newlist{hints}{enumerate}{3}
-\setlist[hints]{label=\slshape\bfseries Hint:}
-
-%% hide flag for enumerate environment
-
-\SetEnumitemKey{hide}{}
-
-%% multiple choice environment
-\renewcommand{\theenumi}{$(\mathrm{\alph{enumi}})$}
-\renewcommand{\labelenumi}{\theenumi}
-\newenvironment{multiple-choice}[1][] %% should be depreciated
-{\begin{enumerate}}
-{\end{enumerate}}
-
-\newenvironment{multipleChoice}[1][]
-{\begin{enumerate}}
-{\end{enumerate}}
-
-%% In the future we need this to (optionally) be desplayed in the
-%% problem, while the actual code lives in the solution. Here is how
-%% this could be implemented: Like the title/maketitle commands, the
-%% multiple-choice could be stored in \themultiplechoice, flip a
-%% boolean, and execute \makemultiplechoice at the \end of the
-%% problem.  We should also make a command called "\showchoices" that
-%% will show choices in the handout.
+\ifhints
+\renewenvironment{hint}{
+\begin{trivlist}\item[\hskip \labelsep\small\slshape\bfseries Hint:\hspace{2ex}]
+\small\slshape}
+{\end{trivlist}}
+\fi
 
 
-%% code answer environment
-%% You cannot use Envrion with the fancyvrb/listings package if you want nested environments
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% Dialogue
 
-\DefineVerbatimEnvironment{code}{Verbatim}{numbers=left,frame=lines,label=Code,labelposition=topline}
-%% \lstnewenvironment{python}
-%% {\lstset{language=python,numbers=left}}
-%% {}
+\newenvironment{dialogue}{%
+   \renewcommand\descriptionlabel[1]{\hspace{\labelsep}\textbf{##1:}}
+   \begin{description}%
+}{%
+   \end{description}%
+}
 
+%% \newenvironment{hint}{
+%% \ifhandout\setbox0\vbox\bgroup\else
+%% \begin{trivlist}\item[\hskip \labelsep\small\slshape\bfseries Hint:\hspace{2ex}]
+%% \small\slshape
+%% \fi}
+%% {\ifhandout\egroup\else
+%% \end{trivlist}
+%% \fi}
 
-%% python answer environment
-%% You cannot use Envrion with the fancyvrb/listings package if you want nested environments
+\newcounter{problem} %% for the main problem
+\newcounter{problemType} %% for variations within shuffle
 
-\DefineVerbatimEnvironment{python}{Verbatim}{numbers=left,frame=lines,label=Python,labelposition=topline}
-%% \lstnewenvironment{python}
-%% {\lstset{language=python,numbers=left}}
-%% {}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% When designing new elements, it is nice to be able to wrap things in a class
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% When using mathjax, it is useful to dump all the newcommands to a "jax" file
 
+\ifdefined\HCode
+  \else
+    \newwrite\myfile
+    \immediate\openout\myfile=\jobname.jax
 
-% ---------------------------------------------------------------------
-% ---------------------------------------------------------------------
-%
-%                    *******************************
-%                    ** THEOREM-LIKE ENVIRONMENTS **
-%                    *******************************
-%
-%
-%
+    \makeatletter
 
+\let\@oldargdef\@argdef
+\long\def\@argdef#1[#2]#3{%
+\immediate\write\myfile{\unexpanded{\newcommand}{\unexpanded{#1}}[\unexpanded{#2}]{\unexpanded{#3}}}%
+\@oldargdef#1[#2]{#3}%
+}
 
-\newtheoremstyle{SlantTheorem}
-	{\topsep}{\topsep}              %%% space between body and thm
-	{\slshape}                      %%% Thm body font
-	{}                              %%% Indent amount (empty = no indent)
-	{\bfseries}            %%% Thm head font
-	{}                              %%% Punctuation after thm head
-	{\labelsep}                           %%% Space after thm head
-	{\thmname{#1}\thmnumber{ #2}\thmnote{ \bfseries(#3)}}%%% Thm head spec
-\theoremstyle{SlantTheorem}
-\newtheorem{theorem}[problem]{Theorem}
-\newtheorem{acknowledgement}[problem]{Acknowledgement}
-\newtheorem{algorithm}[problem]{Algorithm}
-\newtheorem{axiom}[problem]{Axiom}
-\newtheorem{claim}[problem]{Claim}
-\newtheorem{conclusion}[problem]{Conclusion}
-\newtheorem{condition}[problem]{Condition}
-\newtheorem{conjecture}[problem]{Conjecture}
-\newtheorem{corollary}[problem]{Corollary}
-\newtheorem{criterion}[problem]{Criterion}
-\newtheorem{definition}[problem]{Definition}
-\newtheorem{example}[problem]{Example}
-\newtheorem{lemma}[problem]{Lemma}
-\newtheorem{notation}[problem]{Notation}
-\newtheorem{proposition}[problem]{Proposition}
-\newtheorem{remark}[problem]{Remark}
-\newtheorem{summary}[problem]{Summary}
-\newtheorem{paradox}[problem]{Paradox}
-\newtheorem{warning}[problem]{Warning}
-\newtheorem{observation}[problem]{Observation}
+    \makeatother
+\fi
 
-\renewenvironment{proof}[1][\proofname]{\begin{trivlist}\item[\hskip \labelsep \itshape \bfseries #1{}\hspace{2ex}]}
-{\qed\end{trivlist}}
-
-\renewcommand{\qedsymbol}{$\blacksquare$}
-
-
-
-
-
-\endinput
-%---------------------------------------------------------------------
-%---------------------------------------------------------------------
-%---------------------------------------------------------------------
-%---------------------------------------------------------------------
-%---------------------------------------------------------------------
