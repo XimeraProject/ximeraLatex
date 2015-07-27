@@ -341,6 +341,15 @@
              {\ifhandout\else\fbox{\ensuremath{#2}}\fi}%
              {}}
 
+%% wordChoice
+
+%% Should be added to ximera.cls
+\newcommand{\wordChoice}[2][]{$\underset{\scriptstyle\textrm{choice}}{\fbox{\text{#2}}}$}  %% Should be added to ximera.cls
+\ifhandout  %% Should be added to ximera.cls
+\renewcommand{\wordChoice}[2][]{#2 }  %% Should be added to ximera.cls
+\fi  %% Should be added to ximera.cls
+%%
+
 
 %% multiple choice environment
 \renewcommand{\theenumi}{$(\mathrm{\alph{enumi}})$}  % this hack should be fixed via enumitem
