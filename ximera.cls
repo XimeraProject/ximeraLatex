@@ -672,6 +672,9 @@ Xarma Boost \ifhandout\theproblem\else\ifshuffle\theproblem.\theproblemType\else
 \newcounter{problemType} %% for variations within shuffle
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% When designing new elements, it is nice to be able to wrap things in a class
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % When using mathjax, it is useful to dump all the newcommands to a "jax" file
 
 \ifdefined\HCode
