@@ -298,31 +298,6 @@
 
 \SetEnumitemKey{hide}{} % hide flag for list environments
 
-%% \newcommand{\problemName}{Problem }
-
-%% \newlist{problemList}{enumerate}{1}
-%% \setlist[problemList]{align=left, resume=\thetitle,label={\textbf{\problemName \arabic*.}},
-%% leftmargin=0pt, itemindent=*, itemsep=0pt, topsep=5pt, itemsep=5pt}
-
-%% \newenvironment{problem}
-%% {\renewcommand{\problemName}{Problem }\begin{problemList} \item}
-%% {\end{problemList}}
-
-%% \newenvironment{question}
-%% {\renewcommand{\problemName}{Question }\begin{problemList} \item}
-%% {\end{problemList}}
-
-%% \newenvironment{exploration}
-%% {\renewcommand{\problemName}{Exploration }\begin{problemList} \item}
-%% {\end{problemList}}
-
-%% \newenvironment{exercise}
-%% {\renewcommand{\problemName}{Exercise }\begin{problemList} \item}
-%% {\end{problemList}}
-
-\newlist{parts}{enumerate}{1}
-\setlist[parts]{label={\textbf{\alph*)}}, leftmargin=*, itemindent=0pt, itemsep=0pt, topsep=5pt, itemsep=5pt}
-
 %% Prompt environment
 \newenvironment{prompt}{
 \ifhandout\setbox0\vbox\bgroup\else\color{gray!50!black}
@@ -346,15 +321,19 @@
 % ---------------------------------------------------------------------
 
 \makeatletter
+%defining keys for answer command key=value pairs
 \define@key{answer}{given}[true]{\def\ans@given{#1}}
-\define@key{answer}{tolerance}{\def\ans@tol{#1}}
+\define@key{answer}{tolerance}{\def\ans@tol{#1}} %note: currently no affect on pdf output
 
+%setting default values for answer command key=value pairs
 \setkeys{answer}{given=false}
 \newcommand{\answer}[2][]{%
 	\setkeys{answer}{#1}
-	\ifthenelse{\boolean{\ans@given}}%
-		{\ifhandout #2\else\underset{\scriptstyle\mathrm{given}}{\fbox{\ensuremath{#2}}}\fi}%     
-		{\ifhandout\else\fbox{\ensuremath{#2}}\fi}}%
+	%% when given=true, show answer in handout mode, show answer in "given box" outside handout mode
+	%% when given=false, do not show answer in handout mode, show answer outside handout mode
+	\ifthenelse{\boolean{\ans@given}}
+		{\ifhandout #2\else\underset{\scriptstyle\mathrm{given}}{\fbox{\ensuremath{#2}}}\fi}
+		{\ifhandout\else\fbox{\ensuremath{#2}}\fi}}% show answer in box outside handout mode
              
 \makeatother
 
@@ -378,6 +357,7 @@
 {\begin{enumerate*}[before={( }, itemjoin={{ / }}, after={ )}, label={}]}
 {\end{enumerate*}}
 
+%wordChoice is an in-line version of multipleChoice:  uses enumitem package
 \newcommand{\wordChoice}[1]{\begin{multipleChoice*} #1 \end{multipleChoice*}}
 
 \newenvironment{selectAll}[1][]
@@ -595,39 +575,6 @@ Xarma Boost \ifhandout\theproblem\else\ifshuffle\theproblem.\theproblemType\else
 \ifhandout\ifnewpage\newpage\fi\fi %% adds newpage
 \end{trivlist}
 \else\egroup\fi}
-
-
-
-
-
-%% Solution environment
-\newenvironment{solution}{
-\ifhandout\setbox0\vbox\bgroup\else
-\begin{trivlist}\item[\hskip \labelsep\small\itshape\bfseries Solution\hspace{2ex}]
-\par\noindent\upshape\small
-\fi}
-{\ifhandout\egroup\else
-\end{trivlist}
-\fi}
-
-\newenvironment{multiple-choice}[1][] %% should be deprecated
-{\begin{enumerate}}
-{\end{enumerate}}
-
-%% interactive envrironment
-\NewEnviron{interactive}[1][]{\BODY}
-
-
-%% these may be changed in the future to work more like interactive.
-%% expression-answer envrironment
-\NewEnviron{expression-answer}[1][]{} %% should be deprecated
-
-%% matrix-answer envrironment
-\NewEnviron{matrix-answer}[1][]{} %% should be deprecated
-
-%% free-response answer envrironment
-\NewEnviron{free-response}[1][]{\BODY} %% should be deprecated
-
 
 %% Feedback
 \ifhandout
