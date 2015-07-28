@@ -345,13 +345,18 @@
 % ---------------------------------------------------------------------
 % ---------------------------------------------------------------------
 
-\newboolean{given}
-\setboolean{given}{true}
-\newcommand{\answer}[2][false]{%
-  \ifthenelse{\boolean{#1}}%
-             {\ifhandout #2\else\underset{\scriptstyle\mathrm{given}}{\fbox{\ensuremath{#2}}}\fi}%     
-             {\ifhandout\else\fbox{\ensuremath{#2}}\fi}%
-             {}}
+\makeatletter
+\define@key{answer}{given}[true]{\def\ans@given{#1}}
+\define@key{answer}{tolerance}{\def\ans@tol{#1}}
+
+\setkeys{answer}{given=false}
+\newcommand{\answer}[2][]{%
+	\setkeys{answer}{#1}
+	\ifthenelse{\boolean{\ans@given}}%
+		{\ifhandout #2\else\underset{\scriptstyle\mathrm{given}}{\fbox{\ensuremath{#2}}}\fi}%     
+		{\ifhandout\else\fbox{\ensuremath{#2}}\fi}}%
+             
+\makeatother
 
 
 %% multiple choice environment
