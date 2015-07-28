@@ -134,7 +134,7 @@
   \RequirePackage[colorlinks=true,urlcolor=blue]{hyperref}
 \fi
 
-\RequirePackage{enumitem}
+\RequirePackage[inline]{enumitem}
 \RequirePackage[pagestyles]{titlesec} 
 \RequirePackage{titletoc} 
 \RequirePackage{titling}  
@@ -353,13 +353,6 @@
              {\ifhandout\else\fbox{\ensuremath{#2}}\fi}%
              {}}
 
-%% wordChoice
-\newcommand{\wordChoice}[2][]{$\underset{\scriptstyle\textrm{choice}}{\fbox{\text{#2}}}$}  %% Should be added to ximera.cls
-\ifhandout  %% Should be added to ximera.cls
-\renewcommand{\wordChoice}[2][]{#2}  %% Should be added to ximera.cls
-\fi  
-%%
-
 
 %% multiple choice environment
 \renewcommand{\theenumi}{$(\mathrm{\alph{enumi}})$}  % this hack should be fixed via enumitem
@@ -373,6 +366,14 @@
 \newenvironment{multipleChoice}[1][]
 {\begin{trivlist}\item[\hskip \labelsep\small\bfseries Multiple Choice:]\hfil\begin{enumerate}}
 {\end{enumerate}\end{trivlist}}
+
+
+%multipleChoice* is for internal use only!
+\newenvironment{multipleChoice*}[1][]
+{\begin{enumerate*}[before={( }, itemjoin={{ / }}, after={ )}, label={}]}
+{\end{enumerate*}}
+
+\newcommand{\wordChoice}[1]{\begin{multipleChoice*} #1 \end{multipleChoice*}}
 
 \newenvironment{selectAll}[1][]
 {\begin{trivlist}\item[\hskip \labelsep\small\bfseries Select All Correct Answers:]\hfil\begin{enumerate}}
