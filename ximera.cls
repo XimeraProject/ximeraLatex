@@ -395,6 +395,8 @@
 
 \ifhandout
 	\excludecomment{matrixAnswer}
+%% Note:  This workaround will throw an error "File ended while scanning use of \next" if "\end{matrixAnswer}" does not appear on its own line with no spaces preceding it.  This is a documented issue with the \excludecomment command.
+
 \else
 	\newenvironment{matrixAnswer}
 	{
