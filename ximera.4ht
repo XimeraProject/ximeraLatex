@@ -126,6 +126,9 @@
 \renewcommand{\youtube}[1]{\HCode{<div class="youtube" data-url="#1"></div>}}
 \renewcommand{\video}[1]{\HCode{<div class="video" data-url="#1"></div>}}
 
+\renewcommand{\geogebra}[1]{\HCode{<iframe scrolling="no" src="https://tube.geogebra.org/material/iframe/id/#1/width/640/height/480/border/888888/rc/false/ai/false/sdz/true/smb/false/stb/false/stbh/true/ld/false/sri/true/at/auto" style="border:0px;"> </iframe>}}
+
+
 \renewcommand*{\link}[2][]{%
 \ifthenelse{\equal{#1}{}}%
 {\HCode{<a href="#2">}LINK\HCode{</a>}}
