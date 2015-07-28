@@ -354,10 +354,12 @@
              {}}
 
 %% wordChoice
+
+%% Should be added to ximera.cls
 \newcommand{\wordChoice}[2][]{$\underset{\scriptstyle\textrm{choice}}{\fbox{\text{#2}}}$}  %% Should be added to ximera.cls
 \ifhandout  %% Should be added to ximera.cls
-\renewcommand{\wordChoice}[2][]{#2}  %% Should be added to ximera.cls
-\fi  
+\renewcommand{\wordChoice}[2][]{#2 }  %% Should be added to ximera.cls
+\fi  %% Should be added to ximera.cls
 %%
 
 
