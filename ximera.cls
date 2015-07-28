@@ -398,7 +398,7 @@
 %% Note:  This workaround will throw an error "File ended while scanning use of \next" if "\end{matrixAnswer}" does not appear on its own line with no spaces preceding it.  This is a documented issue with the \excludecomment command.
 
 \else
-	\newenvironment{matrixAnswer}[1][]
+	\newenvironment{matrixAnswer}
 	{
     % First, we tell fancyvrb that we're inside a verbatim environment.
     \VerbatimEnvironment
