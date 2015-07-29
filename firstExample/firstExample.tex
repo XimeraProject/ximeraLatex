@@ -9,7 +9,7 @@
 
 \outcome{Understand a first example of the Ximera style.}
 \outcome{Have a nice basic example to work from.}
-
+ 
 \title{First example}
 
 \begin{document}
@@ -21,7 +21,7 @@ In this activity we see some examples.
 To start we can have theorem environments:
 
 \begin{theorem}
-Given a right triangle:
+Given a right triangle drawn with TiKZ:
 \begin{image}
 \begin{tikzpicture}[geometryDiagrams]
 \coordinate (A) at (0,2);
@@ -43,14 +43,25 @@ a^2 + b^2 = c^2
 \]
 \end{theorem}
 
+
+As well as example environments.
+
+\begin{example}
+For example, this is an example.
+\end{example}
+
+
+There are exercises you can do:
+
 \begin{exercise}
-$3\times 2=$\answer{6}
+$3\times 2=\answer{6}$
 \end{exercise}
 
+Some exercises can have hints.
 
 \begin{exercise}
 Given that $r(v)=-2 v^2-4 v-4$, evaluate $r(-0.4)$. Express your answer in decimal notation.
-%\begin{solution}
+%
 \begin{hint}
 $r(-0.4)=-2 (-0.4)^2-4 (-0.4)-4$.
 \end{hint}
@@ -58,8 +69,8 @@ $r(-0.4)=-2 (-0.4)^2-4 (-0.4)-4$.
 $r(-0.4)=-2.72$.
 \end{hint}
 
-The value of the function $r(v)=-2 v^2-4 v-4$, evaluated at $v=-0.4$, is \answer{-2.72}.
-%\end{solution}
+The value of the function $r(v)=-2 v^2-4 v-4$, evaluated at $v=-0.4$, is $\answer{-2.72}$.
+%
 \end{exercise}
 
 
@@ -83,6 +94,8 @@ It is a puppy!
 \end{hint}
 \end{question}
 
+It is also possible to have a list of questions which get shuffled:
+
 
 \begin{shuffle}
 \begin{question}
@@ -104,17 +117,17 @@ In the plot below, is $P$ a function of $k$?
         \end{axis}
 \end{tikzpicture}
 \end{image}
-\begin{solution}
-\begin{multiple-choice}
+
+\begin{multipleChoice}
 \choice[correct]{Yes.}
 \choice{No.}
-\end{multiple-choice}
+\end{multipleChoice}
 \begin{hint}
 For each input, how many outputs are there?
 \end{hint}
-\end{solution}
+
 Use the plot to compute $P(2)$.
-\begin{solution}
+
 \begin{hint}
 To start, find $2$ on the horizontal axis. 
 \end{hint}
@@ -122,7 +135,6 @@ To start, find $2$ on the horizontal axis.
 Now from this position, move up or down until you reach the curve. The value of $P(2)$ is the height of the curve at the point $k=2$.
 \end{hint}
 The value of $P(2)$ is \answer{$2$}.
-\end{solution}
 \end{question}
 
 
@@ -145,25 +157,24 @@ In the plot below, is $R$ a function of $n$?
         \end{axis}
 \end{tikzpicture}
 \end{image}
-\begin{solution}
-\begin{multiple-choice}
+
+\begin{multipleChoice}
 \choice[correct]{Yes.}
 \choice{No.}
-\end{multiple-choice}
+\end{multipleChoice}
 \begin{hint}
 For each input, how many outputs are there?
 \end{hint}
-\end{solution}
+
 Use the plot to compute $R(3)$.
-\begin{solution}
+
 \begin{hint}
 To start, find $3$ on the horizontal axis. 
 \end{hint}
 \begin{hint}
 Now from this position, move up or down until you reach the curve. The value of $R(3)$ is the height of the curve at the point $n=3$.
 \end{hint}
-The value of $R(3)$ is \answer{$1$}.
-\end{solution}
+The value of $R(3)$ is $\answer{1}$.
 \end{question}
 
 \begin{question}
@@ -185,31 +196,31 @@ In the plot below, is $b$ a function of $w$?
         \end{axis}
 \end{tikzpicture}
 \end{image}
-\begin{solution}
-\begin{multiple-choice}
+
+\begin{multipleChoice}
 \choice[correct]{Yes.}
 \choice{No.}
-\end{multiple-choice}
+\end{multipleChoice}
 \begin{hint}
 For each input, how many outputs are there?
 \end{hint}
-\end{solution}
+
 Use the plot to compute $b(-2)$.
-\begin{solution}
+
 \begin{hint}
 To start, find $-2$ on the horizontal axis. 
 \end{hint}
 \begin{hint}
 Now from this position, move up or down until you reach the curve. The value of $b(-2)$ is the height of the curve at the point $w=-2$.
 \end{hint}
-The value of $b(-2)$ is \answer{$4$}.
-\end{solution}
+The value of $b(-2)$ is $\answer{4}$.
+
 \end{question}
 \end{shuffle}
 
 \begin{question}
 Enter the matrix  \(\begin{bmatrix} x & y \\ xy & z+1 \end{bmatrix}\)
-\begin{matrixAnswer}[name=M]
+\begin{matrixAnswer}
   correctMatrix = [['x','y'],['xy','z+1']]
 \end{matrixAnswer}
 \end{question}
