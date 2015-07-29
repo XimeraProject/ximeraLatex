@@ -296,23 +296,12 @@
 % ---------------------------------------------------------------------
 % ---------------------------------------------------------------------
 
-\SetEnumitemKey{hide}{} % hide flag for list environments
-
 %% Prompt environment
 \newenvironment{prompt}{
 \ifhandout\setbox0\vbox\bgroup\else\color{gray!50!black}
 \fi}
 {\ifhandout\egroup
 \fi}
-
-%% hints environment definition
-
-%% \newlist{hintList}{itemize}{2}
-%% \setlist[hintList]{label=\textsl{\textbf{Hint:}}, leftmargin=*, itemindent=0pt, itemsep=0pt, topsep=5pt, itemsep=5pt}
-%% \NewEnviron{hints}{\ifhandout \else \begin{hintList} \BODY \end{hintList} \fi}
-
-%% % use of hint should be discouraged
-%% \NewEnviron{hint}{\ifhandout \else \begin{hintList} \item \BODY \end{hintList} \fi}
 
 % ---------------------------------------------------------------------
 % ---------------------------------------------------------------------
@@ -337,7 +326,6 @@
              
 \makeatother
 
-
 %% multiple choice environment
 \renewcommand{\theenumi}{$(\mathrm{\alph{enumi}})$}  % this hack should be fixed via enumitem
 \renewcommand{\labelenumi}{\theenumi}
@@ -351,8 +339,7 @@
 {\begin{trivlist}\item[\hskip \labelsep\small\bfseries Multiple Choice:]\hfil\begin{enumerate}}
 {\end{enumerate}\end{trivlist}}
 
-
-%multipleChoice* is for internal use only!
+%multipleChoice* is for internal use only! (used in wordChoice)
 \newenvironment{multipleChoice*}[1][]
 {\begin{enumerate*}[before={( }, itemjoin={{ / }}, after={ )}, label={}]}
 {\end{enumerate*}}
@@ -363,13 +350,6 @@
 \newenvironment{selectAll}[1][]
 {\begin{trivlist}\item[\hskip \labelsep\small\bfseries Select All Correct Answers:]\hfil\begin{enumerate}}
 {\end{enumerate}\end{trivlist}}
-
-%% \newenvironment{multipleResponse}[1][]
-%% {\begin{trivlist}\item[\hskip \labelsep\small\bfseries Multiple Response:]\hfil\begin{enumerate}}
-%% {\end{enumerate}\end{trivlist}}
-
-
-
 
 %% In the future we need this to (optionally) be desplayed in the
 %% problem, while the actual code lives in the solution. Here is how
@@ -473,12 +453,6 @@
     \end{picture}%
   \endgroup%
 }%
-
-% --------------------------------------------------------------------
-% --------------------------------------------------------------------
-% Commands that should be deprecated or replaced
-% --------------------------------------------------------------------
-% --------------------------------------------------------------------
 
 \newcommand{\prerequisites}[1]{}
 
@@ -620,15 +594,6 @@ Xarma Boost \ifhandout\theproblem\else\ifshuffle\theproblem.\theproblemType\else
 }{%
    \end{description}%
 }
-
-%% \newenvironment{hint}{
-%% \ifhandout\setbox0\vbox\bgroup\else
-%% \begin{trivlist}\item[\hskip \labelsep\small\slshape\bfseries Hint:\hspace{2ex}]
-%% \small\slshape
-%% \fi}
-%% {\ifhandout\egroup\else
-%% \end{trivlist}
-%% \fi}
 
 \newcounter{problem} %% for the main problem
 \newcounter{problemType} %% for variations within shuffle
