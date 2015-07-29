@@ -5,3 +5,4 @@ secondExample/secondExample.jax
 secondExample/secondExample.pdf
 *.gz
 *.pdf
+*.jax
