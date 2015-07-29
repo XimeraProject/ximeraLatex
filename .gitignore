@@ -4,3 +4,4 @@ secondExample/secondExample.jax
 *.out
 secondExample/secondExample.pdf
 *.gz
+*.pdf
