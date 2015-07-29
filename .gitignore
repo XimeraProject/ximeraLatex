@@ -1,1 +1,6 @@
 *.log
+*.aux
+secondExample/secondExample.jax
+*.out
+secondExample/secondExample.pdf
+*.gz
