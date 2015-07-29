@@ -33,6 +33,10 @@
 \ProvidesClass{xourse}[\filedate\space Version \fileversion\space by
   Bart Snapp, Oscar Levin, Hans Parshall]
 
+% Passes xourse class options to the underlying ximera class
+\DeclareOption*{\PassOptionsToClass{\CurrentOption}{ximera}}
+\ProcessOptions
+
 \LoadClass{ximera} 
 
 \RequirePackage{verbatim}
