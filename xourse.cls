@@ -50,7 +50,15 @@
 
 % Note that the new command |\subfile| calls for |\skip@preamble| \emph{within a group}. The changes to |document| and |\documentclass| are undone after the inclusion of the subfile. 
 %    \begin{macrocode}
-\newcommand\activity[1]{\begingroup\skip@preamble\input{#1}\endgroup}
+
+\let\otherinput\input %% Numbering starts a page too soon without this
+
+\newcommand\activity[1]{%
+	\renewcommand{\input}[1]{}
+	\begingroup\skip@preamble\otherinput{#1}\endgroup
+	\let\input\otherinput}
+
+
 %</package>
 %    \end{macrocode}
 
