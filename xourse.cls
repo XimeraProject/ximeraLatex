@@ -71,6 +71,23 @@
 \let\othermaketitle\maketitle
 
 % % Redefine maketitle to give course packet title.
+
+\renewcommand{\maketitle}{ %
+\thispagestyle{empty}
+\begin{center}
+~\\ %puts space at top of page to move title down.  Is there a better way to do this?
+\vskip .25\textheight
+\hrulefill\\
+\vskip 1em
+\bfseries{\Huge \@title} \\
+\hrulefill\\
+\vskip 3em
+{\Large \@author}
+\vskip 2em
+{\large \@date}
+\end{center}
+\clearpage
+}
 %\makeatletter
 %\renewcommand\maketitle{%
 %  \addtocounter{titlenumber}{1} \addcontentsline{toc}{section}{\thetitlenumber~\@title} %% puts titles in the toc
