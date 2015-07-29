@@ -243,10 +243,10 @@
 % --------------------------------------------------------------------
 % Videos
 
-\newcommand{\video}[1]{\footnote{Video link: \url{#1}}}
-\newcommand{\youtube}[1]{\footnote{YouTube link: \url{#1}}}
+%\newcommand{\video}[1]{\footnote{Video link: \url{#1}}}
+\newcommand{\youtube}[1]{YouTube link: \url{https://www.youtube.com/watch?v=#1}}
 
-\newcommand{\geogebra}[3]{}
+\newcommand{\geogebra}[3]{Geogebra link: \url{https://tube.geogebra.org/m/#1}}
 
 % --------------------------------------------------------------------
 % Hyperlinks to outside documents
