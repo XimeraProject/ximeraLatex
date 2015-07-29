@@ -280,8 +280,22 @@
 %\newcommand{\video}[1]{\footnote{Video link: \url{#1}}}
 \newcommand{\youtube}[1]{YouTube link: \url{https://www.youtube.com/watch?v=#1}}
 
+
+% --------------------------------------------------------------------
+% Interactives
+
 \newcommand{\geogebra}[3]{Geogebra link: \url{https://tube.geogebra.org/m/#1}}
 
+\ifhandout
+    
+	\excludecomment{html}
+%% Note:  This workaround will throw an error "File ended while scanning use of \next" if "\end{html}" does not appear on its own line with no spaces preceding it.  This is a documented issue with the \excludecomment command.
+
+\else
+	\newenvironment{html}{\starthtml}{}
+	\def\starthtml#1\end{\HCode{#1}\end}
+\fi
+	
 % --------------------------------------------------------------------
 % Hyperlinks to outside documents
 
