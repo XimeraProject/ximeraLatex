@@ -38,7 +38,11 @@
 \RequirePackage{verbatim}
 %    \end{macrocode}
 %
-%%%%% for allowing a master ximera document to have ximera documents input into it
+
+%%%%% ximera documents included with \activity{} will be included in the body of the xourse document
+%%%%% \input commands within included ximera documents will be ignored
+%%%%% \usepackage commands within included ximera documents will cause an error
+%%%%% overlapping \newcommand definitions within multiple ximera documents included simultaneously will cause an error
 
 % The core of the package. It works by redefining the |document| `environment,' thus making the |\begin| and |\end{document}| of the subfile `transparent' to the inclusion. The redefinition of |\documentclass| is analogous, just having a required and an optional arguments which mean nothing to |\subfile|.
 %    \begin{macrocode}
