@@ -1,0 +1,180 @@
+\documentclass{article}
+\usepackage{xcolor}
+\usepackage{listings}
+\usepackage{enumitem}
+\usepackage[margin=1in]{geometry}
+
+\newcommand\code[1]{\texttt{#1}}
+
+\newcommand{\doc}[3]{\noindent \fbox{\code{#1}}
+\begin{itemize}[align=left, itemsep=0pt, itemindent=10pt]
+	\item[\textbf{Print:}] #2
+	\item[\textbf{Online:}] #3
+\end{itemize}}
+
+\lstset{basicstyle=\normalsize\ttfamily, 
+	language={[LaTeX]TeX},
+	tabsize=2,
+	keywordstyle=\color{blue!50!black},
+	identifierstyle=\color{red!50!black},
+	morekeywords={answer},
+	breaklines=true}
+	
+\title{Using the \code{ximera} class}
+\author{The Ximera Project}
+
+\setlength{\parskip}{10pt}
+\setlength{\parindent}{0pt}
+
+\begin{document}
+
+\maketitle
+
+\section{Introduction}
+
+The goal of the Ximera Project is to allow authors to write online interactive content though \LaTeX\ documents.  The \code{ximera} class provides the structure for a \LaTeX\ document to be displayed in a dynamic online environment.
+
+Each \code{.tex} document written in the \code{ximera} class is an \emph{activity}.  Generally, an activity will be composed of \emph{content} and \emph{problems}.  Content is material served to the student, while problems require a response from the student.  The basic structure of an activity is:
+
+\begin{lstlisting}
+\documentclass{ximera}
+\title{Our Sample Activity}
+\begin{document}
+\begin{abstract}
+A sample document.
+\end{abstract}
+\maketitle
+
+Let's multiply!
+\begin{problem}
+	What is $3 \times 2$? \answer{6}
+\end{problem}
+\end{document}
+\end{lstlisting}
+Note that every \code{ximera} document must have a \code{title}.
+
+\section{Class Keys}
+
+\doc{handout}
+{hides the contents of \code{prompt}, \code{hints}, and \code{answer}}
+{no effect.}
+
+
+\doc{space}
+{adds space for student work after problems}
+{no effect.}
+
+
+\doc{newpage}
+{places each new problem on a new page}
+{no effect.}
+
+\section{Content}
+
+To include an image, use the \code{image} environment.
+\begin{lstlisting}
+\begin{image}
+	\includegraphics{myPrettyPicture.png}
+\end{image}
+\end{lstlisting}
+
+The image environment is simply a generic way to indicate that an
+image is present, and mostly deals with spaceing within the
+document. When including basic TikZ images, please ensure they do not
+rely on information outside of the \code{tikzpicture} environment.
+\begin{lstlisting}
+\begin{image}
+	\begin{tikzpicture}
+		TikZ code goes here.
+	\end{tikzpicture}
+\end{image}
+\end{lstlisting}
+
+To include a YouTube video, use the \code{youtube} command.  For all other videos, use the \code{video} command.
+\begin{lstlisting}
+\youtube{some-youtube-url}
+\video{some-video-url}
+\end{lstlisting}
+
+
+There is support for interactive javascript content via the \code{interactive} environment:
+\begin{lstlisting}
+\begin{interactive}[interactiveContent.js]
+	Some static content.
+\end{interactive}
+\end{lstlisting}
+This is not currently supported on the Ximera server. 
+
+
+\section{Problems and Answers}
+
+A \code{problem} environment collects at least one \code{answer} from the student.
+\begin{lstlisting}
+\begin{problem}
+	What is $3 \times 2$? \answer{6}
+\end{problem}
+\end{lstlisting}
+Online this displays the problem ``What is $3 \times 2$?'' followed by an answer box.  The answer box will accept any answer that evaluates to 6, such as \fbox{$12 - 6$}.
+
+A \code{prompt} environment helps to give an online answer structure.  For example,
+\begin{lstlisting}
+\begin{problem}
+	If Jack earned 12 dollars and spent 3 dollars, how many dollars does Jack have left?
+	\begin{prompt}
+		Jack has \answer{9} dollars left.
+	\end{prompt}
+\end{problem}
+\end{lstlisting}
+The \code{prompt} environment is hidden in \code{handout} mode.
+
+
+\subsection{Problems with Multiple Parts}
+
+A \code{problem} can contain multiple \code{answer} commands, which must all be correct for the Ximera server to consider the problem complete.
+
+\begin{lstlisting}
+\begin{problem}
+	There are \answer{60} minutes in an hour, \answer{24} hours in a day, 
+		and \answer{7} days in a week.
+\end{problem}
+\end{lstlisting}
+
+To display parts of a problem in a list, use \code{parts}.
+\begin{lstlisting}
+\begin{problem}
+	\begin{parts}
+		\item How many minutes in an hour? \answer{60}
+		\item How many hours in a day? \answer{24}
+		\item How many days in a week? \answer{7}
+	\end{parts}
+\end{problem}
+\end{lstlisting}
+
+To force an online student to complete the parts sequentially, add the \code{hide} key to \code{parts}.  Initially only the first \code{item} will be shown.  A correct submission to all answers in an \code{item} reveals the next one.  The problem is considered complete only when all answers have been correctly submitted.
+
+\begin{lstlisting}
+\begin{problem}
+	\begin{parts}[hide]
+		\item How many minutes in an hour? \answer{60}
+		\item How many hours in a day? \answer{24}
+		\item How many days in a week? \answer{7}
+	\end{parts}
+\end{problem}
+\end{lstlisting}
+
+
+\section{Hints}
+
+A \code{hints} environment is a list of hints.
+\begin{lstlisting}
+\begin{problem}
+	What is $3 \times 2$? \answer{6}
+	\begin{hints}
+		\item Try multiplying.
+		\item Try 6.
+	\end{hints}
+\end{problem}
+\end{lstlisting}
+Online this adds a ``Show Hint'' button to the problem, which reveals the list of hints one at a time.
+
+\end{document}

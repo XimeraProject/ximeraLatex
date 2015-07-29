@@ -1,6 +1,5 @@
 \documentclass{ximera}
 %% handout
-%% nohints
 %% space
 %% newpage
 %% numbers
@@ -26,30 +25,29 @@ sea-level. You toss a ball up into the air with an initial velocity of
 30 meters per second.  If $t$ is the time (in seconds) after we toss
 the ball, then the height at time $t$ is approximately $f(t) = -5 t^2
 +30t+60$. What does $f(2)$ mean in our context?
-\begin{solution}
 \begin{hint}
 We want an answer in the context of the problem. 
 \end{hint}
-\answer[free-response]{The value $f(2)$ is the height of the ball after $2$ seconds.}
-\end{solution}
+\begin{freeResponse}
+The value $f(2)$ is the height of the ball after $2$ seconds.
+\end{freeResponse}
 Now suppose $t$ is such that $f(t) = 100$. What does this mean in our
 context?
-\begin{solution}
 \begin{hint}
 We want an answer in the context of the problem. 
 \end{hint}
-\answer[free-response]{These value of $t$ are the times when the ball is at 100 meters above sea level.}
-\end{solution}
+\begin{freeResponse}
+These value of $t$ are the times when the ball is at 100 meters above sea level.\end{freeResponse}
 Finally, if $h$ is a small positive value what is the meaning of
 $f(t+h)$? How does this compare to the meaning of $f(t)+h$?
-\begin{solution}
 \begin{hint}
 We want an answer in the context of the problem. 
 \end{hint}
-\answer[free-response]{The value $f(t+h)$ gives the height of the ball
-  slightly after time $t$. On the other hand, the value $f(t)+h$ gives
-  a height just higher than the ball at time $t$.}
-\end{solution}
+\begin{freeResponse}
+The value $f(t+h)$ gives the height of the ball slightly after time
+$t$. On the other hand, the value $f(t)+h$ gives a height just higher
+than the ball at time $t$.
+\end{freeResponse}
 \end{question}
 
 Here is a picture of a llama:
@@ -60,9 +58,10 @@ Here is a picture of a llama:
 If you like, check out this video\youtube{http://www.youtube.com/watch?v=0aQpLSu2fMs}.
 
 
+
+
 \begin{exploration}
 Write a Python script that will compute factorial for you.
-\begin{solution}
 \begin{python}
 def honest_factorial(x):
   result = 1
@@ -76,9 +75,7 @@ def verifier():
       raise "Your function failed for input " + str(i)
   return True
 \end{python}
-\end{solution}
 \end{exploration}
-
 
 \end{document}
 
