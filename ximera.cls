@@ -231,7 +231,7 @@
 
 \newcounter{titlenumber}
 \renewcommand{\thetitlenumber}{\arabic{titlenumber}}
-\renewcommand{\thesection}{\arabic{titlenumber}} %% Makes section numbers work
+%\renewcommand{\thesection}{\arabic{titlenumber}} %% Makes section numbers work
 \setcounter{titlenumber}{0}
 
 
@@ -257,9 +257,16 @@
 \makeatother
 
 \ifnumbers
-\renewcommand{\section}{\subsection} 
+\renewcommand{\thesection}{\arabic{titlenumber}.\arabic{section}} 
 \else
-\renewcommand{\section}{\subsection*} 
+\renewcommand{\thesection}{}
+%\renewcommand{\thesubsection}{\arabic{section}.\arabic{subsection}}
+\makeatletter
+\def\@seccntformat#1{\csname #1ignore\expandafter\endcsname\csname the#1\endcsname\quad}
+\let\sectionignore\@gobbletwo
+\let\latex@numberline\numberline
+\def\numberline#1{\if\relax#1\relax\else\latex@numberline{#1}\fi}
+\makeatother
 \fi
 
 %% makes everymath display style even when inline, could be optional
