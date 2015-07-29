@@ -285,6 +285,8 @@
 \newtheorem{warning}{Warning}
 \newtheorem{observation}{Observation}
 \newtheorem{template}{Template}
+\newtheorem{idea}{Idea}
+\newtheorem{fact}{Fact}
 
 
 \renewenvironment{proof}[1][\proofname]{\begin{trivlist}\item[\hskip \labelsep \itshape \bfseries #1{}\hspace{2ex}]}
@@ -455,8 +457,6 @@
     \end{picture}%
   \endgroup%
 }%
-
-\newcommand{\prerequisites}[1]{}
 
 %%% shuffle environment
 \newif\iffirstproblem% Condition for first problem
