@@ -129,7 +129,8 @@
 % Requires id, width, and height as arguments.
 \renewcommand{\geogebra}[3]{\HCode{<iframe scrolling="no" src="https://tube.geogebra.org/material/iframe/id/#1/width/#2/height/#3/border/888888/rc/false/ai/false/sdz/false/smb/false/stb/false/stbh/false/ld/false/sri/false/at/auto" width="#2px" height="#3px" style="border:0px;"> </iframe>}}
 
-\renewcommand{\html}[1]{\HCode{#1}}
+%\renewcommand{\html}[1]{\HCode{#1}}
+\RenewEnviron{html}{\HCode{\BODY}}
 
 \renewcommand*{\link}[2][]{%
 \ifthenelse{\equal{#1}{}}%
