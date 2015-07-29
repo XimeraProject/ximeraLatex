@@ -37,11 +37,16 @@
 \DeclareOption*{\PassOptionsToClass{\CurrentOption}{ximera}}
 \ProcessOptions
 
-\LoadClass{ximera} 
+\LoadClass[numbers]{ximera} 
 
 \RequirePackage{verbatim}
 %    \end{macrocode}
 %
+
+
+
+
+
 
 %%%%% ximera documents included with \activity{} will be included in the body of the xourse document
 %%%%% \input commands within included ximera documents will be ignored
