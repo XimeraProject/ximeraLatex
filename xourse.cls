@@ -66,7 +66,34 @@
 
 \let\otherinput\input %% Numbering starts a page too soon without this
 
+
+% Store usual maketitle as othermaketitle
+\let\othermaketitle\maketitle
+
+% % Redefine maketitle to give course packet title.
+%\makeatletter
+%\renewcommand\maketitle{%
+%  \addtocounter{titlenumber}{1} \addcontentsline{toc}{section}{\thetitlenumber~\@title} %% puts titles in the toc
+%  {\flushleft\large\bfseries \@pretitle\par\vspace{-1em}}
+%  {\flushleft\LARGE\bfseries {\ifnumbers\thetitlenumber\fi}{\ifnumbers\hspace{1em}\else\hspace{0em}\fi}\@title \par }
+%  \vskip .6em\noindent\textit\theabstract\setcounter{problem}{0}\setcounter{subsection}{0}\par\vspace{2em}
+%  \ifnooutcomes\else\ifhandout\else\let\thefootnote\relax\footnote{Learning outcomes: \theoutcomes}\fi\fi 
+%  \aftergroup\@afterindentfalse
+%  \aftergroup\@afterheading
+%}
+%\makeatother
+
+
+%	\begin{center}
+%		\bfseries{\HUGE \thetitle} \\
+%		\theauthor\\
+%		\thedate
+%	\end{center}
+
+
+
 \newcommand\activity[1]{%
+	\let\maketitle\othermaketitle % renew maketitle to usual definition.
 	\renewcommand{\input}[1]{}
 	\begingroup\skip@preamble\otherinput{#1}\endgroup\clearpage
 	\let\input\otherinput}

@@ -250,7 +250,7 @@
 
 \makeatletter
 \renewcommand\maketitle{%
-  \addtocounter{titlenumber}{1}\addcontentsline{toc}{section}{\thetitlenumber~\@title} %% puts titles in the toc
+  \addtocounter{titlenumber}{1} \addcontentsline{toc}{section}{\thetitlenumber~\@title} %% puts titles in the toc
   {\flushleft\large\bfseries \@pretitle\par\vspace{-1em}}
   {\flushleft\LARGE\bfseries {\ifnumbers\thetitlenumber\fi}{\ifnumbers\hspace{1em}\else\hspace{0em}\fi}\@title \par }
   \vskip .6em\noindent\textit\theabstract\setcounter{problem}{0}\setcounter{subsection}{0}\par\vspace{2em}
