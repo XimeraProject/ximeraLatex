@@ -59,7 +59,7 @@
 
 \newcommand\activity[1]{%
 	\renewcommand{\input}[1]{}
-	\begingroup\skip@preamble\otherinput{#1}\endgroup
+	\begingroup\skip@preamble\otherinput{#1}\endgroup\clearpage
 	\let\input\otherinput}
 
 
