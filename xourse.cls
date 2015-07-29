@@ -33,23 +33,38 @@
 
 \RequirePackage{ximera} 
 
+%\subsection{The class}
+%    \begin{macrocode}
+%<*class>
 \NeedsTeXFormat{LaTeX2e}
-%\ProvidesClass{subfiles}[2012/05/23 Federico Garcia]
+\ProvidesClass{subfiles}[2012/05/23 Federico Garcia]
 \RequirePackage{verbatim}
 \DeclareOption*{\typeout{Preamble taken from file `\CurrentOption'}%
     \let\preamble@file\CurrentOption}
 \ProcessOptions
-
+%    \end{macrocode}
+%
+% The first thing to do is to save the regular \LaTeX\ definitions of |\document|, |\enddocument|, and  |\documentclass|:
+%    \begin{macrocode}
 \let\old@document@subfiles\document
 \let\old@enddocument@subfiles\enddocument
 \let\old@documentclass@subfiles\documentclass
-
+%    \end{macrocode}
+%
+% Now the |document| `environment' is redefined and equaled to |comment|. As a consequence, the body of the main file is ignored by \LaTeX, and only the preamble is read (and anything that comes after |\end{document}|!). For |\documentclass|, having been already loaded one (|subfiles|), it is redefined and equaled to |\LoadClass|. The class and options of the main file are loaded identically.
+%    \begin{macrocode}
 \let\document\comment
 \let\enddocument\endcomment
 \let\documentclass\LoadClass\relax
-
+%    \end{macrocode}
+%
+% Now it is possible to |\input| the main file, and then restore the original values of |\document|, |\enddocument| and |\documentclass|. The backup commands are |\undefined| to save memory. That's it.
+%    \begin{macrocode}
 \input{\preamble@file}
-
+%    \end{macrocode}
+%
+% Here it comes something not so obvious. In the usual situations, the |\preamble@file| contains some |\usepackage| commands, which, at the end, make |@| no longer a letter. That is why the next part needs a |\catcode| command, grouping, and |\global|'s.
+%    \begin{macrocode}
 {\catcode`\@=11
 \global\let\document\old@document@subfiles
 \global\let\enddocument\old@enddocument@subfiles
@@ -57,16 +72,33 @@
 \global\let\old@document@subfiles\undefined
 \global\let\old@enddocument@subfiles\undefined
 \global\let\old@documentclass@subfiles\undefined}
-
+%</class>
+%    \end{macrocode}
+%
+% \subsection{The package}
+% Any option will be ignored. 
+%    \begin{macrocode}
+%<*package>
 \NeedsTeXFormat{LaTeX2e}
 \ProvidesPackage{subfiles}[2012/05/23 Federico Garcia]
 \DeclareOption*{\PackageWarning{\CurrentOption ignored}}
 \ProcessOptions
 \RequirePackage{verbatim}
-
+%    \end{macrocode}
+%
+% \DescribeMacro{\skip@preamble}
+% The core of the package. It works by redefining the |document| `environment,' thus making the |\begin| and |\end{document}| of the subfile `transparent' to the inclusion. The redefinition of |\documentclass| is analogous, just having a required and an optional arguments which mean nothing to |\subfile|.
+%    \begin{macrocode}
 \newcommand{\skip@preamble}{%
     \let\document\relax\let\enddocument\relax%
     \newenvironment{document}{}{}%
     \renewcommand{\documentclass}[2][subfiles]{}}
-
+%    \end{macrocode}
+% 
+% \DescribeMacro{\subfile}
+% Note that the new command |\subfile| calls for |\skip@preamble| \emph{within a group}. The changes to |document| and |\documentclass| are undone after the inclusion of the subfile. 
+%    \begin{macrocode}
 \newcommand\subfile[1]{\begingroup\skip@preamble\input{#1}\endgroup}
+%</package>
+%    \end{macrocode}
+
