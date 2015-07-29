@@ -31,7 +31,42 @@
 \ProvidesClass{xourse}[\filedate\space Version \fileversion\space by
   Bart Snapp, Oscar Levin, Hans Parshall]
 
-\NeedsTeXFormat{LaTeX2e}
-
-
 \RequirePackage{ximera} 
+
+\NeedsTeXFormat{LaTeX2e}
+%\ProvidesClass{subfiles}[2012/05/23 Federico Garcia]
+\RequirePackage{verbatim}
+\DeclareOption*{\typeout{Preamble taken from file `\CurrentOption'}%
+    \let\preamble@file\CurrentOption}
+\ProcessOptions
+
+\let\old@document@subfiles\document
+\let\old@enddocument@subfiles\enddocument
+\let\old@documentclass@subfiles\documentclass
+
+\let\document\comment
+\let\enddocument\endcomment
+\let\documentclass\LoadClass\relax
+
+\input{\preamble@file}
+
+{\catcode`\@=11
+\global\let\document\old@document@subfiles
+\global\let\enddocument\old@enddocument@subfiles
+\global\let\documentclass\old@documentclass@subfiles
+\global\let\old@document@subfiles\undefined
+\global\let\old@enddocument@subfiles\undefined
+\global\let\old@documentclass@subfiles\undefined}
+
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{subfiles}[2012/05/23 Federico Garcia]
+\DeclareOption*{\PackageWarning{\CurrentOption ignored}}
+\ProcessOptions
+\RequirePackage{verbatim}
+
+\newcommand{\skip@preamble}{%
+    \let\document\relax\let\enddocument\relax%
+    \newenvironment{document}{}{}%
+    \renewcommand{\documentclass}[2][subfiles]{}}
+
+\newcommand\subfile[1]{\begingroup\skip@preamble\input{#1}\endgroup}
