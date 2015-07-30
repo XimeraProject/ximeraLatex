@@ -251,7 +251,7 @@
 % Redefine maketitle and put them in a table of contents.  The \phantomsection is to fix the hrefs.
 \makeatletter
 \renewcommand\maketitle{%
-  \addtocounter{titlenumber}{1}\phantomsection \addcontentsline{toc}{section}{\thetitlenumber~\@title} %% puts titles in the toc
+  \addtocounter{titlenumber}{1}\phantomsection \ifnumbers\addcontentsline{toc}{section}{\thetitlenumber~\@title}\else\addcontentsline{toc}{section}{\@title}\fi %% puts titles in the toc, with or without numbers.
   {\flushleft\large\bfseries \@pretitle\par\vspace{-1em}}
   {\flushleft\LARGE\bfseries {\ifnumbers\thetitlenumber\fi}{\ifnumbers\hspace{1em}\else\hspace{0em}\fi}\@title \par }
   \vskip .6em\noindent\textit\theabstract\setcounter{problem}{0}\setcounter{subsection}{0}\par\vspace{2em}
@@ -261,16 +261,18 @@
 \makeatother
 
 \ifnumbers
+\setcounter{secnumdepth}{2}
 \renewcommand{\thesection}{\arabic{titlenumber}.\arabic{section}~} 
 \else
-\renewcommand{\thesection}{}
-%magic to unindent unnumbered sections:
-\makeatletter
-\def\@seccntformat#1{\csname #1ignore\expandafter\endcsname\csname the#1\endcsname\quad}
-\let\sectionignore\@gobbletwo
-\let\latex@numberline\numberline
-\def\numberline#1{\if\relax#1\relax\else\latex@numberline{#1}\fi}
-\makeatother
+\setcounter{secnumdepth}{-2}
+%\renewcommand{\thesection}{}
+%%magic to unindent unnumbered sections:
+%\makeatletter
+%\def\@seccntformat#1{\csname #1ignore\expandafter\endcsname\csname the#1\endcsname\quad}
+%\let\sectionignore\@gobbletwo
+%\let\latex@numberline\numberline
+%\def\numberline#1{\if\relax#1\relax\else\latex@numberline{#1}\fi}
+%\makeatother
 \fi
 
 %% makes everymath display style even when inline, could be optional

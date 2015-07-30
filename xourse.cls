@@ -41,7 +41,7 @@
 \DeclareOption*{\PassOptionsToClass{\CurrentOption}{ximera}}
 \ProcessOptions
 
-\LoadClass[numbers]{ximera} 
+\LoadClass{ximera} 
 
 \RequirePackage{verbatim} 
 
