@@ -73,7 +73,7 @@
 % % Redefine maketitle to give course packet title.
 
 \renewcommand{\maketitle}{ %
-\thispagestyle{empty}
+\pagestyle{empty}
 \begin{center}
 ~\\ %puts space at top of page to move title down.  Is there a better way to do this?
 \vskip .25\textheight
@@ -87,6 +87,8 @@
 {\large \@date}
 \end{center}
 \clearpage
+\tableofcontents\clearpage % we include a table of contents in every course packet.  Maybe make this an option to pass to xourse?
+\clearpage \pagestyle{main}
 }
 %\makeatletter
 %\renewcommand\maketitle{%
