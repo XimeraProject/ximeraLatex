@@ -33,19 +33,17 @@
 \ProvidesClass{xourse}[\filedate\space Version \fileversion\space by
   Bart Snapp, Oscar Levin, Hans Parshall]
 
+\newif\ifnotoc
+\notocfalse
+\DeclareOption{notoc}{\notoctrue}
+
 % Passes xourse class options to the underlying ximera class
 \DeclareOption*{\PassOptionsToClass{\CurrentOption}{ximera}}
 \ProcessOptions
 
 \LoadClass[numbers]{ximera} 
 
-\RequirePackage{verbatim}
-%    \end{macrocode}
-%
-
-
-
-
+\RequirePackage{verbatim} 
 
 
 %%%%% ximera documents included with \activity{} will be included in the body of the xourse document
@@ -54,15 +52,12 @@
 %%%%% overlapping \newcommand definitions within multiple ximera documents included simultaneously will cause an error
 
 % The core of the package. It works by redefining the |document| `environment,' thus making the |\begin| and |\end{document}| of the subfile `transparent' to the inclusion. The redefinition of |\documentclass| is analogous, just having a required and an optional arguments which mean nothing to |\subfile|.
-%    \begin{macrocode}
 \newcommand{\skip@preamble}{%
     \let\document\relax\let\enddocument\relax%
     \newenvironment{document}{}{}%
     \renewcommand{\documentclass}[2][subfiles]{}}
-%    \end{macrocode}
 
 % Note that the new command |\subfile| calls for |\skip@preamble| \emph{within a group}. The changes to |document| and |\documentclass| are undone after the inclusion of the subfile. 
-%    \begin{macrocode}
 
 \let\otherinput\input %% Numbering starts a page too soon without this
 
@@ -70,8 +65,7 @@
 % Store usual maketitle as othermaketitle
 \let\othermaketitle\maketitle
 
-% % Redefine maketitle to give course packet title.
-
+% % Redefine maketitle to give course packet title page and toc.
 \renewcommand{\maketitle}{ %
 \pagestyle{empty}
 \begin{center}
@@ -87,30 +81,16 @@
 {\large \@date}
 \end{center}
 \clearpage
-\tableofcontents\clearpage % we include a table of contents in every course packet.  Maybe make this an option to pass to xourse?
-\clearpage \pagestyle{main}
+\ifnotoc\else % When notoc option is used, we do not include a table of contents.  Otherwise:
+	\tableofcontents\clearpage % we include a table of contents in every course packet.  
+	\clearpage
+\fi
+\pagestyle{main} %switch to main pagestyle, just like ximera documents.
 }
-%\makeatletter
-%\renewcommand\maketitle{%
-%  \addtocounter{titlenumber}{1} \addcontentsline{toc}{section}{\thetitlenumber~\@title} %% puts titles in the toc
-%  {\flushleft\large\bfseries \@pretitle\par\vspace{-1em}}
-%  {\flushleft\LARGE\bfseries {\ifnumbers\thetitlenumber\fi}{\ifnumbers\hspace{1em}\else\hspace{0em}\fi}\@title \par }
-%  \vskip .6em\noindent\textit\theabstract\setcounter{problem}{0}\setcounter{subsection}{0}\par\vspace{2em}
-%  \ifnooutcomes\else\ifhandout\else\let\thefootnote\relax\footnote{Learning outcomes: \theoutcomes}\fi\fi 
-%  \aftergroup\@afterindentfalse
-%  \aftergroup\@afterheading
-%}
-%\makeatother
-
-
-%	\begin{center}
-%		\bfseries{\HUGE \thetitle} \\
-%		\theauthor\\
-%		\thedate
-%	\end{center}
 
 
 
+% \activity command inputs the file name provided without \documentclass, \being{document}/\end{document} and any inputs in the preamble of the included file.
 \newcommand\activity[1]{%
 	\let\maketitle\othermaketitle % renew maketitle to usual definition.
 	\renewcommand{\input}[1]{}
@@ -119,5 +99,4 @@
 
 
 %</package>
-%    \end{macrocode}
 
