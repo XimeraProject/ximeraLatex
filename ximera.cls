@@ -261,10 +261,10 @@
 \makeatother
 
 \ifnumbers
-\renewcommand{\thesection}{\arabic{titlenumber}.\arabic{section}} 
+\renewcommand{\thesection}{\arabic{titlenumber}.\arabic{section}~} 
 \else
 \renewcommand{\thesection}{}
-%\renewcommand{\thesubsection}{\arabic{section}.\arabic{subsection}}
+%magic to unindent unnumbered sections:
 \makeatletter
 \def\@seccntformat#1{\csname #1ignore\expandafter\endcsname\csname the#1\endcsname\quad}
 \let\sectionignore\@gobbletwo
