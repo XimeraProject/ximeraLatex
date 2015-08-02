@@ -440,6 +440,9 @@
 \fi
 
 
+\newboolean{given} %% required for freeResponse
+\setboolean{given}{true} %% could be replaced by a key=value pair later if needed
+
 \ifhandout
 \newenvironment{freeResponse}[1][false]%
 {%
