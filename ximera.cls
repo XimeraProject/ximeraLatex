@@ -255,6 +255,9 @@
 %Geogebra link
 \newcommand{\geogebra}[3]{Geogebra link: \url{https://tube.geogebra.org/m/#1}}
 
+%Desmos link
+\newcommand{\desmos}[3]{Desmos link: \url{https://www.desmos.com/calculator/#1}}
+
 %HTML 
 \NewEnviron{html}{\textbf{INTERACTIVE NOT AVAILABLE.}}
 	
