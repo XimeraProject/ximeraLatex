@@ -127,10 +127,25 @@
 % interactives
 
 % Geogebra command. Requires id, width, and height as arguments.
-\renewcommand{\geogebra}[3]{\HCode{<iframe scrolling="no" src="https://tube.geogebra.org/material/iframe/id/#1/width/#2/height/#3/border/888888/rc/false/ai/false/sdz/false/smb/false/stb/false/stbh/false/ld/false/sri/false/at/auto" width="#2px" height="#3px" style="border:0px;"> </iframe>}}
+%defining keys for answer geogebra key=value pairs
+\define@key{geogebra}{rc}[true]{\def\geo@rc{#1}}
+\define@key{geogebra}{sdz}[true]{\def\geo@sdz{#1}}
+\define@key{geogebra}{smb}[true]{\def\geo@smb{#1}}
+\define@key{geogebra}{stb}[true]{\def\geo@stb{#1}}
+\define@key{geogebra}{stbh}[true]{\def\geo@stbh{#1}}
+\define@key{geogebra}{ld}[true]{\def\geo@ld{#1}}
+\define@key{geogebra}{sri}[true]{\def\geo@sri{#1}}
+%set default key values
+\setkeys{geogebra}{rc=false,sdz=false,smb=false,stb=false,stbh=false,ld=false,sri=false}
+%command definition
+\renewcommand{\geogebra}[4][]{%
+  \setkeys{geogebra}{#1}% Set new keys
+  \HCode{<iframe scrolling="no" src="https://tube.geogebra.org/material/iframe/id/#2/width/#3/height/#4/border/888888/rc/\geo@rc/ai/false/sdz/\geo@sdz/smb/\geo@smb/stb/\geo@stb/stbh/\geo@stbh/ld/\geo@ld/sri/\geo@sri/at/auto" width="#3px" height="#4px" style="border:0px;"> </iframe>}}
+
 
 % Desmos command. Requires id, width, and height as arguments.
-\renewcommand{\desmos}[3]{\HCode{<a title="View with the Desmos Graphing Calculator" href="https://www.desmos.com/calculator/#1" target="_blank">  <img src="https://s3.amazonaws.com/calc_thumbs/production/#1.png"" width="#2px" height="#3px" style="border:1px solid #ccc; border-radius:5px"/></a>}}
+\renewcommand{\desmos}[3]{\HCode{<a title="View with the Desmos Graphing Calculator" href="https://www.desmos.com/calculator/#1" target="_blank">  <img src="https://s3.amazonaws.com/calc_thumbs/production/#1.png"" width="#2px" height="#3px" style="border:1px solid \#ccc; border-radius:5px"/></a>}}
+
 
 % HTML environment.
 %\renewcommand{\html}[1]{\HCode{#1}}
@@ -140,11 +155,6 @@
 \ifthenelse{\equal{#1}{}}%
 {\HCode{<a href="#2">}LINK\HCode{</a>}}
 {\HCode{<a href="#2">}#1\HCode{</a>}}}
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% This image environment should surround with an additional image tag
-
-\renewenvironment{image}[1][]{}{}
 
 \Hinput{ximera}
 \endinput
