@@ -52,6 +52,10 @@
 \handoutfalse
 \DeclareOption{handout}{\handouttrue}
 
+\newif\ifinstructornotes
+\instructornotesfalse
+\DeclareOption{instructornotes}{\instructornotestrue}
+
 \newif\ifnooutcomes
 \nooutcomesfalse
 \DeclareOption{nooutcomes}{\nooutcomestrue}
@@ -463,6 +467,72 @@
 }
 {\end{trivlist}}
 \fi
+
+
+%% instructor intro/instructor notes
+%%
+%% instructorIntro environment
+\ifhandout
+\ifinstructornotes
+\newenvironment{instructorIntro}%
+{%
+  \begin{trivlist}\item[\hskip \labelsep\bfseries Instructor Introduction:\hspace{2ex}]
+}
+% %% line at the bottom} 
+{\end{trivlist}\par\addvspace{.5ex}\nobreak\noindent\hung}
+\else
+\newenvironment{instructorIntro}%
+{%
+\setbox0\vbox\bgroup
+}
+{%
+\egroup
+}
+\fi
+\else
+\newenvironment{instructorIntro}%
+{%
+  \begin{trivlist}\item[\hskip \labelsep\bfseries Instructor Introduction:\hspace{2ex}]
+}
+% %% line at the bottom} 
+{\end{trivlist}\par\addvspace{.5ex}\nobreak\noindent\hung}
+\fi
+
+
+%% instructorNotes environment
+\ifhandout
+\ifinstructornotes
+\newenvironment{instructorNotes}%
+{%
+  \begin{trivlist}\item[\hskip \labelsep\bfseries Instructor Notes:\hspace{2ex}]
+}
+% %% line at the bottom} 
+{\end{trivlist}\par\addvspace{.5ex}\nobreak\noindent\hung}
+\else
+\newenvironment{instructorNotes}%
+{%
+\setbox0\vbox\bgroup
+}
+{%
+\egroup
+}
+\fi
+\else
+\newenvironment{instructorNotes}%
+{%
+  \begin{trivlist}\item[\hskip \labelsep\bfseries Instructor Notes:\hspace{2ex}]
+}
+% %% line at the bottom} 
+{\end{trivlist}\par\addvspace{.5ex}\nobreak\noindent\hung}
+\fi
+
+
+
+
+
+
+
+
 
 %% code answer environment
 %% You cannot use Envrion with the fancyvrb/listings package if you want nested environments
