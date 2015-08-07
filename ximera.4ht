@@ -123,6 +123,10 @@
 % Youtube command. Requires id.
 \renewcommand{\youtube}[1]{\HCode{<iframe width="560" height="315" src="https://www.youtube.com/embed/#1" frameborder="0" allowfullscreen></iframe>}}
 
+% Image environment doesn't actually work in tex4ht as defined with NewEnviron;
+% so this renewenvironment is needed
+\renewenvironment{image}[1][]{\HCode{<div class="image-environment">}}{\HCode{</div>}}
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % interactives
 
