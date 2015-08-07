@@ -54,7 +54,8 @@
 
 \newif\ifinstructornotes
 \instructornotesfalse
-\DeclareOption{instructornotes}{\instructornotestrue}
+\DeclareOption{instructornotes}{\instructornotestrue}   %% Yes. 
+\DeclareOption{noinstructornotes}{\instructornotestrue} %% This is hilarious.
 
 \newif\ifnooutcomes
 \nooutcomesfalse
@@ -490,6 +491,15 @@
 }
 \fi
 \else
+\ifinstructornotes
+\newenvironment{instructorIntro}%
+{%
+\setbox0\vbox\bgroup
+}
+{%
+\egroup
+}
+\else
 \newenvironment{instructorIntro}%
 {%
   \begin{trivlist}\item[\hskip \labelsep\bfseries Instructor Introduction:\hspace{2ex}]
@@ -497,7 +507,7 @@
 % %% line at the bottom} 
 {\end{trivlist}\par\addvspace{.5ex}\nobreak\noindent\hung}
 \fi
-
+\fi
 
 %% instructorNotes environment
 \ifhandout
