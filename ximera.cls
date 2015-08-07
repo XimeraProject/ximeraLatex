@@ -323,7 +323,7 @@
                               
 
 %% image environment
-\newenvironment{image}[1][]{}{}
+\newenvironment{image}[1][]{\begin{center}}{\end{center}}
 
 \newtheorem{theorem}{Theorem}
 %\newtheorem{acknowledgement}{Acknowledgement}
