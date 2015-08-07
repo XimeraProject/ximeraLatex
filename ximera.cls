@@ -323,10 +323,7 @@
                               
 
 %% image environment
-\NewEnviron{image}[1][]{
-\[
-\BODY
-\]}
+\newenvironment{image}[1][]{}{}
 
 \newtheorem{theorem}{Theorem}
 %\newtheorem{acknowledgement}{Acknowledgement}
