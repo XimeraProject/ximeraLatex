@@ -65,23 +65,13 @@ needed.
 
 ### Obtain a git client
 
-#### For Macintosh
+#### For Mac or Windows
 
 Go to: 
 
-`http://mac.github.com/`
+`https://desktop.github.com/`
 
-and download GitHub for Mac.
-
-
-#### For Windows
-
-Go to: 
-
-`http://windows.github.com/`
-
-and download GitHub for Windows.
-
+and download GitHub.
 
 #### For Linux
 
