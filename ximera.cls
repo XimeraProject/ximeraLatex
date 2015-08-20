@@ -196,7 +196,7 @@
 % Don't use hyperref when using Tex4ht
 \ifdefined\HCode
 \else
-  \RequirePackage[colorlinks=true,urlcolor=blue]{hyperref}
+  \RequirePackage[colorlinks=true,allcolors=blue!30!black]{hyperref}
 \fi
 % We put hyperref after all other packages becuase that is better.
 

@@ -90,6 +90,9 @@
 
 
 
+
+
+
 % \activity command inputs the file name provided without \documentclass, \being{document}/\end{document} and any inputs in the preamble of the included file.
 \newcommand\activity[1]{%
 	\let\maketitle\othermaketitle % renew maketitle to usual definition.
@@ -99,4 +102,14 @@
 
 
 %</package>
+
+
+
+
+% makes the toc look a bit better... can be redefined in the preamble.
+\makeatletter
+\renewcommand*\l@section{\@dottedtocline{1}{1.5em}{4.2em}}
+\renewcommand*\l@subsection{\@dottedtocline{2}{3.8em}{4.2em}}
+\makeatother
+
 
