@@ -469,8 +469,7 @@
 
 %% instructor intro/instructor notes
 %%
-%% instructorIntro environment
-\ifhandout
+\ifhandout % what follows is handout behavior
 \ifinstructornotes
 \newenvironment{instructorIntro}%
 {%
@@ -487,7 +486,7 @@
 \egroup
 }
 \fi
-\else
+\else% for handout, so what follows is default
 \ifinstructornotes
 \newenvironment{instructorIntro}%
 {%
@@ -506,8 +505,11 @@
 \fi
 \fi
 
+
+
+
 %% instructorNotes environment
-\ifhandout
+\ifhandout % what follows is handout behavior
 \ifinstructornotes
 \newenvironment{instructorNotes}%
 {%
@@ -524,6 +526,15 @@
 \egroup
 }
 \fi
+\else% for handout, so what follows is default
+\ifinstructornotes
+\newenvironment{instructorNotes}%
+{%
+\setbox0\vbox\bgroup
+}
+{%
+\egroup
+}
 \else
 \newenvironment{instructorNotes}%
 {%
@@ -531,6 +542,7 @@
 }
 % %% line at the bottom} 
 {\end{trivlist}\par\addvspace{.5ex}\nobreak\noindent\hung}
+\fi
 \fi
 
 
