@@ -105,6 +105,8 @@
 
 
 
+\newcommand{\chapter}{} %% makes chapter "work"
+
 
 % makes the toc look a bit better... can be redefined in the preamble.
 \makeatletter
