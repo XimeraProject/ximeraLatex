@@ -54,7 +54,7 @@
 % The core of the package. It works by redefining the |document| `environment,' thus making the |\begin| and |\end{document}| of the subfile `transparent' to the inclusion. The redefinition of |\documentclass| is analogous, just having a required and an optional arguments which mean nothing to |\subfile|.
 \newcommand{\skip@preamble}{%
     \let\document\relax\let\enddocument\relax%
-    \newenvironment{document}{}{}%
+    \newenvironment{document}{\let\input\otherinput}{}%
     \renewcommand{\documentclass}[2][subfiles]{}}
 
 % Note that the new command |\subfile| calls for |\skip@preamble| \emph{within a group}. The changes to |document| and |\documentclass| are undone after the inclusion of the subfile. 
