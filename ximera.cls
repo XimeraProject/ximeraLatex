@@ -196,7 +196,7 @@
 % Don't use hyperref when using Tex4ht
 \ifdefined\HCode
 \else
-  \RequirePackage[colorlinks=true,allcolors=blue!30!black]{hyperref}
+  \RequirePackage[pdfpagelabels,colorlinks=true,allcolors=blue!30!black]{hyperref}
 \fi
 % We put hyperref after all other packages becuase that is better.
 
@@ -388,7 +388,7 @@
 	%% when given=false, do not show answer in handout mode, show answer outside handout mode
 	\ifthenelse{\boolean{\ans@given}}
 		{\ifhandout #2\else\underset{\scriptstyle\mathrm{given}}{\fbox{\ensuremath{#2}}}\fi}
-		{\ifhandout\else\fbox{\ensuremath{#2}}\fi}}% show answer in box outside handout mode
+		{\ifhandout\fbox{\rm{?}}\else\fbox{\ensuremath{#2}}\fi}}% show answer in box outside handout mode
              
 \makeatother
 
