@@ -151,7 +151,8 @@
   \ifdefined\HCode
     % in htlatex, just include the svg files
     \def\pgfsys@imagesuffixlist{.svg}
-    \tikzexternalize[prefix=./,mode=graphics if exists]
+    
+    \tikzexternalize[optimize=false,prefix=./,mode=graphics if exists]
   \else
     % in pdflatex, actually generate the svg files
     \tikzset{
@@ -165,9 +166,6 @@
   \fi
 
 \fi
-
-
-
 
 \RequirePackage[inline]{enumitem}
 \RequirePackage[pagestyles]{titlesec} 
