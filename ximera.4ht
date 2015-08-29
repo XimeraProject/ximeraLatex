@@ -93,6 +93,7 @@
 \ConfigureTheoremEnv{criterion}
 \ConfigureTheoremEnv{definition}
 \ConfigureTheoremEnv{example}
+\ConfigureTheoremEnv{explanation}
 \ConfigureTheoremEnv{lemma}
 \ConfigureTheoremEnv{notation}
 \ConfigureTheoremEnv{proposition}
@@ -101,6 +102,9 @@
 \ConfigureTheoremEnv{paradox}
 \ConfigureTheoremEnv{warning}
 \ConfigureTheoremEnv{observation}
+\ConfigureTheoremEnv{template}
+\ConfigureTheoremEnv{idea}
+\ConfigureTheoremEnv{fact}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Eliminate some formatting that we'll handle later with CSS
