@@ -126,10 +126,12 @@
 % video environments
 
 % Youtube command. Requires id.
-\renewcommand{\youtube}[1]{\HCode{<iframe width="560" height="315" src="https://www.youtube.com/embed/#1" frameborder="0" allowfullscreen></iframe>}}
+\renewcommand{\youtube}[1]{\HCode{<div class="video youtube-player" data-youtube="#1"></div>}}
 
-% Image environment doesn't actually work in tex4ht as defined with NewEnviron;
-% so this renewenvironment is needed
+% Image environment doesn't actually work in tex4ht as defined with
+% NewEnviron; so this renewenvironment is needed.  image-environment
+% also gets formatted in a well, and when the user clicks on the
+% image, it zooms in.
 \renewenvironment{image}[1][]{\HCode{<div class="image-environment">}}{\HCode{</div>}}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
