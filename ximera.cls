@@ -152,7 +152,7 @@
     % in htlatex, just include the svg files
     \def\pgfsys@imagesuffixlist{.svg}
     
-    \tikzexternalize[optimize=false,prefix=./,mode=graphics if exists]
+    \tikzexternalize[prefix=./,mode=graphics if exists]
   \else
     % in pdflatex, actually generate the svg files
     \tikzset{
@@ -162,7 +162,7 @@
         mudraw -r 150 -c rgbalpha -o \image.png \image.pdf ;
       }
     }
-    \tikzexternalize[prefix=./]
+    \tikzexternalize[optimize=false,prefix=./]
   \fi
 
 \fi
