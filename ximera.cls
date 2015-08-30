@@ -288,7 +288,16 @@
 % --------------------------------------------------------------------
 
 \def\theoutcomes{}
-\newcommand{\outcome}[1]{\edef\theoutcomes{\theoutcomes #1~}}
+
+\ifdefined\HCode%
+  \newcommand{\outcome}[1]{}
+\else%
+  \newwrite\outcomefile
+  \immediate\openout\outcomefile=\jobname.oc
+
+  \newcommand{\outcome}[1]{\edef\theoutcomes{\theoutcomes #1~}%
+  \immediate\write\outcomefile{\unexpanded{\outcome}{#1}}}
+\fi%
 
 % --------------------------------------------------------------------
 % Videos
@@ -774,4 +783,5 @@ Xarma Boost \ifhandout\theproblem\else\ifshuffle\theproblem.\theproblemType\else
 
     \makeatother
 \fi
+
 
