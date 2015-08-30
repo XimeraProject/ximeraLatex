@@ -75,9 +75,10 @@
 \ConfigureEnv{selectAll}{\stepcounter{identification}\ifvmode \IgnorePar\fi \EndP\HCode{<div class="select-all" id="problem\arabic{identification}">}}{\HCode{</div>}\IgnoreIndent}{}{}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% refstepcounter ensures that labels get updated within these environments
 \newcommand{\ConfigureTheoremEnv}[1]{%
-\renewenvironment{#1}{}{}%
-\ConfigureEnv{#1}{\HCode{<div class="theorem-like #1">}}{\HCode{</div>}}{}{}%
+\renewenvironment{#1}{\refstepcounter{problem}}{}%
+\ConfigureEnv{#1}{\stepcounter{identification}\ifvmode \IgnorePar\fi \EndP\HCode{<div class="theorem-like problem-environment #1" id="problem\arabic{identification}">}}{\HCode{</div>}\IgnoreIndent}{}{}%
 }
 
 \ConfigureTheoremEnv{theorem}
@@ -92,6 +93,7 @@
 \ConfigureTheoremEnv{criterion}
 \ConfigureTheoremEnv{definition}
 \ConfigureTheoremEnv{example}
+\ConfigureTheoremEnv{explanation}
 \ConfigureTheoremEnv{lemma}
 \ConfigureTheoremEnv{notation}
 \ConfigureTheoremEnv{proposition}
@@ -100,6 +102,15 @@
 \ConfigureTheoremEnv{paradox}
 \ConfigureTheoremEnv{warning}
 \ConfigureTheoremEnv{observation}
+\ConfigureTheoremEnv{template}
+\ConfigureTheoremEnv{idea}
+\ConfigureTheoremEnv{fact}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Feedback environments take an optional parameter (which describes
+% when the feedback is to be provided)
+
+\renewenvironment{feedback}[1][attempt]{\stepcounter{identification}\ifvmode \IgnorePar\fi \EndP\HCode{<div class="feedback" data-feedback="#1" id="feedback\arabic{identification}">}}{\HCode{</div>}\IgnoreIndent}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Eliminate some formatting that we'll handle later with CSS
@@ -125,10 +136,12 @@
 % video environments
 
 % Youtube command. Requires id.
-\renewcommand{\youtube}[1]{\HCode{<iframe width="560" height="315" src="https://www.youtube.com/embed/#1" frameborder="0" allowfullscreen></iframe>}}
+\renewcommand{\youtube}[1]{\HCode{<div class="video youtube-player" data-youtube="#1"></div>}}
 
-% Image environment doesn't actually work in tex4ht as defined with NewEnviron;
-% so this renewenvironment is needed
+% Image environment doesn't actually work in tex4ht as defined with
+% NewEnviron; so this renewenvironment is needed.  image-environment
+% also gets formatted in a well, and when the user clicks on the
+% image, it zooms in.
 \renewenvironment{image}[1][]{\HCode{<div class="image-environment">}}{\HCode{</div>}}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

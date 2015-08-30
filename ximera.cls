@@ -151,23 +151,21 @@
   \ifdefined\HCode
     % in htlatex, just include the svg files
     \def\pgfsys@imagesuffixlist{.svg}
+    
     \tikzexternalize[prefix=./,mode=graphics if exists]
   \else
     % in pdflatex, actually generate the svg files
     \tikzset{
       /tikz/external/system call={
-        pdflatex \tikzexternalcheckshellescape -halt-on-error -interaction=batchmode -jobname "\image" "\texsource";
-        pdf2svg \image.pdf \image.svg ;
-        mudraw -r 150 -c rgbalpha -o \image.png \image.pdf ;
+        /usr/bin/pdflatex \tikzexternalcheckshellescape -halt-on-error -interaction=batchmode -jobname "\image" "\texsource";
+        /usr/bin/pdf2svg \image.pdf \image.svg ;
+        /usr/bin/mudraw -r 150 -c rgbalpha -o \image.png \image.pdf ;
       }
     }
-    \tikzexternalize[prefix=./]
+    \tikzexternalize[optimize=false,prefix=./]
   \fi
 
 \fi
-
-
-
 
 \RequirePackage[inline]{enumitem}
 \RequirePackage[pagestyles]{titlesec} 
@@ -354,7 +352,6 @@
 \newtheorem{idea}{Idea}
 \newtheorem{fact}{Fact}
 
-
 \renewenvironment{proof}[1][\proofname]{\begin{trivlist}\item[\hskip \labelsep \itshape \bfseries #1{}\hspace{2ex}]}
 {\qed\end{trivlist}}
 
@@ -397,7 +394,11 @@
 \makeatother
 
 %% multiple choice environment
-\renewcommand{\theenumi}{$(\mathrm{\alph{enumi}})$}  % this hack should be fixed via enumitem
+
+% Jim: Originally this was \renewcommand{\theenumi}{$(\mathrm{\alph{enumi}})$}
+% but that breaks tex4ht because mathmode can only be processed by mathjax.
+% so now I made this just italicized.
+\renewcommand{\theenumi}{\textit{(\alph{enumi})}}
 \renewcommand{\labelenumi}{\theenumi}
 
 %% correct answers for multiple choice
