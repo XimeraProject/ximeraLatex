@@ -280,7 +280,11 @@
 
 %% makes everymath display style even when inline, could be optional
 \everymath{\displaystyle} 
-                     
+%% Ok not everything, we also need this
+\let\prelim\lim 
+\renewcommand{\lim}{\displaystyle\prelim} 
+%% for display style limits
+
 % --------------------------------------------------------------------
 % --------------------------------------------------------------------
 % Content
