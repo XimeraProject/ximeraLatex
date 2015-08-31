@@ -177,5 +177,8 @@
 {\HCode{<a href="#2">}LINK\HCode{</a>}}
 {\HCode{<a href="#2">}#1\HCode{</a>}}}
 
+% This connects back to ximera.cls code which makes lim into display math
+% \newcommand{\prelim}{\lim}
+
 \Hinput{ximera}
 \endinput
