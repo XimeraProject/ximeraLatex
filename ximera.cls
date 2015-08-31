@@ -785,6 +785,9 @@ Xarma Boost \ifhandout\theproblem\else\ifshuffle\theproblem.\theproblemType\else
 \@oldargdef#1[#2]{#3}%
 }
 
+\let\@OldDeclareMathOperator\DeclareMathOperator
+\renewcommand{\DeclareMathOperator}[2]{\@OldDeclareMathOperator{#1}{#2}\immediate\write\myfile{\unexpanded{\DeclareMathOperator}{\unexpanded{#1}}{\unexpanded{#2}}}}
+
     \makeatother
 \fi
 
