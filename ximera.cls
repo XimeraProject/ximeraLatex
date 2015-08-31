@@ -776,6 +776,7 @@ Xarma Boost \ifhandout\theproblem\else\ifshuffle\theproblem.\theproblemType\else
   \else
     \newwrite\myfile
     \immediate\openout\myfile=\jobname.jax
+    \immediate\write\myfile{\unexpanded{\newenvironment}{prompt}{}{}}
 
     \makeatletter
 
