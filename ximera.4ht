@@ -143,13 +143,13 @@
 % video environments
 
 % Youtube command. Requires id.
-\renewcommand{\youtube}[1]{\HCode{<div class="video youtube-player" data-youtube="#1"></div>}}
+\renewcommand{\youtube}[1]{\ifvmode \IgnorePar\fi \EndP\HCode{<div class="video youtube-player" data-youtube="#1"></div>}}
 
 % Image environment doesn't actually work in tex4ht as defined with
 % NewEnviron; so this renewenvironment is needed.  image-environment
 % also gets formatted in a well, and when the user clicks on the
 % image, it zooms in.
-\renewenvironment{image}[1][]{\HCode{<div class="image-environment">}}{\HCode{</div>}}
+\renewenvironment{image}[1][]{\ifvmode \IgnorePar\fi \EndP\HCode{<div class="image-environment">}}{\HCode{</div>}}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % interactives
