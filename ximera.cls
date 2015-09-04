@@ -374,9 +374,9 @@
 
 %% Prompt environment
 \newenvironment{prompt}{
-\ifhandout\setbox0\vbox\bgroup\else\color{gray!50!black}
+\ifhandout\setbox0\vbox\bgroup\[\else\color{gray!50!black}
 \fi}
-{\ifhandout\egroup
+{\ifhandout\]\egroup%% \] needed for math mode!
 \fi}
 
 % ---------------------------------------------------------------------
