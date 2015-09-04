@@ -17,24 +17,16 @@
 %%% Department of Mathematics
 %%% The Ohio State University
 
-%%% Oscar Levin
-%%% School of Mathematical Sciences
-%%% University of Northern Colorado
-
-%%% Hans Parshall
-%%% Department of Mathematics
-%%% University of Georgia
-
 \def\fileversion{.57}
 \def\filedate{2015/07/15}
 
 \NeedsTeXFormat{LaTeX2e}
 
 \ProvidesClass{xercises}[\filedate\space Version \fileversion\space by
-  Bart Snapp, Oscar Levin, Hans Parshall]
+  Bart Snapp]
 
 % Passes xercises class options to the underlying ximera class
-\DeclareOption*{\PassOptionsToClass{\CurrentOption}{xercises}}
+\DeclareOption*{\PassOptionsToClass{\CurrentOption}{xourse}}
 \ProcessOptions
 
 \LoadClass{xourse}
