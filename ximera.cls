@@ -427,7 +427,7 @@
 
 %multipleChoice* is for internal use only! (used in wordChoice)
 \newenvironment{multipleChoice*}[1][]
-{\begin{enumerate*}[before={( }, itemjoin={{ / }}, after={ )}, label={}]}
+{\begin{enumerate*}[before={\upshape{(\hspace{-.25em}}}, itemjoin={/\hspace{-.25em}}, after={\upshape{)}}, label={}]}
 {\end{enumerate*}}
 
 %wordChoice is an in-line version of multipleChoice:  uses enumitem package
