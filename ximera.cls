@@ -419,7 +419,7 @@
 %% correct answers for multiple choice
 \newboolean{correct}
 \setboolean{correct}{true}
-\newcommand{\choice}[2][]{\item #2\ifthenelse{\boolean{#1}}{\ifhandout \else \quad\checkmark\fi}{}}
+\newcommand{\choice}[2][]{\item #2\ifthenelse{\boolean{#1}}{\ifhandout \else \,\checkmark\,\fi}{}}
 
 \newenvironment{multipleChoice}[1][]
 {\begin{trivlist}\item[\hskip \labelsep\small\bfseries Multiple Choice:]\hfil\begin{enumerate}}
