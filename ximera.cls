@@ -413,7 +413,7 @@
 % Jim: Originally this was \renewcommand{\theenumi}{$(\mathrm{\alph{enumi}})$}
 % but that breaks tex4ht because mathmode can only be processed by mathjax.
 % so now I made this just italicized.
-\renewcommand{\theenumi}{\textit{(\alph{enumi})}}
+\renewcommand{\theenumi}{\textup{(\alph{enumi})}}
 \renewcommand{\labelenumi}{\theenumi}
 
 %% correct answers for multiple choice
