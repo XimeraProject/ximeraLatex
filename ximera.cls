@@ -373,11 +373,17 @@
 % ---------------------------------------------------------------------
 
 %% Prompt environment
-\newenvironment{prompt}{
-\ifhandout\setbox0\vbox\bgroup\else\color{gray!50!black}
-\fi}
-{\ifhandout\egroup
-\fi}
+\ifhandout
+\NewEnviron{prompt}{}
+\else
+\newenvironment{prompt}
+               {\bgroup\color{gray!50!black}}
+               {\egroup}
+\fi
+
+%% \newenvironment{prompt} %broke in true math mode
+%%                {\ifhandout\setbox0\vbox\bgroup\else\bgroup\color{gray!50!black}\fi}
+%%                {\ifhandout\egroup\else\egroup\fi}
 
 % ---------------------------------------------------------------------
 % ---------------------------------------------------------------------
@@ -407,13 +413,13 @@
 % Jim: Originally this was \renewcommand{\theenumi}{$(\mathrm{\alph{enumi}})$}
 % but that breaks tex4ht because mathmode can only be processed by mathjax.
 % so now I made this just italicized.
-\renewcommand{\theenumi}{\textit{(\alph{enumi})}}
+\renewcommand{\theenumi}{\textup{(\alph{enumi})}}
 \renewcommand{\labelenumi}{\theenumi}
 
 %% correct answers for multiple choice
 \newboolean{correct}
 \setboolean{correct}{true}
-\newcommand{\choice}[2][]{\item #2\ifthenelse{\boolean{#1}}{\ifhandout \else \quad\checkmark\fi}{}}
+\newcommand{\choice}[2][]{\item #2\ifthenelse{\boolean{#1}}{\ifhandout \else \,\checkmark\,\fi}{}}
 
 \newenvironment{multipleChoice}[1][]
 {\begin{trivlist}\item[\hskip \labelsep\small\bfseries Multiple Choice:]\hfil\begin{enumerate}}
@@ -421,7 +427,7 @@
 
 %multipleChoice* is for internal use only! (used in wordChoice)
 \newenvironment{multipleChoice*}[1][]
-{\begin{enumerate*}[before={( }, itemjoin={{ / }}, after={ )}, label={}]}
+{\begin{enumerate*}[before={\upshape{(\hspace{-.25em}}}, itemjoin={/\hspace{-.25em}}, after={\upshape{)}}, label={}]}
 {\end{enumerate*}}
 
 %wordChoice is an in-line version of multipleChoice:  uses enumitem package
