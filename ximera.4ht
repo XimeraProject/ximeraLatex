@@ -25,6 +25,10 @@
 \immediate\write-1{version 2014-01-26-09:44}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% pgf sometimes causes trouble, but we simply don't care in tex4ht mode
+\newcommand{\pgfsyspdfmark}[3]{}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Use an "identification" counter to assign IDs to the various problem-related DOM elements
 \newcounter{identification}
 \setcounter{identification}{0}
