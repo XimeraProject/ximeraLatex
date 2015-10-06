@@ -262,6 +262,7 @@
   \aftergroup\@afterindentfalse
   \aftergroup\@afterheading}
 \makeatother
+\relax
 
 \ifnumbers
 \setcounter{secnumdepth}{2}
@@ -277,6 +278,7 @@
 %\def\numberline#1{\if\relax#1\relax\else\latex@numberline{#1}\fi}
 %\makeatother
 \fi
+\relax
 
 %% makes everymath display style even when inline, could be optional
 \everymath{\displaystyle} 

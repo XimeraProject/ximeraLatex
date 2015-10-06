@@ -91,8 +91,7 @@
 \fi
 \pagestyle{main} %switch to main pagestyle, just like ximera documents.
 }
-
-
+\relax
 
 
 
@@ -111,17 +110,18 @@
   \begingroup\skip@preamble\otherinput{#1}\endgroup\clearpage
   \let\input\otherinput}
 \fi
+\relax
 
 
 \newcommand{\chapter}{} %% makes chapter "work"
-
+\relax
 
 % makes the toc look a bit better... can be redefined in the preamble.
 \makeatletter
 \renewcommand*\l@section{\@dottedtocline{1}{1.5em}{4.2em}}
 \renewcommand*\l@subsection{\@dottedtocline{2}{3.8em}{4.2em}}
 \makeatother
-
+\relax
 
 
 %</package>
