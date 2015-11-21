@@ -433,7 +433,12 @@
 {\end{enumerate*}}
 
 %wordChoice is an in-line version of multipleChoice:  uses enumitem package
+\ifhandout
+\renewcommand{\choice}[2][]{\ifthenelse{\boolean{#1}}{#2}{}}
+\newcommand{\wordChoice}[1]{#1}
+\else
 \newcommand{\wordChoice}[1]{\begin{multipleChoice*} #1 \end{multipleChoice*}}
+\fi
 
 \newenvironment{selectAll}[1][]
 {\begin{trivlist}\item[\hskip \labelsep\small\bfseries Select All Correct Answers:]\hfil\begin{enumerate}}
