@@ -90,6 +90,7 @@
 	\clearpage
 \fi
 \pagestyle{main} %switch to main pagestyle, just like ximera documents.
+\let\maketitle\othermaketitle % renew maketitle to usual definition.
 }
 \relax
 
@@ -99,13 +100,11 @@
 % \activity command inputs the file name provided without \documentclass, \being{document}/\end{document} and any inputs in the preamble of the included file.
 \ifnonewpage
 \newcommand\activity[1]{%
-  \let\maketitle\othermaketitle % renew maketitle to usual definition.
   \renewcommand{\input}[1]{}
   \begingroup\skip@preamble\otherinput{#1}\endgroup
   \let\input\otherinput}
 \else
 \newcommand\activity[1]{%
-  \let\maketitle\othermaketitle % renew maketitle to usual definition.
   \renewcommand{\input}[1]{}
   \begingroup\skip@preamble\otherinput{#1}\endgroup\clearpage
   \let\input\otherinput}
