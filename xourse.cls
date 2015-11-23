@@ -112,8 +112,8 @@
 \relax
 
 
-\newcommand{\chapter}{} %% makes chapter "work"
-\relax
+%% \newcommand{\chapter}{} %% makes chapter "work"
+%% \relax
 
 % makes the toc look a bit better... can be redefined in the preamble.
 \makeatletter
