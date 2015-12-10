@@ -74,6 +74,10 @@
 \numbersfalse
 \DeclareOption{numbers}{\numberstrue}
 
+\newif\ifwordchoicegiven%% suppresses choices in handout mode
+\wordchoicegivenfalse
+\DeclareOption{wordchoicegiven}{\wordchoicegiventrue}
+
 \newif\ifshuffle
 \shufflefalse
 
@@ -423,6 +427,11 @@
 \setboolean{correct}{true}
 \newcommand{\choice}[2][]{\item #2\ifthenelse{\boolean{#1}}{\ifhandout \else \,\checkmark\,\fi}{}}
 
+%% Not really meant to be used outside this package (used in wordChoice)
+\newcommand{\otherchoice}[2][]{\ifthenelse{\boolean{#1}}{#2}{}}
+%%%
+
+
 \newenvironment{multipleChoice}[1][]
 {\begin{trivlist}\item[\hskip \labelsep\small\bfseries Multiple Choice:]\hfil\begin{enumerate}}
 {\end{enumerate}\end{trivlist}}
@@ -432,8 +441,26 @@
 {\begin{enumerate*}[before={\upshape{(\hspace{-.25em}}}, itemjoin={/\hspace{-.25em}}, after={\upshape{)}}, label={}]}
 {\end{enumerate*}}
 
+%multipleChoice** is for internal use only! (used in wordChoice)
+\newenvironment{multipleChoice**}[1][]{}{}
+
+
+
 %wordChoice is an in-line version of multipleChoice:  uses enumitem package
-\newcommand{\wordChoice}[1]{\begin{multipleChoice*} #1 \end{multipleChoice*}}
+\newcommand{\wordChoice}[1]{
+  \let\choicetemp\choice%
+  \ifwordchoicegiven%
+  \def\choice{\otherchoice}%
+    \begin{multipleChoice**}%
+    #1%
+  \end{multipleChoice**}%
+  \else%
+  \begin{multipleChoice*}%
+    #1%
+  \end{multipleChoice*}%
+  \fi%
+  \let\choice\choicetemp%
+}
 
 \newenvironment{selectAll}[1][]
 {\begin{trivlist}\item[\hskip \labelsep\small\bfseries Select All Correct Answers:]\hfil\begin{enumerate}}
