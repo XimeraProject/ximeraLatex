@@ -447,20 +447,7 @@
 
 
 %wordChoice is an in-line version of multipleChoice:  uses enumitem package
-\newcommand{\wordChoice}[1]{
-  \let\choicetemp\choice%
-  \ifwordchoicegiven%
-  \def\choice{\otherchoice}%
-    \begin{multipleChoice**}%
-    #1%
-  \end{multipleChoice**}%
-  \else%
-  \begin{multipleChoice*}%
-    #1%
-  \end{multipleChoice*}%
-  \fi%
-  \let\choice\choicetemp%
-}
+\newcommand{\wordChoice}[1]{\let\choicetemp\choice\ifwordchoicegiven\def\choice{\otherchoice}\begin{multipleChoice**}#1\end{multipleChoice**}\else\begin{multipleChoice*}#1\end{multipleChoice*}\fi\let\choice\choicetemp}
 
 \newenvironment{selectAll}[1][]
 {\begin{trivlist}\item[\hskip \labelsep\small\bfseries Select All Correct Answers:]\hfil\begin{enumerate}}
