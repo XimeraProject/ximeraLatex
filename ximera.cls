@@ -447,6 +447,7 @@
 
 
 %wordChoice is an in-line version of multipleChoice:  uses enumitem package
+%note, it is coded as a single line to avoid unwanted spaces in "given" mode
 \newcommand{\wordChoice}[1]{\let\choicetemp\choice\ifwordchoicegiven\def\choice{\otherchoice}\begin{multipleChoice**}#1\end{multipleChoice**}\else\begin{multipleChoice*}#1\end{multipleChoice*}\fi\let\choice\choicetemp}
 
 \newenvironment{selectAll}[1][]
