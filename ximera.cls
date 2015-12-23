@@ -163,7 +163,7 @@
       /tikz/external/system call={
         /usr/bin/pdflatex \tikzexternalcheckshellescape -halt-on-error -interaction=batchmode -jobname "\image" "\texsource";
         /usr/bin/pdf2svg \image.pdf \image.svg ;
-        /usr/bin/mudraw -r 150 -c rgbalpha -o \image.png \image.pdf ;
+        /usr/bin/mutool draw -r 150 -c rgbalpha -o \image.png \image.pdf ;
       }
     }
     \tikzexternalize[optimize=false,prefix=./]
