@@ -520,7 +520,7 @@
 \setbox0\vbox\bgroup
 }
 {%
-\egroup
+\egroup\ignorespacesafterend %% If this mysteriously starts breaking remove \ignorespacesafterend
 }
 \fi
 \else% for handout, so what follows is default
@@ -758,7 +758,7 @@ Xarma Boost \ifhandout\theproblem\else\ifshuffle\theproblem.\theproblemType\else
 %% Hints
 \ifhandout
 \newenvironment{hint}{\setbox0\vbox\bgroup}
-{\egroup}
+{\egroup\ignorespacesafterend}
 
 \else
 
