@@ -428,7 +428,7 @@
 \newcommand{\choice}[2][]{\item #2\ifthenelse{\boolean{#1}}{\ifhandout \else \,\checkmark\,\fi}{}}
 
 %% Not really meant to be used outside this package (used in wordChoice)
-\newcommand{\otherchoice}[2][]{\ifthenelse{\boolean{#1}}{#2}{}}
+\newcommand{\otherchoice}[2][]{\ignorespaces\ifthenelse{\boolean{#1}}{#2}{}\ignorespaces}
 %%%
 
 
