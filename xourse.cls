@@ -111,6 +111,8 @@
 \fi
 \relax
 
+%% \assignment{mooculus/exercises:antiderivativeTrueFalse/antiderivativeTrueFalse3} would, for instance, include the named exercise from that repository (mooculus/exercises) as an assignment
+\newcommand\assignment[1]{}
 
 %% \newcommand{\chapter}{} %% makes chapter "work"
 %% \relax

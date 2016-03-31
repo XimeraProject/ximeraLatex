@@ -28,6 +28,14 @@
 \ifvmode \IgnorePar\fi \EndP\HCode{<a class="activity" href="#1">#1</a>}\IgnoreIndent%
 }
 
+\renewcommand\youtube[1]{%
+\ifvmode \IgnorePar\fi \EndP\HCode{<a class="youtube" href="https://www.youtube.com/watch?v=#1">#1</a>}\IgnoreIndent%
+}
+
+\renewcommand\assignment[1]{%
+\ifvmode \IgnorePar\fi \EndP\HCode{<a class="assignment" href="#1">#1</a>}\IgnoreIndent%
+}
+
 % Mark this as a xourse file
 \Configure{@HEAD}{\HCode{<meta name="description" content="xourse" />\Hnewline}}
 

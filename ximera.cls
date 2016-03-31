@@ -432,7 +432,7 @@
 \newcommand{\choice}[2][]{\item #2\ifthenelse{\boolean{#1}}{\ifhandout \else \,\checkmark\,\fi}{}}
 
 %% Not really meant to be used outside this package (used in wordChoice)
-\newcommand{\otherchoice}[2][]{\ifthenelse{\boolean{#1}}{#2}{}}
+\newcommand{\otherchoice}[2][]{\ignorespaces\ifthenelse{\boolean{#1}}{#2}{}\ignorespaces}
 %%%
 
 
@@ -524,7 +524,7 @@
 \setbox0\vbox\bgroup
 }
 {%
-\egroup
+\egroup\ignorespacesafterend %% If this mysteriously starts breaking remove \ignorespacesafterend
 }
 \fi
 \else% for handout, so what follows is default
@@ -762,7 +762,7 @@ Xarma Boost \ifhandout\theproblem\else\ifshuffle\theproblem.\theproblemType\else
 %% Hints
 \ifhandout
 \newenvironment{hint}{\setbox0\vbox\bgroup}
-{\egroup}
+{\egroup\ignorespacesafterend}
 
 \else
 
