@@ -359,17 +359,20 @@
 \newtheorem{definition}{Definition}
 \newtheorem{example}{Example}
 \newtheorem*{explanation}{Explanation}
+\newtheorem{fact}{Fact}
+\newtheorem{idea}{Idea}
 \newtheorem{lemma}{Lemma}
 \newtheorem{notation}{Notation}
+\newtheorem{observation}{Observation}
+\newtheorem{paradox}{Paradox}
+\newtheorem{procedure}{Procedure}
 \newtheorem{proposition}{Proposition}
 \newtheorem{remark}{Remark}
 \newtheorem{summary}{Summary}
-\newtheorem{paradox}{Paradox}
-\newtheorem{warning}{Warning}
-\newtheorem{observation}{Observation}
 \newtheorem{template}{Template}
-\newtheorem{idea}{Idea}
-\newtheorem{fact}{Fact}
+\newtheorem{warning}{Warning}
+
+
 
 \renewenvironment{proof}[1][\proofname]{\begin{trivlist}\item[\hskip \labelsep \itshape \bfseries #1{}\hspace{2ex}]}
 {\qed\end{trivlist}}
