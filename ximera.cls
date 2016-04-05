@@ -331,6 +331,9 @@
 %Desmos link
 \newcommand{\desmos}[3]{Desmos link: \url{https://www.desmos.com/calculator/#1}}
 
+% Embedded graph (in math mode)
+\newcommand{\graph}[1]{\mbox{Graph of $#1$}}
+
 %HTML 
 \NewEnviron{html}{\textbf{INTERACTIVE NOT AVAILABLE.}}
 	
