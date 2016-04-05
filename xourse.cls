@@ -41,6 +41,10 @@
 \nonewpagefalse
 \DeclareOption{nonewpage}{\nonewpagetrue}
 
+\newif\ifxake
+\xakefalse
+\DeclareOption{xake}{\xaketrue}
+
 % Passes xourse class options to the underlying ximera class
 \DeclareOption*{\PassOptionsToClass{\CurrentOption}{ximera}}
 \ProcessOptions
@@ -110,6 +114,11 @@
   \let\input\otherinput}
 \fi
 \relax
+
+%% When running xake, we can just ignore activities
+\ifxake
+\renewcommand\activity[1]{}
+\fi
 
 %% \assignment{mooculus/exercises:antiderivativeTrueFalse/antiderivativeTrueFalse3} would, for instance, include the named exercise from that repository (mooculus/exercises) as an assignment
 \newcommand\assignment[1]{}
