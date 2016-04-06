@@ -431,6 +431,8 @@
 % so now I made this just italicized.
 \renewcommand{\theenumi}{\textup{(\alph{enumi})}}
 \renewcommand{\labelenumi}{\theenumi}
+\renewcommand{\theenumii}{\textup{(\roman{enumii})}}
+\renewcommand{\labelenumii}{\theenumii}
 
 %% correct answers for multiple choice
 \newboolean{correct}
