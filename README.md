@@ -125,7 +125,7 @@ Create the directory structure:
 `~/Library/texmf/tex/latex/`
 
 and move ximeraLatex to `~/Library/texmf/tex/latex/`. This will allow
-all of your documents to find ximera.cls. Once you move ximerLatex,
+all of your documents to find ximera.cls. Once you move ximeraLatex,
 you will need to tell your GitHub client where to look for it, you can
 do this using "find files."
 

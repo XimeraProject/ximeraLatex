@@ -7,3 +7,5 @@ secondExample/secondExample.pdf
 *.pdf
 *.jax
 firstExample/firstExample.pdf
+*.toc
+*~
