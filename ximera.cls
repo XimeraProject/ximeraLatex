@@ -365,6 +365,7 @@
 \newtheorem{fact}{Fact}
 \newtheorem{idea}{Idea}
 \newtheorem{lemma}{Lemma}
+\newtheorem{model}{Model}
 \newtheorem{notation}{Notation}
 \newtheorem{observation}{Observation}
 \newtheorem{paradox}{Paradox}
