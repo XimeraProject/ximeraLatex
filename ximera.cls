@@ -347,7 +347,10 @@
                               
 
 %% image environment
-\newenvironment{image}[1][]{\begin{center}}{\end{center}}
+%\newenvironment{image}[1][]{\begin{center}}{\end{center}}
+\NewEnviron{image}[1][3in]{% 
+  \begin{center}\resizebox{#1}{!}{\BODY}\end{center}% resize and center
+}
 
 \newtheorem{theorem}{Theorem}
 %\newtheorem{acknowledgement}{Acknowledgement}
