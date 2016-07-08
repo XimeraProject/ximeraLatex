@@ -103,7 +103,13 @@ Visit the repo on Github.com and click the "Clone in Desktop" button.
 
 #### For Linux
 
+Use SSH (requires setting up an ssh key, instructions [here](https://help.github.com/articles/generating-an-ssh-key/):
 `$ git clone git@github.com:bartsnapp/ximeraLatex.git`
+
+or
+
+Use HTTPS (no key needed):
+`$ git clone https://github.com/bartsnapp/ximeraLatex.git`
 
 
 Setting up your local directories
