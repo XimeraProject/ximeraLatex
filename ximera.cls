@@ -167,7 +167,7 @@
       /tikz/external/system call={
         /usr/bin/pdflatex \tikzexternalcheckshellescape -halt-on-error -interaction=batchmode -jobname "\image" "\\PassOptionsToClass{tikzexport}{ximera}\texsource";
         /usr/bin/pdf2svg \image.pdf \image.svg ;
-        /usr/bin/mutool draw -r 150 -c rgbalpha -o \image.png \image.pdf ;
+        mutool draw -r 150 -c rgbalpha -o \image.png \image.pdf ;
       }
     }
     \tikzexternalize[optimize=false,prefix=./]
