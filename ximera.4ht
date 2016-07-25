@@ -148,7 +148,7 @@
 % video environments
 
 % Youtube command. Requires id.
-\renewcommand{\youtube}[1]{\ifvmode \IgnorePar\fi \EndP\HCode{<div class="video youtube-player" data-youtube="#1"></div>}}
+\renewcommand{\youtube}[1]{\ifvmode \IgnorePar\fi \EndP\HCode{<div class="video youtube-player" data-youtube="#1">_</div>}}
 
 % Image environment doesn't actually work in tex4ht as defined with
 % NewEnviron; so this renewenvironment is needed.  image-environment
