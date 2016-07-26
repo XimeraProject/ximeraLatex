@@ -334,6 +334,9 @@
 % Embedded graph (in math mode)
 \newcommand{\graph}[1]{\mbox{Graph of $#1$}}
 
+% Interactive element
+\newcommand{\includeinteractive}[1]{Interactive}
+
 %HTML 
 \NewEnviron{html}{\textbf{INTERACTIVE NOT AVAILABLE.}}
 	
