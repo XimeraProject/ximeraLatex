@@ -318,8 +318,12 @@
 
 %\newcommand{\video}[1]{\footnote{Video link: \url{#1}}}
 
-%Youtube link
+% Youtube link
 \newcommand{\youtube}[1]{YouTube link: \url{https://www.youtube.com/watch?v=#1}}
+
+% Kaltura is an online video platform
+% \kaltura{partnerid}{entryid}
+\newcommand{\kaltura}[2]{Video: \url{http://www.kaltura.com/p/#1/sp/0/playManifest/entryId/#2/format/url/flavorParamId/301971/video.mp4}}
 
 
 % --------------------------------------------------------------------

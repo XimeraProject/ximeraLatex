@@ -157,6 +157,10 @@
 % Youtube command. Requires id.
 \renewcommand{\youtube}[1]{\ifvmode \IgnorePar\fi \EndP\HCode{<div class="video youtube-player" data-youtube="#1">_</div>}}
 
+% Kaltura is an online video platform
+% \kaltura{partnerid}{entryid}
+\renewcommand{\kaltura}[2]{\ifvmode \IgnorePar\fi \EndP\HCode{<div class="video kaltura-player" data-partner-id="#1" data-entry-id="#2">_</div>}}
+
 % Image environment doesn't actually work in tex4ht as defined with
 % NewEnviron; so this renewenvironment is needed.  image-environment
 % also gets formatted in a well, and when the user clicks on the
