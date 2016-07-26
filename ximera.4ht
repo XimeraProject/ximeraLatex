@@ -164,6 +164,13 @@
 \renewenvironment{image}[1][]{\ifvmode \IgnorePar\fi \EndP\HCode{<div class="image-environment">}}{\HCode{</div>}}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\renewenvironment{sageCell}{\NoFonts}{\EndNoFonts}
+\ScriptEnv{sageCell}{\ifvmode \IgnorePar\fi \EndP\HCode{<div class="sage"><script type="text/x-sage">}}{\HCode{\Hnewline</script></div>}}
+}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
 % interactives
 
 % Geogebra command. Requires id, width, and height as arguments.
