@@ -164,6 +164,10 @@
 \renewenvironment{image}[1][]{\ifvmode \IgnorePar\fi \EndP\HCode{<div class="image-environment">}}{\HCode{</div>}}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\renewcommand{\xkcd}[1]{\ifvmode \IgnorePar\fi \EndP\HCode{<img src="https://imgs.xkcd.com/comics/#1.png">}}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % interactives
 
 % Geogebra command. Requires id, width, and height as arguments.
