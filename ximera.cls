@@ -815,6 +815,11 @@ Xarma Boost \ifhandout\theproblem\else\ifshuffle\theproblem.\theproblemType\else
 \newcommand{\unfoldable}[1]{#1}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\newcommand{\xkcd}[1]{#1}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
 % When designing new elements, it is nice to be able to wrap things in a class
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
