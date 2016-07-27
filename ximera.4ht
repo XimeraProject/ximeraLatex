@@ -164,7 +164,7 @@
 
 % Kaltura is an online video platform
 % \kaltura{partnerid}{entryid}
-\renewcommand{\kaltura}[2]{\ifvmode \IgnorePar\fi \EndP\HCode{<script src="http://cdnapi.kaltura.com/p/#1/sp/#100/embedIframeJs/uiconf_id/29761752/partner_id/{partnerId}/entry_id/#2/playerId/{playerId}?autoembed=true&width=480&height=270}></script>}
+\renewcommand{\kaltura}[2]{\ifvmode \IgnorePar\fi \EndP\HCode{<script src="http://cdnapi.kaltura.com/p/#1/sp/#100/embedIframeJs/uiconf_id/29761752/partner_id/{partnerId}/entry_id/#2/playerId/{playerId}?autoembed=true&width=480&height=270> </script>}}
     
 
 % Image environment doesn't actually work in tex4ht as defined with
