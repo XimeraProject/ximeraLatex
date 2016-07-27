@@ -60,7 +60,7 @@
 % respondables
 
 \renewcommand{\answer}[2][false]{\HCode{<span class="answer respondable">}#2\HCode{</span>}}
-\renewcommand{\graph}[1]{\HCode{<span class="graph">}#1\HCode{</span>}}
+\renewcommand{\graph}[2][]{\HCode{<div class="graph" data-options="#2">}#1\HCode{</div>}}
 
 %% correct answers for multiple choice
 %\newboolean{correct}
@@ -177,6 +177,9 @@
 
 \renewenvironment{sageCell}{\NoFonts}{\EndNoFonts}
 \ScriptEnv{sageCell}{\ifvmode \IgnorePar\fi \EndP\HCode{<div class="sage"><script type="text/x-sage">}}{\HCode{\Hnewline</script></div>}}
+
+\renewenvironment{sageOutput}{\NoFonts}{\EndNoFonts}
+\ScriptEnv{sageOutput}{\ifvmode \IgnorePar\fi \EndP\HCode{<div class="sageOutput"><script type="text/x-sage">}}{\HCode{\Hnewline</script></div>}}
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
