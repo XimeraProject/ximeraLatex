@@ -61,6 +61,7 @@
 
 \renewcommand{\answer}[2][false]{\HCode{<span class="answer respondable">}#2\HCode{</span>}}
 \renewcommand{\graph}[1]{\HCode{<span class="graph">}#1\HCode{</span>}}
+\renewcommand{\graph}[2][]{\HCode{<div class="graph" data-options="#2">}#1\HCode{</div>}}
 
 %% correct answers for multiple choice
 %\newboolean{correct}
