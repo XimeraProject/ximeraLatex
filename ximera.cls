@@ -436,6 +436,15 @@
 \newenvironment{prompt}
                {\bgroup\color{gray!50!black}}
                {\egroup}
+               \fi
+
+               %% Prompt environment
+\ifhandout
+\NewEnviron{onlineOnly}{}
+\else
+\newenvironment{onlineOnly}
+               {\bgroup\color{red!50!black}}
+               {\egroup}
 \fi
 
 %% \newenvironment{prompt} %broke in true math mode
