@@ -862,13 +862,13 @@ Xarma Boost \ifhandout\theproblem\else\ifshuffle\theproblem.\theproblemType\else
 
 %% Global set commands:
 
-%set global override to folded
-\newcommand{\expandAllFolds}{%
+%set global override to expanded
+\newcommand{\collapseAllFolds}{%
 \setcounter{globalFold}{0} 
 }
 
-%set global override to expanded
-\newcommand{\collapseAllFolds}{%
+%set global override to folded
+\newcommand{\expandAllFolds}{%
 \setcounter{globalFold}{1} 
 }
 
