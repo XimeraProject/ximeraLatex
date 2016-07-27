@@ -172,7 +172,7 @@
 
 \renewenvironment{sageCell}{\NoFonts}{\EndNoFonts}
 \ScriptEnv{sageCell}{\ifvmode \IgnorePar\fi \EndP\HCode{<div class="sage"><script type="text/x-sage">}}{\HCode{\Hnewline</script></div>}}
-}
+
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
