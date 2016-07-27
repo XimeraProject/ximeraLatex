@@ -204,6 +204,19 @@
 \renewcommand{\desmos}[3]{\HCode{<a title="View with the Desmos Graphing Calculator" href="https://www.desmos.com/calculator/#1" target="_blank">  <img src="https://s3.amazonaws.com/calc_thumbs/production/#1.png"" width="#2px" height="#3px" style="border:1px solid \#ccc; border-radius:5px"/></a>}}
 
 
+% googleSheet command. Requires id, width, and height as arguments.
+%  optional arguments are gid for sheet ID and range for cell range.
+%command definition
+\renewcommand{\googleSheet}[5]{%
+  \ifthenelse{\equal{#4}{}}%
+    {\HCode{<iframe width="#2px" height="#3px" src="https://docs.google.com/spreadsheets/d/#1/htmlembed?widget=true">This browser does not support embedded elements.</iframe>}}%
+    {\ifthenelse{\equal{#5}{}}%
+       {\HCode{<iframe width="#2px" height="#3px" src="https://docs.google.com/spreadsheets/d/#1/htmlembed?single=true&amp;gid=#4&amp;widget=false">This browser does not support embedded elements.</iframe>}}%
+       {\HCode{<iframe width="#2px" height="#3px" src="https://docs.google.com/spreadsheets/d/#1/htmlembed?single=true&amp;gid=#4&amp;range=#5&amp;widget=false">This browser does not support embedded elements.</iframe>}}%
+    }%
+}%
+
+
 % HTML environment.
 %\renewcommand{\html}[1]{\HCode{#1}}
 \RenewEnviron{html}{\HCode{\BODY}}

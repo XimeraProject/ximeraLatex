@@ -335,6 +335,11 @@
 %Desmos link
 \newcommand{\desmos}[3]{Desmos link: \url{https://www.desmos.com/calculator/#1}}
 
+% Google Spreadsheet link (read only)
+\newcommand{\googleSheet}[5]{%
+  Google Spreadsheet link: \url{https://docs.google.com/spreadsheets/d/#1}%
+}
+
 % Embedded graph (in math mode)
 \newcommand{\graph}[1]{\mbox{Graph of $#1$}}
 
