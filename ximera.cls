@@ -288,6 +288,31 @@
 \fi
 \relax
 
+\makeatletter
+\newcounter{sectiontitlenumber}
+\setcounter{secnumdepth}{0}
+\newcommand\chapterstyle{%
+  \def\maketitle{%
+    \addtocounter{titlenumber}{1}%
+    \addcontentsline{toc}{section}{\textbf{\thetitlenumber\quad\@title}}%
+                    {\flushleft\small\sffamily\bfseries\@pretitle\par\vspace{-1.5em}}%
+                    {\flushleft\LARGE\sffamily\bfseries\thetitlenumber\quad\@title \par }%
+                    {\vskip .6em\noindent\textit\theabstract\setcounter{problem}{0}\setcounter{sectiontitlenumber}{0}}%
+                    \par\vspace{2em}}}
+
+\newcommand\sectionstyle{%
+  \def\maketitle{%
+    \addtocounter{sectiontitlenumber}{1}
+    \addcontentsline{toc}{subsection}{\thetitlenumber.\thesectiontitlenumber\quad\@title}%
+    {\flushleft\small\sffamily\bfseries\@pretitle\par\vspace{-1.5em}}%
+    {\flushleft\Large\sffamily\bfseries\thetitlenumber.\thesectiontitlenumber\quad\@title \par}%
+    {\vskip .6em\noindent\textit\theabstract}%
+    \par\vspace{2em}}}
+\makeatother
+
+
+
+
 %% makes everymath display style even when inline, could be optional
 \everymath{\displaystyle} 
 %% Ok not everything, we also need this
