@@ -902,7 +902,9 @@ Xarma Boost \ifhandout\theproblem\else\ifshuffle\theproblem.\theproblemType\else
     % Set to any other value to remove global override
 
 \newcommand{\flexFold}[2]{%
+
 \setcounter{localFold}{#1} %set local fold flag to user's value.
+
 \ifthenelse{\value{globalFold} = 0}{
     \begin{expandable} %Make an unfolded version
     #2
@@ -936,9 +938,6 @@ Xarma Boost \ifhandout\theproblem\else\ifshuffle\theproblem.\theproblemType\else
                     \unfoldable{#2}
                     }
                 }
-            \begin{expandable} %make an unfolded version
-            #2
-            \end{expandable}
             }
         }
     }
