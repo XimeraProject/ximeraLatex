@@ -288,6 +288,31 @@
 \fi
 \relax
 
+\makeatletter
+\newcounter{sectiontitlenumber}
+\setcounter{secnumdepth}{0}
+\newcommand\chapterstyle{%
+  \def\maketitle{%
+    \addtocounter{titlenumber}{1}%
+    \addcontentsline{toc}{section}{\textbf{\thetitlenumber\quad\@title}}%
+                    {\flushleft\small\sffamily\bfseries\@pretitle\par\vspace{-1.5em}}%
+                    {\flushleft\LARGE\sffamily\bfseries\thetitlenumber\quad\@title \par }%
+                    {\vskip .6em\noindent\textit\theabstract\setcounter{problem}{0}\setcounter{sectiontitlenumber}{0}}%
+                    \par\vspace{2em}}}
+
+\newcommand\sectionstyle{%
+  \def\maketitle{%
+    \addtocounter{sectiontitlenumber}{1}
+    \addcontentsline{toc}{subsection}{\thetitlenumber.\thesectiontitlenumber\quad\@title}%
+    {\flushleft\small\sffamily\bfseries\@pretitle\par\vspace{-1.5em}}%
+    {\flushleft\Large\sffamily\bfseries\thetitlenumber.\thesectiontitlenumber\quad\@title \par}%
+    {\vskip .6em\noindent\textit\theabstract}%
+    \par\vspace{2em}}}
+\makeatother
+
+
+
+
 %% makes everymath display style even when inline, could be optional
 \everymath{\displaystyle} 
 %% Ok not everything, we also need this
@@ -341,7 +366,7 @@
 }
 
 % Embedded graph (in math mode)
-\newcommand{\graph}[1]{\mbox{Graph of $#1$}}
+\newcommand{\graph}[2][]{\mbox{Graph of $#1$}}
 
 % Interactive element
 \newcommand{\includeinteractive}[1]{Interactive}
@@ -820,15 +845,112 @@ Xarma Boost \ifhandout\theproblem\else\ifshuffle\theproblem.\theproblemType\else
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Foldables
 
+\newcounter{globalFold} %Global Flag to tell if environments should be folded.
+    % Set to 0 to fold, 
+    % Set to 1 to unfold, 
+    % Set to 2 to unfold without the foldable option (\unfoldable)
+    % Set to any other value to remove global override
+\setcounter{globalFold}{3} %default to no global override
+
+\newcounter{localFold} %Local Flag to tell if environments should be folded. 
+    % Set to 0 to fold, 
+    % Set to 1 to unfold, 
+    % Set to 2 to unfold without the foldable option (\unfoldable)
+    % Set to any other value to remove global override
+\setcounter{localFold}{3} %default to no local value
+
+
+%% Global set commands:
+
+%set global override to folded
+\newcommand{\expandAllFolds}{%
+\setcounter{globalFold}{0} 
+}
+
+%set global override to expanded
+\newcommand{\collapseAllFolds}{%
+\setcounter{globalFold}{1} 
+}
+
+%set global to override with printable pdf form
+\newcommand{\expandAllFoldsPDF}{%
+\setcounter{globalFold}{2}
+}
+
+%Reset global variable to return to local control
+\newcommand{\noGlobalFolds}{%
+\setcounter{globalFold}{3}
+}
+
+% The core environments. Find results in 4ht file.
 \newenvironment{foldable}{%
+}{%
+}
+
+\newenvironment{expandable}{%
 }{%
 }
 
 \newcommand{\unfoldable}[1]{#1}
 
+% Command to set folded or unfolded.
+% \flexFold{#1}{#2}, #1 is the fold state, #2 is the content. 
+    % For fold state:
+    % Set to 0 to fold, 
+    % Set to 1 to unfold, 
+    % Set to 2 to unfold without the foldable option (\unfoldable)
+    % Set to any other value to remove global override
+
+\newcommand{\flexFold}[2]{%
+\setcounter{localFold}{#1} %set local fold flag to user's value.
+\ifthenelse{\value{globalFold} = 0}{
+    \begin{expandable} %Make an unfolded version
+    #2
+    \end{expandable}
+    }
+    {
+    \ifthenelse{\value{globalFold} = 1}{
+        \begin{foldable} %make an unfolded version
+        #2
+        \end{foldable}
+        }
+        {
+        \ifthenelse{\value{globalFold} = 2}{
+            \unfoldable{#2}
+            }
+            {
+            \ifthenelse{\value{localFold}=0}
+                {
+                \begin{expandable}
+                #2
+                \end{expandable}
+                }
+                {
+                \ifthenelse{\value{localFold} = 1}
+                    {
+                    \begin{foldable}
+                    #2
+                    \end{foldable}
+                    }
+                    {
+                    \unfoldable{#2}
+                    }
+                }
+            \begin{expandable} %make an unfolded version
+            #2
+            \end{expandable}
+            }
+        }
+    }
+    %Reset local fold flag
+\setcounter{localFold}{3} %reset to remove local fold flag
+}
+
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \DefineVerbatimEnvironment{sageCell}{Verbatim}{}
+\DefineVerbatimEnvironment{sageOutput}{Verbatim}{}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
