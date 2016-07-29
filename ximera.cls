@@ -447,7 +447,7 @@
                {\egroup}
                \fi
 
-\NewEnviron{protectFromXake}{\iftikzexport\else\BODY\fi}
+\NewEnviron{printOnly}{\iftikzexport\else\BODY\fi}
 
                
 
