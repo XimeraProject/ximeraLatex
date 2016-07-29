@@ -445,7 +445,11 @@
 \newenvironment{onlineOnly}
                {\bgroup\color{red!50!black}}
                {\egroup}
-\fi
+               \fi
+
+\NewEnviron{protectFromXake}{\iftikzexport\else\BODY\fi}
+
+               
 
 %% \newenvironment{prompt} %broke in true math mode
 %%                {\ifhandout\setbox0\vbox\bgroup\else\bgroup\color{gray!50!black}\fi}
