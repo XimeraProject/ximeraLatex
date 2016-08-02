@@ -366,7 +366,7 @@
 }
 
 % Embedded graph (in math mode)
-\newcommand{\graph}[2][]{\mbox{Graph of $#2$}}
+\newcommand{\graph}[2][]{\text{Graph of $#2$}}
 
 % Interactive element
 \newcommand{\includeinteractive}[1]{Interactive}
