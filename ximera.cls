@@ -20,7 +20,7 @@
 %%% Department of Mathematics
 %%% The Ohio State University
 
-\def\fileversion{.57}
+\def\fileversion{1.22}
 \def\filedate{2015/01/14}
 
 % ---------------------------------------------------------------------
@@ -904,12 +904,14 @@ Xarma Boost \ifhandout\theproblem\else\ifshuffle\theproblem.\theproblemType\else
 %% \setcounter{globalFold}{3}
 %% }
 
-% The core environments. Find results in 4ht file.
-%% \newenvironment{foldable}{%
-%% }{%
-%% }
 
+% The core environments. Find results in 4ht file.
 %% pretty-foldable
+\iftikzexport
+\newenvironment{foldable}{%
+}{%
+}
+\else
 \renewmdenv[
   font=\upshape,
   outerlinewidth=3,
@@ -925,9 +927,13 @@ Xarma Boost \ifhandout\theproblem\else\ifshuffle\theproblem.\theproblemType\else
   fontcolor=textColor,
   backgroundcolor=background
 ]{foldable}%
-
+\fi
 
 %% pretty-expandable
+\iftikzexport\newenvironment{expandable}{%
+}{%
+}
+\else
 \newmdenv[
   font=\upshape,
   outerlinewidth=3,
@@ -941,7 +947,7 @@ Xarma Boost \ifhandout\theproblem\else\ifshuffle\theproblem.\theproblemType\else
   skipbelow=\baselineskip,
   linecolor=black,
 ]{expandable}%
-
+\fi
 %% \newenvironment{expandable}{%
 %% }{%
 %% }
