@@ -294,9 +294,11 @@
 \relax
 
 \makeatletter
+\def\activitystyle{plain}
 \newcounter{sectiontitlenumber}
 \setcounter{secnumdepth}{0}
 \newcommand\chapterstyle{%
+  \def\activitystyle{chapter}
   \def\maketitle{%
     \addtocounter{titlenumber}{1}%
     \addcontentsline{toc}{section}{\textbf{\thetitlenumber\quad\@title}}%
@@ -306,6 +308,7 @@
                     \par\vspace{2em}}}
 
 \newcommand\sectionstyle{%
+  \def\activitystyle{section}
   \def\maketitle{%
     \addtocounter{sectiontitlenumber}{1}
     \addcontentsline{toc}{subsection}{\thetitlenumber.\thesectiontitlenumber\quad\@title}%
@@ -316,8 +319,8 @@
 \makeatother
 
 \iftikzexport%% allows xake to handle \chapterstyle and \sectionstye
-\renewcommand\chapterstyle{}
-\renewcommand\sectionstyle{}
+\renewcommand\chapterstyle{\def\activitystyle{chapter}}
+\renewcommand\sectionstyle{\def\activitystyle{section}}
 \else
 \fi
 
