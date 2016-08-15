@@ -120,11 +120,18 @@
 \renewcommand\activity[1]{}
 \fi
 
-%% \assignment{mooculus/exercises:antiderivativeTrueFalse/antiderivativeTrueFalse3} would, for instance, include the named exercise from that repository (mooculus/exercises) as an assignment
-\newcommand\assignment[1]{}
+% \practice command inputs the file name provided without \documentclass, \being{document}/\end{document} and any inputs in the preamble of the included file.
+\newcommand\practice[1]{%
+  \renewcommand{\input}[1]{}
+  \begingroup\skip@preamble\otherinput{#1}\endgroup
+  \let\input\otherinput}
 
-%% \newcommand{\chapter}{} %% makes chapter "work"
-%% \relax
+%% When running xake, we can just ignore practice
+\ifxake
+\renewcommand\practice[1]{}
+\fi
+
+
 
 % makes the toc look a bit better... can be redefined in the preamble.
 \makeatletter
