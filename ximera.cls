@@ -20,7 +20,7 @@
 %%% Department of Mathematics
 %%% The Ohio State University
 
-\def\fileversion{1.23}
+\def\fileversion{1.24}
 \def\filedate{2016/08/17}
 
 % ---------------------------------------------------------------------
@@ -1007,8 +1007,8 @@ Xarma Boost \ifhandout\theproblem\else\ifshuffle\theproblem.\theproblemType\else
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\DefineVerbatimEnvironment{sageCell}{Verbatim}{}
-\DefineVerbatimEnvironment{sageOutput}{Verbatim}{}
+\DefineVerbatimEnvironment{sageCell}{Verbatim}{numbers=left,frame=lines,label=SAGE,labelposition=topline}
+\DefineVerbatimEnvironment{sageOutput}{Verbatim}{numbers=left,frame=lines,label=SAGE-Output,labelposition=topline}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
