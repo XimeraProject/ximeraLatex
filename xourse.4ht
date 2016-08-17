@@ -28,8 +28,8 @@
 \ifvmode \IgnorePar\fi \EndP\HCode{<h1 class="card">#1</h1>}\IgnoreIndent%
 }
 
-\renewcommand\activity[1]{%
-\ifvmode \IgnorePar\fi \EndP\HCode{<a class="activity card" href="#1" data-activity-style="\activitystyle">#1</a>}\IgnoreIndent%
+\renewcommand\activity[2][]{%
+\ifvmode \IgnorePar\fi \EndP\HCode{<a class="activity card" href="#2" data-options="#1" data-activity-style="\activitystyle">#2</a>}\IgnoreIndent%
 }
 
 \renewcommand\youtube[1]{%

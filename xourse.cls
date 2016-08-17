@@ -103,21 +103,23 @@
 
 % \activity command inputs the file name provided without \documentclass, \being{document}/\end{document} and any inputs in the preamble of the included file.
 \ifnonewpage
-\newcommand\activity[1]{%
+\newcommand{\activity}[2][]{%
+	\setkeys{activity}{#1}
   \renewcommand{\input}[1]{}
-  \begingroup\skip@preamble\otherinput{#1}\endgroup
+  \begingroup\skip@preamble\otherinput{#2}\endgroup
   \let\input\otherinput}
 \else
-\newcommand\activity[1]{%
+\newcommand{\activity}[2][]{%
+	\setkeys{activity}{#1}
   \renewcommand{\input}[1]{}
-  \begingroup\skip@preamble\otherinput{#1}\endgroup\clearpage
+  \begingroup\skip@preamble\otherinput{#2}\endgroup\clearpage
   \let\input\otherinput}
 \fi
 \relax
 
 %% When running xake, we can just ignore activities
 \ifxake
-\renewcommand\activity[1]{}
+\renewcommand\activity[2][]{}
 \fi
 
 % practice environment does nothing, but will eventually produce exercises at the end of an activity
