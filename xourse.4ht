@@ -24,17 +24,19 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \immediate\write-1{version 2015-08-22-10:35}
 
+\renewcommand\part[1]{%
+\ifvmode \IgnorePar\fi \EndP\HCode{<h1 class="card">#1</h1>}\IgnoreIndent%
+}
+
 \renewcommand\activity[1]{%
-\ifvmode \IgnorePar\fi \EndP\HCode{<a class="activity" href="#1" data-activity-style="\activitystyle">#1</a>}\IgnoreIndent%
+\ifvmode \IgnorePar\fi \EndP\HCode{<a class="activity card" href="#1" data-activity-style="\activitystyle">#1</a>}\IgnoreIndent%
 }
 
 \renewcommand\youtube[1]{%
 \ifvmode \IgnorePar\fi \EndP\HCode{<a class="youtube" href="https://www.youtube.com/watch?v=#1">#1</a>}\IgnoreIndent%
 }
 
-\renewcommand\practice[1]{%
-\ifvmode \IgnorePar\fi \EndP\HCode{<a class="practice" href="#1">#1</a>}\IgnoreIndent%
-}
+\renewenvironment{practice}{\ifvmode \IgnorePar\fi \EndP\HCode{<div class="practice">}}{\HCode{</div>}\IgnoreIndent}
 
 % Mark this as a xourse file
 \Configure{@HEAD}{\HCode{<meta name="description" content="xourse" />\Hnewline}}

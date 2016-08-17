@@ -120,18 +120,8 @@
 \renewcommand\activity[1]{}
 \fi
 
-% \practice command inputs the file name provided without \documentclass, \being{document}/\end{document} and any inputs in the preamble of the included file.
-\newcommand\practice[1]{%
-  \renewcommand{\input}[1]{}
-  \begingroup\skip@preamble\otherinput{#1}\endgroup
-  \let\input\otherinput}
-
-%% When running xake, we can just ignore practice
-\ifxake
-\renewcommand\practice[1]{}
-\fi
-
-
+% practice environment does nothing, but will eventually produce exercises at the end of an activity
+\newenvironment{practice}{}{}
 
 % makes the toc look a bit better... can be redefined in the preamble.
 \makeatletter
