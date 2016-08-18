@@ -294,11 +294,11 @@
 \relax
 
 \makeatletter
-\def\activitystyle{plain}
+\def\activitystyle{}
 \newcounter{sectiontitlenumber}
 \setcounter{secnumdepth}{0}
 \newcommand\chapterstyle{%
-  \def\activitystyle{chapter}
+  \def\activitystyle{activity-chapter}
   \def\maketitle{%
     \addtocounter{titlenumber}{1}%
     \addcontentsline{toc}{section}{\textbf{\thetitlenumber\quad\@title}}%
@@ -308,7 +308,7 @@
                     \par\vspace{2em}}}
 
 \newcommand\sectionstyle{%
-  \def\activitystyle{section}
+  \def\activitystyle{activity-section}
   \def\maketitle{%
     \addtocounter{sectiontitlenumber}{1}
     \addcontentsline{toc}{subsection}{\thetitlenumber.\thesectiontitlenumber\quad\@title}%

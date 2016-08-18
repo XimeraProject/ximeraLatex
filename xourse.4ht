@@ -29,7 +29,7 @@
 }
 
 \renewcommand\activity[2][]{%
-\ifvmode \IgnorePar\fi \EndP\HCode{<a class="activity card" href="#2" data-options="#1" data-activity-style="\activitystyle">#2</a>}\IgnoreIndent%
+\ifvmode \IgnorePar\fi \EndP\HCode{<a class="activity card \activitystyle" href="#2" data-options="#1">#2</a>}\IgnoreIndent%
 }
 
 \renewcommand\youtube[1]{%
