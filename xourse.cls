@@ -25,7 +25,7 @@
 %%% Department of Mathematics
 %%% University of Georgia
 
-\def\fileversion{.57}
+\def\fileversion{1.24}
 \def\filedate{2015/07/15}
 
 \NeedsTeXFormat{LaTeX2e}
@@ -41,9 +41,6 @@
 \nonewpagefalse
 \DeclareOption{nonewpage}{\nonewpagetrue}
 
-\newif\ifxake
-\xakefalse
-\DeclareOption{xake}{\xaketrue}
 
 % Passes xourse class options to the underlying ximera class
 \DeclareOption*{\PassOptionsToClass{\CurrentOption}{ximera}}
