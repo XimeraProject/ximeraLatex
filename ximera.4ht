@@ -242,7 +242,7 @@
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \renewcommand{\label}[1]{\HCode{<a class="label" id="#1"></a>}}
-\renewcommand{\ref}[1]{\HCode{<a class="reference" data-target="#1">#1</a>}}
+\renewcommand{\ref}[1]{\HCode{<a class="reference" href="\##1">#1</a>}}
 
 \Hinput{ximera}
 \endinput
