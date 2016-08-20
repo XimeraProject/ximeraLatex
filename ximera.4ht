@@ -224,6 +224,11 @@
     }%
 }%
 
+% googleForm command. Requires id, width, and height as arguments.
+%command definition
+\renewcommand{\googleForm}[3]{%
+    {\HCode{<iframe width="#2px" height="#3px" src="https://docs.google.com/forms/d/e/#1/viewform?embedded=true" frameborder="0" marginheight="0" marginwidth="0">This browser does not support embedded elements.</iframe>}}%
+}%
 
 % HTML environment.
 %\renewcommand{\html}[1]{\HCode{#1}}
