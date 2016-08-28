@@ -906,6 +906,8 @@ Xarma Boost \ifhandout\theproblem\else\ifshuffle\theproblem.\theproblemType\else
 %% \setcounter{globalFold}{3}
 %% }
 
+\colorlet{textColor}{black} % since textColor is referenced below
+\colorlet{background}{white} % since background is referenced below
 
 % The core environments. Find results in 4ht file.
 %% pretty-foldable
