@@ -24,8 +24,11 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \immediate\write-1{version 2015-08-22-10:35}
 
+\newcounter{ximera@part}
+\setcounter{ximera@part}{0}
 \renewcommand\part[1]{%
-\ifvmode \IgnorePar\fi \EndP\HCode{<h1 class="card">#1</h1>}\IgnoreIndent%
+\stepcounter{ximera@part}%
+\ifvmode \IgnorePar\fi \EndP\HCode{<h1 id="part\arabic{ximera@part}" class="card part">#1</h1>}\IgnoreIndent%
 }
 
 \renewcommand\activity[2][]{%
