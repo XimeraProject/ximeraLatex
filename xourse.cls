@@ -25,7 +25,7 @@
 %%% Department of Mathematics
 %%% University of Georgia
 
-\def\fileversion{1.24}
+\def\fileversion{1.25}
 \def\filedate{2015/07/15}
 
 \NeedsTeXFormat{LaTeX2e}
@@ -114,13 +114,23 @@
 \fi
 \relax
 
+\newcommand{\practice}[2][]{%
+	\setkeys{practice}{#1}%!!!!!
+  \renewcommand{\input}[1]{}
+  \begingroup\skip@preamble\otherinput{#2}\endgroup
+  \let\input\otherinput}
+\relax
+
+
 %% When running xake, we can just ignore activities
 \ifxake
 \renewcommand\activity[2][]{}
 \fi
 
 % practice environment does nothing, but will eventually produce exercises at the end of an activity
-\newenvironment{practice}{}{}
+\ifxake
+\renewcommand\practice[2][]{}
+\fi
 
 % makes the toc look a bit better... can be redefined in the preamble.
 \makeatletter
