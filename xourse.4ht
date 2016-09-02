@@ -35,11 +35,14 @@
 \ifvmode \IgnorePar\fi \EndP\HCode{<a class="activity card \activitystyle" href="#2" data-options="#1">#2</a>}\IgnoreIndent%
 }
 
+% I suppose it is reasonable for practice cards to NOT have an activitystyle, since the activitystyle is basically PRACTICE
+\renewcommand\practice[2][]{%
+\ifvmode \IgnorePar\fi \EndP\HCode{<a class="activity card practice" href="#2" data-options="#1">#2</a>}\IgnoreIndent%
+}
+
 \renewcommand\youtube[1]{%
 \ifvmode \IgnorePar\fi \EndP\HCode{<a class="youtube" href="https://www.youtube.com/watch?v=#1">#1</a>}\IgnoreIndent%
 }
-
-\renewenvironment{practice}{\ifvmode \IgnorePar\fi \EndP\HCode{<div class="practice">}}{\HCode{</div>}\IgnoreIndent}
 
 % Mark this as a xourse file
 \Configure{@HEAD}{\HCode{<meta name="description" content="xourse" />\Hnewline}}
