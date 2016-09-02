@@ -229,6 +229,10 @@
 %\renewcommand{\html}[1]{\HCode{#1}}
 \RenewEnviron{html}{\HCode{\BODY}}
 
+% This is the "usual" hyperref command
+\renewcommand{\href}[2]{\HCode{<a href="#2">}#1\HCode{</a>}}
+
+% This is a command that Ximera used initially; in Jim's opinion it should be deprecated for \href
 \renewcommand*{\link}[2][]{%
 \ifthenelse{\equal{#1}{}}%
 {\HCode{<a href="#2">}LINK\HCode{</a>}}
