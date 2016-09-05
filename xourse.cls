@@ -25,7 +25,7 @@
 %%% Department of Mathematics
 %%% University of Georgia
 
-\def\fileversion{1.25}
+\def\fileversion{1.26}
 \def\filedate{2015/07/15}
 
 \NeedsTeXFormat{LaTeX2e}
@@ -114,7 +114,7 @@
 \fi
 \relax
 
-\newcommand{\practice}[2][]{%
+\newcommand{\practice}[2][]{\texttt{\detokenize{#2}}%% gives file name for practice
 	\setkeys{practice}{#1}%!!!!!
   \renewcommand{\input}[1]{}
   \begingroup\skip@preamble\otherinput{#2}\endgroup
