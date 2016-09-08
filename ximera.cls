@@ -380,7 +380,7 @@
 \newcommand{\graph}[2][]{\text{Graph of $#2$}}
 
 % Interactive element
-\newcommand{\includeinteractive}[1]{Interactive}
+\newcommand{\includeinteractive}[2][]{Interactive}
 
 %HTML 
 \NewEnviron{html}{\textbf{INTERACTIVE NOT AVAILABLE.}}
