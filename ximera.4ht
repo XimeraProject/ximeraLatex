@@ -183,7 +183,7 @@
 % Sage Cells
 
 \renewenvironment{sageCell}{\NoFonts}{\EndNoFonts}
-\ScriptEnv{sageCell}{\ifvmode \IgnorePar\fi \EndP\HCode{<div class="sage"><script type="text/x-sage">}}{\HCode{\Hnewline</script></div>}}
+\ScriptEnv{sageCell}{\ifvmode \IgnorePar\fi \EndP\HCode{<div class="sage"><script type="text/x-sage">}\HtmlParOff}{\HtmlParOn\HCode{\Hnewline</script></div>}}
 
 \renewenvironment{sageOutput}{\NoFonts}{\EndNoFonts}
 \ScriptEnv{sageOutput}{\ifvmode \IgnorePar\fi \EndP\HCode{<div class="sageOutput"><script type="text/x-sage">}}{\HCode{\Hnewline</script></div>}}
