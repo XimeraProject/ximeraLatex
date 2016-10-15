@@ -169,8 +169,8 @@
     % in pdflatex, actually generate the svg files
     \tikzset{
       /tikz/external/system call={
-        /usr/bin/pdflatex \tikzexternalcheckshellescape -halt-on-error -interaction=batchmode -jobname "\image" "\\PassOptionsToClass{tikzexport}{ximera}\texsource";
-        /usr/bin/pdf2svg \image.pdf \image.svg ;
+        pdflatex \tikzexternalcheckshellescape -halt-on-error -interaction=batchmode -jobname "\image" "\\PassOptionsToClass{tikzexport}{ximera}\texsource";
+        pdf2svg \image.pdf \image.svg ;
         mutool draw -r 150 -c rgbalpha -o \image.png \image.pdf ;
       }
     }
