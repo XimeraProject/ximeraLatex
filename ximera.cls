@@ -754,13 +754,13 @@ Exercise \ifhandout\theproblem\else\ifshuffle\theproblem.\theproblemType\else\th
 
 \newenvironment{problem}[1][2in]
 {
-\ifthenelse{\ifshuffle}{dana - if shuffle true}{dana - if shuffle false}
-\ifthenelse{\iffirstproblem}{dana - if firstproblem  true}{dana - if firstproblem false}
-
+\ifshuffle {\shuffletrue} \else {\shufflefalse} \fi
+\ifshuffle {dana - shuffle true} \else {dana - shuffle false} \fi
+\iffirstproblem {dana - firstproblem  true} \else {dana - firstproblem false} \fi
 \iffirstproblem
 \def\spaceatend{#1}\refstepcounter{problem}\refstepcounter{problemType}
 \begin{trivlist}\item[\hskip\labelsep\sffamily\bfseries 
-Problem \ifhandout\theproblem\else\ifshuffle\theproblem.\theproblemType\else\theproblem\fi\fi]
+Problem42 \ifhandout\theproblem\else\ifshuffle\theproblem.\theproblemType\else\theproblem\fi\fi]
 \slshape
 \else\setbox0\vbox\bgroup\fi} %% removes exercise if in shuffle and not first problem
 {\iffirstproblem
