@@ -752,7 +752,8 @@ Exercise \ifhandout\theproblem\else\ifshuffle\theproblem.\theproblemType\else\th
 \else\egroup\fi}
 
 
-\newenvironment{problem}[1][2in]
+\newenvironment{problem}[1][2in]{}{}
+\newenvironment{dana}[1][2in]
 {
 \ifshuffle {\shuffletrue} \else {\shufflefalse} \fi
 \ifshuffle {dana - shuffle true} \else {dana - shuffle false} \fi
