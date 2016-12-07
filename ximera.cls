@@ -20,7 +20,7 @@
 %%% Department of Mathematics
 %%% The Ohio State University
 
-\def\fileversion{1.24}
+\def\fileversion{1.25}
 \def\filedate{2016/08/17}
 
 % ---------------------------------------------------------------------
@@ -169,8 +169,8 @@
     % in pdflatex, actually generate the svg files
     \tikzset{
       /tikz/external/system call={
-        /usr/bin/pdflatex \tikzexternalcheckshellescape -halt-on-error -interaction=batchmode -jobname "\image" "\\PassOptionsToClass{tikzexport}{ximera}\texsource";
-        /usr/bin/pdf2svg \image.pdf \image.svg ;
+        pdflatex \tikzexternalcheckshellescape -halt-on-error -interaction=batchmode -jobname "\image" "\\PassOptionsToClass{tikzexport}{ximera}\texsource";
+        pdf2svg \image.pdf \image.svg ;
         mutool draw -r 150 -c rgbalpha -o \image.png \image.pdf ;
       }
     }
@@ -204,14 +204,15 @@
 \evensidemargin 62pt %% so we don't get weird margins in 2-sided mode
 \textwidth 345pt %% so we don't get weird margins in 2-sided mode
 \headheight 14pt %% so we don't get weird margins in 2-sided mode
-%\RequirePackage[margin=1in]{geometry} 
+
 
 
 
 % Don't use hyperref when using Tex4ht
 \ifdefined\HCode
 \else
-  \RequirePackage[pdfpagelabels,colorlinks=true,allcolors=blue!30!black]{hyperref}
+\RequirePackage[pdfpagelabels,colorlinks=true,allcolors=blue!30!black]{hyperref}
+\pdfstringdefDisableCommands{\def\hskip{}}%% quiets warning
 \fi
 % We put hyperref after all other packages becuase that is better.
 
