@@ -60,8 +60,8 @@
 %%%% New code to make shuffle work %%%%%%
 
 \newcounter{track@Problem}
-\setcount{track@Problem}{0}
-\newcounter{\shuffle@Count}
+\setcounter{track@Problem}{1}
+\newcounter{shuffle@Count}
 
 \renewenvironment{shuffle}[1][1]
 	{
@@ -70,13 +70,14 @@
 	}
 	{
 	\shufflefalse\global\firstproblemtrue
+	\setcounter{track@Problem}{1}
 	}
 %{\refstepcounter{problem}\shufflefalse\global\firstproblemtrue}
 
 
 % Correct the problem environment numbering with shuffle
 \renewenvironment{problem}{
-	\arabic{shuffle@Count}
+%	\arabic{shuffle@Count}
 \iffirstproblem
 \def\spaceatend{#1}\refstepcounter{problem}\refstepcounter{problemType}
 \begin{trivlist}\item[\hskip\labelsep\sffamily\bfseries
@@ -89,11 +90,13 @@ Problem \ifhandout\theproblem\else\ifshuffle\theproblem.\theproblemType\else\the
 %\ifshuffle\addtocounter{problem}{-1}\fi %% the problem does not increase within shuffle
 \ifhandout
 	\ifshuffle
-		\ifnum'\value{track@Problem}<\shufflecount'
+		\ifthenelse{\arabic{track@Problem}<\arabic{shuffle@Count}}
+			{% If we haven't gotten to the last problem yet, track the problem
 			\stepcounter{track@Problem}
-		\else
+			}
+			{%	If we have all our problems, turn off the problem environment.
 			\global\firstproblemfalse
-		\fi
+			}
 	\fi
 \fi %% removes other problems from shuffle in handout
 \ifhandout\ifnewpage\newpage\fi\fi %% adds newpage
