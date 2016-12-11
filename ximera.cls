@@ -790,8 +790,17 @@ Exercise \ifhandout\theproblem\else\ifshuffle\theproblem.\theproblemType\else\th
 {\iffirstproblem
 \ifhandout\ifspace\vspace{\spaceatend}\fi\fi %% space at end
 \par\addvspace{.5ex}\nobreak\noindent\hung %% line at the bottom
-\ifshuffle\addtocounter{problem}{-1}\fi %% the problem does not increase within shuffle
-\ifhandout\ifshuffle\global\firstproblemfalse\fi\fi %% removes other problems from shuffle in handout
+\ifhandout
+	\ifshuffle
+		\ifthenelse{\arabic{track@Problem}<\arabic{shuffle@Count}}
+			{% If we haven't gotten to the last problem yet, track the problem
+			\stepcounter{track@Problem}
+			}
+			{%	If we have all our problems, turn off the problem environment.
+			\global\firstproblemfalse
+			}
+	\fi
+\fi %% removes other problems from shuffle in handout
 \ifhandout\ifnewpage\newpage\fi\fi %% adds newpage
 \end{trivlist}
 \else\egroup\fi}
@@ -829,8 +838,17 @@ Question \ifhandout\theproblem\else\ifshuffle\theproblem.\theproblemType\else\th
 {\iffirstproblem
 \ifhandout\ifspace\vspace{\spaceatend}\fi\fi %% space at end
 \par\addvspace{.5ex}\nobreak\noindent\hung %% line at the bottom
-\ifshuffle\addtocounter{problem}{-1}\fi %% the problem does not increase within shuffle
-\ifhandout\ifshuffle\global\firstproblemfalse\fi\fi %% removes other problems from shuffle in handout
+\ifhandout
+	\ifshuffle
+		\ifthenelse{\arabic{track@Problem}<\arabic{shuffle@Count}}
+			{% If we haven't gotten to the last problem yet, track the problem
+			\stepcounter{track@Problem}
+			}
+			{%	If we have all our problems, turn off the problem environment.
+			\global\firstproblemfalse
+			}
+	\fi
+\fi %% removes other problems from shuffle in handout
 \ifhandout\ifnewpage\newpage\fi\fi %% adds newpage
 \end{trivlist}
 \else\egroup\fi}
@@ -845,8 +863,17 @@ Exploration \ifhandout\theproblem\else\ifshuffle\theproblem.\theproblemType\else
 {\iffirstproblem
 \ifhandout\ifspace\vspace{\spaceatend}\fi\fi %% space at end
 \par\addvspace{.5ex}\nobreak\noindent\hung %% line at the bottom
-\ifshuffle\addtocounter{problem}{-1}\fi %% the problem does not increase within shuffle
-\ifhandout\ifshuffle\global\firstproblemfalse\fi\fi %% removes other problems from shuffle in handout
+\ifhandout
+	\ifshuffle
+		\ifthenelse{\arabic{track@Problem}<\arabic{shuffle@Count}}
+			{% If we haven't gotten to the last problem yet, track the problem
+			\stepcounter{track@Problem}
+			}
+			{%	If we have all our problems, turn off the problem environment.
+			\global\firstproblemfalse
+			}
+	\fi
+\fi %% removes other problems from shuffle in handout
 \ifhandout\ifnewpage\newpage\fi\fi %% adds newpage
 \end{trivlist}
 \else\egroup\fi}
