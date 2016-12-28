@@ -179,6 +179,9 @@
 
   \fi
 
+% Load sagetex if it exists
+\IfFileExists{sagetex.sty}{\RequirePackage{sagetex}}{}
+
 \RequirePackage[inline]{enumitem}
 \RequirePackage[pagestyles]{titlesec} 
 \RequirePackage{titletoc} 
@@ -196,8 +199,9 @@
 \RequirePackage{xifthen}% http://ctan.org/pkg/xifthen
 \RequirePackage{multido}% http://ctan.org/pkg/multido
 \RequirePackage{listings}
-  
+
 \RequirePackage[framemethod=TikZ]{mdframed} %% Used to make pretty foldable
+% BADBAD: the amsthm/mdframed conflict also messes up the .jax file
 
 \RequirePackage{comment}
 \oddsidemargin 62pt %% so we don't get weird margins in 2-sided mode
@@ -210,6 +214,7 @@
 
 % Don't use hyperref when using Tex4ht
 \ifdefined\HCode
+\newcommand{\href}[1]{}
 \else
 \RequirePackage[pdfpagelabels,colorlinks=true,allcolors=blue!30!black]{hyperref}
 \pdfstringdefDisableCommands{\def\hskip{}}%% quiets warning

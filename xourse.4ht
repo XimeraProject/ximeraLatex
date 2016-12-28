@@ -44,6 +44,14 @@
 \ifvmode \IgnorePar\fi \EndP\HCode{<a class="youtube" href="https://www.youtube.com/watch?v=#1">#1</a>}\IgnoreIndent%
 }
 
+% the "points" environment in html wraps the activities in a div in
+% order to assign some number of points to them.
+\renewenvironment{points}[1]{%
+\ifvmode \IgnorePar\fi \EndP\HCode{<div class="activity-points"  data-points="#1">}\IgnoreIndent%
+}{
+\ifvmode \IgnorePar\fi \EndP\HCode{</div>}}\IgnoreIndent%
+}
+
 % Mark this as a xourse file
 \Configure{@HEAD}{\HCode{<meta name="description" content="xourse" />\Hnewline}}
 
