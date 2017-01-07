@@ -20,7 +20,7 @@
 %%% Department of Mathematics
 %%% The Ohio State University
 
-\def\fileversion{1.25}
+\def\fileversion{1.30}
 \def\filedate{2016/08/17}
 
 % ---------------------------------------------------------------------
@@ -465,8 +465,9 @@
                {\egroup}
                \fi
                
-%\NewEnviron{printOnly}{\iftikzexport\else{\BODY}\fi}
-
+%\newenvironment{pdfOnly}{\iftikzexport\else}{\fi}
+\newcommand{\pdfOnly}[1]{\iftikzexport\else #1\fi}
+ 
                
 
 %% \newenvironment{prompt} %broke in true math mode
