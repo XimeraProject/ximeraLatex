@@ -457,7 +457,8 @@
 
                %% Prompt environment
 \ifhandout
-\NewEnviron{onlineOnly}{}
+\NewEnviron{onlineOnly}{\iftikzexport\BODY
+\else\fi}
 \else
 \newenvironment{onlineOnly}
                {\bgroup\color{red!50!black}}
