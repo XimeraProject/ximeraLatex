@@ -758,7 +758,7 @@
 %%%%%% Configure various problem environment commands
 
 %Configure environments start content
-\newcommand{\problemEnvironmentStart}[2][2in]{%This takes in 2 arguments. The first is optional and is the old optional argument from existing environments. The second argument is mandatory and is the name of the 'problem' environment, such as problem, question, exercise, etc. It then configures everything needed at the start of that environment.
+\newcommand{\problemEnvironmentStart}[2]{%This takes in 2 arguments. The first is optional and is the old optional argument from existing environments. The second argument is mandatory and is the name of the 'problem' environment, such as problem, question, exercise, etc. It then configures everything needed at the start of that environment.
 \ifshuffle
 	\ifthenelse{\arabic{track@Problem}<\arabic{shuffle@Count}}
 		{% If we haven't gotten to the last problem yet, track the problem
@@ -806,7 +806,7 @@
 
 \newenvironment{problem}[1][2in]
 {%Env start code
-\problemEnvironmentStart{Problem}
+\problemEnvironmentStart{#1}{Problem}
 }
 {%Env end code
 \problemEnvironmentEnd
@@ -814,7 +814,7 @@
 
 \newenvironment{exercise}[1][2in]
 {%Env start code
-\problemEnvironmentStart{Exercise}
+\problemEnvironmentStart{#1}{Exercise}
 }
 {%Env end code
 \problemEnvironmentEnd
@@ -822,7 +822,7 @@
 
 \newenvironment{exploration}[1][2in]
 {%Env start code
-\problemEnvironmentStart{Exploration}
+\problemEnvironmentStart{#1}{Exploration}
 }
 {%Env end code
 \problemEnvironmentEnd
@@ -830,7 +830,7 @@
 
 \newenvironment{question}[1][2in]
 {%Env start code
-\problemEnvironmentStart{Question}
+\problemEnvironmentStart{#1}{Question}
 }
 {%Env end code
 \problemEnvironmentEnd
