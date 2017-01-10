@@ -1,0 +1,60 @@
+\documentclass[•]{article}
+
+
+\begin{document}
+
+To add a question, you want to do the following;
+
+\begin{itemize}
+\item A file that contains the question (and any variants you want of that question). To see an example, check the example folder for the file \verb|2311_Compute_Limit_0001.tex|
+\item A master input file that contains the references to the individual questions. This is the file that the problem selection command will query to figure out which questions have which tags. See the file \verb|Limit_Input.tex| for an example.
+
+\end{itemize}
+
+You need to format the questions (the one found the your equivalent of \verb|2311_Compute_Limit_0001.tex|) similar to the following way:
+
+\begin{verbatim}
+\latexProblemContent{
+\begin{problem}
+[CONTENT] e.g.
+
+Determine if the limit approaches a finite number, $\pm\infty$, 
+or does not exist. (If the limit does not exist, write DNE)
+
+\input{2311_Compute_Limit_0001.HELP.tex}
+
+\[\lim_{x\to{1}}\dfrac{x^{2} + 12 \, x - 13}{x - 1}=\answer{14}\]
+\end{problem}}
+\end{verbatim}
+
+
+Here, notice that there are no tags, those come later. We do need to include the question inside the command \verb|\latexProblemContent{}|, which is how the randomizer can recognize the questions. Inside this should be the problem, and then the answer. In the example above, we also included a hint file, the \verb|2311_Compute_Limit_0001.HELP.tex|.
+
+The command \verb|\latexProblemContent{}| can be found in the \verb|ProblemSelection.sty| for those that want to look at the code.
+
+The questions are loaded by an input file (this is for those with large question databases, if you won't have large banks of questions, you can skip this step and enclose the above problem in the tagged command entirely).
+
+The input file is just a tag reference for each problem file, along with how many questions are in the file. I also included a \verb|question_counting_file.tex| which can give a good paradigm file to run to count the number of problems in your file if you use enough that you don't want to count by hand.
+
+The master input files are currently hard-coded into the ProblemSelector.sty file, so you will need to edit that accordingly. We use a system of tags based on catagories, which can be found in the "master tag list" file. You will need to edit the TagMasterList.sty file to reflect your own tags.
+
+In the ProblemSelection.sty file the command \verb|\QuestionSelect[5]| This takes 5 arguments, the first 4 are the first 4 categories of tags we at UF use, the last one is the number of questions you wish to pull that match those tags. The command will randomly select and permute the appropriate number of questions from the files with the correct tags.
+
+There are three commands that are useful with the tags as well;
+\begin{itemize}
+\item \verb|\maketagsrelax|: This command makes all (following) tag commands pull any problem that has any one of the tags in category 4 (the sub-type category). Thus if you use \verb|\QuestionSelect{}{}{Topic@Limit}|
+\verb|{Sub@continuity, Sub@IVT, Sub@EVT}{5}| will pull 5 random questions that are on limits (topic), and are about continuity, IVT, and/or EVT.
+
+\item \verb|\maketagsstrict|: This command makes all (following) tag commands pull any problem that has at least all the tags listed in the fourth category. Thus if you use \verb|\QuestionSelect{}{}{Topic@Limit}|
+\verb|{Sub@continuity, Sub@IVT, Sub@EVT}{5}|, you could get a problem tagged as \verb|Topic@Limit,Sub@continuity, Sub@IVT, Sub@EVT,Sub@disc|, but you would NOT get one labeled \verb|{Topic@Limit, Sub@continuity, Sub@IVT}| as it is missing the EVT tag.
+
+\item \verb|\maketagssuperstrict|: This command makes all (following) tag commands pull \textit{only} problem that has \textit{exactly} the tags listed in the fourth category. Thus if you use \verb|\QuestionSelect{}{}{Topic@Limit}|
+
+\verb|{Sub@continuity, Sub@IVT, Sub@EVT}{5}|, you would only get problems with exactly those tags.
+\end{itemize} 
+
+Each of those commands are intended to only effect tags listed in the sub category, as all other categories only have 1 tag per question in the first place. Thus matching Topic@Limit would have to match exactly, as there are no questions with Topic@Limit and Topic@Integral for example.
+
+
+
+\end{document}
