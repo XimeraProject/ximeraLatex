@@ -754,6 +754,64 @@
 	}
 
 
+
+%%%%%% Configure various problem environment commands
+
+%Configure environments start content
+\newcommand{\problemEnvironmentStart}[2][2in]{%This takes in 2 arguments. The first is optional and is the old optional argument from existing environments. The second argument is mandatory and is the name of the 'problem' environment, such as problem, question, exercise, etc. It then configures everything needed at the start of that environment.
+\ifshuffle
+	\ifthenelse{\arabic{track@Problem}<\arabic{shuffle@Count}}
+		{% If we haven't gotten to the last problem yet, track the problem
+		\stepcounter{track@Problem}
+		}
+		{%	If we have all our problems, turn off the problem environment.
+		\global\firstproblemfalse
+		}
+\fi
+\iffirstproblem
+\def\spaceatend{#1}\refstepcounter{problem}\refstepcounter{problemType}
+\begin{trivlist}\item[\hskip\labelsep\sffamily\bfseries 
+#2 \ifhandout\theproblem\else\ifshuffle\theproblem.\theproblemType\else\theproblem\fi\fi]
+\slshape
+\else\setbox0\vbox\bgroup\fi
+}
+
+%Configure environments end content
+\newcommand{\problemEnvironmentEnd}{%This configures all the end content for a problem.
+\iffirstproblem
+	\ifhandout
+		\ifspace
+			\vspace{\spaceatend}
+		\fi
+	\fi %% space at end
+	\par\addvspace{.5ex}\nobreak\noindent\hung %% line at the bottom
+	\ifhandout
+	\else
+	\ifshuffle
+		\addtocounter{problem}{-1}
+	\fi
+\fi %% the problem does not increase within shuffle
+%\ifhandout\ifshuffle\global\firstproblemfalse\fi\fi %% removes other problems from shuffle in handout
+\ifhandout
+	\ifnewpage
+		\newpage
+	\fi
+\fi %% adds newpage
+\end{trivlist}
+\else
+	\egroup
+\fi
+
+}
+
+\newenvironment{problem}[1][2in]
+{%Env start code
+\problemEnvironmentStart{Problem}
+}
+{%Env end code
+\problemEnvironmentEnd
+}
+
 \newenvironment{exercise}[1][2in]
 {
 \ifshuffle
@@ -781,31 +839,34 @@ Exercise \ifhandout\theproblem\else\ifshuffle\theproblem.\theproblemType\else\th
 \else\egroup\fi}
 
 
-\newenvironment{problem}[1][2in]
-{
-\ifshuffle
-	\ifthenelse{\arabic{track@Problem}<\arabic{shuffle@Count}}
-		{% If we haven't gotten to the last problem yet, track the problem
-		\stepcounter{track@Problem}
-		}
-		{%	If we have all our problems, turn off the problem environment.
-		\global\firstproblemfalse
-		}
-\fi
-\iffirstproblem
-\def\spaceatend{#1}\refstepcounter{problem}\refstepcounter{problemType}
-\begin{trivlist}\item[\hskip\labelsep\sffamily\bfseries 
-Problem \ifhandout\theproblem\else\ifshuffle\theproblem.\theproblemType\else\theproblem\fi\fi]
-\slshape
-\else\setbox0\vbox\bgroup\fi} %% removes exercise if in shuffle and not first problem
-{\iffirstproblem
-\ifhandout\ifspace\vspace{\spaceatend}\fi\fi %% space at end
-\par\addvspace{.5ex}\nobreak\noindent\hung %% line at the bottom
-\ifhandout\else\ifshuffle\addtocounter{problem}{-1}\fi\fi %% the problem does not increase within shuffle
-%\ifhandout\ifshuffle\global\firstproblemfalse\fi\fi %% removes other problems from shuffle in handout
-\ifhandout\ifnewpage\newpage\fi\fi %% adds newpage
-\end{trivlist}
-\else\egroup\fi}
+%\newenvironment{problem}[1][2in]
+%{
+%\ifshuffle
+%	\ifthenelse{\arabic{track@Problem}<\arabic{shuffle@Count}}
+%		{% If we haven't gotten to the last problem yet, track the problem
+%		\stepcounter{track@Problem}
+%		}
+%		{%	If we have all our problems, turn off the problem environment.
+%		\global\firstproblemfalse
+%		}
+%\fi
+%\iffirstproblem
+%\def\spaceatend{#1}\refstepcounter{problem}\refstepcounter{problemType}
+%\begin{trivlist}\item[\hskip\labelsep\sffamily\bfseries 
+%Problem \ifhandout\theproblem\else\ifshuffle\theproblem.\theproblemType\else\theproblem\fi\fi]
+%\slshape
+%\else\setbox0\vbox\bgroup\fi
+%} %% removes exercise if in shuffle and not first problem
+%{
+%\iffirstproblem
+%\ifhandout\ifspace\vspace{\spaceatend}\fi\fi %% space at end
+%\par\addvspace{.5ex}\nobreak\noindent\hung %% line at the bottom
+%\ifhandout\else\ifshuffle\addtocounter{problem}{-1}\fi\fi %% the problem does not increase within shuffle
+%%\ifhandout\ifshuffle\global\firstproblemfalse\fi\fi %% removes other problems from shuffle in handout
+%\ifhandout\ifnewpage\newpage\fi\fi %% adds newpage
+%\end{trivlist}
+%\else\egroup\fi
+%}
 
 
 \newenvironment{question}[1][2in]
