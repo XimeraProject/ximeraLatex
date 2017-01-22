@@ -488,12 +488,20 @@
 %setting default values for answer command key=value pairs
 \setkeys{answer}{given=false}
 \newcommand{\answer}[2][]{%
-	\setkeys{answer}{#1}
+  \ifmmode%
+	\setkeys{answer}{#1}%
 	%% when given=true, show answer in handout mode, show answer in "given box" outside handout mode
 	%% when given=false, do not show answer in handout mode, show answer outside handout mode
 	\ifthenelse{\boolean{\ans@given}}
 		{\ifhandout #2\else\underset{\scriptstyle\mathrm{given}}{\fbox{\ensuremath{#2}}}\fi}
-		{\ifhandout\fbox{\rm{?}}\else\fbox{\ensuremath{#2}}\fi}}% show answer in box outside handout mode
+		{\ifhandout\fbox{\rm{?}}\else\fbox{\ensuremath{#2}}\fi}% show answer in box outside handout mode
+  \else%
+  \GenericError{\space\space\space\space}
+  {Attempt to use \@backslashchar answer outside of math mode}
+  {See https://github.com/ximeraProject/ximeraLatex for explanation.}
+  {Need to use either use inline or display math.}%
+  \fi
+}
              
 \makeatother
 
