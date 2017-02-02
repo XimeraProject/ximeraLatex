@@ -420,6 +420,7 @@
 \newtheorem{example}{Example}
 \newtheorem*{explanation}{Explanation}
 \newtheorem{fact}{Fact}
+\newtheorem{formula}{Formula}
 \newtheorem{idea}{Idea}
 \newtheorem{lemma}{Lemma}
 \newtheorem{model}{Model}
