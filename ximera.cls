@@ -170,7 +170,7 @@
     \tikzset{
       /tikz/external/system call={
         pdflatex \tikzexternalcheckshellescape -halt-on-error -interaction=batchmode -jobname "\image" "\\PassOptionsToClass{tikzexport}{ximera}\texsource";
-        pdf2svg \image.pdf \image.svg ;
+        mutool draw -o \image.svg \image.pdf ;
         mutool draw -r 150 -c rgbalpha -o \image.png \image.pdf ;
       }
     }
