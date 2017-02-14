@@ -22,8 +22,10 @@
 \setcounter{LogicChecks}{0}
 \newcounter{Pull@Queue}
 
+\newif\ifquestionCount
 \newif\ifquestionList
-\questionListfalse
+\questionListtrue
+\questionCounttrue
 \newif\ifhasVersion
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -33,6 +35,7 @@
 
 
 \newcommand{\latexProblemContent}[1]{%	This will load all background necessary parts
+\ifquestionCount\stepcounter{Total@Question}\else
 \stepcounter{Problem@MasterCounter}%	Step the master question number counter
 %\stepcounter{LogicChecks}
 % The command \Question@(CapitalRomanNumeral) will contain the question contents. The tags will be used elsewhere (calling the input command which will call these problems). This is to give every specific problem a call command.
@@ -55,7 +58,7 @@
 		}
 	}
 	{}	%Stop checking once you are far enough.
-
+\fi
 %While Generating;
 }
 
@@ -253,6 +256,7 @@
 		}
 		{}									%If so, do nothing.
 	\@genrand{TEMP}{1}{\arabic{Problem@MasterCounter}}
+	\ifVerbose{You chose question number \TEMP}\fi
 	\setcounter{Q@Pulled\Roman{Iteration@1}}{\TEMP}	% Set Counter to Random possible value.
 
 	\ifthenelse{\arabic{Q@Pulled\Roman{Iteration@1}} > \arabic{Last@Question}} %If we have a new last question, record placement.
@@ -347,9 +351,14 @@
 	{
 	\addTo@StrictActiveTags{#4}
 	}
+\list@Problems{\Master@Input@Test}{#5}
+}
 
+
+\newcommand{\list@Problems}[2]{
 %%Input files to count raw potential questions.
-	\Master@Input@Test
+
+#1
 
 %Record the number of problems in the useful counter. Fix this at some point.
 \setcounter{Problem@MasterCounter}{\arabic{Total@Question}}
@@ -358,21 +367,37 @@
 \ifVerbose{ The Problem@MasterCounter Value is: \arabic{Problem@MasterCounter}}\fi
 %Notice the below Question@Quantity command must come after the first input command so that the real pull quantity is listed as 0, thus not triggering the if command in the question commands.
 
-\Question@Quantity{#5}	%Determine how many problems we're getting.
+\Question@Quantity{#2}	%Determine how many problems we're getting.
 
 
 \Q@Selection{50}	% Determines which algorithm to use to select problems randomly. Colision threshold is 100/#1. Currently defaulted to a 2% colision threshold for efficient selection.
 
 %The second input will then assign commands to just the problem numbers we want.
-\questionListtrue
-
+\questionCountfalse
 %	Now call the actual question content.
-\Master@Input@Test
+#1
 
 %Reset counters/logic in case of another \QuestionSelect command.
 
 \setcounter{Total@Question}{0}
-\ifVerbose{The Value of Total@Question Counter is \arabic{Total@Question}}\fi
+%\ifVerbose{The Value of Total@Question Counter is \arabic{Total@Question}}\fi
 \setcounter{Real@PullNumber}{0}
-\questionListfalse
+\questionCounttrue
 }
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%		   Practice Select Question Command			%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%The intent of the practiceSelect command is to build specific question practice sets. The first impute is a comma separated list of file names, the second is how many problems you want from each file.
+
+\newcommand{\temp@Input}{}
+\newcommand{\practiceSelect}[2]{
+
+%Iterate through the comma separated list:
+\iterate@List{#1}{\list@Problems{\input{\temp@Input}}{#2}}
+
+}
+
+
+
