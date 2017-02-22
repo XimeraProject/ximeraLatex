@@ -839,7 +839,6 @@
 }
 
 \newenvironment{question}[1][2in]
-<<<<<<< HEAD
 {%Env start code
 \problemEnvironmentStart{#1}{Question}
 }
@@ -1211,8 +1210,4 @@ Xarma Boost \ifhandout\theproblem\else\ifshuffle\theproblem.\theproblemType\else
 \renewcommand{\DeclareMathOperator}[2]{\@OldDeclareMathOperator{#1}{#2}\immediate\write\myfile{\unexpanded{\DeclareMathOperator}{\unexpanded{#1}}{\unexpanded{#2}}}}
 
     \makeatother
-<<<<<<< HEAD
 \fi
-=======
-\fi
->>>>>>> OSU/master
