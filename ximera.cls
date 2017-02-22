@@ -20,7 +20,7 @@
 %%% Department of Mathematics
 %%% The Ohio State University
 
-\def\fileversion{1.25}
+\def\fileversion{1.30}
 \def\filedate{2016/08/17}
 
 % ---------------------------------------------------------------------
@@ -170,7 +170,7 @@
     \tikzset{
       /tikz/external/system call={
         pdflatex \tikzexternalcheckshellescape -halt-on-error -interaction=batchmode -jobname "\image" "\\PassOptionsToClass{tikzexport}{ximera}\texsource";
-        pdf2svg \image.pdf \image.svg ;
+        mutool draw -o \image.svg \image.pdf ;
         mutool draw -r 150 -c rgbalpha -o \image.png \image.pdf ;
       }
     }
@@ -420,6 +420,7 @@
 \newtheorem{example}{Example}
 \newtheorem*{explanation}{Explanation}
 \newtheorem{fact}{Fact}
+\newtheorem{formula}{Formula}
 \newtheorem{idea}{Idea}
 \newtheorem{lemma}{Lemma}
 \newtheorem{model}{Model}
@@ -457,15 +458,17 @@
 
                %% Prompt environment
 \ifhandout
-\NewEnviron{onlineOnly}{}
+\NewEnviron{onlineOnly}{\iftikzexport\BODY
+\else\fi}
 \else
 \newenvironment{onlineOnly}
                {\bgroup\color{red!50!black}}
                {\egroup}
                \fi
                
-%\NewEnviron{printOnly}{\iftikzexport\else{\BODY}\fi}
-
+%\newenvironment{pdfOnly}{\iftikzexport\else}{\fi}
+\newcommand{\pdfOnly}[1]{\iftikzexport\else #1\fi}
+ 
                
 
 %% \newenvironment{prompt} %broke in true math mode
@@ -486,12 +489,20 @@
 %setting default values for answer command key=value pairs
 \setkeys{answer}{given=false}
 \newcommand{\answer}[2][]{%
-	\setkeys{answer}{#1}
+  \ifmmode%
+	\setkeys{answer}{#1}%
 	%% when given=true, show answer in handout mode, show answer in "given box" outside handout mode
 	%% when given=false, do not show answer in handout mode, show answer outside handout mode
 	\ifthenelse{\boolean{\ans@given}}
 		{\ifhandout #2\else\underset{\scriptstyle\mathrm{given}}{\fbox{\ensuremath{#2}}}\fi}
-		{\ifhandout\fbox{\rm{?}}\else\fbox{\ensuremath{#2}}\fi}}% show answer in box outside handout mode
+		{\ifhandout\fbox{\rm{?}}\else\fbox{\ensuremath{#2}}\fi}% show answer in box outside handout mode
+  \else%
+  \GenericError{\space\space\space\space}
+  {Attempt to use \@backslashchar answer outside of math mode}
+  {See https://github.com/ximeraProject/ximeraLatex for explanation.}
+  {Need to use either use inline or display math.}%
+  \fi
+}
              
 \makeatother
 
@@ -754,7 +765,6 @@
 	}
 
 
-
 %%%%%% Configure various problem environment commands
 
 %Configure environments start content
@@ -796,7 +806,7 @@
 	\ifnewpage
 		\newpage
 	\fi
-\fi %% adds newpage
+\fi 
 \end{trivlist}
 \else
 	\egroup
@@ -829,12 +839,15 @@
 }
 
 \newenvironment{question}[1][2in]
+<<<<<<< HEAD
 {%Env start code
 \problemEnvironmentStart{#1}{Question}
 }
 {%Env end code
 \problemEnvironmentEnd
 }
+
+%% Below is included the old code in case it needs referencing. Should probably delete it at some point.
 
 
 %\newenvironment{exercise}[1][2in]
@@ -1198,4 +1211,8 @@ Xarma Boost \ifhandout\theproblem\else\ifshuffle\theproblem.\theproblemType\else
 \renewcommand{\DeclareMathOperator}[2]{\@OldDeclareMathOperator{#1}{#2}\immediate\write\myfile{\unexpanded{\DeclareMathOperator}{\unexpanded{#1}}{\unexpanded{#2}}}}
 
     \makeatother
+<<<<<<< HEAD
 \fi
+=======
+\fi
+>>>>>>> OSU/master

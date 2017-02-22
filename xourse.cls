@@ -132,6 +132,11 @@
 \renewcommand\practice[2][]{}
 \fi
 
+% the "points" environment does nothing in latex, but in html, it
+% wraps the activities in a div in order to assign some number of
+% points to them.
+\newenvironment{points}[1]{}{}
+
 % makes the toc look a bit better... can be redefined in the preamble.
 \makeatletter
 \renewcommand*\l@section{\@dottedtocline{1}{1.5em}{4.2em}}
