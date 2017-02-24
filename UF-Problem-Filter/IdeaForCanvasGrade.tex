@@ -1,0 +1,87 @@
+
+
+
+Grade Transfer Premise:
+
+As suggested this allows for variable assignment grades, without changing how Ximera is keeping track of "grades" (completion scores). Moreover, this would be easily modified (or just initially built) to allow for weighted assignments.
+
+Latex doesn't like floating point, so this may be better implemented on the javascript side (especially since I think that would interface with the database better) but the environments could be dummies that then trigger the javascript to work correctly and do essentially the same thing as outlined below, just better as it will hold floats and calculate easier since it wouldn't need to use counters.
+
+
+%%%%%%		Intent of environment		%%%%%
+
+After the 
+\begin{gradedAssignment}[10]
+\activity{Homework1}
+\activity{Homework2}
+etc...
+\end{gradedAssignment} 
+The \end environment would trigger an output in the command \finalGrade@Assignment that contains the total grade (out of 10 points) from that assignment that could then be sent to the gradebook.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+
+
+
+%Some blank commands that will be redefined later;
+\newcommand{\grade@Weight}{}
+\newcommand{\grade@Temp}{}
+\newcommand{\grade@Assignment}{}
+\newcommand{\finalGrade@Assignment}{}
+
+
+%%%%%%	Pseudo code that would pull info from the database. This is one of the reasons I don't think a pure latex solution would work well, but included for archetecture idea.
+
+\newcommand{\completion@Assignment}[1]%	This will pull the current activity's completion value. This should probably be a 2 digit whole number representing the percentage completed as Latex doesn't like whole numbers. If this is happening in js, then it doesn't matter.
+	{
+	Command that pulls the completion value of activity number (#1) goes here. Should return the number value to be used in future calculation.
+	}
+%	The \completion@Assignment should be used as \completion@Assignment{3} returns the completion percentage on activity 3 as a 2 digit whole number if this is happening in latex, e.g. 78 for 78%.
+
+
+
+%%%%	The environment that users would use in the xourse file.	%%%
+
+\newenvironment{\gradedAssignment}[1][1] % Place all \activity commands you want lumped into the same grade into this environment.
+	{%	Start Begin Environment code
+
+	\renewcommand{\grade@Weight}{#1}	%This will be an optional argument to weight the total grade of the listed activities. Default is for the "assignment" to be worth 1 point.
+
+	}% 	End Begin Environment code.
+	{%	Start Conclude Environment code.
+
+	\forloop	%This will sum up all completion values of the activities in the assignment
+		{Iteration@GradeCalc}%	Iteration dummy var
+		{1}%					Iterate by 1
+		{\arabic{IterationGradeCalc} < (\arabic{count@Activity} + 1) }%	Iterate through all activities in list. Add 1 to account for < sign.
+
+		{%						For Loop contents
+		\renewcommand{\grade@Temp}%	Hold Current Grade
+			{%					Begin Renew Command
+
+			\grade@Assignment
+
+			}%					End Renew Command
+	
+		\renewcommand{\grade@Assignment}%	Track running completion total.
+			{%					Begin Renew Command
+
+			\grade@Temp + \completion@Activity{\arabic{count@Activity}}%	Pseudo code, add to running grade total the completetion of the previous grade. Probably use 2 digit whole number and use a counter here as latex doesn't like floating points.
+		
+			}%					End Renew Command
+
+		}%						End For Loop
+
+		\renewcommand{\finalGrade@Assignment}
+			{
+			
+			%pseudo \setfloat command to keep track of a float value.
+			\setfloat{Variable}{\frac{\grade@Assignment}{\arabic{count@Activity}}}%	Average the completion values here. We could actually improve the activity command a bit to allow for weighted averages
+			\multiply{\value{Variable}}{\grade@Weight}%	Multiply final % of completion by the grade weight to obtain an actual grade.
+			}
+
+	\setcounter{count@Activity}{0}	%This will keep track of how many activities are listed Reset it to 0 in case you have multiple graded assignments.
+
+	}%	End Conclude Environment code
+	
