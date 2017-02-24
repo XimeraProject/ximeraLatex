@@ -371,6 +371,9 @@
 % --------------------------------------------------------------------
 % Interactives
 
+\DefineVerbatimEnvironment{javascript}{Verbatim}{numbers=left,frame=lines,label=SAGE,labelposition=topline}
+\def\js#1{\mbox{\texttt{\detokenize{#1}}}}
+
 %Geogebra link
 \newcommand{\geogebra}[3]{Geogebra link: \url{https://tube.geogebra.org/m/#1}}
 
@@ -485,6 +488,8 @@
 %defining keys for answer command key=value pairs
 \define@key{answer}{given}[true]{\def\ans@given{#1}}
 \define@key{answer}{tolerance}{\def\ans@tol{#1}} %note: currently no affect on pdf output
+\define@key{answer}{id}{} %note: currently no affect on pdf output
+\define@key{answer}{format}{} %note: currently no affect on pdf output
 
 %setting default values for answer command key=value pairs
 \setkeys{answer}{given=false}

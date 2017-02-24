@@ -248,5 +248,9 @@
 \renewcommand{\label}[1]{\HCode{<a class="ximera-label" id="#1"></a>}}
 \renewcommand{\ref}[1]{\HCode{<a class="reference" href="\##1">#1</a>}}
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\renewenvironment{javascript}{\NoFonts}{\EndNoFonts}
+\ScriptEnv{javascript}{\ifvmode \IgnorePar\fi \EndP\HCode{<div class="javascript"><script type="text/javascript">\Hnewline//<![CDATA[\Hnewline}\HtmlParOff}{\HtmlParOn\HCode{\Hnewline //]]>\Hnewline</script></div>}}
+\def\js#1{\HCode{<span class="inline-javascript"><script type="text/javascript">\Hnewline//<![CDATA[\Hnewline\detokenize{#1}\Hnewline //]]>\Hnewline</script></span>}}
 \Hinput{ximera}
 \endinput
