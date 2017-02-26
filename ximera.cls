@@ -200,6 +200,8 @@
 \RequirePackage{multido}% http://ctan.org/pkg/multido
 \RequirePackage{listings}
 
+\RequirePackage{xkeyval}
+
 \RequirePackage[framemethod=TikZ]{mdframed} %% Used to make pretty foldable
 % BADBAD: the amsthm/mdframed conflict also messes up the .jax file
 
@@ -389,7 +391,15 @@
 \newcommand{\graph}[2][]{\text{Graph of $#2$}}
 
 % Interactive element
-\newcommand{\includeinteractive}[2][]{Interactive}
+\makeatletter
+\define@key{interactive}{id}{\def\interactive@id{#1}}
+\setkeys{interactive}{id=}
+\newcommand{\includeinteractive}[2][]{
+\setkeys*{interactive}{#1}%
+\ifthenelse{\equal{\interactive@id}{}}{}{\recordvariable{\interactive@id}}
+Interactive
+}
+\makeatother
 
 %HTML 
 \NewEnviron{html}{\textbf{INTERACTIVE NOT AVAILABLE.}}
@@ -485,19 +495,29 @@
 % ---------------------------------------------------------------------
 
 \makeatletter
+\ifdefined\HCode
+\newcommand{\recordvariable}[1]{}
+\else
+\newwrite\idfile
+\immediate\openout\idfile=\jobname.ids
+\newcommand{\recordvariable}[1]{\ifthenelse{\equal{#1}{}}{}{\immediate\write\idfile{var #1;}}}
+\fi
+
 %defining keys for answer command key=value pairs
 \define@key{answer}{given}[true]{\def\ans@given{#1}}
 \define@key{answer}{tolerance}{\def\ans@tol{#1}} %note: currently no affect on pdf output
-\define@key{answer}{id}{} %note: currently no affect on pdf output
-\define@key{answer}{format}{} %note: currently no affect on pdf output
+\define@key{answer}{validator}{}
+\define@key{answer}{id}{\def\ans@id{#1}} %note: currently no affect on pdf output
+\define@key{answer}{format}{}
 
 %setting default values for answer command key=value pairs
-\setkeys{answer}{given=false}
+\setkeys{answer}{id=,given=false}
 \newcommand{\answer}[2][]{%
   \ifmmode%
 	\setkeys{answer}{#1}%
 	%% when given=true, show answer in handout mode, show answer in "given box" outside handout mode
 	%% when given=false, do not show answer in handout mode, show answer outside handout mode
+        \recordvariable{\ans@id}
 	\ifthenelse{\boolean{\ans@given}}
 		{\ifhandout #2\else\underset{\scriptstyle\mathrm{given}}{\fbox{\ensuremath{#2}}}\fi}
 		{\ifhandout\fbox{\rm{?}}\else\fbox{\ensuremath{#2}}\fi}% show answer in box outside handout mode
@@ -522,23 +542,37 @@
 \renewcommand{\labelenumii}{\theenumii}
 
 %% correct answers for multiple choice
-\newboolean{correct}
-\setboolean{correct}{true}
-\newcommand{\choice}[2][]{\item #2\ifthenelse{\boolean{#1}}{\ifhandout \else \,\checkmark\,\fi}{}}
+\makeatletter
+\define@key{choice}{value}[]{\def\choice@value{#1}}
+\define@boolkey{choice}{correct}[true]{\def\choice@correct{#1}}
+\setkeys{choice}{correct=false,value=}
+\newcommand{\choice}[2][]{%
+\setkeys{choice}{#1}%
+\item #2\ifthenelse{\boolean{\choice@correct}}{\ifhandout \else \,\checkmark\,\fi}{}}
+\makeatother
 
 %% Not really meant to be used outside this package (used in wordChoice)
 \newcommand{\otherchoice}[2][]{\ignorespaces\ifthenelse{\boolean{#1}}{#2}{}\ignorespaces}
 %%%
 
+%setting default values for multipleChoice command key=value pairs
+\makeatletter
+\define@key{multipleChoice}{id}{\def\mc@id{#1}}
+\setkeys{multipleChoice}{id=}
 
 \newenvironment{multipleChoice}[1][]
-{\begin{trivlist}\item[\hskip \labelsep\small\bfseries Multiple Choice:]\hfil\begin{enumerate}}
+{\setkeys{multipleChoice}{#1}%
+\recordvariable{\mc@id}%
+\begin{trivlist}\item[\hskip \labelsep\small\bfseries Multiple Choice:]\hfil\begin{enumerate}}
 {\end{enumerate}\end{trivlist}}
 
 %multipleChoice* is for internal use only! (used in wordChoice)
 \newenvironment{multipleChoice*}[1][]
-{\begin{enumerate*}[before={\upshape{(\hspace{-.25em}}}, itemjoin={/\hspace{-.25em}}, after={\upshape{)}}, label={}]}
+{\setkeys{multipleChoice}{#1}%
+\ifthenelse{\equal{\mc@id}{}}{}{\immediate\write\idfile{var \mc@id;}}%
+\begin{enumerate*}[before={\upshape{(\hspace{-.25em}}}, itemjoin={/\hspace{-.25em}}, after={\upshape{)}}, label={}]}
 {\end{enumerate*}}
+\makeatother
 
 %multipleChoice** is for internal use only! (used in wordChoice)
 \newenvironment{multipleChoice**}[1][]{}{}
@@ -980,18 +1014,30 @@ Xarma Boost \ifhandout\theproblem\else\ifshuffle\theproblem.\theproblemType\else
 \end{trivlist}
 \else\egroup\fi}
 
+%%%%%%%%%%%%%%%%
+%% validator
+
+\def\validator[#1]{\mbox{\texttt{\detokenize{#1}}}}
+\def\endvalidator{}
+
 %% Feedback
+\makeatletter
 \ifhandout
-\newenvironment{feedback}{\setbox0\vbox\bgroup}
-               {\egroup}
+
+\def\feedback{\@ifnextchar[{\@feedbackcode}{\@feedbackattempt}}
+\def\@feedbackcode[#1]{\setbox0\vbox\bgroup}
+\def\@feedbackattempt{\setbox0\vbox\bgroup}
+\def\endfeedback{\egroup}
+
+\else
+
+\def\feedback{\@ifnextchar[{\@feedbackcode}{\@feedbackattempt}}
+\def\@feedbackcode[#1]{\begin{trivlist}\item[\hskip \labelsep\small\slshape\bfseries Feedback (\texttt{\detokenize{#1}}):\hspace{2ex}]\small\slshape}
+\def\@feedbackattempt{\begin{trivlist}\item[\hskip \labelsep\small\slshape\bfseries Feedback (attempt):\hspace{2ex}]\small\slshape}
+\def\endfeedback{\end{trivlist}}
                
-               \else
-               
-               \newenvironment{feedback}[1][attempt]
-                              {\begin{trivlist}\item[\hskip \labelsep\small\slshape\bfseries Feedback (#1):\hspace{2ex}]\small\slshape}
-               {\end{trivlist}}
-               \fi
-               
+\fi
+\makeatother               
 
 
 %% Hints
