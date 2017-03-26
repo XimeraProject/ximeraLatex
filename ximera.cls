@@ -387,6 +387,11 @@
   Google Spreadsheet link: \url{https://docs.google.com/spreadsheets/d/#1}%
 }
 
+% Google Form link
+\newcommand{\googleForm}[3]{%
+  Google Form link: \url{https://docs.google.com/forms/d/e/#1}%
+}
+
 % Embedded graph (in math mode)
 \newcommand{\graph}[2][]{\text{Graph of $#2$}}
 
