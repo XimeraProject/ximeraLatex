@@ -103,7 +103,7 @@
 \newcommand{\activity}[2][]{%
 	\setkeys{activity}{#1}
   \renewcommand{\input}[1]{}
-  \begingroup\skip@preamble\otherinput{#2}\endgroup
+  \begingroup\skip@preamble\otherinput{#2}\endgroup\par\vspace{\topsep}
   \let\input\otherinput}
 \else
 \newcommand{\activity}[2][]{%
