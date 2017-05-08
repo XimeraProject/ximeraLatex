@@ -68,6 +68,7 @@
 \newcommand {\C@untToken }[0]{\afterassignment \C@untT@ken \let \CurrT@ken = }
 \newcommand {\C@untT@ken }[0]{\ifx \CurrT@ken \@nil \else \advance \c@pgfmath@countb by1 \expandafter \C@untToken \fi }
 \newcommand {\reserved@a }[2]{}
+\newcommand {\reserved@a }[2]{}
 \newcommand {\HyperFirstAtBeginDocument }[0]{\AtBeginDocument }
 \newcommand {\reserved@a }[1]{}
 \newcommand {\reserved@a }[2]{}
@@ -77,6 +78,9 @@
 \newcommand {\epstopdfsetup }[0]{\setkeys {ETE}}
 \newcommand {\epstopdfcall }[1]{\ifETE@InsideSetfile \expandafter \@firstoftwo \else \expandafter \@secondoftwo \fi {`##1}{\Gin@base \Gin@ext }}
 \newcommand {\epstopdfDeclareGraphicsRule }[4]{\ifx \\##4\\\@PackageError {epstopdf-base}{Conversion command is missing}\@ehc \else \begingroup \@ifundefined {Gin@rule@##1}{}{\@PackageInfo {epstopdf-base}{Redefining graphics rule for `##1'}}\endgroup \@namedef {Gin@rule@##1}####1{{##2}{##3}{\epstopdfcall {##4}}}\fi }
+\newcommand {\mdf@patchamsthm }[0]{\let \mdf@deferred@thm@head \deferred@thm@head \pretocmd {\deferred@thm@head }{\@inlabelfalse }{\mdf@PackageInfo {mdframed detected package amsthm 
+ changed the theorem header of amsthm\MessageBreak }}{\mdf@PackageError {mdframed detected package amsthm 
+ changed the theorem header of amsthm failed\MessageBreak }}}
 \newcommand {\GetTitleStringSetup }[0]{\setkeys {gettitlestring}}
 \newcommand {\GetTitleString }[0]{\ifGTS@expand \expandafter \GetTitleStringExpand \else \expandafter \GetTitleStringNonExpand \fi }
 \newcommand {\GetTitleStringExpand }[1]{\def \GetTitleStringResult {##1}\begingroup \GTS@DisablePredefinedCmds \GTS@DisableHook \edef \x {\endgroup \noexpand \def \noexpand \GetTitleStringResult {\GetTitleStringResult }}\x }
@@ -93,6 +97,7 @@
 \newcommand {\ref  }[0]{\@ifstar \@refstar \T@ref }
 \newcommand {\pageref  }[0]{\@ifstar \@pagerefstar \T@pageref }
 \newcommand {\nameref  }[0]{\@ifstar \@namerefstar \T@nameref }
+\newcommand {\reserved@a }[2]{}
 \newcommand {\reserved@a }[2]{}
 \newcommand {\reserved@a }[0]{\AtBeginDocument }
 \newcommand {\reserved@a }[1]{}
