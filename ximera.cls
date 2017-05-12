@@ -552,7 +552,16 @@ Interactive
 \makeatother
 
 %% Not really meant to be used outside this package (used in wordChoice)
-\newcommand{\otherchoice}[2][]{\ignorespaces\ifthenelse{\boolean{#1}}{#2}{}\ignorespaces}
+%% \otherchoice outputs the item if correct and nothing if incorrect.
+\makeatletter
+\define@key{otherchoice}{value}[]{\def\otherchoice@value{#1}}
+\define@boolkey{otherchoice}{correct}[true]{\def\otherchoice@correct{#1}}
+\setkeys{otherchoice}{correct=false,value=}
+\newcommand{\otherchoice}[2][]{%
+  \ignorespaces
+  \setkeys{otherchoice}{#1}
+  \ifthenelse{\boolean{\otherchoice@correct}}{#2\setkeys{otherchoice}{correct=false}}{}\ignorespaces}
+\makeatother
 %%%
 
 %setting default values for multipleChoice command key=value pairs
@@ -567,6 +576,7 @@ Interactive
 {\end{enumerate}\end{trivlist}}
 
 %multipleChoice* is for internal use only! (used in wordChoice)
+%It displays all choices in a list separated by /
 \newenvironment{multipleChoice*}[1][]
 {\setkeys{multipleChoice}{#1}%
 \ifthenelse{\equal{\mc@id}{}}{}{\immediate\write\idfile{var \mc@id;}}%
@@ -575,6 +585,7 @@ Interactive
 \makeatother
 
 %multipleChoice** is for internal use only! (used in wordChoice)
+%this is simply a wrapper for the sole showing (other)choice.
 \newenvironment{multipleChoice**}[1][]{}{}
 
 
