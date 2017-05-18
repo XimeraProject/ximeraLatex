@@ -1,0 +1,169 @@
+\documentclass{ximera}
+
+\outcome{Test Ximera}
+\outcome{Test Ximera again.}
+
+\title[Pretitle:]{A testing document}
+
+\begin{document}
+\begin{abstract}
+  A regression test.
+\end{abstract}
+\maketitle
+
+
+\begin{image}
+  \begin{tikzpicture}
+    \draw (2,2) circle (3cm);
+  \end{tikzpicture}
+\end{image}
+
+
+\begin{image}
+  \includegraphics{circle.png}
+\end{image}
+
+
+\[
+\graph{x^2}
+\]
+\[
+\graph[xmin=-2.5,xmax=2.5,ymin=-.5,ymax=1.5,polar]{a=1,r=a \sin(\theta)}
+\]
+
+
+
+
+\begin{theorem}
+  This is a theorem.
+\end{theorem}
+
+\begin{theorem}[My theorem]
+  This is a theorem.
+\end{theorem}
+
+
+\begin{exercise}[.5in]
+  Type $2$. $\answer{2}$, $\answer[given]{2}$, $\frac{1}{2}$, $\int_a^b f(x) \ dx$,
+  \[
+  -\frac{1}{\frac{12}{1}}\sum_{n=1}^\infty n
+  \]
+  \begin{prompt}
+    Something hidden.
+  \end{prompt}
+  \begin{onlineOnly}
+    Something online only.
+  \end{onlineOnly}
+  \begin{hint}
+    \begin{selectAll}
+      \choice[correct]{A choice}
+      \choice[correct]{A choice}
+      \choice{Another choice}
+    \end{selectAll}
+    \begin{selectAll}
+      \choice{A choice}
+      \choice{$\int e^x \ dx$}
+      \choice[correct]{A choice}
+      \choice{Another choice}
+      \choice[correct]{A choice}
+    \end{selectAll}
+  \end{hint}
+  \begin{exercise}
+    A nested problem.
+    \begin{multipleChoice}
+      \choice[correct]{A choice}
+      \choice{Another choice}
+    \end{multipleChoice}
+    \begin{multipleChoice}
+      \choice{A choice}
+      \choice[correct]{A choice}
+      \choice{Another choice}
+    \end{multipleChoice}
+    \begin{multipleChoice}
+      \choice{A choice}
+      \choice{A choice}
+      \choice[correct]{Another choice}
+    \end{multipleChoice}
+  \end{exercise}
+  \wordChoice{\choice[correct]{A choice}\choice{Another choice}},
+  another \wordChoice{\choice{A choice} \choice[correct]{A choice}
+    \choice{Another choice}}, and another \wordChoice{\choice{A
+      choice} \choice{A choice} \choice[correct]{Another choice}}.
+  \begin{feedback}
+    This is feedback.
+  \end{feedback}
+\end{exercise}
+
+\begin{problem}
+\end{problem}
+
+\begin{question}
+\end{question}
+
+\begin{exploration}
+\end{exploration}
+
+
+\begin{xarmaBoost}
+\end{xarmaBoost}
+
+
+\begin{shuffle}
+  \begin{exercise}
+    One.
+  \end{exercise}
+
+  \begin{exercise}
+    Two.
+  \end{exercise}
+  
+  \begin{exercise}
+    Three.
+  \end{exercise}
+\end{shuffle}
+
+\begin{shuffle}
+  \begin{problem}
+    One.
+  \end{problem}
+
+  \begin{problem}
+    Two.
+  \end{problem}
+  
+  \begin{problem}
+    Three.
+  \end{problem}
+\end{shuffle}
+
+\begin{shuffle}
+  \begin{question}
+    One.
+  \end{question}
+
+  \begin{question}
+    Two.
+  \end{question}
+  
+  \begin{question}
+    Three.
+  \end{question}
+\end{shuffle}
+
+\begin{shuffle}
+  \begin{exploration}
+    One.
+  \end{exploration}
+
+  \begin{exploration}
+    Two.
+  \end{exploration}
+  
+  \begin{exploration}
+    Three.
+  \end{exploration}
+\end{shuffle}
+
+
+
+\end{document}
