@@ -1,0 +1,31 @@
+\documentclass{ximera}
+
+\title{Testing sage-cell}
+
+\begin{document}
+\begin{abstract}
+  A regression test of \texttt{sageCell}.
+\end{abstract}
+\maketitle
+
+\begin{sageCell}
+var('s t')
+x(t) = 3*cos(t)
+y(t) = 3*sin(t)
+c(t) = (x(t),y(t))
+circle=parametric_plot(c(t),(t,0,2*pi),color="black")
+circle
+\end{sageCell}
+
+\begin{sageOutput}
+var('s t')
+x(t) = 3*cos(t)
+y(t) = 3*sin(t)
+c(t) = (x(t),y(t))
+circle=parametric_plot(c(t),(t,0,2*pi),color="black")
+circle
+\end{sageOutput}
+
+
+
+\end{document}

@@ -66,19 +66,34 @@
 %\newboolean{correct}
 %\setboolean{correct}{true}
 \newcounter{choiceId}
-\renewcommand{\choice}[2][]{\stepcounter{choiceId}\ifvmode \IgnorePar\fi \EndP% 
-\ifthenelse{\boolean{#1}}{\HCode{<span class="choice correct" id="choice\arabic{choiceId}">}}
-{\HCode{<span class="choice" id="choice\arabic{choiceId}">}}#2\HCode{</span>}}
+\renewcommand{\choice}[2][]{%
+\setkeys{choice}{correct=false}%
+\setkeys{choice}{#1}%
+\stepcounter{choiceId}\ifvmode \IgnorePar\fi \EndP% 
+\HCode{<span class="choice }%
+\ifthenelse{\boolean{\choice@correct}}{\HCode{correct}}{}
+\HCode{" }
+\ifthenelse{\equal{\choice@value}{}}{}{\HCode{data-value="\choice@value" }}
+\HCode{id="choice\arabic{choiceId}">}%
+#2\HCode{</span>}}
 
 % You might expect a \setcounter{choiceId}{0} here --- that would be
 % wrong, because then the generated IDs would no longer be unique.
 %
 % You might also expect these to be "problem environments" but they aren't -- they're respondables
 \renewenvironment{multipleChoice}{}{}%\refstepcounter{problem}}{}%
-\ConfigureEnv{multipleChoice}{\stepcounter{identification}\ifvmode \IgnorePar\fi \EndP\HCode{<div class="multiple-choice" id="problem\arabic{identification}">}}{\HCode{</div>}\IgnoreIndent}{}{}
+
+\renewenvironment{multipleChoice}[1][]
+{\setkeys{multipleChoice}{#1}%
+\stepcounter{identification}\ifvmode \IgnorePar\fi \EndP\HCode{<div class="multiple-choice" }%
+\ifthenelse{\equal{\mc@id}{}}{}{\HCode{data-id="\mc@id" }}%
+\HCode{id="problem\arabic{identification}">}%
+}{\HCode{</div>}\IgnoreIndent}
+\ConfigureEnv{multipleChoice}{}{}{}{}
 
 % This is actually just word choice
 \renewenvironment{multipleChoice*}{\refstepcounter{problem}}{}%
+
 \ConfigureEnv{multipleChoice*}{\stepcounter{identification}\ifvmode \IgnorePar\fi \EndP\HCode{<span class="word-choice" id="word-choice\arabic{identification}">}}{\HCode{</span>}\IgnoreIndent}{}{}
 
 \renewenvironment{selectAll}{\refstepcounter{problem}}{}%
@@ -122,12 +137,6 @@
 \ConfigureTheoremEnv{template}
 \ConfigureTheoremEnv{idea}
 \ConfigureTheoremEnv{fact}
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% Feedback environments take an optional parameter (which describes
-% when the feedback is to be provided)
-
-\renewenvironment{feedback}[1][attempt]{\stepcounter{identification}\ifvmode \IgnorePar\fi \EndP\HCode{<div class="feedback" data-feedback="#1" id="feedback\arabic{identification}">}}{\HCode{</div>}\IgnoreIndent}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Eliminate some formatting that we'll handle later with CSS
@@ -230,7 +239,7 @@
 \RenewEnviron{html}{\HCode{\BODY}}
 
 % This is the "usual" hyperref command
-\renewcommand{\href}[2]{\HCode{<a href="#2">}#1\HCode{</a>}}
+\renewcommand{\href}[2]{\HCode{<a href="#1">}#2\HCode{</a>}}
 
 % This is a command that Ximera used initially; in Jim's opinion it should be deprecated for \href
 \renewcommand*{\link}[2][]{%
@@ -247,6 +256,30 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \renewcommand{\label}[1]{\HCode{<a class="ximera-label" id="#1"></a>}}
 \renewcommand{\ref}[1]{\HCode{<a class="reference" href="\##1">#1</a>}}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\renewenvironment{javascript}{\NoFonts}{\EndNoFonts}
+\ScriptEnv{javascript}{\stepcounter{identification}\ifvmode \IgnorePar\fi \EndP\HCode{<div class="javascript" id="javascript\arabic{identification}"><script type="text/javascript">\Hnewline//<![CDATA[\Hnewline}\HtmlParOff}{\HtmlParOn\HCode{\Hnewline//]]>\Hnewline</script></div>}}
+\def\js#1{\stepcounter{identification}\HCode{<span class="inline-javascript" id="javascript\arabic{identification}"><script type="text/javascript">\Hnewline//<![CDATA[\Hnewline function javascript\arabic{identification}() }\{\HCode{ return \detokenize{#1}; }\}\HCode{\Hnewline //]]>\Hnewline</script></span>}}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% validator
+
+\def\validator[#1]{\stepcounter{identification}\HCode{<div class="validator" id="validator\arabic{identification}"><script type="text/javascript">\Hnewline//<![CDATA[\Hnewline function validator\arabic{identification}() }\{\HCode{ return \detokenize{#1}; }\}\HCode{\Hnewline //]]>\Hnewline</script>}}
+\def\endvalidator{\HCode{</div>}}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Feedback environments take an optional parameter (which describes
+% when the feedback is to be provided)
+
+\def\feedback{\@ifnextchar[{\@feedbackcode}{\@feedbackattempt}}
+\def\@feedbackattempt{\@feedbackcode[attempt]}
+\def\@feedbackcode[#1]{\stepcounter{identification}%
+\ifvmode \IgnorePar\fi \EndP%
+\ifthenelse{\equal{#1}{attempt}}{\HCode{<div class="feedback" data-feedback="attempt" id="feedback\arabic{identification}">}}%
+{\ifthenelse{\equal{#1}{correct}}{\HCode{<div class="feedback" data-feedback="correct" id="feedback\arabic{identification}">}}%
+{\HCode{<div class="feedback" data-feedback="script" id="feedback\arabic{identification}"><script type="text/javascript">\Hnewline//<![CDATA[\Hnewline function feedback\arabic{identification}() }\{\HCode{ return \detokenize{#1}; }\}\HCode{\Hnewline //]]>\Hnewline</script>}}}}
+\def\endfeedback{\HCode{</div>}\IgnoreIndent}
 
 \Hinput{ximera}
 \endinput

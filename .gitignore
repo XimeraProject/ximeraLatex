@@ -1,7 +1,3 @@
-secondExample/secondExample.jax
-secondExample/secondExample.pdf
-firstExample/firstExample.pdf
-auto/*
 *~
 *.4ct
 *.4tc
@@ -36,3 +32,4 @@ auto/*
 *.tmp
 *.toc
 *.xref
+*.ids
