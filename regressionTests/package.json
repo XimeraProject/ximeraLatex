@@ -11,8 +11,5 @@
     "colors": "^1.1.2",
     "progress": "^2.0.0",
     "throat": "^3.0.0"
-  },
-  "ava": {
-    "concurrency": 5
   }
 }
