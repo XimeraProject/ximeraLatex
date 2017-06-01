@@ -741,43 +741,129 @@
   \endgroup%
 }%
 
-%%% shuffle environment
 
-%Necessary counters
-\newcounter{track@Problem}
-\setcounter{track@Problem}{1}
-\newcounter{shuffle@Count}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%		  Randomize Commands		%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% This section loads and defines all the commands needed for randomizing content. Hacked together by Jason Nowell
+
+\RequirePackage{tikz, pgfplots}
+\pgfmathsetseed{\number\pdfrandomseed}
+\RequirePackage{forloop}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%   Generate and Store Random Latex Number   %%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%Create a command to randomly generate a number and record it into a given name. Recorded as the command \#1 for given input to not break things in LaTeX.
+\newcommand{\genrand}[3]
+{
+\expandafter\pgfmathtruncatemacro\csname #1\endcsname{int(random(#2,#3))}
+}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%  Random Permutation Command  %%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\newcounter{Iteration1}%	Dummy Iteration variable.
+\newcounter{RndQuant}%		Tracks the number of desired counters
+\newcounter{Temp@Hold}%		Temp counter to hold the command value because tex is weird.
+\newcounter{Temp@RandMe}%	Temp counter like previous.
+
+\newcommand*\ifcounter[2]{% Function checks if a counter named #1 exists. If not it creates it. After existance is confirmed (or implemented), set the counter to #2.
+  \ifcsname c@#1\endcsname
+  \else
+    \newcounter{#1}
+  \fi
+\setcounter{#1}{#2}
+}
+
+\newcommand{\RandMe}[3]
+{% #1 is the max number for range, #2 is the name of the counter to hold the list, and #3 is how many from that list to generate. Thus \RandMe{100}{TEMP}{5} will generate 5 counters, named \TEMPI, \TEMPII, \TEMPIII, \TEMPIV, \TEMPV. Each of which will have a (unique) number between 1 and 100.
+
+%Assign a maximum on how many numbers to pick. Set default to the max list size, and save in counter "RndQuant"
+\ifthenelse{\isempty{#3}}
+{
+\setcounter{RndQuant}{#1+1}
+}
+{
+\setcounter{RndQuant}{#3+1}
+}
+
+%Generate a starting list of numbers 1 to maximum number given
+\forloop{Iteration1}{1}{\arabic{Iteration1} < \arabic{RndQuant}}{
+\ifcounter{#2\Roman{Iteration1}}{\arabic{Iteration1}}
+}
 
 
-\newif\iffirstproblem% Condition for first problem
+%Permute using Knuth method
+\forloop{Iteration1}{1}{\arabic{Iteration1} < \arabic{RndQuant}}{
+\genrand{TempRandMe}{\arabic{Iteration1}}{#1}
+
+\ifcounter{Temp@RandMe}{\TempRandMe}
+\ifcounter{Temp@Hold}{\arabic{#2\Roman{Temp@RandMe}}}
+
+\ifcounter{#2\Roman{Temp@RandMe}}{\arabic{#2\Roman{Iteration1}}}
+\ifcounter{#2\Roman{Iteration1}}{\arabic{Temp@Hold}}
+}
+}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%  		Shuffle Environment		%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\RequirePackage{environ}	% The environ package saves environment contents as commands. We will use this to save problem contents and then randomly place them.
+
+\newif\iffirstproblem% Condition for first problem This may become obsolete once someone can clean up the \problemEnvironmentStart/End code.
 \firstproblemtrue
 
-\newenvironment{shuffle}[1][1]
-	{
+%Necessary counters
+\newcounter{shuffle@maxCount}%	Tracks how many questions we want in shuffle.
+\newcounter{shuffle@count}%		Tracks which shuffle we're on (on the page).
+\newcounter{shuffle@trackProblem}% Tracks which problem in shuffle we're on.
+\newcounter{shuffle@desiredProblems}% takes min of desired and available random Qs.
+
+% Shuffle has changed from truncating to randomizing (and possibly truncating). There will likely be a lot of redundant/pointless code that use to track truncation when we don't need it anymore.
+
+\newenvironment{shuffle}[1][1] % shuffle takes an optional argument as a number. It will collect all the problem-type environments within it (anything configured with \problemEnvironConfig below should work), and randomly select/order the optionally given number of them. If the optional argument exceeds the number of problems in the shuffle environment, shuffle will only randomize up to the number of available problems (i.e. no random extra empty problems listed on the page.) 
+	{% Shuffle Start: Collect and save numbers that will be needed later.
 	\shuffletrue\setcounter{problemType}{0}
-	\setcounter{shuffle@Count}{#1}
-	\stepcounter{shuffle@Count}% Need to step for the < logic check
+	\setcounter{shuffle@maxCount}{#1}
+	\stepcounter{shuffle@maxCount}% Need to step for the < logic check
+	\setcounter{shuffle@count}{\theproblem}% Fluke of how tex records things.
+	\setcounter{shuffle@trackProblem}{1}
 	}
 	{
+	\setcounter{shuffle@desiredProblems}{\value{shuffle@trackProblem} - 1} % Select questions from any question in the shuffle environment.
+	
+	\ifthenelse{\arabic{shuffle@trackProblem} < \arabic{shuffle@maxCount}}{% If there are fewer problems than the optional argument, only take up to the number of problems available.
+		\setcounter{shuffle@maxCount}{\value{shuffle@trackProblem}}
+		}
+		{
+		}
+	%Below code randomizes which problems go where.
+	\RandMe{\arabic{shuffle@desiredProblems}}{shuffleOrder}{}
+	\forloop{Iteration1}{1}{\arabic{Iteration1} < \arabic{shuffle@maxCount}}{
+		\problemEnvironmentStart{2in}{Problem}% The "Problem" here is why shuffle overwrites everything with 'Problem'. It is remarkably difficult to save the entire question to randomize the whole block, and therefore keep the correct name, without wrapping the question in a command shell. Currently I'm trying to maintain backward compatibility.
+		\csname\roman{shuffle@count}ContentProblem\expandafter\Roman{shuffleOrder\Roman{Iteration1}}\endcsname
+		\problemEnvironmentEnd
+		}
 	\ifhandout\else\refstepcounter{problem}\fi
-	\shufflefalse\global\firstproblemtrue
-	\setcounter{track@Problem}{1}
+	\shufflefalse\global\firstproblemtrue% Legacy code that can probably be removed with minor editing.
 	}
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%  		Problem Environments		%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-%%%%%% Configure various problem environment commands
+%%%%%% Configure environment configuration commands
+
+% The \problemEnvironmentStart and \problemEnvironmentEnd are now being depreciated in favor of \problemEnvironConfig. There is plenty of code here to cleanup now that the termination is done at the shuffle level, instead of this 'first problem' nonsense.
 
 %Configure environments start content
 \newcommand{\problemEnvironmentStart}[2]{%This takes in 2 arguments. The first is optional and is the old optional argument from existing environments. The second argument is mandatory and is the name of the 'problem' environment, such as problem, question, exercise, etc. It then configures everything needed at the start of that environment.
-\ifshuffle
-	\ifthenelse{\arabic{track@Problem}<\arabic{shuffle@Count}}
-		{% If we haven't gotten to the last problem yet, track the problem
-		\stepcounter{track@Problem}
-		}
-		{%	If we have all our problems, turn off the problem environment.
-		\global\firstproblemfalse
-		}
-\fi
+
 \iffirstproblem
 \def\spaceatend{#1}\refstepcounter{problem}\refstepcounter{problemType}
 \begin{trivlist}\item[\hskip\labelsep\sffamily\bfseries 
@@ -814,72 +900,51 @@
 
 }
 
-\newenvironment{problem}[1][2in]
-{%Env start code
-\problemEnvironmentStart{#1}{Problem}
+% This is currently a small shell to contain the soon-to-be-depreciated start/stop commands. Once we merge them into the below command, we can then remove the above commands.
+\newcommand{\problemEnvironConfig}[2]{
+\ifshuffle{
+\global\expandafter\edef\csname\roman{shuffle@count}ContentProblem\Roman{shuffle@trackProblem}\endcsname{
+\BODY
 }
-{%Env end code
+\stepcounter{shuffle@trackProblem}
+}
+\else{
+\problemEnvironmentStart{#1}{#2}
+\BODY
 \problemEnvironmentEnd
+}
+\fi
 }
 
-\newenvironment{exercise}[1][2in]
-{%Env start code
-\problemEnvironmentStart{#1}{Exercise}
-}
-{%Env end code
-\problemEnvironmentEnd
+%%%%%%%%%%% Config specific problem environments. Note new environments can be added easily if you simply want a new "name".
+
+\NewEnviron{problem}[1][2in]
+{
+\problemEnvironConfig{#1}{Problem}
 }
 
-\newenvironment{exploration}[1][2in]
-{%Env start code
-\problemEnvironmentStart{#1}{Exploration}
-}
-{%Env end code
-\problemEnvironmentEnd
+\NewEnviron{exercise}[1][2in]
+{
+\problemEnvironConfig{#1}{Exercise}
 }
 
-\newenvironment{question}[1][2in]
-{%Env start code
-\problemEnvironmentStart{#1}{Question}
+\NewEnviron{exploration}[1][2in]
+{
+\problemEnvironConfig{#1}{Exploration}
 }
-{%Env end code
-\problemEnvironmentEnd
+
+\NewEnviron{question}[1][2in]
+{
+\problemEnvironConfig{#1}{Question}
 }
 
 %% Below is included the old code in case it needs referencing. Should probably delete it at some point.
 
 
-%\newenvironment{exercise}[1][2in]
-%{
-%\ifshuffle
-%	\ifthenelse{\arabic{track@Problem}<\arabic{shuffle@Count}}
-%		{% If we haven't gotten to the last problem yet, track the problem
-%		\stepcounter{track@Problem}
-%		}
-%		{%	If we have all our problems, turn off the problem environment.
-%		\global\firstproblemfalse
-%		}
-%\fi
-%\iffirstproblem
-%\def\spaceatend{#1}\refstepcounter{problem}\refstepcounter{problemType}
-%\begin{trivlist}\item[\hskip\labelsep\sffamily\bfseries 
-%Exercise \ifhandout\theproblem\else\ifshuffle\theproblem.\theproblemType\else\theproblem\fi\fi]
-%\slshape
-%\else\setbox0\vbox\bgroup\fi} %% removes exercise if in shuffle and not first problem
-%{\iffirstproblem
-%\ifhandout\ifspace\vspace{\spaceatend}\fi\fi %% space at end
-%\par\addvspace{.5ex}\nobreak\noindent\hung %% line at the bottom
-%\ifhandout\else\ifshuffle\addtocounter{problem}{-1}\fi\fi %% the problem does not increase within shuffle
-%%\ifhandout\ifshuffle\global\firstproblemfalse\fi\fi %% removes other problems from shuffle in handout
-%\ifhandout\ifnewpage\newpage\fi\fi %% adds newpage
-%\end{trivlist}
-%\else\egroup\fi}
-%
-
 %\newenvironment{problem}[1][2in]
 %{
 %\ifshuffle
-%	\ifthenelse{\arabic{track@Problem}<\arabic{shuffle@Count}}
+%	\ifthenelse{\arabic{track@Problem}<\arabic{shuffle@maxCount}}
 %		{% If we haven't gotten to the last problem yet, track the problem
 %		\stepcounter{track@Problem}
 %		}
@@ -906,58 +971,6 @@
 %}
 
 
-%\newenvironment{question}[1][2in]
-%{
-%\ifshuffle
-%	\ifthenelse{\arabic{track@Problem}<\arabic{shuffle@Count}}
-%		{% If we haven't gotten to the last problem yet, track the problem
-%		\stepcounter{track@Problem}
-%		}
-%		{%	If we have all our problems, turn off the problem environment.
-%		\global\firstproblemfalse
-%		}
-%\fi
-%\iffirstproblem
-%\def\spaceatend{#1}\refstepcounter{problem}\refstepcounter{problemType}
-%\begin{trivlist}\item[\hskip\labelsep\sffamily\bfseries 
-%Question \ifhandout\theproblem\else\ifshuffle\theproblem.\theproblemType\else\theproblem\fi\fi]
-%\slshape
-%\else\setbox0\vbox\bgroup\fi} %% removes exercise if in shuffle and not first problem
-%{\iffirstproblem
-%\ifhandout\ifspace\vspace{\spaceatend}\fi\fi %% space at end
-%\par\addvspace{.5ex}\nobreak\noindent\hung %% line at the bottom
-%\ifhandout\else\ifshuffle\addtocounter{problem}{-1}\fi\fi %% the problem does not increase within shuffle
-%%\ifhandout\ifshuffle\global\firstproblemfalse\fi\fi %% removes other problems from shuffle in handout
-%\ifhandout\ifnewpage\newpage\fi\fi %% adds newpage
-%\end{trivlist}
-%\else\egroup\fi}
-%
-%\newenvironment{exploration}[1][2in]
-%{
-%\ifshuffle
-%	\ifthenelse{\arabic{track@Problem}<\arabic{shuffle@Count}}
-%		{% If we haven't gotten to the last problem yet, track the problem
-%		\stepcounter{track@Problem}
-%		}
-%		{%	If we have all our problems, turn off the problem environment.
-%		\global\firstproblemfalse
-%		}
-%\fi
-%\iffirstproblem
-%\def\spaceatend{#1}\refstepcounter{problem}\refstepcounter{problemType}
-%\begin{trivlist}\item[\hskip\labelsep\sffamily\bfseries 
-%Exploration \ifhandout\theproblem\else\ifshuffle\theproblem.\theproblemType\else\theproblem\fi\fi]
-%\slshape
-%\else\setbox0\vbox\bgroup\fi} %% removes exercise if in shuffle and not first problem
-%{\iffirstproblem
-%\ifhandout\ifspace\vspace{\spaceatend}\fi\fi %% space at end
-%\par\addvspace{.5ex}\nobreak\noindent\hung %% line at the bottom
-%\ifhandout\else\ifshuffle\addtocounter{problem}{-1}\fi\fi %% the problem does not increase within shuffle
-%%\ifhandout\ifshuffle\global\firstproblemfalse\fi\fi %% removes other problems from shuffle in handout
-%\ifhandout\ifnewpage\newpage\fi\fi %% adds newpage
-%\end{trivlist}
-%\else\egroup\fi}
-%
 
 \newenvironment{xarmaBoost}[1][2in]
 {\iffirstproblem

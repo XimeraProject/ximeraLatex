@@ -251,7 +251,7 @@
 	\ifVerbose
 		You have selected file #1
 	\fi	
-	\expandafter\input{\file@loc #1}
+	\expandafter\input{#1}%\file@loc #1}
 \fi
 }
 
