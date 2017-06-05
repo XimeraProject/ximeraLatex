@@ -23,11 +23,15 @@
 \newcounter{Pull@Queue}
 
 \newif\ifquestionCount
+\questionCounttrue
+
 \newif\ifquestionList
-\questionCounttrue
 \questionListtrue
-\questionCounttrue
+
 \newif\ifhasVersion
+
+\newif\iffindingQuestion
+\findingQuestionfalse
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%			Track Question Number and Content		%%%%%%%%%%%%%%%
@@ -239,6 +243,17 @@
 
 }
 
+%The \select@Question command is to be used *inside* the \input commands above, e.g. inside "Derivative-Multi-Input". You use this command instead of a \input command to input files, this way you can call information about those files and/or call the file itself.
+\newcommand{\select@Question}[1]{
+\iffindingQuestion
+	You have selected the file #1
+\else
+	\ifVerbose
+		You have selected file #1
+	\fi	
+	\expandafter\input{#1}%\file@loc #1}
+\fi
+}
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -399,6 +414,55 @@
 \iterate@List{#1}{\list@Problems{\input{\temp@Input}}{#2}}
 
 }
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%		   		findQuestion Command				%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%The intent of the \findQuestion command is to be able to find all questions associated with a given set of tags.
+\newcommand{\findQuestion}[4]{
+\findingQuestiontrue
+
+\set@RelaxActiveTags{}
+\set@StrictActiveTags{}
+
+\ifthenelse{\isempty{#1}}
+	{
+	\expandafter\addTo@RelaxActiveTags\TagList@MasterCatOne
+	}
+	{
+	\addTo@RelaxActiveTags{#1}
+	}
+
+\ifthenelse{\isempty{#2}}
+	{
+	\expandafter\addTo@RelaxActiveTags\TagList@MasterCatTwo
+	}
+	{
+	\addTo@RelaxActiveTags{#2}
+	}
+
+\ifthenelse{\isempty{#3}}
+	{
+	\expandafter\addTo@RelaxActiveTags\TagList@MasterCatThree
+	}
+	{
+	\addTo@RelaxActiveTags{#3}
+	}
+
+\ifthenelse{\isempty{#4}}
+	{
+	\expandafter\addTo@RelaxActiveTags\TagList@MasterCatFour
+	}
+	{
+	\addTo@StrictActiveTags{#4}
+	}
+\Master@Input@Test
+
+\findingQuestionfalse
+}
+
 
 
 
