@@ -895,7 +895,8 @@ Interactive
 	%Below code randomizes which problems go where.
 	\RandMe{\arabic{shuffle@desiredProblems}}{shuffleOrder}{}
 	\forloop{Iteration1}{1}{\arabic{Iteration1} < \arabic{shuffle@maxCount}}{
-		\problemEnvironmentStart{2in}{Problem}% The "Problem" here is why shuffle overwrites everything with 'Problem'. It is remarkably difficult to save the entire question to randomize the whole block, and therefore keep the correct name, without wrapping the question in a command shell. Currently I'm trying to maintain backward compatibility.
+		\expandafter\problemEnvironmentStart{2in}{% This first one finds the env name
+		\csname\roman{shuffle@count}ContentProblemType\expandafter\Roman{shuffleOrder\Roman{Iteration1}}\endcsname}% Now we find the env content
 		\csname\roman{shuffle@count}ContentProblem\expandafter\Roman{shuffleOrder\Roman{Iteration1}}\endcsname
 		\problemEnvironmentEnd
 		}
@@ -953,8 +954,11 @@ Interactive
 % This is currently a small shell to contain the soon-to-be-depreciated start/stop commands. Once we merge them into the below command, we can then remove the above commands.
 \newcommand{\problemEnvironConfig}[2]{
 \ifshuffle{
-\global\expandafter\edef\csname\roman{shuffle@count}ContentProblem\Roman{shuffle@trackProblem}\endcsname{
+\global\expandafter\edef\csname\roman{shuffle@count}ContentProblem\Roman{shuffle@trackProblem}\endcsname{% Record problem env content
 \BODY
+}
+\global\expandafter\edef\csname\roman{shuffle@count}ContentProblemType\Roman{shuffle@trackProblem}\endcsname{% Record problem env type
+#2
 }
 \stepcounter{shuffle@trackProblem}
 }
