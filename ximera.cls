@@ -735,7 +735,7 @@ Interactive
 
 
 %% code answer environment
-%% You cannot use Envrion with the fancyvrb/listings package if you want nested environments
+%% You cannot use Environ with the fancyvrb/listings package if you want nested environments
 
 \DefineVerbatimEnvironment{code}{Verbatim}{numbers=left,frame=lines,label=Code,labelposition=topline}
 %% \lstnewenvironment{python}
@@ -744,7 +744,7 @@ Interactive
 
 
 %% python answer environment
-%% You cannot use Envrion with the fancyvrb/listings package if you want nested environments
+%% You cannot use Environ with the fancyvrb/listings package if you want nested environments
 
 \DefineVerbatimEnvironment{python}{Verbatim}{numbers=left,frame=lines,label=Python,labelposition=topline}
 %% \lstnewenvironment{python}
@@ -756,7 +756,7 @@ Interactive
 % ---------------------------------------------------------------------
 % Problem environment decorations (these should be user invoked, not default)
 
-% The decoration for these envrionments were inspired by
+% The decoration for these environments were inspired by
 % http://tex.stackexchange.com/questions/11098/nice-formatting-for-theorems?lq=1
 
 %\makeatletter%
@@ -1102,46 +1102,6 @@ Xarma Boost \ifhandout\theproblem\else\ifshuffle\theproblem.\theproblemType\else
 \newcounter{problem} %% for the main problem
 \newcounter{problemType} %% for variations within shuffle
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%% Foldables
-
-%% \newcounter{globalFold} %Global Flag to tell if environments should be folded.
-%%     % Set to 0 to fold, 
-%%     % Set to 1 to unfold, 
-%%     % Set to 2 to unfold without the foldable option (\unfoldable)
-%%     % Set to any other value to remove global override
-%% \setcounter{globalFold}{3} %default to no global override
-
-%% \newcounter{localFold} %Local Flag to tell if environments should be folded. 
-%%     % Set to 0 to fold, 
-%%     % Set to 1 to unfold, 
-%%     % Set to 2 to unfold without the foldable option (\unfoldable)
-%%     % Set to any other value to remove global override
-%% \setcounter{localFold}{3} %default to no local value
-
-
-%% %% Global set commands:
-
-%% %set global override to folded
-%% \newcommand{\expandAllFolds}{%
-%% \setcounter{globalFold}{0} 
-%% }
-
-%% %set global override to expanded
-%% \newcommand{\collapseAllFolds}{%
-%% \setcounter{globalFold}{1} 
-%% }
-
-%% %set global to override with printable pdf form
-%% \newcommand{\expandAllFoldsPDF}{%
-%% \setcounter{globalFold}{2}
-%% }
-
-%% %Reset global variable to return to local control
-%% \newcommand{\noGlobalFolds}{%
-%% \setcounter{globalFold}{3}
-%% }
-
 \colorlet{textColor}{black} % since textColor is referenced below
 \colorlet{background}{white} % since background is referenced below
 
@@ -1194,57 +1154,6 @@ Xarma Boost \ifhandout\theproblem\else\ifshuffle\theproblem.\theproblemType\else
 
 \newcommand{\unfoldable}[1]{#1}
 
-%% % Command to set folded or unfolded.
-%% % \flexFold{#1}{#2}, #1 is the fold state, #2 is the content. 
-%%     % For fold state:
-%%     % Set to 0 to fold, 
-%%     % Set to 1 to unfold, 
-%%     % Set to 2 to unfold without the foldable option (\unfoldable)
-%%     % Set to any other value to remove global override
-
-%% \newcommand{\flexFold}[2]{%
-
-%% \setcounter{localFold}{#1} %set local fold flag to user's value.
-
-%% \ifthenelse{\value{globalFold} = 0}{
-%%     \begin{expandable} %Make an unfolded version
-%%     #2
-%%     \end{expandable}
-%%     }
-%%     {
-%%     \ifthenelse{\value{globalFold} = 1}{
-%%         \begin{foldable} %make an unfolded version
-%%         #2
-%%         \end{foldable}
-%%         }
-%%         {
-%%         \ifthenelse{\value{globalFold} = 2}{
-%%             \unfoldable{#2}
-%%             }
-%%             {
-%%             \ifthenelse{\value{localFold}=0}
-%%                 {
-%%                 \begin{expandable}
-%%                 #2
-%%                 \end{expandable}
-%%                 }
-%%                 {
-%%                 \ifthenelse{\value{localFold} = 1}
-%%                     {
-%%                     \begin{foldable}
-%%                     #2
-%%                     \end{foldable}
-%%                     }
-%%                     {
-%%                     \unfoldable{#2}
-%%                     }
-%%                 }
-%%             }
-%%         }
-%%     }
-%%     %Reset local fold flag
-%% \setcounter{localFold}{3} %reset to remove local fold flag
-%% }
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
