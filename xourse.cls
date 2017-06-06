@@ -132,10 +132,10 @@
 \renewcommand\practice[2][]{}
 \fi
 
-% the "points" environment does nothing in latex, but in html, it
-% wraps the activities in a div in order to assign some number of
-% points to them.
-\newenvironment{points}[1]{}{}
+% the "graded" environment does nothing in latex, but in html, it
+% wraps the activities in a div in order to assign some weight to
+% them for grading.
+\newenvironment{graded}[1]{}{}
 
 % makes the toc look a bit better... can be redefined in the preamble.
 \makeatletter
