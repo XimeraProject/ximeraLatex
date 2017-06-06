@@ -48,8 +48,6 @@
 
 \LoadClass{ximera} 
 
-\RequirePackage{verbatim} 
-
 
 %%%%% ximera documents included with \activity{} will be included in the body of the xourse document
 %%%%% \input commands within included ximera documents will be ignored
