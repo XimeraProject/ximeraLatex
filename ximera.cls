@@ -198,7 +198,7 @@
 \RequirePackage{amsthm}
 \RequirePackage{xifthen}% http://ctan.org/pkg/xifthen
 \RequirePackage{multido}% http://ctan.org/pkg/multido
-\RequirePackage{listings}
+\RequirePackage{listings} %% is this required???
 
 \RequirePackage{xkeyval}
 
@@ -206,6 +206,7 @@
 % BADBAD: the amsthm/mdframed conflict also messes up the .jax file
 
 \RequirePackage{comment}
+
 \oddsidemargin 62pt %% so we don't get weird margins in 2-sided mode
 \evensidemargin 62pt %% so we don't get weird margins in 2-sided mode
 \textwidth 345pt %% so we don't get weird margins in 2-sided mode
@@ -747,9 +748,9 @@ Interactive
 %% You cannot use Envrion with the fancyvrb/listings package if you want nested environments
 
 \DefineVerbatimEnvironment{python}{Verbatim}{numbers=left,frame=lines,label=Python,labelposition=topline}
-%% \lstnewenvironment{python}
-%% {\lstset{language=python,numbers=left}}
-%% {}
+ %% \lstnewenvironment{python}
+ %%                   {\lstset{language=python,numbers=left}}
+ %%                   {}
 
 
 
