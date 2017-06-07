@@ -61,6 +61,10 @@
 \nooutcomesfalse
 \DeclareOption{nooutcomes}{\nooutcomestrue}
 
+\newif\ifnoauthor
+\noauthorfalse
+\DeclareOption{noauthor}{\noauthortrue}
+
 \newif\ifhints
 \hintsfalse
 \DeclareOption{hints}{\hintstrue}
@@ -279,12 +283,17 @@
 
 % Redefine maketitle and put them in a table of contents.  The \phantomsection is to fix the hrefs.
 \makeatletter
+\let\@emptyauthor\@author
+\def\author#1{\gdef\@author{#1}}
+\def\@author{\@latex@warning@no@line{No \noexpand\author given}}
+
 \renewcommand\maketitle{%
   \addtocounter{titlenumber}{1}\phantomsection \ifnumbers\addcontentsline{toc}{section}{\thetitlenumber~\@title}\else\addcontentsline{toc}{section}{\@title}\fi %% puts titles in the toc, with or without numbers.
   {\flushleft\large\bfseries \@pretitle\par\vspace{-1em}}
   {\flushleft\LARGE\bfseries {\ifnumbers\thetitlenumber\fi}{\ifnumbers\hspace{1em}\else\hspace{0em}\fi}\@title \par }
   \vskip .6em\noindent\textit\theabstract\setcounter{problem}{0}\setcounter{section}{0}\setcounter{subsection}{0}\par\vspace{2em}
   \ifnooutcomes\else\let\thefootnote\relax\footnote{Learning outcomes: \theoutcomes}\fi
+  \ifnoauthor\else\let\thefootnote\relax\footnote{Author(s):~\@author}\fi
   \aftergroup\@afterindentfalse
   \aftergroup\@afterheading}
 \makeatother
