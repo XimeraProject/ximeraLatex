@@ -4,6 +4,7 @@ module.exports = [
     ["instructornotes"],
     ["noinstructornotes"],
     ["nooutcomes"],
+    ["noauthor"],
     ["hints"],
     ["numbers"],
     ["wordchoicegiven"],
