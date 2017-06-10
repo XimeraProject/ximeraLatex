@@ -738,18 +738,19 @@ Interactive
 %% You cannot use Environ with the fancyvrb/listings package if you want nested environments
 
 \DefineVerbatimEnvironment{code}{Verbatim}{numbers=left,frame=lines,label=Code,labelposition=topline}
-%% \lstnewenvironment{python}
-%% {\lstset{language=python,numbers=left}}
-%% {}
+
+
+
+
 
 
 %% python answer environment
 %% You cannot use Environ with the fancyvrb/listings package if you want nested environments
 
 \DefineVerbatimEnvironment{python}{Verbatim}{numbers=left,frame=lines,label=Python,labelposition=topline}
-%% \lstnewenvironment{python}
-%% {\lstset{language=python,numbers=left}}
-%% {}
+%\lstnewenvironment{python}
+%{\lstset{language=python,numbers=left}}
+% {}
 
 
 
@@ -876,9 +877,10 @@ Interactive
 
 % Shuffle has changed from truncating to randomizing (and possibly truncating). There will likely be a lot of redundant/pointless code that use to track truncation when we don't need it anymore.
 
-\newenvironment{shuffle}[1][1] % shuffle takes an optional argument as a number. It will collect all the problem-type environments within it (anything configured with \problemEnvironConfig below should work), and randomly select/order the optionally given number of them. If the optional argument exceeds the number of problems in the shuffle environment, shuffle will only randomize up to the number of available problems (i.e. no random extra empty problems listed on the page.) 
-	{% Shuffle Start: Collect and save numbers that will be needed later.
-	\shuffletrue\setcounter{problemType}{0}
+\newenvironment{shuffle}[1][1]{ % shuffle takes an optional argument as a number. It will collect all the problem-type environments within it (anything configured with \problemEnvironConfig below should work), and randomly select/order the optionally given number of them. If the optional argument exceeds the number of problems in the shuffle environment, shuffle will only randomize up to the number of available problems (i.e. no random extra empty problems listed on the page.) 
+	% Shuffle Start: Collect and save numbers that will be needed later.
+	\shuffletrue
+	\setcounter{problemType}{0}
 	\setcounter{shuffle@maxCount}{#1}
 	\stepcounter{shuffle@maxCount}% Need to step for the < logic check
 	\setcounter{shuffle@count}{\theproblem}% Fluke of how tex records things.
@@ -900,8 +902,12 @@ Interactive
 		\csname\roman{shuffle@count}ContentProblem\expandafter\Roman{shuffleOrder\Roman{Iteration1}}\endcsname
 		\problemEnvironmentEnd
 		}
-	\ifhandout\else\refstepcounter{problem}\fi
-	\shufflefalse\global\firstproblemtrue% Legacy code that can probably be removed with minor editing.
+	\ifhandout
+	\else
+		\refstepcounter{problem}
+	\fi
+	\shufflefalse
+	\global\firstproblemtrue% Legacy code that can probably be removed with minor editing.
 	}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -914,17 +920,29 @@ Interactive
 
 %Configure environments start content
 \newcommand{\problemEnvironmentStart}[2]{%This takes in 2 arguments. The first is optional and is the old optional argument from existing environments. The second argument is mandatory and is the name of the 'problem' environment, such as problem, question, exercise, etc. It then configures everything needed at the start of that environment.
-
+%Comment on "iffirstproblem" code. This is mostly obsolete code from before shuffle was made to truncate after an optional number of problems. Everything nested under "if first problem" should be formating and problem numbering, and shouldn't have any impact on the functionality of the code.
 \iffirstproblem
 \def\spaceatend{#1}\refstepcounter{problem}\refstepcounter{problemType}
-\begin{trivlist}\item[\hskip\labelsep\sffamily\bfseries 
-#2 \ifhandout\theproblem\else\ifshuffle\theproblem.\theproblemType\else\theproblem\fi\fi]
+\begin{trivlist}
+\item[\hskip\labelsep\sffamily\bfseries 
+#2 
+\ifhandout
+	\theproblem
+\else
+	\ifshuffle
+		\theproblem.\theproblemType
+	\else
+		\theproblem
+	\fi
+\fi]
 \slshape
-\else\setbox0\vbox\bgroup\fi
+\else\setbox0\vbox\bgroup
+\fi
 }
 
 %Configure environments end content
 \newcommand{\problemEnvironmentEnd}{%This configures all the end content for a problem.
+%\ifiscodeingTest
 \iffirstproblem
 	\ifhandout
 		\ifspace
@@ -934,28 +952,30 @@ Interactive
 	\par\addvspace{.5ex}\nobreak\noindent\hung %% line at the bottom
 	\ifhandout
 	\else
-	\ifshuffle
-		\addtocounter{problem}{-1}
-	\fi
-\fi %% the problem does not increase within shuffle
+		\ifshuffle
+			\addtocounter{problem}{-1}
+		\fi
+	\fi %% the problem does not increase within shuffle
 %\ifhandout\ifshuffle\global\firstproblemfalse\fi\fi %% removes other problems from shuffle in handout
-\ifhandout
-	\ifnewpage
-		\newpage
-	\fi
-\fi 
+	\ifhandout
+		\ifnewpage
+			\newpage
+		\fi
+	\fi 
 \end{trivlist}
 \else
 	\egroup
 \fi
-
 }
+
+\newcommand{\bodytest}{Test}
 
 % This is currently a small shell to contain the soon-to-be-depreciated start/stop commands. Once we merge them into the below command, we can then remove the above commands.
 \newcommand{\problemEnvironConfig}[2]{
 \ifshuffle{
-\global\expandafter\edef\csname\roman{shuffle@count}ContentProblem\Roman{shuffle@trackProblem}\endcsname{% Record problem env content
+\global\expandafter\expandafter\expandafter\def\expandafter\csname\expandafter\roman\expandafter{shuffle@count}ContentProblem\expandafter\Roman\expandafter{shuffle@trackProblem}\expandafter\endcsname\expandafter{% Record problem env content
 \BODY
+%\bodytest
 }
 \global\expandafter\edef\csname\roman{shuffle@count}ContentProblemType\Roman{shuffle@trackProblem}\endcsname{% Record problem env type
 #2
@@ -1025,22 +1045,23 @@ Interactive
 %}
 
 
+% xarmaBoost is currently legacy code that should be removed.
 
-\newenvironment{xarmaBoost}[1][2in]
-{\iffirstproblem
-\def\spaceatend{#1}\refstepcounter{problem}\refstepcounter{problemType}
-\begin{trivlist}\item[\hskip\labelsep\sffamily\bfseries 
-Xarma Boost \ifhandout\theproblem\else\ifshuffle\theproblem.\theproblemType\else\theproblem\fi\fi]
-\slshape
-\else\setbox0\vbox\bgroup\fi} %% removes exercise if in shuffle and not first problem
-{\iffirstproblem
-\ifhandout\ifspace\vspace{\spaceatend}\fi\fi %% space at end
-\par\addvspace{.5ex}\nobreak\noindent\hung %% line at the bottom
-\ifshuffle\addtocounter{problem}{-1}\fi %% the problem does not increase within shuffle
-\ifhandout\ifshuffle\global\firstproblemfalse\fi\fi %% removes other problems from shuffle in handout
-\ifhandout\ifnewpage\newpage\fi\fi %% adds newpage
-\end{trivlist}
-\else\egroup\fi}
+%\newenvironment{xarmaBoost}[1][2in]
+%{\iffirstproblem
+%\def\spaceatend{#1}\refstepcounter{problem}\refstepcounter{problemType}
+%\begin{trivlist}\item[\hskip\labelsep\sffamily\bfseries 
+%Xarma Boost \ifhandout\theproblem\else\ifshuffle\theproblem.\theproblemType\else\theproblem\fi\fi]
+%\slshape
+%\else\setbox0\vbox\bgroup\fi} %% removes exercise if in shuffle and not first problem
+%{\iffirstproblem
+%\ifhandout\ifspace\vspace{\spaceatend}\fi\fi %% space at end
+%\par\addvspace{.5ex}\nobreak\noindent\hung %% line at the bottom
+%\ifshuffle\addtocounter{problem}{-1}\fi %% the problem does not increase within shuffle
+%\ifhandout\ifshuffle\global\firstproblemfalse\fi\fi %% removes other problems from shuffle in handout
+%\ifhandout\ifnewpage\newpage\fi\fi %% adds newpage
+%\end{trivlist}
+%\else\egroup\fi}
 
 %%%%%%%%%%%%%%%%
 %% validator
