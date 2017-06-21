@@ -549,6 +549,11 @@ Interactive
 \newcommand{\choice}[2][]{%
 \setkeys{choice}{#1}%
 \item #2\ifthenelse{\boolean{\choice@correct}}{\ifhandout \else \,\checkmark\,\setkeys{choice}{correct=false}\fi}{}}
+
+%Define an expandable version of choice
+\newcommand{\choiceEXP}[2][]{%
+\expandafter\setkeys\expandafter{choice}{#1}%
+\item #2\ifthenelse{\boolean{\choice@correct}}{\ifhandout \else \,\checkmark\,\setkeys{choice}{correct=false}\fi}{}}
 \makeatother
 
 %% Not really meant to be used outside this package (used in wordChoice)
