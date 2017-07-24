@@ -920,7 +920,10 @@ Interactive
 
 %%%%%% Configure environment configuration commands
 
-% The \problemEnvironmentStart and \problemEnvironmentEnd are now being depreciated in favor of \problemEnvironConfig. There is plenty of code here to cleanup now that the termination is done at the shuffle level, instead of this 'first problem' nonsense.
+% The \problemEnvironmentStart and \problemEnvironmentEnd are now
+% being depreciated in favor of \problemEnvironConfig. There is plenty
+% of code here to cleanup now that the termination is done at the
+% shuffle level, instead of this 'first problem' nonsense.
 
 %Configure environments start content
 \newcommand{\problemEnvironmentStart}[2]{%This takes in 2 arguments. The first is optional and is the old optional argument from existing environments. The second argument is mandatory and is the name of the 'problem' environment, such as problem, question, exercise, etc. It then configures everything needed at the start of that environment.
