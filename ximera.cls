@@ -871,8 +871,6 @@ Interactive
 
 \RequirePackage{environ}	% The environ package saves environment contents as commands. We will use this to save problem contents and then randomly place them.
 
-\newif\iffirstproblem% Condition for first problem This may become obsolete once someone can clean up the \problemEnvironmentStart/End code.
-\firstproblemtrue
 
 %Necessary counters
 \newcounter{shuffle@maxCount}%	Tracks how many questions we want in shuffle.
@@ -912,7 +910,6 @@ Interactive
 		\refstepcounter{problem}
 	\fi
 	\shufflefalse
-	\global\firstproblemtrue% Legacy code that can probably be removed with minor editing.
 	}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -924,53 +921,85 @@ Interactive
 % The \problemEnvironmentStart and \problemEnvironmentEnd are now being depreciated in favor of \problemEnvironConfig. There is plenty of code here to cleanup now that the termination is done at the shuffle level, instead of this 'first problem' nonsense.
 
 %Configure environments start content
-\newcommand{\problemEnvironmentStart}[2]{%This takes in 2 arguments. The first is optional and is the old optional argument from existing environments. The second argument is mandatory and is the name of the 'problem' environment, such as problem, question, exercise, etc. It then configures everything needed at the start of that environment.
-%Comment on "iffirstproblem" code. This is mostly obsolete code from before shuffle was made to truncate after an optional number of problems. Everything nested under "if first problem" should be formating and problem numbering, and shouldn't have any impact on the functionality of the code.
-\iffirstproblem
-\def\spaceatend{#1}\refstepcounter{problem}\refstepcounter{problemType}
-\begin{trivlist}
-\item[\hskip\labelsep\sffamily\bfseries 
-#2 
-\ifhandout
-	\theproblem
+\newcounter{hintProblem}
+\setcounter{hintProblem}{0}
+
+% The command \problemNumber contains all the format code to determine the number (and the format of the number) for any of the problem environments.
+\newcommand{\problemNumber}{
+\ifhandout % Currently handout mode doesn't allow hints. Putting this code in place in case that changes.
+	\ifnum\thehintLevel =0 
+		\setcounter{hintProblem}{0} 
+		\theproblem 
+	\else 
+		\addtocounter{problem}{-1}% Thsi is a hint, so don't progress problem number
+		\stepcounter{hintProblem}
+		\theproblem.\arabic{hintProblem}
+	\fi
 \else
 	\ifshuffle
-		\theproblem.\theproblemType
+		\ifnum\thehintLevel =0 
+			\theproblem.\theproblemType
+			\setcounter{hintProblem}{0} 
+		\else 
+			\addtocounter{problemtype}{-1}% Thsi is a hint, so don't progress problem number
+			\stepcounter{hintProblem}
+			\theproblem.\theproblemType.\arabic{hintProblem}
+		\fi
 	\else
-		\theproblem
+		\ifnum\thehintLevel =0 
+			\setcounter{hintProblem}{0} 
+			\theproblem 
+		\else 
+			\addtocounter{problem}{-1}% Thsi is a hint, so don't progress problem number
+			\stepcounter{hintProblem}
+			\theproblem.\arabic{hintProblem}
+		\fi
 	\fi
-\fi]
-\slshape
-\else\setbox0\vbox\bgroup
 \fi
+}
+
+\newcommand{\problemEnvironmentStart}[2]{%This takes in 2 arguments. The first is optional and is the old optional argument from existing environments. The second argument is mandatory and is the name of the 'problem' environment, such as problem, question, exercise, etc. It then configures everything needed at the start of that environment.
+%
+\def\spaceatend{#1}\refstepcounter{problem}\refstepcounter{problemType}
+\begin{trivlist}
+\item
+	[
+	\hskip\labelsep\sffamily\bfseries 
+% We need to determine if this is a legitimate problem, or if it is a hint, and then display the correct question type.
+	\ifnum\thehintLevel =0 	
+		#2
+	\else
+		Hint
+	\fi 
+% Now we need to determine the correct number of the problem, and the format of that number.
+	\problemNumber
+	]
+\slshape
 }
 
 %Configure environments end content
 \newcommand{\problemEnvironmentEnd}{%This configures all the end content for a problem.
 %\ifiscodeingTest
-\iffirstproblem
-	\ifhandout
-		\ifspace
-			\vspace{\spaceatend}
-		\fi
-	\fi %% space at end
-	\par\addvspace{.5ex}\nobreak\noindent\hung %% line at the bottom
-	\ifhandout
-	\else
-		\ifshuffle
-			\addtocounter{problem}{-1}
-		\fi
-	\fi %% the problem does not increase within shuffle
-%\ifhandout\ifshuffle\global\firstproblemfalse\fi\fi %% removes other problems from shuffle in handout
-	\ifhandout
-		\ifnewpage
-			\newpage
-		\fi
-	\fi 
-\end{trivlist}
+\ifhandout
+	\ifspace
+		\vspace{\spaceatend}
+	\fi
+\fi %% space at end
+\par\addvspace{.5ex}\nobreak\noindent\hung %% line at the bottom
+
+\ifhandout
 \else
-	\egroup
+	\ifshuffle
+		\addtocounter{problem}{-1}
+	\fi  %% the problem does not increase within shuffle
 \fi
+
+\ifhandout
+	\ifnewpage
+		\newpage
+	\fi
+\fi 
+\end{trivlist}
 }
 
 \newcommand{\bodytest}{Test}
@@ -980,7 +1009,7 @@ Interactive
 \ifshuffle{
 \global\expandafter\expandafter\expandafter\def\expandafter\csname\expandafter\roman\expandafter{shuffle@count}ContentProblem\expandafter\Roman\expandafter{shuffle@trackProblem}\expandafter\endcsname\expandafter{% Record problem env content
 \BODY
-%\bodytest
+%\bodytest %This is an error testing command
 }
 \global\expandafter\edef\csname\roman{shuffle@count}ContentProblemType\Roman{shuffle@trackProblem}\endcsname{% Record problem env type
 #2
@@ -1095,17 +1124,32 @@ Interactive
 
 
 %% Hints
-\ifhandout
-\newenvironment{hint}{\setbox0\vbox\bgroup}
-{\egroup\ignorespacesafterend}
-
-\else
-
-\newenvironment{hint}{
-\begin{trivlist}\item[\hskip \labelsep\small\slshape\bfseries Hint:\hspace{2ex}]
-\small\slshape}
-{\end{trivlist}}
-\fi
+%Create a counter that will track how deeply nested the current hint is
+\newcounter{hintLevel}
+\setcounter{hintLevel}{0}
+%Create an empty shell to renew
+\newenvironment{hint}{}{}
+%Now we renew the environment as needed, this should allow support for any transition code that treats some parts as a "handout" and some parts as non-handout. 
+\renewenvironment{hint}
+	{
+	\ifhandout
+		\setbox0\vbox\bgroup
+	\else
+		\begin{trivlist}\item[\hskip \labelsep\small\slshape\bfseries Hint:\hspace{2ex}]
+		\small\slshape
+	\fi
+	%Step up hint level to track the nested level of the hint. This will be used for problem numbering
+	\stepcounter{hintLevel}
+	}
+	{
+	\ifhandout
+		\egroup\ignorespacesafterend
+	\else
+		\end{trivlist}
+	\fi
+	%detract from hint level counter to track hint nested level
+	\addtocounter{hintLevel}{-1}
+	}
 
 \ifhints
 \renewenvironment{hint}{
