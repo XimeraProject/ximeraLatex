@@ -927,33 +927,12 @@ Interactive
 % The command \problemNumber contains all the format code to determine the number (and the format of the number) for any of the problem environments.
 \newcommand{\problemNumber}{
 \ifhandout % Currently handout mode doesn't allow hints. Putting this code in place in case that changes.
-	\ifnum\thehintLevel =0 
-		\setcounter{hintProblem}{0} 
 		\theproblem 
-	\else 
-		\addtocounter{problem}{-1}% Thsi is a hint, so don't progress problem number
-		\stepcounter{hintProblem}
-		\theproblem.\arabic{hintProblem}
-	\fi
 \else
 	\ifshuffle
-		\ifnum\thehintLevel =0 
-			\theproblem.\theproblemType
-			\setcounter{hintProblem}{0} 
-		\else 
-			\addtocounter{problemtype}{-1}% Thsi is a hint, so don't progress problem number
-			\stepcounter{hintProblem}
-			\theproblem.\theproblemType.\arabic{hintProblem}
-		\fi
+		\theproblem.\theproblemType
 	\else
-		\ifnum\thehintLevel =0 
-			\setcounter{hintProblem}{0} 
-			\theproblem 
-		\else 
-			\addtocounter{problem}{-1}% Thsi is a hint, so don't progress problem number
-			\stepcounter{hintProblem}
-			\theproblem.\arabic{hintProblem}
-		\fi
+		\theproblem 
 	\fi
 \fi
 }
@@ -965,12 +944,7 @@ Interactive
 \item
 	[
 	\hskip\labelsep\sffamily\bfseries 
-% We need to determine if this is a legitimate problem, or if it is a hint, and then display the correct question type.
-	\ifnum\thehintLevel =0 	
-		#2
-	\else
-		Hint
-	\fi 
+	#2
 % Now we need to determine the correct number of the problem, and the format of that number.
 	\problemNumber
 	]
@@ -1002,7 +976,7 @@ Interactive
 \end{trivlist}
 }
 
-\newcommand{\bodytest}{Test}
+%\newcommand{\bodytest}{Test} % Testing Code
 
 % This is currently a small shell to contain the soon-to-be-depreciated start/stop commands. Once we merge them into the below command, we can then remove the above commands.
 \newcommand{\problemEnvironConfig}[2]{
@@ -1046,56 +1020,26 @@ Interactive
 \problemEnvironConfig{#1}{Question}
 }
 
-%% Below is included the old code in case it needs referencing. Should probably delete it at some point.
+\newcounter{hintStep}% Track if we're on a new hint step
+\setcounter{hintStep}{0}
 
-
-%\newenvironment{problem}[1][2in]
-%{
-%\ifshuffle
-%	\ifthenelse{\arabic{track@Problem}<\arabic{shuffle@maxCount}}
-%		{% If we haven't gotten to the last problem yet, track the problem
-%		\stepcounter{track@Problem}
-%		}
-%		{%	If we have all our problems, turn off the problem environment.
-%		\global\firstproblemfalse
-%		}
-%\fi
-%\iffirstproblem
-%\def\spaceatend{#1}\refstepcounter{problem}\refstepcounter{problemType}
-%\begin{trivlist}\item[\hskip\labelsep\sffamily\bfseries 
-%Problem \ifhandout\theproblem\else\ifshuffle\theproblem.\theproblemType\else\theproblem\fi\fi]
-%\slshape
-%\else\setbox0\vbox\bgroup\fi
-%} %% removes exercise if in shuffle and not first problem
-%{
-%\iffirstproblem
-%\ifhandout\ifspace\vspace{\spaceatend}\fi\fi %% space at end
-%\par\addvspace{.5ex}\nobreak\noindent\hung %% line at the bottom
-%\ifhandout\else\ifshuffle\addtocounter{problem}{-1}\fi\fi %% the problem does not increase within shuffle
-%%\ifhandout\ifshuffle\global\firstproblemfalse\fi\fi %% removes other problems from shuffle in handout
-%\ifhandout\ifnewpage\newpage\fi\fi %% adds newpage
-%\end{trivlist}
-%\else\egroup\fi
-%}
-
-
-% xarmaBoost is currently legacy code that should be removed.
-
-%\newenvironment{xarmaBoost}[1][2in]
-%{\iffirstproblem
-%\def\spaceatend{#1}\refstepcounter{problem}\refstepcounter{problemType}
-%\begin{trivlist}\item[\hskip\labelsep\sffamily\bfseries 
-%Xarma Boost \ifhandout\theproblem\else\ifshuffle\theproblem.\theproblemType\else\theproblem\fi\fi]
-%\slshape
-%\else\setbox0\vbox\bgroup\fi} %% removes exercise if in shuffle and not first problem
-%{\iffirstproblem
-%\ifhandout\ifspace\vspace{\spaceatend}\fi\fi %% space at end
-%\par\addvspace{.5ex}\nobreak\noindent\hung %% line at the bottom
-%\ifshuffle\addtocounter{problem}{-1}\fi %% the problem does not increase within shuffle
-%\ifhandout\ifshuffle\global\firstproblemfalse\fi\fi %% removes other problems from shuffle in handout
-%\ifhandout\ifnewpage\newpage\fi\fi %% adds newpage
-%\end{trivlist}
-%\else\egroup\fi}
+% To use hintStep, you need to nest each step in the previous steps. This way if you want to have mutliple hint-steps for the same hint, then you can have multiple hint-step nests to represent this.
+\newenvironment{hintStep}% Use this for multi-step hints
+	{
+	\stepcounter{hintStep}
+	\ifnum\thehintStep >1% If this isn't the first step, just add another \item
+		\item
+	\else%					If this is the first step, then we need a \begin{enumerate} first
+		\begin{enumerate}
+		\item
+	\fi
+	}
+	{
+	\addtocounter{hintStep}{-1} %	Since we've closed a step, we want to depreciate what hint step level we're on.
+	\ifnum\thehintStep =0		 %	If we've closed all the hint steps we opened, we are done with the steps 
+		\end{enumerate}
+	\fi
+	}
 
 %%%%%%%%%%%%%%%%
 %% validator
