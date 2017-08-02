@@ -283,6 +283,7 @@
 {\HCode{<div class="feedback" data-feedback="script" id="feedback\arabic{identification}"><script type="text/javascript">\Hnewline//<![CDATA[\Hnewline function feedback\arabic{identification}() }\{\HCode{ return \detokenize{#1}; }\}\HCode{\Hnewline //]]>\Hnewline</script>}}}}
 \def\endfeedback{\HCode{</div>}\IgnoreIndent}
 
+% Include author name in meta tags
 \Configure{@HEAD}{\HCode{<meta name="author" content="}\@author\HCode{" />\Hnewline}}
 
 \Hinput{ximera}

@@ -142,6 +142,15 @@
 \makeatother
 \relax
 
+\makeatletter
+\newcommand*{\logo}[1]{%
+  \ifx\@onlypreamble\@notprerr \ClassError{xourse}{logo can only be used in the preamble}{Move your logo command to the preamble}\else %
+  \IfFileExists{#1}%
+    {\gdef\xourse@logo{#1}}%
+    {\ClassError{xourse}{logo file does not exist}{To use logo, make sure that the referenced image file exists}}%
+  \fi%
+}
+\makeatother
 
 %</package>
 

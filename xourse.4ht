@@ -55,5 +55,8 @@
 % Mark this as a xourse file
 \Configure{@HEAD}{\HCode{<meta name="description" content="xourse" />\Hnewline}}
 
+% The xourse logo is an og:image in the opengraph taxonomy
+\Configure{@HEAD}{\HCode{<meta name="og:image" content="}\xourse@logo\HCode{" />\Hnewline}}
+
 \Hinput{xourse}
 \endinput
