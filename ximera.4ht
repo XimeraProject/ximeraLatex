@@ -285,6 +285,8 @@
 
 % Include author name in meta tags
 \Configure{@HEAD}{\HCode{<meta name="author" content="}\@author\HCode{" />\Hnewline}}
+% the \and command would emit tabular environments which really should not appear in a meta tag
+\def\and{ and }
 
 \Hinput{ximera}
 \endinput
