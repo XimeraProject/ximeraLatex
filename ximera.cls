@@ -196,6 +196,7 @@
 \usepgfplotslibrary{groupplots}
 \usetikzlibrary{calc}
 \RequirePackage{fancyvrb}
+%\RequirePackage{verbatim}
 \RequirePackage{environ}
 \RequirePackage{amssymb}
 \RequirePackage{amsmath}
@@ -873,7 +874,12 @@ Interactive
 %%%%%%%%%%%%  		Shuffle Environment		%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
+% THE ENVRON PACKAGE CANNOT BE USED TO WRAP VERBATIM.
+% THE ENVRON PACKAGE CANNOT BE USED TO WRAP VERBATIM.
 \RequirePackage{environ}	% The environ package saves environment contents as commands. We will use this to save problem contents and then randomly place them.
+% THE ENVRON PACKAGE CANNOT BE USED TO WRAP VERBATIM.
+% THE ENVRON PACKAGE CANNOT BE USED TO WRAP VERBATIM.
+
 
 \newif\iffirstproblem% Condition for first problem This may become obsolete once someone can clean up the \problemEnvironmentStart/End code.
 \firstproblemtrue
@@ -925,9 +931,61 @@ Interactive
 % of code here to cleanup now that the termination is done at the
 % shuffle level, instead of this 'first problem' nonsense.
 
+%% %Configure environments start content
+%% \newcommand{\problemEnvironmentStart}[2]{%This takes in 2 arguments. The first is optional and is the old optional argument from existing environments. The second argument is mandatory and is the name of the 'problem' environment, such as problem, question, exercise, etc. It then configures everything needed at the start of that environment.
+
+%% \iffirstproblem
+%% \def\spaceatend{#1}\refstepcounter{problem}\refstepcounter{problemType}
+%% \begin{trivlist}\item[\hskip\labelsep\sffamily\bfseries 
+%% #2 \ifhandout\theproblem\else\ifshuffle\theproblem.\theproblemType\else\theproblem\fi\fi]
+%% \slshape
+%% \else\setbox0\vbox\bgroup\fi
+%% }
+
+%% %Configure environments end content
+%% \newcommand{\problemEnvironmentEnd}{%This configures all the end content for a problem.
+%% \iffirstproblem
+%% 	\ifhandout
+%% 		\ifspace
+%% 			\vspace{\spaceatend}
+%% 		\fi
+%% 	\fi %% space at end
+%% 	\par\addvspace{.5ex}\nobreak\noindent\hung %% line at the bottom
+%% 	\ifhandout
+%% 	\else
+%% 	\ifshuffle
+%% 		\addtocounter{problem}{-1}
+%% 	\fi
+%% \fi %% the problem does not increase within shuffle
+%% %\ifhandout\ifshuffle\global\firstproblemfalse\fi\fi %% removes other problems from shuffle in handout
+%% \ifhandout
+%% 	\ifnewpage
+%% 		\newpage
+%% 	\fi
+%% \fi 
+%% \end{trivlist}
+%% \else
+%% 	\egroup
+%% \fi
+
+%% }
+
+
+%%%%%%%%%%%%%%%%%%%%%%%
+
+%%%%%% Configure various problem environment commands
+
 %Configure environments start content
 \newcommand{\problemEnvironmentStart}[2]{%This takes in 2 arguments. The first is optional and is the old optional argument from existing environments. The second argument is mandatory and is the name of the 'problem' environment, such as problem, question, exercise, etc. It then configures everything needed at the start of that environment.
-
+\ifshuffle
+	\ifthenelse{\arabic{track@Problem}<\arabic{shuffle@Count}}
+		{% If we haven't gotten to the last problem yet, track the problem
+		\stepcounter{track@Problem}
+		}
+		{%	If we have all our problems, turn off the problem environment.
+		\global\firstproblemfalse
+		}
+\fi
 \iffirstproblem
 \def\spaceatend{#1}\refstepcounter{problem}\refstepcounter{problemType}
 \begin{trivlist}\item[\hskip\labelsep\sffamily\bfseries 
@@ -964,46 +1022,91 @@ Interactive
 
 }
 
-% This is currently a small shell to contain the soon-to-be-depreciated start/stop commands. Once we merge them into the below command, we can then remove the above commands.
-\newcommand{\problemEnvironConfig}[2]{
-\ifshuffle{
-\global\expandafter\edef\csname\roman{shuffle@count}ContentProblem\Roman{shuffle@trackProblem}\endcsname{% Record problem env content
-\BODY
+\newenvironment{problem}[1][2in]
+{%Env start code
+\problemEnvironmentStart{#1}{Problem}
 }
-\global\expandafter\edef\csname\roman{shuffle@count}ContentProblemType\Roman{shuffle@trackProblem}\endcsname{% Record problem env type
-#2
-}
-\stepcounter{shuffle@trackProblem}
-}
-\else{
-\problemEnvironmentStart{#1}{#2}
-\BODY
+{%Env end code
 \problemEnvironmentEnd
 }
-\fi
+
+\newenvironment{exercise}[1][2in]
+{%Env start code
+\problemEnvironmentStart{#1}{Exercise}
+}
+{%Env end code
+\problemEnvironmentEnd
 }
 
-%%%%%%%%%%% Config specific problem environments. Note new environments can be added easily if you simply want a new "name".
-
-\NewEnviron{problem}[1][2in]
-{
-\problemEnvironConfig{#1}{Problem}
+\newenvironment{exploration}[1][2in]
+{%Env start code
+\problemEnvironmentStart{#1}{Exploration}
+}
+{%Env end code
+\problemEnvironmentEnd
 }
 
-\NewEnviron{exercise}[1][2in]
-{
-\problemEnvironConfig{#1}{Exercise}
+\newenvironment{question}[1][2in]
+{%Env start code
+\problemEnvironmentStart{#1}{Question}
+}
+{%Env end code
+\problemEnvironmentEnd
 }
 
-\NewEnviron{exploration}[1][2in]
-{
-\problemEnvironConfig{#1}{Exploration}
-}
 
-\NewEnviron{question}[1][2in]
-{
-\problemEnvironConfig{#1}{Question}
-}
+
+
+
+
+
+
+
+
+%% % This is currently a small shell to contain the
+%% % soon-to-be-depreciated start/stop commands. Once we merge them into
+%% % the below command, we can then remove the above commands.
+%% \newcommand{\problemEnvironConfig}[2]{
+%% \ifshuffle{
+%% \global\expandafter\edef\csname\roman{shuffle@count}ContentProblem\Roman{shuffle@trackProblem}\endcsname{% Record problem env content
+%% \BODY
+%% }
+%% \global\expandafter\edef\csname\roman{shuffle@count}ContentProblemType\Roman{shuffle@trackProblem}\endcsname{% Record problem env type
+%% #2
+%% }
+%% \stepcounter{shuffle@trackProblem}
+%% }
+%% \else{
+%% \problemEnvironmentStart{#1}{#2}
+%% \BODY
+%% \problemEnvironmentEnd
+%% }
+%% \fi
+%% }
+
+%% %%%%%%%%%%% Config specific problem environments. Note new
+%% %%%%%%%%%%% environments can be added easily if you simply want a new
+%% %%%%%%%%%%% "name".
+
+%% \NewEnviron{problem}[1][2in]
+%% {
+%% \problemEnvironConfig{#1}{Problem}
+%% }
+
+%% \NewEnviron{exercise}[1][2in]
+%% {
+%% \problemEnvironConfig{#1}{Exercise}
+%% }
+
+%% \NewEnviron{exploration}[1][2in]
+%% {
+%% \problemEnvironConfig{#1}{Exploration}
+%% }
+
+%% \NewEnviron{question}[1][2in]
+%% {
+%% \problemEnvironConfig{#1}{Question}
+%% }
 
 %% Below is included the old code in case it needs referencing. Should probably delete it at some point.
 
