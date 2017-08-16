@@ -20,7 +20,7 @@
 %%% Department of Mathematics
 %%% The Ohio State University
 
-\def\fileversion{1.30}
+\def\fileversion{1.31}
 \def\filedate{2016/08/17}
 
 % ---------------------------------------------------------------------
