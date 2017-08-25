@@ -1027,10 +1027,10 @@ Interactive
 \newenvironment{hintStep}% Use this for multi-step hints
 	{
 	\stepcounter{hintStep}
-	\ifnum\thehintStep >1% If this isn't the first step, just add another \item
+	\ifnum\thehintStep =1% If this isn't the first step, just add another \item
+		\begin{enumerate}
 		\item
 	\else%					If this is the first step, then we need a \begin{enumerate} first
-		\begin{enumerate}
 		\item
 	\fi
 	}
