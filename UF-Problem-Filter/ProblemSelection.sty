@@ -56,6 +56,9 @@
 \newif\ifveryVerbose
 \veryVerbosefalse
 
+\newif\ifVerboseCount
+\VerboseCountfalse
+
 \newcommand{\QBank@loc}{/home/jason/texmf/tex/Questions/}
 
 \newcommand{\select@Question}[1]{
@@ -530,6 +533,7 @@
 	\Master@Input@Test% Get problem counts and assign them if we're pulling per file.
 	
 	\ifVerbose I Just did the first master pull and found a total of \arabic{Total@Question} questions\fi
+        \ifVerboseCount There are a total of \arabic{Total@Question} Questions. \fi
 
 	\ifPerFileQ% The problems have already been assigned if this flag is active, so we don't need to do much.
 		\stepcounter{Problem@ToList}% Only need to step the final problem counter for the < sign
