@@ -10,12 +10,11 @@
 \newcounter{Iteration@4}
 \newcounter{Rnd@Quant}
 \newcounter{Rnd@EndQuant}
-\newcounter{TEMP}
 \newcounter{Temp@1}
 \newcounter{Temp@2}
 \newcounter{Temp@3}
-\newcounter{LogicChecks}
-\setcounter{LogicChecks}{0}
+%\newcounter{LogicChecks}
+%\setcounter{LogicChecks}{0}
 \newcounter{Given@ProblemNumber}
 \newcounter{Problem@ToList}
 \newcounter{Problem@RemainToCheck}
@@ -23,7 +22,6 @@
 \setcounter{Last@Question}{0}
 \newcounter{Question@CurNumber}
 \setcounter{Question@CurNumber}{0}
-\newcounter{Temporary@Problem@Number}
 \newcounter{Question@DisplayCounter}
 \setcounter{Question@DisplayCounter}{0}
 \newcounter{Default@genUniqueNum}
@@ -101,7 +99,7 @@
 			\addtocounter{Problem@RemainToCheck}{-1}% Decrement the total number of questions to look for since we found one. This will only work because the questions are given in *reverse* numeric order.
 			\addtocounter{Problem@EndRef}{-1}% Decrement the End Pointer as well.
 			\ifnum\value{Problem@EndRef}>0% If there are more questions to look for, set the next one.
-				\ifVerbose I think found and properly assigned question \arabic{Problem@NextRef}\\
+				\ifVerbose I think found and properly assigned question \arabic{Problem@NextRef}\\ \fi
 				\setcounter{Problem@NextRef}{\arabic{Question@Location\Roman{Problem@EndRef}}}
 				\ifVerbose Now I'm looking for problem \arabic{Problem@NextRef}\\ \fi
 			\fi
@@ -129,8 +127,6 @@
 \ifquestionCount
 \addtocounter{Total@Question}{#1}
 \fi
-
-
 \ifPerFileQ
 	\setcounter{Total@Question}{#1}
 	\questionPulltrue
@@ -162,7 +158,6 @@
 \fi
 %\problemToFindtrue
 }
-
 
 \newcommand{\ProblemFileFooter}{%
 \problemToFindfalse
@@ -273,6 +268,7 @@
 
 \newcommand{\Master@Input@Test}{%	Input only relevant files.
 \ifVerbose I tried to run Master Input Test \fi
+
 \SearchForTag{Topic@Limit}{
 	\ifVerbose 
 	I detected that I should input the Limit-Input file 
@@ -282,7 +278,8 @@
 			in order to find problems!\\
 		\fi	
 	\fi
-\input{/home/jason/texmf/tex/Questions/Limit-Input}
+	\input{/home/jason/texmf/tex/Questions/Limit-Input}
+%	\expandafter\input{\QBank@loc Limit-Input}
 	}
 
 %\SearchForTag{Topic@Derivative}{
@@ -297,7 +294,7 @@
 %\expandafter\input{\QBank@loc Derivative-Input}
 %	}
 %
-%\relaxtest{Topic@Integral}{
+%\SearchForTag{Topic@Integral}{
 %	\ifVerbose 
 %		I detected that I should input the Integral-Input file 
 %		\ifquestionCount 
@@ -309,32 +306,79 @@
 %\expandafter\input{\QBank@loc Integral-Input}
 %	}
 
-%\relaxtest{Topic@Limit-Imp}{
+%\SearchForTag{Topic@Limit-Imp}{
+%	\ifVerbose 
+%		I detected that I should input the Integral-Input file 
+%		\ifquestionCount 
+%			in order to get question counts!\\
+%		\else
+%			in order to find problems!\\
+%		\fi	
+%	\fi
 %	\expandafter\input{\QBank@loc Limit-Imp-Input}
 %	}
 %
-%\relaxtest{Topic@Derivative-Imp}{
+%\SearchForTag{Topic@Derivative-Imp}{
+%	\ifVerbose 
+%		I detected that I should input the Integral-Input file 
+%		\ifquestionCount 
+%			in order to get question counts!\\
+%		\else
+%			in order to find problems!\\
+%		\fi	
+%	\fi
 %	\expandafter\input{\QBank@loc Derivative-Imp-Input}
 %	}
 %
-%\relaxtest{Topic@Integral-Imp}{
+%\SearchForTag{Topic@Integral-Imp}{
+%	\ifVerbose 
+%		I detected that I should input the Integral-Input file 
+%		\ifquestionCount 
+%			in order to get question counts!\\
+%		\else
+%			in order to find problems!\\
+%		\fi	
+%	\fi
 %	\expandafter\input{\QBank@loc Integral-Imp-Input}
 %	}
 %
-%\relaxtest{Topic@Limit-Multi}{
+%\SearchForTag{Topic@Limit-Multi}{
+%	\ifVerbose 
+%		I detected that I should input the Integral-Input file 
+%		\ifquestionCount 
+%			in order to get question counts!\\
+%		\else
+%			in order to find problems!\\
+%		\fi	
+%	\fi
 %	\expandafter\input{\QBank@loc Limit-Multi-Input}
 %	}
 %
-%\relaxtest{Topic@Derivative-Multi}{
+%\SearchForTag{Topic@Derivative-Multi}{
+%	\ifVerbose 
+%		I detected that I should input the Integral-Input file 
+%		\ifquestionCount 
+%			in order to get question counts!\\
+%		\else
+%			in order to find problems!\\
+%		\fi	
+%	\fi
 %	\expandafter\input{\QBank@loc Derivative-Multi-Input}
 %	}
 %
-%\relaxtest{Topic@Integral-Multi}{
+%\SearchForTag{Topic@Integral-Multi}{
+%	\ifVerbose 
+%		I detected that I should input the Integral-Input file 
+%		\ifquestionCount 
+%			in order to get question counts!\\
+%		\else
+%			in order to find problems!\\
+%		\fi	
+%	\fi
 %	\expandafter\input{\QBank@loc Integral-Multi-Input}
 %	}
 
-}
-
+}% End of master input test command
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -412,7 +456,6 @@
 		%%%%% Now we display the problems. Currently this will shuffle the problems by default. I may deacitvate this once the "shuffle" environment is fully functional.
 
 	\Knuth@Shuffle{\arabic{Problem@TotalToList}}{Shuffle@Position@}{\arabic{Problem@TotalToList}}% Create random ordering for the questions about to be displayed.
-
 	\stepcounter{Problem@TotalToList}% Step the total number of problems to list by 1 so that we can use <
 
 	\forloop{Iteration@1}{1}{\arabic{Iteration@1} < \arabic{Problem@TotalToList}}
