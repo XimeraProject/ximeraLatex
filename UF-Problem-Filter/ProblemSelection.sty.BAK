@@ -1,0 +1,464 @@
+\ProvidesPackage{ProblemSelection}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%				Necessary Counters					%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\newcounter{Problem@MasterCounter}
+\setcounter{Problem@MasterCounter}{0}
+\newcounter{Iteration@1}
+\newcounter{Real@PullNumber}
+\setcounter{Real@PullNumber}{0}
+\newcounter{Iteration@List}%		Iteration Dummy Variable
+\newcounter{Rnd@Quant}
+%\newcounter{Temp@Hold}
+%\newcounter{Temp@RandMe}
+\newcounter{Rnd@EndQuant}
+\newcounter{TEMP}
+\newcounter{Colision@Chance}
+\newcounter{Last@Question}
+\setcounter{Last@Question}{0}
+\newcounter{LogicChecks}
+\setcounter{LogicChecks}{0}
+\newcounter{Pull@Queue}
+
+\newif\ifquestionCount
+\questionCounttrue
+
+\newif\ifquestionList
+\questionListtrue
+
+\newif\ifhasVersion
+
+\newif\iffindingQuestion
+\findingQuestionfalse
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%			Track Question Number and Content		%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+
+\newcommand{\latexProblemContent}[1]{%	This will load all background necessary parts
+
+% Check to see if this is a problem we want:
+\ifthenelse{\arabic{Problem@MasterCounter} < \arabic{Last@Question}}
+	{ %Only check problems up to the last problem.
+%\stepcounter{LogicChecks}
+	\forloop{Iteration@1}{1}{\arabic{Iteration@1} < \arabic{Pull@Queue}}
+		{
+%\stepcounter{LogicChecks}
+		\ifthenelse{\arabic{Problem@MasterCounter} = \arabic{Q@Pulled\Roman{Iteration@1}}}
+			{
+			\addtocounter{Pull@Queue}{-1}% Decrement counter to remove pulled question
+			\setcounter{Q@Pulled\Roman{Iteration@1}}{\arabic{Q@Pulled\Roman{Pull@Queue}}}% Move last counter up
+%\stepcounter{LogicChecks}
+			#1% If this is a problem we want output the contents.
+			}
+			{}%Else do nothing.
+		}
+	}
+	{}	%Stop checking once you are far enough.
+\fi
+%While Generating;
+}
+
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%					Filter Questions 				%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\newcommand\Grab[4]{%
+%\maketagssuperstrict
+%\droptag{\TagList@MasterCatOne, \TagList@MasterCatTwo, \TagList@MasterCatThree, \TagList@MasterCatFour, \TagList@MasterCatFive}%MultipleChoice, ShortAnswer, Concept, Compute, Limit, Derivative, Material}
+\expandafter\droptag\TagList@MasterCatOne
+\expandafter\droptag\TagList@MasterCatTwo
+\expandafter\droptag\TagList@MasterCatThree
+\expandafter\droptag\TagList@MasterCatFour
+
+\expandafter\usetag\TagList@CatGeneral
+
+\usetag{Question@Number}
+\setcounter{taggedOne}{0}%
+\setcounter{taggedTwo}{0}%
+\setcounter{taggedThree}{0}%
+\setcounter{taggedFour}{0}%
+\setcounter{TotalTag}{0}%
+        \ifstrempty{#1}{\expandafter\usetag\TagList@MasterCatOne}{\UseOnlyTagOne{#1}}
+        \ifstrempty{#2}{\expandafter\usetag\TagList@MasterCatTwo}{\UseOnlyTagTwo{#2}}
+        \ifstrempty{#3}{\expandafter\usetag\TagList@MasterCatThree}{\UseOnlyTagThree{#3}}
+        \ifstrempty{#4}{\expandafter\usetag\TagList@MasterCatFour}{\UseOnlyTagFour{#4}}
+%\UseOnlyTagOne{#1}%
+%\UseOnlyTagTwo{#2}%
+%\UseOnlyTagThree{#3}%
+%\UseOnlyTagFour{#4}%
+       \setcounter{TotalTag}{\thetaggedFour}%
+       \addtocounter{TotalTag}{7}% To account for extra Cat and one in each #1, #2, #4
+}%
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%			Randomize Question Choice Code			%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%  Random Permutation Command  %%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+\newcommand{\@genrand}[3] %\@genrand{NAME}{MIN}{MAX} generates a random number before MIN and MAX and stores it in the command \NAME.
+{
+%\stepcounter{LogicChecks}
+\expandafter\pgfmathrandominteger\csname #1\endcsname{#2}{#3}
+\setcounter{#1}{\csname #1\endcsname}
+}
+
+
+
+\newcommand{\Knuth@Shuffle}[3]% \Knuth@Shuffle{MAXCOUNT}{NAME}{USEDCOUNT} Generates and permutes a list MAXCOUNT number of counters, each with name NAMEI, NAMEII, NAMEIII, ..., NAME\Roman(MAXCOUNT). Then it stores up to USEDCOUNT of those counters in counters named 
+{
+%Assign a maximum on how many numbers to pick. Set default to the max list size, and save in counter "RndQuant"
+%\stepcounter{LogicChecks}
+\ifthenelse{\isempty{#3}}%			Check to see if Desired Maximum is given.
+	{
+%\stepcounter{LogicChecks}
+	\setcounter{Rnd@Quant}{#1+1}		%If not, use all of them.
+	}
+	{
+%\stepcounter{LogicChecks}
+	\ifthenelse{#1 < #3}
+		{
+%\stepcounter{LogicChecks}
+		\setcounter{Rnd@Quant}{#1+1}		%Only select up to all problems.
+		}
+		{
+%\stepcounter{LogicChecks}
+		\setcounter{Rnd@Quant}{#3+1}		
+		}
+	}
+
+\setcounter{Rnd@EndQuant}{#1+1}
+%\stepcounter{LogicChecks}
+
+%Generate a starting list of numbers 1 to maximum number given.
+\forloop{Iteration@1}{1}{\arabic{Iteration@1} < \arabic{Rnd@EndQuant}}
+	{
+%\stepcounter{LogicChecks}
+	\@ifundefined{c@#2\Roman{Iteration@1}}	% Check to see if counter exists
+		{									%If not, make it.
+%\stepcounter{LogicChecks}
+		\newcounter{#2\Roman{Iteration@1}}
+		}
+		{}									%If so, do nothing.
+	\setcounter{#2\Roman{Iteration@1}}{\arabic{Iteration@1}}	% Set Counter to next number.
+	}
+
+%Permute using Knuth method
+\forloop{Iteration@1}{1}{\arabic{Iteration@1} < \arabic{Rnd@Quant}}
+	{
+%\stepcounter{LogicChecks}
+	\@genrand{Temp@RandMe}{\arabic{Iteration@1}}{#1}%	Generate a random number from Current iterate number to maximum number.
+
+	\setcounter{Temp@Hold}{\arabic{#2\Roman{Temp@RandMe}}}%	Set a temp variable so that we can swap values in position of the iterate and the random number selected. 
+
+	\setcounter{#2\Roman{Temp@RandMe}}{\arabic{#2\Roman{Iteration@1}}}% Set the final counter to the value of the variable in the generated number's counter.
+	\setcounter{#2\Roman{Iteration@1}}{\arabic{Temp@Hold}}%	Set current counter to the swapped counter.
+
+	\ifthenelse{\arabic{Temp@Hold} > \arabic{Last@Question}} %If we have a new last question, record placement.
+		{
+		\setcounter{Last@Question}{\arabic{Temp@Hold}}
+%\stepcounter{LogicChecks}
+		}
+		{}%	Else, do nothing.	
+	}
+\stepcounter{Last@Question}	%Step the Last@Question position for < sign.
+}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%  	Filter Question Command  %%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%	Depreciated Content
+%\newcommand{\check@Versions}[2]{% Check input for correct versions
+%\hasVersionfalse
+%\in@{#1}{#2}%
+%\ifin@
+%%\stepcounter{LogicChecks}
+%	\hasVersiontrue
+%\fi
+%\in@{#2}{#1}%
+%%\stepcounter{LogicChecks}
+%\ifin@
+%%\stepcounter{LogicChecks}
+%	\hasVersiontrue
+%\fi
+%}
+
+\newcommand{\Master@Input@Test}{%	Input only relevant files.
+\relaxtest{Topic@Limit}{
+	\expandafter\input{\file@loc Limit-Input}
+	}
+
+\relaxtest{Topic@Derivative}{
+	\expandafter\input{\file@loc Derivative-Input}
+	}
+
+\relaxtest{Topic@Integral}{
+	\expandafter\input{\file@loc Integral-Input}
+	}
+
+\relaxtest{Topic@Limit-Imp}{
+	\expandafter\input{\file@loc Limit-Imp-Input}
+	}
+
+\relaxtest{Topic@Derivative-Imp}{
+	\expandafter\input{\file@loc Derivative-Imp-Input}
+	}
+
+\relaxtest{Topic@Integral-Imp}{
+	\expandafter\input{\file@loc Integral-Imp-Input}
+	}
+
+\relaxtest{Topic@Limit-Multi}{
+	\expandafter\input{\file@loc Limit-Multi-Input}
+	}
+
+\relaxtest{Topic@Derivative-Multi}{
+	\expandafter\input{\file@loc Derivative-Multi-Input}
+	}
+
+\relaxtest{Topic@Integral-Multi}{
+	\expandafter\input{\file@loc Integral-Multi-Input}
+	}
+
+}
+
+%The \select@Question command is to be used *inside* the \input commands above, e.g. inside "Derivative-Multi-Input". You use this command instead of a \input command to input files, this way you can call information about those files and/or call the file itself.
+\newcommand{\select@Question}[1]{
+\iffindingQuestion
+	You have selected the file #1
+\else
+	\ifVerbose
+		You have selected file #1
+	\fi	
+	\expandafter\input{#1}%\file@loc #1}
+\fi
+}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%  	Select Questions Command  %%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\newcommand{\Rand@Select}{% This is intended to use when randomly selecting a number has a low colision rate
+
+\forloop{Iteration@1}{1}{\arabic{Iteration@1} < \arabic{Real@PullNumber}}
+	{
+%\stepcounter{LogicChecks}
+	\@ifundefined{c@Q@Pulled\Roman{Iteration@1}}	% Check to see if counter exists
+		{									%If not, make it.
+%\stepcounter{LogicChecks}
+		\newcounter{Q@Pulled\Roman{Iteration@1}}
+		}
+		{}									%If so, do nothing.
+	\@genrand{TEMP}{1}{\arabic{Problem@MasterCounter}}
+	\ifVerbose{You chose question number \TEMP}\fi
+	\setcounter{Q@Pulled\Roman{Iteration@1}}{\TEMP}	% Set Counter to Random possible value.
+
+	\ifthenelse{\arabic{Q@Pulled\Roman{Iteration@1}} > \arabic{Last@Question}} %If we have a new last question, record placement.
+		{
+		\setcounter{Last@Question}{\arabic{Q@Pulled\Roman{Iteration@1}}}
+%\stepcounter{LogicChecks}
+		}
+		{}
+	}	
+\stepcounter{Last@Question}	%Step the Last@Question position for < sign.
+}
+
+\newcommand{\Q@Selection}[1]{% This function determines if there is a low enough colision chance to grab problems more efficiently.
+
+\setcounter{Colision@Chance}{\arabic{Real@PullNumber}*#1} %Use a 2% Threshold
+
+\ifthenelse{\arabic{Problem@MasterCounter} > \arabic{Colision@Chance}}{%  If the chance of colision is low (below 2%), use Rand@Select}
+%\stepcounter{LogicChecks}
+	\Rand@Select
+	}
+	{%	Else; Use the full shuffle
+%\stepcounter{LogicChecks}
+	\Knuth@Shuffle{\arabic{Problem@MasterCounter}}{Q@Pulled}{\arabic{Real@PullNumber}}
+	}
+\setcounter{Problem@MasterCounter}{0} %Reset problem count to iterate the list again.
+}
+
+
+\newcommand{\Question@Quantity}[1]{
+\ifthenelse{#1 > \arabic{Problem@MasterCounter}} %Check to see if we have enough problems
+	{
+%\stepcounter{LogicChecks}
+	\setcounter{Real@PullNumber}{\arabic{Problem@MasterCounter}}
+	} %If not, take them all
+	{
+	\setcounter{Real@PullNumber}{#1}
+	}% 	Else Take only desired number
+\stepcounter{Real@PullNumber}%		Step counter to account for < Sign
+\setcounter{Pull@Queue}{\arabic{Real@PullNumber}}
+}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%  	Display Question Command  %%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%			User Selection Question Command			%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\newcommand{\QuestionSelect}[5]{%User command to select a pool of questions by going through the master question list and pulling all the questions that match your filter and form a pool of (#5 number of) problems.
+
+%	SYNTAX
+%	\QuestionSelect{Filters}{Number of problems} 
+
+%Note that the input below will also trigger the \latexProblemContent commands on each problem. This first input will harvest the total number of questions that remain after being filtered.
+\set@RelaxActiveTags{}
+\set@StrictActiveTags{}
+
+\ifthenelse{\isempty{#1}}
+	{
+	\expandafter\addTo@RelaxActiveTags\TagList@MasterCatOne
+	}
+	{
+	\addTo@RelaxActiveTags{#1}
+	}
+
+\ifthenelse{\isempty{#2}}
+	{
+	\expandafter\addTo@RelaxActiveTags\TagList@MasterCatTwo
+	}
+	{
+	\addTo@RelaxActiveTags{#2}
+	}
+
+\ifthenelse{\isempty{#3}}
+	{
+	\expandafter\addTo@RelaxActiveTags\TagList@MasterCatThree
+	}
+	{
+	\addTo@RelaxActiveTags{#3}
+	}
+
+\ifthenelse{\isempty{#4}}
+	{
+	\expandafter\addTo@RelaxActiveTags\TagList@MasterCatFour
+	}
+	{
+	\addTo@StrictActiveTags{#4}
+	}
+\list@Problems{\Master@Input@Test}{#5}
+}
+
+
+\newcommand{\list@Problems}[2]{
+%%Input files to count raw potential questions.
+
+#1
+
+%Record the number of problems in the useful counter. Fix this at some point.
+\setcounter{Problem@MasterCounter}{\arabic{Total@Question}}
+
+
+\ifVerbose{ The Problem@MasterCounter Value is: \arabic{Problem@MasterCounter}}\fi
+%Notice the below Question@Quantity command must come after the first input command so that the real pull quantity is listed as 0, thus not triggering the if command in the question commands.
+
+\Question@Quantity{#2}	%Determine how many problems we're getting.
+
+
+\Q@Selection{50}	% Determines which algorithm to use to select problems randomly. Colision threshold is 100/#1. Currently defaulted to a 2% colision threshold for efficient selection.
+
+%The second input will then assign commands to just the problem numbers we want.
+\questionCountfalse
+%	Now call the actual question content.
+#1
+
+%Reset counters/logic in case of another \QuestionSelect command.
+
+\setcounter{Total@Question}{0}
+%\ifVerbose{The Value of Total@Question Counter is \arabic{Total@Question}}\fi
+\setcounter{Real@PullNumber}{0}
+\questionCounttrue
+}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%		   Practice Select Question Command			%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%The intent of the practiceSelect command is to build specific question practice sets. The first impute is a comma separated list of file names, the second is how many problems you want from each file.
+
+\newcommand{\temp@Input}{}
+\newcommand{\practiceSelect}[2]{
+
+%Iterate through the comma separated list:
+\iterate@List{#1}{\list@Problems{\input{\temp@Input}}{#2}}
+
+}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%		   		findQuestion Command				%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%The intent of the \findQuestion command is to be able to find all questions associated with a given set of tags.
+\newcommand{\findQuestion}[4]{
+\findingQuestiontrue
+
+\set@RelaxActiveTags{}
+\set@StrictActiveTags{}
+
+\ifthenelse{\isempty{#1}}
+	{
+	\expandafter\addTo@RelaxActiveTags\TagList@MasterCatOne
+	}
+	{
+	\addTo@RelaxActiveTags{#1}
+	}
+
+\ifthenelse{\isempty{#2}}
+	{
+	\expandafter\addTo@RelaxActiveTags\TagList@MasterCatTwo
+	}
+	{
+	\addTo@RelaxActiveTags{#2}
+	}
+
+\ifthenelse{\isempty{#3}}
+	{
+	\expandafter\addTo@RelaxActiveTags\TagList@MasterCatThree
+	}
+	{
+	\addTo@RelaxActiveTags{#3}
+	}
+
+\ifthenelse{\isempty{#4}}
+	{
+	\expandafter\addTo@RelaxActiveTags\TagList@MasterCatFour
+	}
+	{
+	\addTo@StrictActiveTags{#4}
+	}
+\Master@Input@Test
+
+\findingQuestionfalse
+}
+
+
+
+

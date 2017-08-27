@@ -8,7 +8,6 @@
 
 \bool_new:N \g_tags_strict_bool%			Logic check if list is a match
 \bool_new:N \g_tags_relax_bool%				Logic check if we have base tags
-\bool_new:N \g_tags_search_bool%				Logic check if we have base tags
 
 \bool_new:N \l_tags_requirestrict_bool%		Logic check if we *want* strict tags
 \bool_new:N \l_tags_requiresuperstrict_bool%Logic check if we *want* *super* strict tags
@@ -44,10 +43,9 @@
 
 \cs_new_protected:Nn \tags_relax_test:n
 	{
-	\bool_set_false:N \l_tags_relax_bool
-	
     \clist_map_inline:nn { #1 }
 		{
+		\bool_set_false:N \l_tags_relax_bool
 	    \clist_if_in:NnT \l_tags_relax_active_list_clist { ##1 }
     		{
    			\bool_set_true:N \g_tags_relax_bool 
@@ -152,26 +150,6 @@
 		\tags_relax_test:n {#1}
 		\bool_if:NT \g_tags_relax_bool {#2}
 		}
-	}
-
-\NewDocumentCommand{\SearchForTag}{mm}
-	{
-	\bool_set_false:N \g_tags_search_bool
-		\clist_map_inline:nn { #1 }
-			{
-		    \clist_if_in:NnT \l_tags_strict_active_list_clist { ##1 }
-	    		{
-	   			\bool_set_true:N \g_tags_search_bool
-		  		}
-			}
-		\clist_map_inline:nn { #1 }
-			{
-		    \clist_if_in:NnTF \l_tags_relax_active_list_clist { ##1 }
-	    		{
-	   			\bool_set_true:N \g_tags_search_bool
-		  		}
-			}
-		\bool_if:NT \g_tags_search_bool {#2}
 	}
 
 
