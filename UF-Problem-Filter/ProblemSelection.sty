@@ -282,29 +282,53 @@
 %	\expandafter\input{\QBank@loc Limit-Input}
 	}
 
-%\SearchForTag{Topic@Derivative}{
-%	\ifVerbose 
-%		I detected that I should input the Derivative-Input file 
-%		\ifquestionCount 
-%			in order to get question counts!\\
-%		\else
-%			in order to find problems!\\
-%		\fi	
-%	\fi
-%\expandafter\input{\QBank@loc Derivative-Input}
-%	}
-%
-%\SearchForTag{Topic@Integral}{
-%	\ifVerbose 
-%		I detected that I should input the Integral-Input file 
-%		\ifquestionCount 
-%			in order to get question counts!\\
-%		\else
-%			in order to find problems!\\
-%		\fi	
-%	\fi
-%\expandafter\input{\QBank@loc Integral-Input}
-%	}
+\SearchForTag{Topic@Derivative}{
+	\ifVerbose 
+		I detected that I should input the Derivative-Input file 
+		\ifquestionCount 
+			in order to get question counts!\\
+		\else
+			in order to find problems!\\
+		\fi	
+	\fi
+\expandafter\input{\QBank@loc Derivative-Input}
+	}
+
+\SearchForTag{Topic@Integral}{
+	\ifVerbose 
+		I detected that I should input the Integral-Input file 
+		\ifquestionCount 
+			in order to get question counts!\\
+		\else
+			in order to find problems!\\
+		\fi	
+	\fi
+\expandafter\input{\QBank@loc Integral-Input}
+	}
+
+\SearchForTag{Topic@Sequence}{
+        \ifVerbose 
+                I detected that I should input the Integral-Input file 
+                \ifquestionCount 
+                        in order to get question counts!\\
+                \else
+                        in order to find problems!\\
+                \fi     
+        \fi
+\expandafter\input{\QBank@loc Sequence-Input}
+        }
+
+\SearchForTag{Topic@Series}{
+        \ifVerbose 
+                I detected that I should input the Integral-Input file 
+                \ifquestionCount 
+                        in order to get question counts!\\
+                \else
+                        in order to find problems!\\
+                \fi     
+        \fi
+\expandafter\input{\QBank@loc Series-Input}
+        }
 
 %\SearchForTag{Topic@Limit-Imp}{
 %	\ifVerbose 
