@@ -1,0 +1,8 @@
+%% Content below this line is provided by xr_OutputFooter.txt
+%%
+%% You can find the file in /usr/local/etc/xronostools/ 
+%%
+%%Changing this text can easily BREAK THINGS!! So edit at your own risk.
+\end{document}
+%%
+%% End xr_OutputFooter.txt

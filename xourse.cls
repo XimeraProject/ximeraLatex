@@ -48,8 +48,6 @@
 
 \LoadClass{ximera} 
 
-\RequirePackage{verbatim} 
-
 
 %%%%% ximera documents included with \activity{} will be included in the body of the xourse document
 %%%%% \input commands within included ximera documents will be ignored
@@ -132,10 +130,10 @@
 \renewcommand\practice[2][]{}
 \fi
 
-% the "points" environment does nothing in latex, but in html, it
-% wraps the activities in a div in order to assign some number of
-% points to them.
-\newenvironment{points}[1]{}{}
+% the "graded" environment does nothing in latex, but in html, it
+% wraps the activities in a div in order to assign some weight to
+% them for grading.
+\newenvironment{graded}[1]{}{}
 
 % makes the toc look a bit better... can be redefined in the preamble.
 \makeatletter
@@ -144,6 +142,15 @@
 \makeatother
 \relax
 
+\makeatletter
+\newcommand*{\logo}[1]{%
+  \ifx\@onlypreamble\@notprerr \ClassError{xourse}{logo can only be used in the preamble}{Move your logo command to the preamble}\else %
+  \IfFileExists{#1}%
+    {\gdef\xourse@logo{#1}}%
+    {\ClassError{xourse}{logo file does not exist}{To use logo, make sure that the referenced image file exists}}%
+  \fi%
+}
+\makeatother
 
 %</package>
 

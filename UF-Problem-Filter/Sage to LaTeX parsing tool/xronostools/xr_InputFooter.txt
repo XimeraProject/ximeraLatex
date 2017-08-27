@@ -1,0 +1,12 @@
+%% Begin xr_InputFooter.txt
+%%
+%% You can edit this file at /usr/local/etc/xronostools/
+%%
+%% Data here is read in and processed AFTER the file is processed by xronosraw
+%% In most cases this implies it is tossed away as it occurs after the last problem
+%%
+%% This file is used BEFORE pdf/sage processing
+%% it may be useful if all your raw files end in a common block of code
+%% That code could be placed in this file and then appended to all the raw files read in
+%%
+%% End xr_InputFooter.txt

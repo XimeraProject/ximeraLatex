@@ -1,0 +1,9 @@
+\documentclass[]{ximera}
+\usepackage{sagetex}
+\usepackage{PackageLoader}
+\begin{document}
+\input{JasonSageMacros}
+\renewcommand{\latexProblemContent}[1]{#1}
+%% Text above this provided by xr_OutputHeader.txt which can be found in /usr/local/etc/xronostools/ 
+%% Editing this can very easily BREAK EVERYTHING!! So edit at your own risk.
+%% End of xr_OutputHeader.txt 

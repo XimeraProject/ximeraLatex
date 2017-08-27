@@ -58,7 +58,7 @@
 \newif\ifveryVerbose
 \veryVerbosefalse
 
-\newcommand{\file@loc}{/home/jason/TestingFolder/Questions/}
+\newcommand{\QBank@loc}{/home/jason/texmf/tex/Questions/}
 
 \newcommand{\select@Question}[1]{
 \ifVerbose 
@@ -282,55 +282,55 @@
 			in order to find problems!\\
 		\fi	
 	\fi
-	\input{/home/jason/TestingFolder/Questions/Limit-Input}
+\input{/home/jason/texmf/tex/Questions/Limit-Input}
 	}
 
-\SearchForTag{Topic@Derivative}{
-	\ifVerbose 
-		I detected that I should input the Derivative-Input file 
-		\ifquestionCount 
-			in order to get question counts!\\
-		\else
-			in order to find problems!\\
-		\fi	
-	\fi
-\input{/home/jason/TestingFolder/Questions/Derivative-Input}
-	}
-
-\relaxtest{Topic@Integral}{
-	\ifVerbose 
-		I detected that I should input the Integral-Input file 
-		\ifquestionCount 
-			in order to get question counts!\\
-		\else
-			in order to find problems!\\
-		\fi	
-	\fi
-\input{/home/jason/TestingFolder/Questions/Integral-Input}
-	}
+%\SearchForTag{Topic@Derivative}{
+%	\ifVerbose 
+%		I detected that I should input the Derivative-Input file 
+%		\ifquestionCount 
+%			in order to get question counts!\\
+%		\else
+%			in order to find problems!\\
+%		\fi	
+%	\fi
+%\expandafter\input{\QBank@loc Derivative-Input}
+%	}
+%
+%\relaxtest{Topic@Integral}{
+%	\ifVerbose 
+%		I detected that I should input the Integral-Input file 
+%		\ifquestionCount 
+%			in order to get question counts!\\
+%		\else
+%			in order to find problems!\\
+%		\fi	
+%	\fi
+%\expandafter\input{\QBank@loc Integral-Input}
+%	}
 
 %\relaxtest{Topic@Limit-Imp}{
-%	\expandafter\input{\file@loc Limit-Imp-Input}
+%	\expandafter\input{\QBank@loc Limit-Imp-Input}
 %	}
 %
 %\relaxtest{Topic@Derivative-Imp}{
-%	\expandafter\input{\file@loc Derivative-Imp-Input}
+%	\expandafter\input{\QBank@loc Derivative-Imp-Input}
 %	}
 %
 %\relaxtest{Topic@Integral-Imp}{
-%	\expandafter\input{\file@loc Integral-Imp-Input}
+%	\expandafter\input{\QBank@loc Integral-Imp-Input}
 %	}
 %
 %\relaxtest{Topic@Limit-Multi}{
-%	\expandafter\input{\file@loc Limit-Multi-Input}
+%	\expandafter\input{\QBank@loc Limit-Multi-Input}
 %	}
 %
 %\relaxtest{Topic@Derivative-Multi}{
-%	\expandafter\input{\file@loc Derivative-Multi-Input}
+%	\expandafter\input{\QBank@loc Derivative-Multi-Input}
 %	}
 %
 %\relaxtest{Topic@Integral-Multi}{
-%	\expandafter\input{\file@loc Integral-Multi-Input}
+%	\expandafter\input{\QBank@loc Integral-Multi-Input}
 %	}
 
 }

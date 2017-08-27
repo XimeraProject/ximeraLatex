@@ -163,7 +163,9 @@
 
 \renewenvironment{foldable}{\stepcounter{identification}\ifvmode \IgnorePar\fi \EndP\HCode{<div id="foldable\arabic{identification}" class="foldable">}}{\HCode{</div>}\IgnoreIndent}
 
-\renewenvironment{expandable}{\stepcounter{identification}\ifvmode \IgnorePar\fi \EndP\HCode{<div data-original="expandable" id="foldable\arabic{identification}" class="foldable">}}{\HCode{</div>}\IgnoreIndent}
+\renewenvironment{expandable}{\stepcounter{identification}\ifvmode \IgnorePar\fi \EndP\HCode{<div data-original="expandable" id="foldable\arabic{identification}" class="foldable">}
+
+}{\HCode{</div>}\IgnoreIndent}
 
 
 \renewcommand{\unfoldable}[1]{\HCode{<span class="unfoldable">}#1\HCode{</span>}}
@@ -280,6 +282,11 @@
 {\ifthenelse{\equal{#1}{correct}}{\HCode{<div class="feedback" data-feedback="correct" id="feedback\arabic{identification}">}}%
 {\HCode{<div class="feedback" data-feedback="script" id="feedback\arabic{identification}"><script type="text/javascript">\Hnewline//<![CDATA[\Hnewline function feedback\arabic{identification}() }\{\HCode{ return \detokenize{#1}; }\}\HCode{\Hnewline //]]>\Hnewline</script>}}}}
 \def\endfeedback{\HCode{</div>}\IgnoreIndent}
+
+% Include author name in meta tags
+\Configure{@HEAD}{\HCode{<meta name="author" content="}\@author\HCode{" />\Hnewline}}
+% the \and command would emit tabular environments which really should not appear in a meta tag
+\def\and{ and }
 
 \Hinput{ximera}
 \endinput
