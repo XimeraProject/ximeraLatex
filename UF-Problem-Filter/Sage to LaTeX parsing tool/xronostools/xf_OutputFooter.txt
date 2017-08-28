@@ -1,15 +1,2 @@
-%% Begin xf_OutputFooter.txt
-%%
-%% To change this text edit the file /use/local/etc/xronostools/xf_OutputFooter.txt
-%% Doing so will likely BREAK QUESTION SELECT!! So edit at your own risk.
-%%
-%% Use to output LaTex at the end of a file for processing by only xronosfinal
-%% so you get variable substtution but little else
-%%
-%% This file is used AFTER pdf/sage processing
-%%
-
 \fi% End of \ifproblemToFind
 \ProblemFooter% Process end of file, mostly resets variables and flags as needed. Edit this command in the package ProblemSelection.sty found in UF-Problem-Filter
-
-%% End xf_OutputFooter.txt
