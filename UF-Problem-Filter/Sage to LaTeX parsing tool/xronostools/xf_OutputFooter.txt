@@ -1,2 +1,0 @@
-\fi% End of \ifproblemToFind
-\ProblemFooter% Process end of file, mostly resets variables and flags as needed. Edit this command in the package ProblemSelection.sty found in UF-Problem-Filter
