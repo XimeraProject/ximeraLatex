@@ -59,6 +59,9 @@
 \newif\ifVerboseCount
 \VerboseCountfalse
 
+\newif\ifVerboseLocation
+\VerboseLocationfalse
+
 \newcommand{\QBank@loc}{/home/jason/texmf/tex/Questions/}
 
 \newcommand{\select@Question}[1]{
@@ -281,8 +284,7 @@
 			in order to find problems!\\
 		\fi	
 	\fi
-	\input{/home/jason/texmf/tex/Questions/Limit-Input}
-%	\expandafter\input{\QBank@loc Limit-Input}
+	\expandafter\input{\QBank@loc Limit-Input}
 	}
 
 \SearchForTag{Topic@Derivative}{
