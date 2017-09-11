@@ -33,4 +33,5 @@
 *.toc
 *.xref
 *.ids
-Config.sty
+*
+*.sage*
