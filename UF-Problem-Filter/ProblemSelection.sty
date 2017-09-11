@@ -1,24 +1,5 @@
 \ProvidesPackage{ProblemSelection}
-
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%				Personalizing Macros					%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-\newcommand{\QBank@loc}{/home/jason/texmf/tex/Questions/}
-
-\newcommand{\select@Question}[1]{
-\ifVerbose 
-	\ifquestionCount 
-		We called the file #1 to find problem counts!\\ 
-	\else
-		We called the file #1, this time to find problems!\\
-	\fi	
-\fi
-\input{#1}}
-
-
-
+\RequirePackage{Config}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%				Necessary Counters					%%%%%%%%%%%%%%%
@@ -631,6 +612,18 @@
 %	}
 
 }% End of master input test command
+
+\newcommand{\select@Question}[1]{
+	\ifVerbose 
+		\ifquestionCount 
+			We called the file #1 to find problem counts!\\ 
+		\else
+			We called the file #1, this time to find problems!\\
+		\fi	
+	\fi
+	\input{#1}
+}
+
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
