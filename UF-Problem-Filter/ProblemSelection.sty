@@ -1,5 +1,25 @@
 \ProvidesPackage{ProblemSelection}
 
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%				Personalizing Macros					%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\newcommand{\QBank@loc}{/home/jason/texmf/tex/Questions/}
+
+\newcommand{\select@Question}[1]{
+\ifVerbose 
+	\ifquestionCount 
+		We called the file #1 to find problem counts!\\ 
+	\else
+		We called the file #1, this time to find problems!\\
+	\fi	
+\fi
+\input{#1}}
+
+
+
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%				Necessary Counters					%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -8,13 +28,9 @@
 \newcounter{Iteration@2}
 \newcounter{Iteration@3}
 \newcounter{Iteration@4}
-\newcounter{Rnd@Quant}
-\newcounter{Rnd@EndQuant}
 \newcounter{Temp@1}
 \newcounter{Temp@2}
 \newcounter{Temp@3}
-%\newcounter{LogicChecks}
-%\setcounter{LogicChecks}{0}
 \newcounter{Given@ProblemNumber}
 \newcounter{Problem@ToList}
 \newcounter{Problem@RemainToCheck}
@@ -24,8 +40,6 @@
 \setcounter{Question@CurNumber}{0}
 \newcounter{Question@DisplayCounter}
 \setcounter{Question@DisplayCounter}{0}
-\newcounter{Default@genUniqueNum}
-\setcounter{Default@genUniqueNum}{0}
 \newcounter{Placement@1}
 \setcounter{Placement@1}{1}
 \newcounter{Problem@TotalToList}
@@ -36,7 +50,12 @@
 \newcounter{Problem@EndRef}
 \setcounter{Problem@EndRef}{1}
 \newcounter{Problem@NextRef}
+\newcounter{file@GroupRef}
+\setcounter{file@GroupRef}{1}
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%				Necessary Conditionals					%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \newif\iffindingQuestion
 \findingQuestionfalse
@@ -53,6 +72,12 @@
 \newif\ifproblemToFind
 \problemToFindfalse
 
+\newif\ifPSShuffle
+\PSShufflefalse
+
+\newif\ifQSShuffle
+\QSShufflefalse
+
 \newif\ifveryVerbose
 \veryVerbosefalse
 
@@ -62,17 +87,162 @@
 \newif\ifVerboseLocation
 \VerboseLocationfalse
 
-\newcommand{\QBank@loc}{/home/xronosadmin/texmf/tex/latex/QuestionBanks/}
+\newif\ifquestion@Static
+\question@Staticfalse
 
-\newcommand{\select@Question}[1]{
-\ifVerbose 
-	\ifquestionCount 
-		We called the file #1 to find problem counts!\\ 
-	\else
-		We called the file #1, this time to find problems!\\
-	\fi	
-\fi
-\input{#1}}
+\newif\ifInner@Shuffle
+\Inner@Shufflefalse
+
+\newif\ifInner@OrderReverse
+\Inner@OrderReversefalse
+
+\newif\ifInner@OrderForward
+\Inner@OrderForwardfalse
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%				File-Writing shortcuts					%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\newcommand{\file@Write}[2]{
+\expandafter\immediate\expandafter\write\csname#1\endcsname{#2}
+}
+
+\newcommand{\file@Initialize}[1]{
+\expandafter\newwrite\csname#1\endcsname
+\expandafter\immediate\expandafter\openout\csname#1\endcsname=file-\jobname--ProblemList-#1.tex
+}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%				Necessary Key-Values					%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+%%%%%%% User-set Keys
+%% These are for users to put into commands
+
+\define@key{key@ProblemSelect}{Static}{
+\ifthenelse{\equal{#1}{true}}
+	{% If the key is 'true' then set Static to true.
+	\question@Statictrue
+	}{}% If the key is something else, then don't.
+
+% The conditionals below are to account for users not checking what the correct flag is.
+\ifthenelse{\equal{#1}{True}}
+	{% 
+	\question@Statictrue
+	}{}% 
+\ifthenelse{\equal{#1}{on}}
+	{% 
+	\question@Statictrue
+	}{}% 
+\ifthenelse{\equal{#1}{On}}
+	{% 
+	\question@Statictrue
+	}{}% 
+}
+
+\define@key{key@ProblemSelect}{PerFile}{
+\ifthenelse{\equal{#1}{true}}
+	{% If the key is 'true' then set Static to true.
+	\PerFileQtrue
+	}{}% If the key is something else, then don't.
+
+% The conditionals below are to account for users not checking what the correct flag is.
+\ifthenelse{\equal{#1}{True}}
+	{% 
+	\PerFileQtrue
+	}{}% 
+\ifthenelse{\equal{#1}{on}}
+	{% 
+	\PerFileQtrue
+	}{}% 
+\ifthenelse{\equal{#1}{On}}
+	{% 
+	\PerFileQtrue
+	}{}% 
+}
+
+\define@key{key@ProblemSelect}{Shuffle}{
+\ifthenelse{\equal{#1}{true}}
+	{% If the key is 'true' then set Static to true.
+	\PSShuffletrue
+	}{}% If the key is something else, then don't.
+
+% The conditionals below are to account for users not checking what the correct flag is.
+\ifthenelse{\equal{#1}{True}}
+	{%
+	\PSShuffletrue
+	}{}% 
+\ifthenelse{\equal{#1}{on}}
+	{% 
+	\PSShuffletrue
+	}{}% 
+\ifthenelse{\equal{#1}{On}}
+	{% 
+	\PSShuffletrue
+	}{}% 
+}
+
+\define@key{key@ProblemSelect}{GroupShuffle}{
+\ifthenelse{\equal{#1}{true}}
+	{% If the key is 'true' then set Static to true.
+	\QSShuffletrue
+	}{}% If the key is something else, then don't.
+
+% The conditionals below are to account for users not checking what the correct flag is.
+\ifthenelse{\equal{#1}{True}}
+	{%
+	\QSShuffletrue
+	}{}% 
+\ifthenelse{\equal{#1}{on}}
+	{% 
+	\QSShuffletrue
+	}{}% 
+\ifthenelse{\equal{#1}{On}}
+	{% 
+	\QSShuffletrue
+	}{}% 
+}
+
+\newcommand{\question@SetKeys}[1]{
+\setkeys{key@ProblemSelect}{PerFile={}, Static={}, Shuffle={}, GroupShuffle={},#1}
+}
+
+
+%%%%%%%% Internal Keys
+%% These are to use for internal flags only.
+\newcommand{\inner@SetKeys}[1]{
+\setkeys{key@Inner}{InnerShuffle={}, Order@Direction={},#1}
+}
+
+
+\define@key{key@Inner}{InnerShuffle}{% This flag is for shuffling questions.
+\ifthenelse{\equal{#1}{true}}
+	{
+	\Inner@Shuffletrue
+	}
+	{
+	\Inner@Shufflefalse
+	}
+}
+
+\define@key{key@Inner}{Order@Direction}{% This flag gives the order in which vectors are saved.
+\ifthenelse{\equal{#1}{forward}}
+	{
+	\Inner@OrderForwardtrue
+	}
+	{
+	\Inner@OrderForwardfalse
+	}
+\ifthenelse{\equal{#1}{reverse}}
+	{
+	\Inner@OrderReversetrue
+	}
+	{
+	\Inner@OrderReversefalse
+	}
+}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%			Track Question Number and Content		%%%%%%%%%%%%%%%
@@ -90,9 +260,7 @@
 		Registered the last question to be: \arabic{Problem@ToList}\\
 		Registered the Current question to be: \arabic{Question@CurNumber}\\
 		\fi
-	
-%	\forloop{Iteration@1}{1}{\arabic{Iteration@1} < \arabic{Problem@RemainToCheck}}
-%		{
+
 		\ifVerbose Looking for question \arabic{Problem@NextRef}.\\ \fi
 
 		\ifnum\value{Question@CurNumber}=\value{Problem@NextRef}% Check to see if the question we're currently on, is one of the questions in the list of questions we are after (contained in Question@Location Values)
@@ -101,6 +269,7 @@
 			\expandafter\newcommand\csname Question@Display\roman{Problem@GroupingNumber}\Roman{Question@DisplayCounter}\endcsname{% If so, we want to define the next Question in the list to display to be this questions' content. That way we can call it later.
 			#1
 			}
+			\file@Write{\Roman{file@GroupRef}}{\unexpanded{#1}}
 			\ifVerbose I assigned the command to be Question@Display\roman{Problem@GroupingNumber}\Roman{Question@DisplayCounter} in theory.\\ \fi
 			\addtocounter{Problem@RemainToCheck}{-1}% Decrement the total number of questions to look for since we found one. This will only work because the questions are given in *reverse* numeric order.
 			\addtocounter{Problem@EndRef}{-1}% Decrement the End Pointer as well.
@@ -110,7 +279,6 @@
 				\ifVerbose Now I'm looking for problem \arabic{Problem@NextRef}\\ \fi
 			\fi
 		\fi% If it's not on the list, we ignore it.
-%		}
 	\fi
 	\ifveryVerbose
 		The current problem is \arabic{Question@CurNumber}.\\
@@ -122,7 +290,8 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%					Filter Questions 				%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
+% Look in Filter.sty for all the filtering code, specifically the \tagged system. 
+% Fair warning; it is written in LaTeX3 which is very different than "normal" LaTeX.
 
 
 
@@ -177,19 +346,20 @@
 %%%%%%%%%%%%%%			Randomize Question Choice Code			%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \newcommand{\ChooseQuestions}[1]{% Decides which problems to choose
-	\gen@UniqueNum{#1}{1}{\arabic{Total@Question}}{Question@Location}% Determine which problems to call at random. Assign them to the "Question@Location\Roman{}" Counters
-	\questionPulltrue% Now we're pulling questions
-		\ifVerbose We should now be Pulling Questions (questionPulltrue)\\ \fi
-	\setcounter{Problem@RemainToCheck}{\arabic{Given@ProblemNumber}}
-	\setcounter{Problem@EndRef}{\arabic{Given@ProblemNumber}}
-	\stepcounter{Problem@RemainToCheck}
-	\setcounter{Problem@NextRef}{\arabic{Question@Location\Roman{Problem@EndRef}}}
-	\ifVerbose 	Problems That Remain to Check \arabic{Problem@RemainToCheck}\\
+		\make@Vector[Order@Direction=reverse]{Question@Location}{1}{\arabic{Total@Question}}{#1}% Determine which problems to call at random. Assign them to the "Question@Location\Roman{}" Counters
+
+		\questionPulltrue% Now we're pulling questions
+			\ifVerbose We should now be Pulling Questions (questionPulltrue)\\ \fi
+		\setcounter{Problem@RemainToCheck}{\arabic{Given@ProblemNumber}}
+		\setcounter{Problem@EndRef}{\arabic{Given@ProblemNumber}}
+		\stepcounter{Problem@RemainToCheck}
+		\setcounter{Problem@NextRef}{\arabic{Question@Location\Roman{Problem@EndRef}}}
+		\ifVerbose 	Problems That Remain to Check \arabic{Problem@RemainToCheck}\\
 				End Reference pointer: \arabic{Problem@EndRef}\\
 				I think our first problem is \arabic{Problem@NextRef}\\
 				I think our ending reference is \arabic{Problem@EndRef}\\
 				\fi
-
+	
 }
 
 
@@ -207,68 +377,121 @@
 
 
 
-\newcommand{\Knuth@Shuffle}[3]% \Knuth@Shuffle{MAXCOUNT}{NAME}{USEDCOUNT} Generates and permutes a list MAXCOUNT number of counters, each with name NAMEI, NAMEII, NAMEIII, ..., NAME\Roman(MAXCOUNT). Then it stores up to USEDCOUNT of those counters in counters named 
-{
-%Assign a maximum on how many numbers to pick. Set default to the max list size, and save in counter "RndQuant"
-%\stepcounter{LogicChecks}
-\ifthenelse{\isempty{#3}}%			Check to see if Desired Maximum is given.
-	{
-%\stepcounter{LogicChecks}
-	\setcounter{Rnd@Quant}{#1+1}		%If not, use all of them.
-	}
-	{
-%\stepcounter{LogicChecks}
-	\ifthenelse{#1 < #3}
-		{
-%\stepcounter{LogicChecks}
-		\setcounter{Rnd@Quant}{#1+1}		%Only select up to all problems.
-		}
-		{
-%\stepcounter{LogicChecks}
-		\setcounter{Rnd@Quant}{#3+1}		
-		}
-	}
 
-\setcounter{Rnd@EndQuant}{#1+1}
-%\stepcounter{LogicChecks}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%  		Make Vector is used to generate most random lists		%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-%Generate a starting list of numbers 1 to maximum number given.
-\forloop{Iteration@1}{1}{\arabic{Iteration@1} < \arabic{Rnd@EndQuant}}
-	{
-%\stepcounter{LogicChecks}
-	\@ifundefined{c@#2\Roman{Iteration@1}}	% Check to see if counter exists
-		{									%If not, make it.
-%\stepcounter{LogicChecks}
-		\newcounter{#2\Roman{Iteration@1}}
-		}
-		{}									%If so, do nothing.
-	\setcounter{#2\Roman{Iteration@1}}{\arabic{Iteration@1}}	% Set Counter to next number.
-	}
+\newcommand{\make@Vector}[5][InnerShuffle=false, Order@Direction=forward]{% This is to make either an ordered or a shuffled list of values
+	% #1 is optional and is for internal flags. 
+	% #2 is the name of the output counters
+	% #3 is the minimum counter value
+	% #4 is the maximum counter value
+	% #5 is the number of desired counters.
+	% Counters will be saved as #2\Roman{#}
+	
+	\inner@SetKeys{#1}% Set any given keys
+	% Possible flags:
+		% InnerShuffle flag "true" will shuffle, "false" won't
+		% Order@Direction; "forward" will list questions in increasing order. "reverse" will list the questions in 					decreasing order
+		% 
+	
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%  		First we will choose and order the initial values		%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+	\setcounter{Temp@1}{#4}
+	\addtocounter{Temp@1}{-#3}
+	\ifnum #5 = \value{Temp@1}% The special case where we want all the values. Randomizing into a full list just to order it is silly so we deal with this case separately.
+		\forloop{Iteration@1}{1}{\arabic{Iteration@1} < \arabic{Temp@1}}
+			{% Start of forloop
+			\Make@Counter{Ordered@\Roman{Iteration@1}}	% Check to see if counter exists
+			\Make@Counter{C@Shuffle\Roman{Iteration@1}}
+			\setcounter{Ordered@\Roman{Iteration@1}}{\arabic{Iteration@1}}
+			\setcounter{C@Shuffle\Roman{Iteration@1}}{\arabic{Iteration@1}}
+			}
+	\else
+		\setcounter{Temp@1}{#5}% Track how many numbers we want.
+		\stepcounter{Temp@1}% Step for the < sign
+		\forloop{Iteration@1}{1}{\arabic{Iteration@1} < \arabic{Temp@1}}
+			{% Start of forloop
+	
+			\Make@Counter{Ordered@\Roman{Iteration@1}}	% Check to see if counter exists
+			\Make@Counter{CTemp\Roman{Iteration@1}}	% Check to see if counter exists
+			\Make@Counter{C@Shuffle\Roman{Iteration@1}}
+		
+			\@genrand{Temp@2}{#3}{#4}
+			\ifVerbose{Your first choice for the question number is \arabic{Temp@2}}\\ \fi
+			\forloop{Iteration@2}{1}{\arabic{Iteration@2} < \arabic{Iteration@1}}
+				{% Start of inner forloop. This loop checks for uniqueness of counter value.
+				\ifnum\value{Temp@2}=\value{CTemp\Roman{Iteration@2}}% Check to see if the counter matches any previous counter
+				\@genrand{Temp@2}{#3}{#4}% If so, fix it.
+				\setcounter{Iteration@2}{0}% Reset the check counter so we can check if the new number is used.
+				\ifVerbose Your revised choice for the number is \arabic{Temp@2} \\ \fi
+				\fi
+	%			\arabic{Iteration@2}, \arabic{CTemp\Roman{Iteration@2}}\\
+				}% 
+			
+			\setcounter{CTemp\Roman{Iteration@1}}{\arabic{Temp@2}}% Save (unsorted) unique value in a temp list of variables.
+			\setcounter{C@Shuffle\Roman{Iteration@1}}{\arabic{Temp@2}}% Save (unsorted) unique value in a temp list of variables. This one is to be used in the case we want shuffled values at the end.
+		
+			\ifVerbose (Unordered) We want questions number \arabic{Temp@2} \fi
+		
+			}
+		% Now we want to sort the list	
+	
+		\forloop{Iteration@3}{1}{\arabic{Iteration@3}<\arabic{Temp@1}}
+			{% For each variable
+				\setcounter{Placement@1}{1}% Default the placeholder counter to some gigantic number so I can proceed to find the smallest possible number.
+			
+				\forloop{Iteration@4}{1}{\arabic{Iteration@4}<\arabic{Temp@1}}
+					{
+					\ifnum\value{CTemp\Roman{Iteration@4}}<\value{CTemp\Roman{Placement@1}}
+						\setcounter{Placement@1}{\arabic{Iteration@4}}% Keep track of which counter was the largest so far
+					\fi
+					}
+	
+				\setcounter{Ordered@\Roman{Iteration@3}}{\arabic{CTemp\Roman{Placement@1}}}% Set the final counter.
+				\setcounter{CTemp\Roman{Placement@1}}{999999}% Now remove that place as a viable option for next run.
+				\ifVerbose (Ordered) We want question number \arabic{Ordered@\Roman{Iteration@3}} \fi
+			}
+	\fi	
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%	
+%%%%%%%%%%%		Finished Choosing and ordering initial values		%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%   		Now reorder and assign final names				%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+	
+	
+	\ifInner@OrderReverse
+		\setcounter{Temp@3}{#5}
+		\forloop{Iteration@1}{1}{\arabic{Iteration@1} < \arabic{Temp@1}}
+			{
+			\Make@Counter{#2\Roman{Iteration@1}}% Make the counter if it doesn't exist.
+			\setcounter{#2\Roman{Iteration@1}}{\arabic{Ordered@\Roman{Temp@3}}}% Set the final counter version to the current "last" unused value.
+			\addtocounter{Temp@3}{-1}% Decrement the counter for next assignment
+			}
+	\else% If we aren't doing it in reverse, assume we want forward order. This is default.
+		\forloop{Iteration@1}{1}{\arabic{Iteration@1} < \arabic{Temp@1}}
+			{
+			\Make@Counter{#2\Roman{Iteration@1}}% Make the counter if it doesn't exist.
+			\setcounter{#2\Roman{Iteration@1}}{\arabic{Ordered@\Roman{Iteration@1}}}% Set the final counter version to the next value.
+			}
+	
+	\fi% End of forward/reverse order version
 
-%Permute using Knuth method
-\forloop{Iteration@1}{1}{\arabic{Iteration@1} < \arabic{Rnd@Quant}}
-	{
-%\stepcounter{LogicChecks}
-	\@genrand{Temp@RandMe}{\arabic{Iteration@1}}{#1}%	Generate a random number from Current iterate number to maximum number.
+	\ifInner@Shuffle
+		\forloop{Iteration@1}{1}{\arabic{Iteration@1} < \arabic{Temp@1}}
+			{
+			\Make@Counter{#2\Roman{Iteration@1}}% Make the counter if it doesn't exist.
+			\setcounter{#2\Roman{Iteration@1}}{\arabic{C@Shuffle\Roman{Iteration@1}}}% Set the counter to the next value.
+			}
 
-	\setcounter{Temp@Hold}{\arabic{#2\Roman{Temp@RandMe}}}%	Set a temp variable so that we can swap values in position of the iterate and the random number selected. 
-
-	\setcounter{#2\Roman{Temp@RandMe}}{\arabic{#2\Roman{Iteration@1}}}% Set the final counter to the value of the variable in the generated number's counter.
-	\setcounter{#2\Roman{Iteration@1}}{\arabic{Temp@Hold}}%	Set current counter to the swapped counter.
-
-	\ifthenelse{\arabic{Temp@Hold} > \arabic{Last@Question}} %If we have a new last question, record placement.
-		{
-		\setcounter{Last@Question}{\arabic{Temp@Hold}}
-%\stepcounter{LogicChecks}
-		}
-		{}%	Else, do nothing.	
-	}
-\stepcounter{Last@Question}	%Step the Last@Question position for < sign.
+	\fi% End of Shuffle order version
+	
 }
 
-
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%  	Filter Question Command  %%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%		Master Input Command  	%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
@@ -425,75 +648,33 @@
 }
 
 
-\newcommand{\gen@UniqueNum}[5][Default@genUniqueNum]{%This is designed to generate a number of random numbers in a range that are all different, in (reverse) order.
-	%	#1 is optional and is the name of the counter keeping track of the vector length. In case we want to concatonate.
-	%	#2 is how many we want
-	%	#3 is the minimum value
-	%	#4 is the Maximum value
-	%	#5 is the name of the storage command
-	\setcounter{Default@genUniqueNum}{0}% Reset the default
-	\setcounter{Temp@1}{#2}
-	\stepcounter{Temp@1}
-\forloop{Iteration@1}{1}{\arabic{Iteration@1} < \arabic{Temp@1}}
-	{
-	\stepcounter{#1}
-%\stepcounter{LogicChecks}
-	\Make@Counter{#5\Roman{#1}}	% Check to see if counter exists
-	\Make@Counter{Temp\Roman{#1}}	% Check to see if counter exists
-	
-
-	\@genrand{Temp@2}{#3}{#4}
-	\ifVerbose{You chose question number \arabic{Temp@2}}\fi
-	\forloop{Iteration@2}{1}{\arabic{Iteration@2} < \arabic{Iteration@1}}{%
-		\ifnum\value{Temp@2}=\value{Temp\Roman{Iteration@2}}% Check to see if the counter matches any previous counter
-		\@genrand{Temp@2}{#3}{#4}% If so, fix it.
-		\setcounter{Iteration@2}{1}% Reset the check counter so we can check if the new number is used.
-		\fi
-		}% Currently only check once per number so you may get unlucky. Don't know of a way to build this with a while command.
-	\setcounter{Temp\Roman{#1}}{\arabic{Temp@2}}% Save (unsorted) value in a temp list of variables.
-
-	\ifVerbose (Unordered) We want questions number \arabic{Temp@2} \fi
-
-	}
-	% Now we want to sort the list	
-	\setcounter{Placement@1}{\arabic{Temp@1}}% Reset the placement variable
-	\Make@Counter{Temp\Roman{Placement@1}}% 
-\forloop{Iteration@3}{1}{\arabic{Iteration@3}<\arabic{Temp@1}}
-	{% For each variable
-		\setcounter{Temp\Roman{Placement@1}}{0}
-	
-		\forloop{Iteration@4}{1}{\arabic{Iteration@4}<\arabic{Temp@1}}
-			{
-			\ifnum\value{Temp\Roman{Iteration@4}}>\value{Temp\Roman{Placement@1}}
-				\setcounter{Placement@1}{\arabic{Iteration@4}}% Keep track of which one was the largest so far
-			\fi
-			}
-
-		\setcounter{#5\Roman{Iteration@3}}{\arabic{Temp\Roman{Placement@1}}}% Set the final counter.
-		\expandafter\edef\csname #5\Roman{Iteration@3}\endcsname{\arabic{#5\Roman{Iteration@3}}}% Define it with the immediate value.
-		
-		\ifVerbose (Ordered) We want question number \arabic{#5\Roman{Iteration@3}} \fi
-	}
-}
-	
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%  	Display Question Command  %%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%	Display Question Command	%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\newcommand{\listQuestions}{
-		%%%%% Now we display the problems. Currently this will shuffle the problems by default. I may deacitvate this once the "shuffle" environment is fully functional.
+\newcommand{\listQuestions}[1][GroupShuffle=false]{
+		%%%%% Now we display the problems. Currently this will *Not* shuffle the problems by default. I may deacitvate this once the "shuffle" environment is fully functional.
 
-	\Knuth@Shuffle{\arabic{Problem@TotalToList}}{Shuffle@Position@}{\arabic{Problem@TotalToList}}% Create random ordering for the questions about to be displayed.
+		\question@SetKeys{#1}% Set any given keys
+			% Potential Keys:
+				% GroupShuffle = true ; this makes every question since the last listQuestions have a randomized position
+
+	\ifPSShuffle
+		\make@Vector[Shuffle=true]{Shuffle@Position@}{1}{\arabic{Problem@TotalToList}}{\arabic{Problem@TotalToList}}% Create random ordering for the questions about to be displayed.
+	\else
+		\make@Vector[InnerShuffle=false]{Shuffle@Position@}{1}{\arabic{Problem@TotalToList}}{\arabic{Problem@TotalToList}}
+	\fi
 	\stepcounter{Problem@TotalToList}% Step the total number of problems to list by 1 so that we can use <
 
 	\forloop{Iteration@1}{1}{\arabic{Iteration@1} < \arabic{Problem@TotalToList}}
 		{
-		\expandafter\csname Question@Display\roman{Problem@GroupingNumber}\Roman{Shuffle@Position@\Roman{Iteration@1}}\endcsname% Display questions in the randomized order
+		\csname Question@Display\roman{Problem@GroupingNumber}\Roman{Shuffle@Position@\Roman{Iteration@1}}\endcsname
 		}
 	\setcounter{Problem@TotalToList}{0}
 	\stepcounter{Problem@GroupingNumber}
 	\setcounter{Question@DisplayCounter}{0}
+	\PSShufflefalse
 }
 
 
@@ -503,66 +684,86 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
-\newcommand{\QuestionSelect}[4][]{% This is the master user command to call questions
+\newcommand{\QuestionSelect}[4][Static=false, PerFile=false, Shuffle=false]{% This is the master user command to call questions
 		% #1 is optional and is the "Per File Flag"
 		% #2 is the Topic
 		% #3 is the secondary criteria, like sub@rational
 		% #4 is the number of questions we want to pull (either in total or per file)
 		% First we set up how many problems we are pulling, either in total or per file.
-	\setcounter{Given@ProblemNumber}{#4}
-
-       %%%%%% Set Tags that have been given;
-		%Start by resetting tags from any previous command usage	
-		%Now set the active tags that are given.
-	\set@StrictActiveTags{#2}% The topic is necessary, so it is strict
-	\set@RelaxActiveTags{#3}% The secondaries are relaxed by default
-%	\addTo@RelaxActiveTags{#2}% Strict tags are also relax tags.
-
-
-		%%%%% Set whether we are doing "per file" questions, or just grabbing them from the full list.
-	\ifthenelse{\isempty{#1}}{% Check if we have anything in the optional category. If not we want to set PerFileQ flag to be false.
-	\PerFileQfalse % Set flag false
-	\setcounter{Problem@ToList}{#4}% Since we are not pulling per file we only want #4 amount of problems.
-	}
-	{% Otherwise we are pulling per file.
-	\PerFileQtrue
-	\setcounter{Problem@ToList}{0}% Since we are pulling per file this will be calculated as we go.
-	}
 	
-
-		%%%%% Now we need to select the problems
-%	\input{Master-Input-List}% Testing file; Get problem counts and assign them if we're pulling per file.
-	\Master@Input@Test% Get problem counts and assign them if we're pulling per file.
+	\question@SetKeys{#1}% First we set the flags for PerFile or Static.
+		% Potential Keys to use:
+			% Static = true ; This inputs the last compile for this question block, ths negating re-randomizing
+			% PerFile = true ; This tells \QuestionSelect to pull the #4 number of questions from EACH file that 						matches the given tags. Warning: This can make an *awful* lot of questions appear if you aren't 							careful.
+			% Shuffle = true ; This shuffles the problems within this specific QuestionSelect block.
 	
-	\ifVerbose I Just did the first master pull and found a total of \arabic{Total@Question} questions\fi
-        \ifVerboseCount There are a total of \arabic{Total@Question} Questions. \fi
+	
+	\ifquestion@Static% Check to see if we want to reuse the old problems.
+		\expandafter\expandafter\expandafter\input{file-\jobname--ProblemList-\Roman{Problem@GroupingNumber}}
+	\else
+		\file@Initialize{\Roman{file@GroupRef}}
 
-	\ifPerFileQ% The problems have already been assigned if this flag is active, so we don't need to do much.
-		\stepcounter{Problem@ToList}% Only need to step the final problem counter for the < sign
-		\ifVerbose I think I'm pulling \arabic{Given@ProblemNumber} questions \textbf{per file} \fi
-	\else% If the flag is false then we need to use the counts to get problems and assign them to commands.
-		\questionCountfalse% We are no longer just counting problems.
-			\ifVerbose I think I'm pulling \arabic{Given@ProblemNumber} questions \textbf{in total} \fi
-
-		\ChooseQuestions{#4}
-		\stepcounter{Problem@ToList}% Only need to step the final problem counter for the < sign
-
-		\Master@Input@Test% Now we're pulling the latexProblemContent commands, not just question counts
-%		\input{Master-Input-List}% Testing File
-		\ifVerbose I just did the second Master Pull\fi
-
-	\fi
-	% Now we have pulled and assigned problems to commands of the form \Question@Display\Roman{Question@DisplayCounter}
-
-	\addtocounter{Problem@TotalToList}{\arabic{Problem@ToList}}
+		\setcounter{Given@ProblemNumber}{#4}
+	
+	       %%%%%% Set Tags that have been given;
+			%Start by resetting tags from any previous command usage	
+			%Now set the active tags that are given.
+		\set@StrictActiveTags{#2}% The topic is necessary, so it is strict
+		\set@RelaxActiveTags{#3}% The secondaries are relaxed by default
+	%	\addTo@RelaxActiveTags{#2}% Strict tags are also relax tags.
+	
+	
+			%%%%% Set whether we are doing "per file" questions, or just grabbing them from the full list.
+%		\ifthenelse{\isempty{#1}}{% Check if we have anything in the optional category. If not we want to set PerFileQ flag to be false.
+		\ifPerFileQ % Set flag false
+		\setcounter{Problem@ToList}{0}% Since we are pulling per file this will be calculated as we go.
+		\else
+		\setcounter{Problem@ToList}{#4}% Since we are not pulling per file we only want #4 amount of problems.
+		\fi
+		
+	
+			%%%%% Now we need to select the problems
+	%	\input{Master-Input-List}% Testing file; Get problem counts and assign them if we're pulling per file.
+		\Master@Input@Test% Get problem counts and assign them if we're pulling per file.
+		
+		\ifVerbose I Just did the first master pull and found a total of \arabic{Total@Question} questions\fi
+	        \ifVerboseCount There are a total of \arabic{Total@Question} Questions. \fi
+	
+		\ifPerFileQ% The problems have already been assigned if this flag is active, so we don't need to do much.
+			\stepcounter{Problem@ToList}% Only need to step the final problem counter for the < sign
+			\ifVerbose I think I'm pulling \arabic{Given@ProblemNumber} questions \textbf{per file} \fi
+		\else% If the flag is false then we need to use the counts to get problems and assign them to commands.
+			\questionCountfalse% We are no longer just counting problems.
+				\ifVerbose I think I'm pulling \arabic{Given@ProblemNumber} questions \textbf{in total} \fi
+	
+			\ChooseQuestions{#4}
+			\stepcounter{Problem@ToList}% Only need to step the final problem counter for the < sign
+	
+			\Master@Input@Test% Now we're pulling the latexProblemContent commands, not just question counts
+	%		\input{Master-Input-List}% Testing File
+			\ifVerbose I just did the second Master Pull\fi
+	
+		\fi
+		% Now we have pulled and assigned problems to commands of the form \Question@Display\Roman{Question@DisplayCounter}
+	
+		\addtocounter{Problem@TotalToList}{\arabic{Problem@ToList}}
+	\fi% End static/Non static conditional
 		%%%%%  Reset all counters
+	\QSelectEnd
+	
+}
+
+\newcommand{\QSelectEnd}{
 	\setcounter{Total@Question}{0}% Reset counters
 	\setcounter{Problem@ToList}{0}
 	\setcounter{Question@CurNumber}{0}
+	\stepcounter{file@GroupRef}
 	\questionCounttrue
 	\questionPullfalse
+	\question@Staticfalse
+	\PerFileQfalse
+	\QSShufflefalse
 }
-
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%		   Practice Select Question Command			%%%%%%%%%%%%%%%
