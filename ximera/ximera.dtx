@@ -60,9 +60,11 @@ Running "make install" installs the files in the local TeX tree.
 \endpostamble
 
 \usedir{tex/latex/ximera}
+\input docstrip
+\askforoverwritefalse
 \generate{
   \file{ximera.cls}{\from{ximera.dtx}{classXimera}}
-  \file{xourse.cls}{\from{ximera.dtx}{classXimera,classXourse}}
+  \file{xourse.cls}{\from{ximera.dtx}{classXourse}}
 }
 %</install>
 %<install>\endbatchfile
@@ -88,12 +90,12 @@ Running "make install" installs the files in the local TeX tree.
 %<*driver>
 \ProvidesFile{ximera.dtx}
 %</driver>
-%<classXimera>\NeedsTeXFormat{LaTeX2e}[1999/12/01]
+%<classXimera|classXourse>\NeedsTeXFormat{LaTeX2e}[1999/12/01]
 %<classXimera>\ProvidesClass{ximera}
-%<*classXimera>
+%<classXourse>\ProvidesClass{xourse}
+%<*classXimera|classXourse>
     [2017/10/17 v1.00 A LaTeX class for simultaneously writing print and online interactive materials.]
-%</classXimera>
-%<classXourse>\NeedsTeXFormat{LaTeX2e}[1999/12/01]
+%</classXimera|classXourse>
 %<*driver>
 \documentclass{ltxdoc}
 \usepackage[a4paper,margin=25mm,left=50mm,nohead]{geometry}
@@ -149,7 +151,7 @@ Running "make install" installs the files in the local TeX tree.
 % \section{Ximera}
 %
 %    \begin{macrocode}
-%<*classXimera>
+%<*classXimera|classXourse>
 \LoadClass[a4paper,fleqn]{article}
 %    \end{macrocode}
 % \begin{macro}{\dummyMacro}
@@ -182,7 +184,7 @@ Running "make install" installs the files in the local TeX tree.
 %
 %    \begin{macrocode}
 \endinput
-%</classXimera>
+%</classXimera|classXourse>
 %    \end{macrocode}
 %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
