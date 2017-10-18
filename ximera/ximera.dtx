@@ -61,14 +61,15 @@ Running "make install" installs the files in the local TeX tree.
 
 \usedir{tex/latex/ximera}
 \generate{
-  \file{\jobname.cls}{\from{\jobname.dtx}{class}}
+  \file{ximera.cls}{\from{ximera.dtx}{classXimera}}
+  \file{xourse.cls}{\from{ximera.dtx}{classXimera,classXourse}}
 }
 %</install>
 %<install>\endbatchfile
 %<*internal>
 \usedir{source/latex/ximera}
 \generate{
-  \file{\jobname.ins}{\from{\jobname.dtx}{install}}
+  \file{ximera.ins}{\from{\jobname.dtx}{install}}
 }
 \nopreamble\nopostamble
 \usedir{doc/latex/ximera}
@@ -87,11 +88,12 @@ Running "make install" installs the files in the local TeX tree.
 %<*driver>
 \ProvidesFile{ximera.dtx}
 %</driver>
-%<class>\NeedsTeXFormat{LaTeX2e}[1999/12/01]
-%<class>\ProvidesClass{ximera}
-%<*class>
+%<classXimera>\NeedsTeXFormat{LaTeX2e}[1999/12/01]
+%<classXimera>\ProvidesClass{ximera}
+%<*classXimera>
     [2017/10/17 v1.00 A LaTeX class for simultaneously writing print and online interactive materials.]
-%</class>
+%</classXimera>
+%<classXourse>\NeedsTeXFormat{LaTeX2e}[1999/12/01]
 %<*driver>
 \documentclass{ltxdoc}
 \usepackage[a4paper,margin=25mm,left=50mm,nohead]{geometry}
@@ -118,8 +120,7 @@ Running "make install" installs the files in the local TeX tree.
 %\maketitle
 %
 %\changes{v1.00}{2017/10/17}{First public release}
-
-
+%
 % \begin{abstract}
 % The \textsf{ximera} class aids in the creation of handouts,
 % worksheets, exercises, and sections of textbooks to be used either
@@ -144,15 +145,11 @@ Running "make install" installs the files in the local TeX tree.
 % describing what the environment is supposed to do, what its
 % mandatory and optional arguments are, and so forth.
 %
-%\StopEventually{^^A
-%  \PrintChanges
-%  \PrintIndex
-%}
 %
-% \section{Implementation}
+% \section{Ximera}
 %
 %    \begin{macrocode}
-%<*class>
+%<*classXimera>
 \LoadClass[a4paper,fleqn]{article}
 %    \end{macrocode}
 % \begin{macro}{\dummyMacro}
@@ -185,6 +182,51 @@ Running "make install" installs the files in the local TeX tree.
 %
 %    \begin{macrocode}
 \endinput
-%</class>
+%</classXimera>
+%    \end{macrocode}
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+% \section{Xourse}
+%
+%    \begin{macrocode}
+%<*classXourse>
+\LoadClass[a4paper,fleqn]{article}
+%    \end{macrocode}
+% \begin{macro}{\dummyMacro2}
+% This is a dummy macro.  If it did anything, we'd describe its
+% implementation here.
+%    \begin{macrocode}
+\newcommand{\dummyMacro2}{}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{environment}{dummyEnv2}
+% This is a dummy environment.  If it did anything, we'd describe its
+% implementation here.
+%    \begin{macrocode}
+\newenvironment{dummyEnv2}{%
+}{%
+%    \end{macrocode}
+% \changes{v1.00a}{2017/10/17}{Added a spurious change log entry to
+%   show what a change \emph{within} an environment definition looks
+%   like.}
+% Don't use |%| to introduce a code comment within a |macrocode|
+% environment.  Instead, you should typeset all of your comments with
+% LaTeX---doing so gives much prettier results.  For comments within a
+% macro/environment body, just do an |\end{macrocode}|, include some
+% commentary, and do another |\begin{macrocode}|.  It's that simple.
+%    \begin{macrocode}
+}
+%    \end{macrocode}
+% \end{environment}
+%
+%    \begin{macrocode}
+\endinput
+%</classXourse>
 %    \end{macrocode}
 %\Finale
