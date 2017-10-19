@@ -57,9 +57,9 @@
 \DeclareOption{instructornotes}{\instructornotestrue}   %% Yes. 
 \DeclareOption{noinstructornotes}{\instructornotestrue} %% This is hilarious.
 
-\newif\ifnooutcomes
-\nooutcomesfalse
-\DeclareOption{nooutcomes}{\nooutcomestrue}
+\newif\ifnooutcomes % DONE
+\nooutcomesfalse % DONE
+\DeclareOption{nooutcomes}{\nooutcomestrue} %DONE
 
 \newif\ifnoauthor%DONE
 \noauthorfalse% DONE
@@ -112,11 +112,11 @@
 \xakefalse
 \DeclareOption{xake}{\xaketrue}
 
-\DeclareOption*{%
-  \PassOptionsToClass{\CurrentOption}{article}%
-}
-\ProcessOptions\relax
-\LoadClass{article}
+\DeclareOption*{%DONE
+  \PassOptionsToClass{\CurrentOption}{article}%DONE
+}%DONE
+\ProcessOptions\relax%DONE
+\LoadClass{article}%DONE
 
 %%%% for allowing a ximera document to be input into a master ximera document
 

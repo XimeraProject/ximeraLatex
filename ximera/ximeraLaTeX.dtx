@@ -135,13 +135,14 @@ Running "make install" installs the files in the local TeX tree.
 % \section{Introduction}
 %
 % \section{ximera.cls}
-%
+% \subsection{Options for the classes}
+%    We start by listing the options for the \textsf{ximera} and \textsf{xourse} classes.
 %
 %    \begin{macrocode}
 %<*classXimera|classXourse>
 %    \end{macrocode}
 % \begin{macro}{handout}
-%    The default behavior of the \textsf{ximera} class is to display \textbf{all} content. This means that if any questions are asked, all answers are shown. Moreover, some content will only have a meaningful presentation when displayed online. When compiled without any options, this content will be shown too. The \texttt{handout} option will supress such content and generate a reasonable printiable ``handout.''
+%    The default behavior of the class is to display \textbf{all} content. This means that if any questions are asked, all answers are shown. Moreover, some content will only have a meaningful presentation when displayed online. When compiled without any options, this content will be shown too. The \texttt{handout} option will supress such content and generate a reasonable printiable ``handout.''
 %
 %    \begin{macrocode}
 \newif\ifhandout
@@ -151,7 +152,7 @@ Running "make install" installs the files in the local TeX tree.
 % \end{macro}
 %
 % \begin{macro}{noauthor}
-%    By default, authors are listed at the bottom of the first page of a \textsf{ximera} document. The option \texttt{noauthor} will supress the listing of the authors.
+%    By default, authors are listed at the bottom of the first page of a document. The option \texttt{noauthor} will supress the listing of the authors.
 %    \begin{macrocode}
 \newif\ifnoauthor
 \noauthorfalse
@@ -160,7 +161,7 @@ Running "make install" installs the files in the local TeX tree.
 % \end{macro}
 %
 % \begin{macro}{nooutcomes}
-%    By default, learning outcomes are listed at the bottom of the first page of a \textsf{ximera} document. The option \texttt{nooutcomes} will supress the listing of the learning outcomes.
+%    By default, learning outcomes are listed at the bottom of the first page of a document. The option \texttt{nooutcomes} will supress the listing of the learning outcomes.
 %    \begin{macrocode}
 \newif\ifnooutcomes
 \nooutcomesfalse
@@ -169,6 +170,10 @@ Running "make install" installs the files in the local TeX tree.
 % \end{macro}
 %
 %    \begin{macrocode}
+\DeclareOption*{%
+  \PassOptionsToClass{\CurrentOption}{article}%
+}
+\ProcessOptions\relax
 \LoadClass{article}
 %    \end{macrocode}
 % \begin{macro}{\dummyMacro}
