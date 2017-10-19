@@ -132,6 +132,44 @@ Running "make install" installs the files in the local TeX tree.
 % \end{abstract}
 %
 %
+%
+% \section{Ximera}
+%
+%
+%    \begin{macrocode}
+%<*classXimera|classXourse>
+\LoadClass[a4paper,fleqn]{article}
+%    \end{macrocode}
+% \begin{macro}{\dummyMacro}
+% This is a dummy macro.  If it did anything, we'd describe its
+% implementation here.
+%    \begin{macrocode}
+\newcommand{\dummyMacro}{}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{environment}{dummyEnv}
+% This is a dummy environment.  If it did anything, we'd describe its
+% implementation here.
+%    \begin{macrocode}
+\newenvironment{dummyEnv}{%
+}{%
+%    \end{macrocode}
+% \changes{v1.00a}{2017/10/17}{Added a spurious change log entry to
+%   show what a change \emph{within} an environment definition looks
+%   like.}
+% Don't use |%| to introduce a code comment within a |macrocode|
+% environment.  Instead, you should typeset all of your comments with
+% LaTeX---doing so gives much prettier results.  For comments within a
+% macro/environment body, just do an |\end{macrocode}|, include some
+% commentary, and do another |\begin{macrocode}|.  It's that simple.
+%    \begin{macrocode}
+}
+%    \end{macrocode}
+% \end{environment}
+%    \begin{macrocode}
+%</classXimera|classXourse>
+%    \end{macrocode}
 % \section{Xourse}
 %
 %    \begin{macrocode}
@@ -190,43 +228,8 @@ Running "make install" installs the files in the local TeX tree.
 % If this were a real environment, you would put a paragraph here
 % describing what the environment is supposed to do, what its
 % mandatory and optional arguments are, and so forth.
-%
-%
-% \section{Ximera}
-%
 %    \begin{macrocode}
 %<*classXimera|classXourse>
-\LoadClass[a4paper,fleqn]{article}
-%    \end{macrocode}
-% \begin{macro}{\dummyMacro}
-% This is a dummy macro.  If it did anything, we'd describe its
-% implementation here.
-%    \begin{macrocode}
-\newcommand{\dummyMacro}{}
-%    \end{macrocode}
-% \end{macro}
-%
-% \begin{environment}{dummyEnv}
-% This is a dummy environment.  If it did anything, we'd describe its
-% implementation here.
-%    \begin{macrocode}
-\newenvironment{dummyEnv}{%
-}{%
-%    \end{macrocode}
-% \changes{v1.00a}{2017/10/17}{Added a spurious change log entry to
-%   show what a change \emph{within} an environment definition looks
-%   like.}
-% Don't use |%| to introduce a code comment within a |macrocode|
-% environment.  Instead, you should typeset all of your comments with
-% LaTeX---doing so gives much prettier results.  For comments within a
-% macro/environment body, just do an |\end{macrocode}|, include some
-% commentary, and do another |\begin{macrocode}|.  It's that simple.
-%    \begin{macrocode}
-}
-%    \end{macrocode}
-% \end{environment}
-%
-%    \begin{macrocode}
 \endinput
 %</classXimera|classXourse>
 %    \end{macrocode}
