@@ -100,6 +100,7 @@ Running "make install" installs the files in the local TeX tree.
 \documentclass{ltxdoc}
 \usepackage[a4paper,margin=25mm,left=50mm,nohead]{geometry}
 \usepackage[numbered]{hypdoc}
+\usepackage{hyperref}
 
 \EnableCrossrefs
 \CodelineIndex
@@ -112,8 +113,8 @@ Running "make install" installs the files in the local TeX tree.
 %
 % \GetFileInfo{\jobname.dtx}
 % \DoNotIndex{\newcommand,\newenvironment}
-%
-%\title{\textsf{ximera\LaTeX} --- \LaTeX classes for simultaneously writing print and online interactive materials.\thanks{This file
+% 
+%\title{\textsf{ximera\LaTeX} --- \LaTeX\ classes for simultaneously writing print and online interactive materials.\thanks{This file
 %   describes version \fileversion, last revised \filedate.}
 %}
 %\author{Bart Snapp\thanks{E-mail: bart.snapp@gmail.com}}
@@ -128,12 +129,12 @@ Running "make install" installs the files in the local TeX tree.
 % worksheets, exercises, and sections of textbooks to be used either
 % individually or ``glued'' together via a \textsf{xourse} file. All
 % \textsf{ximera} documents can be deployed in an online interactive
-% form via \texttt{xake}.
+% form via \texttt{xake} See: \href{https://ximera.osu.edu}{Ximera Project} and the source code on \href{https://github.com/XimeraProject}{GitHub}.
 % \end{abstract}
 %
+% \section{Introduction}
 %
-%
-% \section{Ximera}
+% \section{ximera.cls}
 %
 %
 %    \begin{macrocode}
@@ -170,7 +171,7 @@ Running "make install" installs the files in the local TeX tree.
 %    \begin{macrocode}
 %</classXimera|classXourse>
 %    \end{macrocode}
-% \section{Xourse}
+% \section{xourse.cls}
 %
 %    \begin{macrocode}
 %<*classXourse>
