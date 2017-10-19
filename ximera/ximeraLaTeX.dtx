@@ -6,7 +6,7 @@
 %<*readme>
 |
 -------:| -----------------------------------------------------------------
- ximeraLaTeX:| A LaTeX class for simultaneously writing print and online interactive materials.
+ ximeraLaTeX:| LaTeX classes for simultaneously writing print and online interactive materials.
       Author:| Bart Snapp
       E-mail:| bart.snapp@gmail.com
      License:| Released under the LaTeX Project Public License v1.3c or later
@@ -29,7 +29,7 @@ Some text about the class: probably the same as the abstract.
 \askforoverwritefalse
 \preamble
 ------------:| ------------------------------------------------------------
- ximeraLaTeX:| A LaTeX class for simultaneously writing print and online interactive materials.
+ ximeraLaTeX:| LaTeX classes for simultaneously writing print and online interactive materials.
       Author:| Bart Snapp
       E-mail:| bart.snapp@gmail.com
      License:| Released under the LaTeX Project Public License v1.3c or later
@@ -139,7 +139,37 @@ Running "make install" installs the files in the local TeX tree.
 %
 %    \begin{macrocode}
 %<*classXimera|classXourse>
-\LoadClass[a4paper,fleqn]{article}
+%    \end{macrocode}
+% \begin{macro}{handout}
+%    The default behavior of the \textsf{ximera} class is to display \textbf{all} content. This means that if any questions are asked, all answers are shown. Moreover, some content will only have a meaningful presentation when displayed online. When compiled without any options, this content will be shown too. The \texttt{handout} option will supress such content and generate a reasonable printiable ``handout.''
+%
+%    \begin{macrocode}
+\newif\ifhandout
+\handoutfalse
+\DeclareOption{handout}{\handouttrue}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{noauthor}
+%    By default, authors are listed at the bottom of the first page of a \textsf{ximera} document. The option \texttt{noauthor} will supress the listing of the authors.
+%    \begin{macrocode}
+\newif\ifnoauthor
+\noauthorfalse
+\DeclareOption{noauthor}{\noauthortrue}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{nooutcomes}
+%    By default, learning outcomes are listed at the bottom of the first page of a \textsf{ximera} document. The option \texttt{nooutcomes} will supress the listing of the learning outcomes.
+%    \begin{macrocode}
+\newif\ifnooutcomes
+\nooutcomesfalse
+\DeclareOption{nooutcomes}{\nooutcomestrue}
+%    \end{macrocode}
+% \end{macro}
+%
+%    \begin{macrocode}
+\LoadClass{article}
 %    \end{macrocode}
 % \begin{macro}{\dummyMacro}
 % This is a dummy macro.  If it did anything, we'd describe its
