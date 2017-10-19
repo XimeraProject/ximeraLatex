@@ -48,9 +48,9 @@
 \ProvidesClass{ximera}[\filedate\space Version \fileversion\space by
   Bart Snapp]
 
-\newif\ifhandout
-\handoutfalse
-\DeclareOption{handout}{\handouttrue}
+\newif\ifhandout % DONE
+\handoutfalse% DONE
+\DeclareOption{handout}{\handouttrue}% DONE
 
 \newif\ifinstructornotes
 \instructornotesfalse
@@ -61,9 +61,9 @@
 \nooutcomesfalse
 \DeclareOption{nooutcomes}{\nooutcomestrue}
 
-\newif\ifnoauthor
-\noauthorfalse
-\DeclareOption{noauthor}{\noauthortrue}
+\newif\ifnoauthor%DONE
+\noauthorfalse% DONE
+\DeclareOption{noauthor}{\noauthortrue}%DONE
 
 \newif\ifhints
 \hintsfalse
