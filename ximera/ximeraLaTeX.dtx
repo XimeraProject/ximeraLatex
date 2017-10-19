@@ -6,11 +6,11 @@
 %<*readme>
 |
 -------:| -----------------------------------------------------------------
- ximera:| A LaTeX class for simultaneously writing print and online interactive materials.
- Author:| Bart Snapp
- E-mail:| bart.snapp@gmail.com
-License:| Released under the LaTeX Project Public License v1.3c or later
-    See:| http://www.latex-project.org/lppl.txt
+ ximeraLaTeX:| A LaTeX class for simultaneously writing print and online interactive materials.
+      Author:| Bart Snapp
+      E-mail:| bart.snapp@gmail.com
+     License:| Released under the LaTeX Project Public License v1.3c or later
+         See:| http://www.latex-project.org/lppl.txt
 
 
 Short description:
@@ -28,12 +28,12 @@ Some text about the class: probably the same as the abstract.
 \keepsilent
 \askforoverwritefalse
 \preamble
--------:| -----------------------------------------------------------------
- ximera:| A LaTeX class for simultaneously writing print and online interactive materials.
- Author:| Bart Snapp
- E-mail:| bart.snapp@gmail.com
-License:| Released under the LaTeX Project Public License v1.3c or later
-    See:| http://www.latex-project.org/lppl.txt
+------------:| ------------------------------------------------------------
+ ximeraLaTeX:| A LaTeX class for simultaneously writing print and online interactive materials.
+      Author:| Bart Snapp
+      E-mail:| bart.snapp@gmail.com
+     License:| Released under the LaTeX Project Public License v1.3c or later
+         See:| http://www.latex-project.org/lppl.txt
 
 \endpreamble
 \postamble
@@ -53,28 +53,28 @@ Bart Snapp. The source code can be found at:
 https://github.com/XimeraProject/ximeraLatex
 
 This work consists of the file ximera.dtx and a Makefile.
-Running "make" generates the derived files README, ximera.pdf and ximera.cls.
+Running "make" generates the derived files README, ximeraLaTeX.pdf, ximera.cls, xourse.cls.
 Running "make inst" installs the files in the user's TeX tree.
 Running "make install" installs the files in the local TeX tree.
 
 \endpostamble
 
-\usedir{tex/latex/ximera}
+\usedir{tex/latex/ximeraLaTeX}
 \input docstrip
 \askforoverwritefalse
 \generate{
-  \file{ximera.cls}{\from{ximera.dtx}{classXimera}}
-  \file{xourse.cls}{\from{ximera.dtx}{classXourse}}
+  \file{ximera.cls}{\from{ximeraLaTeX.dtx}{classXimera}}
+  \file{xourse.cls}{\from{ximeraLaTeX.dtx}{classXourse}}
 }
 %</install>
 %<install>\endbatchfile
 %<*internal>
-\usedir{source/latex/ximera}
+\usedir{source/latex/ximeraLaTeX}
 \generate{
-  \file{ximera.ins}{\from{\jobname.dtx}{install}}
+  \file{ximeraLaTeX.ins}{\from{\jobname.dtx}{install}}
 }
 \nopreamble\nopostamble
-\usedir{doc/latex/ximera}
+\usedir{doc/latex/ximeraLaTeX}
 \generate{
   \file{README.txt}{\from{\jobname.dtx}{readme}}
 }
@@ -88,7 +88,7 @@ Running "make install" installs the files in the local TeX tree.
 %
 % \iffalse
 %<*driver>
-\ProvidesFile{ximera.dtx}
+\ProvidesFile{ximeraLaTeX.dtx}
 %</driver>
 %<classXimera|classXourse>\NeedsTeXFormat{LaTeX2e}[1999/12/01]
 %<classXimera>\ProvidesClass{ximera}
@@ -113,7 +113,7 @@ Running "make install" installs the files in the local TeX tree.
 % \GetFileInfo{\jobname.dtx}
 % \DoNotIndex{\newcommand,\newenvironment}
 %
-%\title{\textsf{ximera} --- A LaTeX class for simultaneously writing print and online interactive materials.\thanks{This file
+%\title{\textsf{ximera\LaTeX} --- \LaTeX classes for simultaneously writing print and online interactive materials.\thanks{This file
 %   describes version \fileversion, last revised \filedate.}
 %}
 %\author{Bart Snapp\thanks{E-mail: bart.snapp@gmail.com}}
