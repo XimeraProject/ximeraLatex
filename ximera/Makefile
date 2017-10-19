@@ -1,4 +1,4 @@
-NAME  = ximera
+NAME  = ximeraLaTeX
 SHELL = bash
 PWD   = $(shell pwd)
 VERS  = $(shell ltxfileinfo -v $(NAME).dtx|sed -e 's/^v//')
@@ -15,7 +15,7 @@ $(NAME).pdf: $(NAME).dtx
 clean:
 	rm -f $(NAME).{aux,fls,glo,gls,hd,idx,ilg,ind,ins,log,out}
 distclean: clean
-	rm -f ximera.{pdf,cls} README xourse.cls
+	rm -f ximeraLaTeX.pdf ximera.cls README xourse.cls
 inst: all
 	mkdir -p $(UTREE)/{tex,source,doc}/latex/$(NAME)
 	cp $(NAME).dtx $(UTREE)/source/latex/$(NAME)
