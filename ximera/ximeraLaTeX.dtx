@@ -142,7 +142,7 @@ Running "make install" installs the files in the local TeX tree.
 %<*classXimera>
 %    \end{macrocode}
 % \begin{macro}{handout}
-%    The default behavior of the class is to display \textbf{all} content. This means that if any questions are asked, all answers are shown. Moreover, some content will only have a meaningful presentation when displayed online. When compiled without any options, this content will be shown too. The \texttt{handout} option will supress such content and generate a reasonable printiable ``handout.''
+%    The default behavior of the class is to display \textbf{all} content. This means that if any questions are asked, all answers are shown. Moreover, some content will only have a meaningful presentation when displayed online. When compiled without any options, this content will be shown too. This option will supress such content and generate a reasonable printiable ``handout.''
 %
 %    \begin{macrocode}
 \newif\ifhandout
@@ -152,7 +152,7 @@ Running "make install" installs the files in the local TeX tree.
 % \end{macro}
 %
 % \begin{macro}{noauthor}
-%    By default, authors are listed at the bottom of the first page of a document. The option \texttt{noauthor} will supress the listing of the authors.
+%    By default, authors are listed at the bottom of the first page of a document. This option will supress the listing of the authors.
 %    \begin{macrocode}
 \newif\ifnoauthor
 \noauthorfalse
@@ -161,7 +161,7 @@ Running "make install" installs the files in the local TeX tree.
 % \end{macro}
 %
 % \begin{macro}{nooutcomes}
-%    By default, learning outcomes are listed at the bottom of the first page of a document. The option \texttt{nooutcomes} will supress the listing of the learning outcomes.
+%    By default, learning outcomes are listed at the bottom of the first page of a document. This option will supress the listing of the learning outcomes.
 %    \begin{macrocode}
 \newif\ifnooutcomes
 \nooutcomesfalse
@@ -169,9 +169,19 @@ Running "make install" installs the files in the local TeX tree.
 %    \end{macrocode}
 % \end{macro}
 %
+% \begin{macro}{instructornotes}
+%    This option will turn on and off notes written for the instructor. 
+%    \begin{macrocode}
+\newif\ifinstructornotes
+\instructornotesfalse
+\DeclareOption{instructornotes}{\instructornotestrue}
+\DeclareOption{noinstructornotes}{\instructornotestrue}
+%    \end{macrocode}
+% \end{macro}
+%
 %    \begin{macrocode}
 \DeclareOption*{\PassOptionsToClass{\CurrentOption}{article}}
-\ProcessOptions
+\ProcessOptions\relax
 \LoadClass{article}
 %    \end{macrocode}
 % \begin{macro}{\dummyMacro}
@@ -208,15 +218,26 @@ Running "make install" installs the files in the local TeX tree.
 %
 %    \begin{macrocode}
 %<*classXourse>
+%    \end{macrocode}
+% \begin{macro}{notoc}
+%    The default behavior of the class is to provide a table of contents listing all activities in the course. This option will supress this table of contents.
+%    \begin{macrocode}
 \newif\ifnotoc
 \notocfalse
 \DeclareOption{notoc}{\notoctrue}
-
+%    \end{macrocode}
+% \end{macro}
+% \begin{macro}{nonewpage}
+%    The default behavior of the class is to start each activity on a new page. This option will start activities without making a new page.
+%    \begin{macrocode}
 \newif\ifnonewpage
 \nonewpagefalse
 \DeclareOption{nonewpage}{\nonewpagetrue}
+%    \end{macrocode}
+% \end{macro}
+%    \begin{macrocode}
 \DeclareOption*{\PassOptionsToClass{\CurrentOption}{ximera}}
-\ProcessOptions
+\ProcessOptions\relax
 \LoadClass{ximera}
 %    \end{macrocode}
 % \begin{macro}{\dummyMacro2}

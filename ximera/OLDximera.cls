@@ -48,21 +48,21 @@
 \ProvidesClass{ximera}[\filedate\space Version \fileversion\space by
   Bart Snapp]
 
-\newif\ifhandout % DONE
-\handoutfalse% DONE
-\DeclareOption{handout}{\handouttrue}% DONE
+\newif\ifhandout%DONE
+\handoutfalse%DONE
+\DeclareOption{handout}{\handouttrue}%DONE
 
-\newif\ifinstructornotes
-\instructornotesfalse
-\DeclareOption{instructornotes}{\instructornotestrue}   %% Yes. 
-\DeclareOption{noinstructornotes}{\instructornotestrue} %% This is hilarious.
+\newif\ifinstructornotes%DONE
+\instructornotesfalse%DONE
+\DeclareOption{instructornotes}{\instructornotestrue}%%DONE   %% Yes. 
+\DeclareOption{noinstructornotes}{\instructornotestrue}%%DONE %% This is hilarious.
 
-\newif\ifnooutcomes % DONE
-\nooutcomesfalse % DONE
-\DeclareOption{nooutcomes}{\nooutcomestrue} %DONE
+\newif\ifnooutcomes%DONE
+\nooutcomesfalse%DONE
+\DeclareOption{nooutcomes}{\nooutcomestrue}%DONE
 
 \newif\ifnoauthor%DONE
-\noauthorfalse% DONE
+\noauthorfalse%DONE
 \DeclareOption{noauthor}{\noauthortrue}%DONE
 
 \newif\ifhints
@@ -112,11 +112,11 @@
 \xakefalse
 \DeclareOption{xake}{\xaketrue}
 
-\DeclareOption*{%DONE
-  \PassOptionsToClass{\CurrentOption}{article}%DONE
-}%DONE
-\ProcessOptions\relax%DONE
-\LoadClass{article}%DONE
+\DeclareOption*{%
+  \PassOptionsToClass{\CurrentOption}{article}%
+}
+\ProcessOptions\relax
+\LoadClass{article}
 
 %%%% for allowing a ximera document to be input into a master ximera document
 
