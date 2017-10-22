@@ -38,7 +38,7 @@ Some text about the class: probably the same as the abstract.
 \endpreamble
 \postamble
 
-Copyright (C) 2017 by Bart Snapp <bart.snapp@gmail.com>
+Copyright (C) 2017 by Bart Snapp <bart.snapp@gmail.com> and Jim Fowler <kisonecat@gmail.com>
 
 This work may be distributed and/or modified under the
 conditions of the LaTeX Project Public License (LPPL), either
@@ -93,9 +93,9 @@ Running "make install" installs the files in the local TeX tree.
 %<classXimera|classXourse>\NeedsTeXFormat{LaTeX2e}[1999/12/01]
 %<classXimera>\ProvidesClass{ximera}
 %<classXourse>\ProvidesClass{xourse}
-%<*classXimera|classXourse>
-    [2017/10/17 v1.00 A LaTeX class for simultaneously writing print and online interactive materials.]
-%</classXimera|classXourse>
+%<classXimera|classXourse>[2017/10/17 v1.00
+%<classXimera>A LaTeX class for simultaneously writing print and online interactive materials.]
+%<classXourse>A LaTeX class for combining Ximera activities.]
 %<*driver>
 \documentclass{ltxdoc}
 \usepackage[a4paper,margin=25mm,left=50mm,nohead]{geometry}
@@ -139,7 +139,7 @@ Running "make install" installs the files in the local TeX tree.
 %    We start by listing the options for the \textsf{ximera} and \textsf{xourse} classes.
 %
 %    \begin{macrocode}
-%<*classXimera|classXourse>
+%<*classXimera>
 %    \end{macrocode}
 % \begin{macro}{handout}
 %    The default behavior of the class is to display \textbf{all} content. This means that if any questions are asked, all answers are shown. Moreover, some content will only have a meaningful presentation when displayed online. When compiled without any options, this content will be shown too. The \texttt{handout} option will supress such content and generate a reasonable printiable ``handout.''
@@ -170,10 +170,8 @@ Running "make install" installs the files in the local TeX tree.
 % \end{macro}
 %
 %    \begin{macrocode}
-\DeclareOption*{%
-  \PassOptionsToClass{\CurrentOption}{article}%
-}
-\ProcessOptions\relax
+\DeclareOption*{\PassOptionsToClass{\CurrentOption}{article}}
+\ProcessOptions
 \LoadClass{article}
 %    \end{macrocode}
 % \begin{macro}{\dummyMacro}
@@ -204,13 +202,22 @@ Running "make install" installs the files in the local TeX tree.
 %    \end{macrocode}
 % \end{environment}
 %    \begin{macrocode}
-%</classXimera|classXourse>
+%</classXimera>
 %    \end{macrocode}
 % \section{xourse.cls}
 %
 %    \begin{macrocode}
 %<*classXourse>
-\LoadClass[a4paper,fleqn]{article}
+\newif\ifnotoc
+\notocfalse
+\DeclareOption{notoc}{\notoctrue}
+
+\newif\ifnonewpage
+\nonewpagefalse
+\DeclareOption{nonewpage}{\nonewpagetrue}
+\DeclareOption*{\PassOptionsToClass{\CurrentOption}{ximera}}
+\ProcessOptions
+\LoadClass{ximera}
 %    \end{macrocode}
 % \begin{macro}{\dummyMacro2}
 % This is a dummy macro.  If it did anything, we'd describe its
