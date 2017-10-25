@@ -162,9 +162,9 @@
 	\bool_if:NT \g_tags_relax_bool
 		{%	If we have the relax tag move on
 		\bool_if:NT \g_tags_strict_bool
-			{%	If we *also* have the strict tag then display the contents
-			\bool_if:NF \g_tags_avoid_bool% And we *also* want to avoid any "avoid" tags.
-				{
+			{%	If we *also* have to check the strict tags
+			\bool_if:NF \g_tags_avoid_bool
+				{% And we *also* want to avoid any "avoid" tags.
 				#2
 				}
 			}

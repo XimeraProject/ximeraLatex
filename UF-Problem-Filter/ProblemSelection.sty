@@ -611,6 +611,19 @@
 %	\expandafter\input{\QBank@loc Integral-Multi-Input}
 %	}
 
+\SearchForTag{Topic@TestBank}{
+        \ifVerbose 
+                I detected that I should input the TestBank-Input file 
+                \ifquestionCount 
+                        in order to get question counts!\\
+                \else
+                        in order to find problems!\\
+                \fi     
+        \fi
+\expandafter\input{\QBank@loc TestBank-Input}
+        }
+
+
 }% End of master input test command
 
 \newcommand{\select@Question}[1]{
