@@ -65,29 +65,29 @@
 \noauthorfalse%DONE
 \DeclareOption{noauthor}{\noauthortrue}%DONE
 
-\newif\ifhints
-\hintsfalse
-\DeclareOption{hints}{\hintstrue}
+\newif\ifhints%DONE
+\hintsfalse%DONE
+\DeclareOption{hints}{\hintstrue}%DONE
 
 
-\newif\ifnewpage
-\newpagefalse
-\DeclareOption{newpage}{\newpagetrue}
+\newif\ifnewpage%DONE
+\newpagefalse%DONE
+\DeclareOption{newpage}{\newpagetrue}%DONE
 
-\newif\ifnumbers
-\numbersfalse
-\DeclareOption{numbers}{\numberstrue}
+\newif\ifnumbers%DONE
+\numbersfalse%DONE
+\DeclareOption{numbers}{\numberstrue}%DONE
 
-\newif\ifwordchoicegiven%% suppresses choices in handout mode
-\wordchoicegivenfalse
-\DeclareOption{wordchoicegiven}{\wordchoicegiventrue}
+\newif\ifwordchoicegiven%DONE
+\wordchoicegivenfalse%DONE
+\DeclareOption{wordchoicegiven}{\wordchoicegiventrue}%DONE
 
 \newif\ifshuffle
 \shufflefalse
 
-\newif\ifspace 
-\spacefalse
-\DeclareOption{space}{\spacetrue}
+\newif\ifspace%DONE 
+\spacefalse%DONE
+\DeclareOption{space}{\spacetrue}%DONE
 %% This basically works for exercises, though page breaks are weird. 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -95,28 +95,28 @@
 %
 % This option is automatically chosen when compiling inside the Ximera sandbox
 %
-\newif\iftikzexport
-\tikzexportfalse
-\DeclareOption{tikzexport}{%
-  \tikzexporttrue%
-  \handoutfalse%
-  \shufflefalse%
-  \spacefalse%  
-  \numbersfalse%
-  \newpagefalse%
-  \hintsfalse%
-  \nooutcomesfalse%
-}
+\newif\iftikzexport%DONE
+\tikzexportfalse%DONE
+\DeclareOption{tikzexport}{%%DONE
+  \tikzexporttrue%%DONE
+  \handoutfalse%%DONE
+  \shufflefalse%%DONE
+  \spacefalse%  %DONE
+  \numbersfalse%%DONE
+  \newpagefalse%%DONE
+  \hintsfalse%%DONE
+  \nooutcomesfalse%%DONE
+}%DONE
+%DONE
+\newif\ifxake%DONE
+\xakefalse%DONE
+\DeclareOption{xake}{\xaketrue}%DONE
 
-\newif\ifxake
-\xakefalse
-\DeclareOption{xake}{\xaketrue}
-
-\DeclareOption*{%
-  \PassOptionsToClass{\CurrentOption}{article}%
-}
-\ProcessOptions\relax
-\LoadClass{article}
+\DeclareOption*{%%DONE
+  \PassOptionsToClass{\CurrentOption}{article}%%DONE
+}%DONE
+\ProcessOptions\relax%DONE
+\LoadClass{article}%DONE
 
 %%%% for allowing a ximera document to be input into a master ximera document
 
