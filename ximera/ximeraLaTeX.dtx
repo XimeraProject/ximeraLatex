@@ -93,9 +93,9 @@ Running "make install" installs the files in the local TeX tree.
 %<classXimera|classXourse>\NeedsTeXFormat{LaTeX2e}[1999/12/01]
 %<classXimera>\ProvidesClass{ximera}
 %<classXourse>\ProvidesClass{xourse}
-%<classXimera|classXourse>[2017/10/17 v1.00
-%<classXimera>A LaTeX class for simultaneously writing print and online interactive materials.]
-%<classXourse>A LaTeX class for combining Ximera activities.]
+%<classXimera|classXourse> [2017/10/17 v1.00
+%<classXimera> A LaTeX class for simultaneously writing print and online interactive materials.]
+%<classXourse> A LaTeX class for combining Ximera activities.]
 %<*driver>
 \documentclass{ltxdoc}
 \usepackage[a4paper,margin=25mm,left=50mm,nohead]{geometry}
@@ -134,9 +134,10 @@ Running "make install" installs the files in the local TeX tree.
 %
 % \section{Introduction}
 %
+%
 % \section{ximera.cls}
-% \subsection{Options for the classes}
-%    We start by listing the options for the \textsf{ximera} and \textsf{xourse} classes.
+% \subsection{Options for the class}
+%    We start by listing the options for the \textsf{ximera} document class. Note, since the \textsf{xourse} class is based on the \textsf{ximera} class, all listed options are available there too.
 %
 %    \begin{macrocode}
 %<*classXimera>
@@ -170,15 +171,87 @@ Running "make install" installs the files in the local TeX tree.
 % \end{macro}
 %
 % \begin{macro}{instructornotes}
-%    This option will turn on and off notes written for the instructor. 
+%    This option will turn on (and off) notes written for the instructor.
 %    \begin{macrocode}
 \newif\ifinstructornotes
 \instructornotesfalse
 \DeclareOption{instructornotes}{\instructornotestrue}
+%    \end{macrocode}
+% \end{macro}
+% \begin{macro}{noinstructornotes}
+%    This option will turn off (and on) notes written for the instructor.
+%    \begin{macrocode}
 \DeclareOption{noinstructornotes}{\instructornotestrue}
 %    \end{macrocode}
 % \end{macro}
 %
+% \begin{macro}{hints}
+%    When the \texttt{handout} options is used, hints are not shown. This option will make hints visible in handout mode. 
+%    \begin{macrocode}
+\newif\ifhints
+\hintsfalse
+\DeclareOption{hints}{\hintstrue}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{space}
+%    This option will place space aster each problem-like environment (\texttt{exercise}, \texttt{question}, \texttt{problem}, and \texttt{exploration}).
+%    \begin{macrocode}
+\newif\ifspace 
+\spacefalse
+\DeclareOption{space}{\spacetrue}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{newpage}
+%    This option will start each problem-like environment (\texttt{exercise}, \texttt{question}, \texttt{problem}, and \texttt{exploration}) start on a new page.
+%    \begin{macrocode}
+\newif\ifnewpage
+\newpagefalse
+\DeclareOption{newpage}{\newpagetrue}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{numbers}
+%    This option will number the titles of the activity. By default the activities are unnumbered.
+%    \begin{macrocode}
+\newif\ifnumbers
+\numbersfalse
+\DeclareOption{numbers}{\numberstrue}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{wordchoicegiven}
+%    This option will replace the choices shown by \texttt{wordChoice} with the correct choice. No indication of the \texttt{wordChoice} environment will be shown.
+%    \begin{macrocode}
+\newif\ifwordchoicegiven
+\wordchoicegivenfalse
+\DeclareOption{wordchoicegiven}{\wordchoicegiventrue}
+%    \end{macrocode}
+% \end{macro}
+%
+%    \begin{macrocode}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% tikzexport will generate SVGs and PNGs for tikzpictures
+%%
+%% This option is an internal option used for deploying to the web
+%%
+\newif\iftikzexport
+\tikzexportfalse
+\DeclareOption{tikzexport}{%
+  \tikzexporttrue%
+  \handoutfalse%
+  \shufflefalse%
+  \spacefalse%  
+  \numbersfalse%
+  \newpagefalse%
+  \hintsfalse%
+  \nooutcomesfalse%
+}
+\newif\ifxake
+\xakefalse
+\DeclareOption{xake}{\xaketrue}
+%    \end{macrocode}
 %    \begin{macrocode}
 \DeclareOption*{\PassOptionsToClass{\CurrentOption}{article}}
 \ProcessOptions\relax
