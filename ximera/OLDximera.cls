@@ -121,32 +121,32 @@
 %%%% for allowing a ximera document to be input into a master ximera document
 
 
-% The first thing to do is to save the regular \LaTeX\ definitions of |\document|, |\enddocument|, and  |\documentclass|:
-%    \begin{macrocode}
-\let\old@document@subfiles\document
-\let\old@enddocument@subfiles\enddocument
-\let\old@documentclass@subfiles\documentclass
-%    \end{macrocode}
-%
-% Now the |document| `environment' is redefined and equaled to |comment|. As a consequence, the body of the main file is ignored by \LaTeX, and only the preamble is read (and anything that comes after |\end{document}|!). For |\documentclass|, having been already loaded one (|subfiles|), it is redefined and equaled to |\LoadClass|. The class and options of the main file are loaded identically.
-%    \begin{macrocode}
-\let\document\comment
-\let\enddocument\endcomment
-\let\documentclass\LoadClass\relax
-%    \end{macrocode}
-%
-% Here it comes something not so obvious. In the usual situations, the |\preamble@file| contains some |\usepackage| commands, which, at the end, make |@| no longer a letter. That is why the next part needs a |\catcode| command, grouping, and |\global|'s.
-%    \begin{macrocode}
-{\catcode`\@=11
-\global\let\document\old@document@subfiles
-\global\let\enddocument\old@enddocument@subfiles
-\global\let\documentclass\old@documentclass@subfiles
-\global\let\old@document@subfiles\undefined
-\global\let\old@enddocument@subfiles\undefined
-\global\let\old@documentclass@subfiles\undefined}
-%</class>
-%    \end{macrocode}
-%
+%% % The first thing to do is to save the regular \LaTeX\ definitions of |\document|, |\enddocument|, and  |\documentclass|:
+%% %    \begin{macrocode}
+%% \let\old@document@subfiles\document
+%% \let\old@enddocument@subfiles\enddocument
+%% \let\old@documentclass@subfiles\documentclass
+%% %    \end{macrocode}
+%% %
+%% % Now the |document| `environment' is redefined and equaled to |comment|. As a consequence, the body of the main file is ignored by \LaTeX, and only the preamble is read (and anything that comes after |\end{document}|!). For |\documentclass|, having been already loaded one (|subfiles|), it is redefined and equaled to |\LoadClass|. The class and options of the main file are loaded identically.
+%% %    \begin{macrocode}
+%% \let\document\comment
+%% \let\enddocument\endcomment
+%% \let\documentclass\LoadClass\relax
+%% %    \end{macrocode}
+%% %
+%% % Here it comes something not so obvious. In the usual situations, the |\preamble@file| contains some |\usepackage| commands, which, at the end, make |@| no longer a letter. That is why the next part needs a |\catcode| command, grouping, and |\global|'s.
+%% %    \begin{macrocode}
+%% {\catcode`\@=11
+%% \global\let\document\old@document@subfiles
+%% \global\let\enddocument\old@enddocument@subfiles
+%% \global\let\documentclass\old@documentclass@subfiles
+%% \global\let\old@document@subfiles\undefined
+%% \global\let\old@enddocument@subfiles\undefined
+%% \global\let\old@documentclass@subfiles\undefined}
+%% %</class>
+%% %    \end{macrocode}
+%% %
 
 
 
@@ -154,63 +154,59 @@
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % externalize tikz images
-\PassOptionsToPackage{table}{xcolor}
-\RequirePackage{tikz}
+\PassOptionsToPackage{table}{xcolor}%DONE
+\RequirePackage{tikz}%DONE
 
-\ifdefined\HCode
-  \tikzexporttrue
-\fi
+\ifdefined\HCode%DONE
+\tikzexporttrue%DONE
+\fi%DONE
+\iftikzexport%DONE
+\usetikzlibrary{external}%DONE
+\ifdefined\HCode%DONE
+% in htlatex, just include the svg files
+\def\pgfsys@imagesuffixlist{.svg}%DONE
+\tikzexternalize[prefix=./,mode=graphics if exists]%DONE
+\else%DONE
+% in pdflatex, actually generate the svg files
+\tikzset{%DONE
+  /tikz/external/system call={%DONE
+    pdflatex \tikzexternalcheckshellescape -halt-on-error -interaction=batchmode -jobname "\image" "\\PassOptionsToClass{tikzexport}{ximera}\texsource";%DONE
+    mutool draw -o \image.svg \image.pdf ;%DONE
+    mutool draw -r 150 -c rgbalpha -o \image.png \image.pdf ;%DONE
+  }%DONE
+}%DONE
+\tikzexternalize[optimize=false,prefix=./]%DONE%DONE
+\fi%DONE
+\fi%DONE
+  
+  % Load sagetex if it exists
+\IfFileExists{sagetex.sty}{\RequirePackage{sagetex}}{}% DONE
 
-\iftikzexport
-  \usetikzlibrary{external}
-
-  \ifdefined\HCode
-    % in htlatex, just include the svg files
-    \def\pgfsys@imagesuffixlist{.svg}
-    
-    \tikzexternalize[prefix=./,mode=graphics if exists]
-  \else
-    % in pdflatex, actually generate the svg files
-    \tikzset{
-      /tikz/external/system call={
-        pdflatex \tikzexternalcheckshellescape -halt-on-error -interaction=batchmode -jobname "\image" "\\PassOptionsToClass{tikzexport}{ximera}\texsource";
-        mutool draw -o \image.svg \image.pdf ;
-        mutool draw -r 150 -c rgbalpha -o \image.png \image.pdf ;
-      }
-    }
-    \tikzexternalize[optimize=false,prefix=./]
-  \fi
-
-  \fi
-
-% Load sagetex if it exists
-\IfFileExists{sagetex.sty}{\RequirePackage{sagetex}}{}
-
-\RequirePackage[inline]{enumitem}
-\RequirePackage[pagestyles]{titlesec} 
-\RequirePackage{titletoc} 
-\RequirePackage{titling}  
-\RequirePackage{url}
-\RequirePackage{xcolor}
-\RequirePackage{pgfplots}
-\usepgfplotslibrary{groupplots}
-\usetikzlibrary{calc}
-\RequirePackage{fancyvrb}
+\RequirePackage[inline]{enumitem}%DONE
+\RequirePackage[pagestyles]{titlesec}%DONE 
+\RequirePackage{titletoc}%DONE 
+\RequirePackage{titling}%DONE  
+\RequirePackage{url}% DONE
+\RequirePackage{xcolor}% DONE -- NOTE REMOVED PASS TO OPTION
+\RequirePackage{pgfplots}%Done
+\usepgfplotslibrary{groupplots}%DONE
+\usetikzlibrary{calc}%DONE
+\RequirePackage{fancyvrb}%DONE
 %\RequirePackage{verbatim}
-\RequirePackage{environ}
-\RequirePackage{amssymb}
-\RequirePackage{amsmath}
-\RequirePackage{amsthm}
-\RequirePackage{xifthen}% http://ctan.org/pkg/xifthen
-\RequirePackage{multido}% http://ctan.org/pkg/multido
-\RequirePackage{listings} %% is this required???
+\RequirePackage{environ}%DONE
+\RequirePackage{amssymb}%DONE
+\RequirePackage{amsmath}%DONE
+\RequirePackage{amsthm}%DONE
+\RequirePackage{xifthen}% http://ctan.org/pkg/xifthen%DONE
+\RequirePackage{multido}% http://ctan.org/pkg/multido%DONE
+\RequirePackage{listings} %% is this required???%DONE
 
-\RequirePackage{xkeyval}
+\RequirePackage{xkeyval}%DONE
 
-\RequirePackage[framemethod=TikZ]{mdframed} %% Used to make pretty foldable
+\RequirePackage[framemethod=TikZ]{mdframed}%%DONE %% Used to make pretty foldable
 % BADBAD: the amsthm/mdframed conflict also messes up the .jax file
 
-\RequirePackage{comment}
+\RequirePackage{comment}%DONE
 
 \oddsidemargin 62pt %% so we don't get weird margins in 2-sided mode
 \evensidemargin 62pt %% so we don't get weird margins in 2-sided mode
@@ -221,12 +217,12 @@
 
 
 % Don't use hyperref when using Tex4ht
-\ifdefined\HCode
-\newcommand{\href}[1]{}
-\else
-\RequirePackage[pdfpagelabels,colorlinks=true,allcolors=blue!30!black]{hyperref}
-\pdfstringdefDisableCommands{\def\hskip{}}%% quiets warning
-\fi
+\ifdefined\HCode%DONE
+\newcommand{\href}[1]{}%DONE
+\else%DONE
+\RequirePackage[pdfpagelabels,colorlinks=true,allcolors=blue!30!black]{hyperref}%DONE
+\pdfstringdefDisableCommands{\def\hskip{}}%% quiets warning%DONE
+\fi%DONE
 % We put hyperref after all other packages becuase that is better.
 
 % the article document class is made to have lines of text that are

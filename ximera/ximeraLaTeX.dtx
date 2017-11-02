@@ -257,6 +257,67 @@ Running "make install" installs the files in the local TeX tree.
 \ProcessOptions\relax
 \LoadClass{article}
 %    \end{macrocode}
+% \subsection{Loading packages}
+%    Quite a few packages are required by the document class. 
+%    \begin{macrocode}
+\RequirePackage[table]{xcolor}
+\RequirePackage{pgfplots}
+\usepgfplotslibrary{groupplots}
+\usetikzlibrary{calc}
+\IfFileExists{sagetex.sty}{\RequirePackage{sagetex}}{}
+\RequirePackage[inline]{enumitem}
+\RequirePackage[pagestyles]{titlesec} 
+\RequirePackage{titletoc} 
+\RequirePackage{titling}  
+\RequirePackage{url}
+\RequirePackage{fancyvrb}
+\RequirePackage{environ}
+\RequirePackage{amssymb}
+\RequirePackage{amsmath}
+\RequirePackage{amsthm}
+\RequirePackage{xifthen}
+\RequirePackage{multido}
+\RequirePackage{listings}
+\RequirePackage{xkeyval}
+\RequirePackage[framemethod=TikZ]{mdframed}
+\RequirePackage{comment}
+%    \end{macrocode}
+% \subsection{Preparation for TeX4ht}
+%   Some commands need to be redefined in preparation web deployment.
+%    \begin{macrocode}
+\ifdefined\HCode
+\newcommand{\href}[1]{}
+\else
+\RequirePackage[pdfpagelabels,colorlinks=true,allcolors=blue!30!black]{hyperref}
+\pdfstringdefDisableCommands{\def\hskip{}}%% quiets warning
+\fi
+%    \end{macrocode}
+% \subsection{Exporting graphics}
+%    When compiling with \textit{xake}, all Ti\textit{k}Z images are extracted, and rendered separately. The following code makes this happen:
+%    \begin{macrocode}
+\ifdefined\HCode
+\tikzexporttrue
+\fi
+\iftikzexport
+\usetikzlibrary{external}
+\ifdefined\HCode
+% in htlatex, just include the svg files
+\def\pgfsys@imagesuffixlist{.svg}
+\tikzexternalize[prefix=./,mode=graphics if exists]
+\else
+% in pdflatex, actually generate the svg files
+\tikzset{
+  /tikz/external/system call={
+    pdflatex \tikzexternalcheckshellescape -halt-on-error -interaction=batchmode -jobname "\image" "\\PassOptionsToClass{tikzexport}{ximera}\texsource";
+    mutool draw -o \image.svg \image.pdf ;
+    mutool draw -r 150 -c rgbalpha -o \image.png \image.pdf ;
+  }
+}
+\tikzexternalize[optimize=false,prefix=./]
+\fi
+\fi
+%    \end{macrocode}
+%
 % \begin{macro}{\dummyMacro}
 % This is a dummy macro.  If it did anything, we'd describe its
 % implementation here.
