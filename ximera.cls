@@ -222,7 +222,8 @@
 
 % Don't use hyperref when using Tex4ht
 \ifdefined\HCode
-\newcommand{\href}[1]{}
+\RequirePackage{hyperref}
+%\newcommand{\href}[1]{}
 \else
 \RequirePackage[pdfpagelabels,colorlinks=true,allcolors=blue!30!black]{hyperref}
 \pdfstringdefDisableCommands{\def\hskip{}}%% quiets warning
