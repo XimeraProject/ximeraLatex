@@ -25,9 +25,9 @@
 \immediate\write-1{version 2014-01-26-09:44}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% disable ligatures in HTML
+% disable certain ligatures in HTML
 \usepackage{microtype}
-\DisableLigatures{encoding = *, family = * }
+\DisableLigatures[f]{encoding=*}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % pgf sometimes causes trouble, but we simply don't care in tex4ht mode
