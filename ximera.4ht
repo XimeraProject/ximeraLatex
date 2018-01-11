@@ -220,7 +220,7 @@
 
 
 % Desmos command. Requires id, width, and height as arguments.
-\renewcommand{\desmos}[3]{\HCode{<iframe src="https://www.desmos.com/calculator/#1?embed" width="#2px" height="#3px" style="border: 1px solid #ccc" frameborder=0></iframe>}}
+\renewcommand{\desmos}[3]{\HCode{<iframe src="https://www.desmos.com/calculator/#1" width="100%" height="#3px" style="border: 1px solid #ccc" frameborder=0></iframe>}}
 
 % googleSheet command. Requires id, width, and height as arguments.
 %  optional arguments are gid for sheet ID and range for cell range.
