@@ -220,8 +220,7 @@
 
 
 % Desmos command. Requires id, width, and height as arguments.
-\renewcommand{\desmos}[3]{\HCode{<a title="View with the Desmos Graphing Calculator" href="https://www.desmos.com/calculator/#1" target="_blank">  <img src="https://s3.amazonaws.com/calc_thumbs/production/#1.png"" width="#2px" height="#3px" style="border:1px solid \#ccc; border-radius:5px"/></a>}}
-
+\renewcommand{\desmos}[3]{\HCode{<iframe src="https://www.desmos.com/calculator/#1?embed" width="#2px" height="#3px" style="border: 1px solid #ccc" frameborder=0></iframe>}}
 
 % googleSheet command. Requires id, width, and height as arguments.
 %  optional arguments are gid for sheet ID and range for cell range.
