@@ -1,7 +1,0 @@
-\documentclass[]{ximera}
-\usepackage{sagetex}
-\usepackage{PackageLoader}
-\begin{document}
-\makeatletter
-\input{JasonSageMacros}
-\renewcommand{\latexProblemContent}[1]{#1}
