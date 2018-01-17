@@ -1,0 +1,10 @@
+%% Begin xf_InputFooter.txt
+%%
+%% To change this text edit the file /usr/local/etc/xronostools/xf_InputFooter.txt
+%%
+%% Use to input LaTex at the end of a file for processing by 
+%% xronosfmt and xronosfinal
+%%
+%% This file is used AFTER pdf/sage processing
+%%
+%% End xf_InputFooter.txt

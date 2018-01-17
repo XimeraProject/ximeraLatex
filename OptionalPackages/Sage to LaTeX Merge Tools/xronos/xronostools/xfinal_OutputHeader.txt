@@ -1,0 +1,10 @@
+%% Begin xfinal_OutputHeader.txt
+%% To change this text edit the file /usr/local/etc/xronostools/xfinal_OutputHeader.txt
+%% File OUTPUT Header for xronosfinal
+%%
+%% Used to output fixed LaTex at the start of a file
+%% No variable substitution or other xronostools process occurs
+%%
+%% This file is used AFTER pdf/sage processing
+%%
+%% End xfinal_OutputHeader.txt

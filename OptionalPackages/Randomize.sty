@@ -1,0 +1,71 @@
+% Randomize Commands
+\ProvidePackage{Randomize}
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%		  Randomize Commands		%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% This section loads and defines all the commands needed for randomizing content. Hacked together by Jason Nowell
+
+\RequirePackage{tikz, pgfplots}
+\pgfmathsetseed{\number\pdfrandomseed}
+\RequirePackage{forloop}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%   Generate and Store Random Latex Number   %%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%Create a command to randomly generate a number and record it into a given name. Recorded as the command \#1 for given input to not break things in LaTeX.
+\newcommand{\genrand}[3]
+{
+\expandafter\pgfmathtruncatemacro\csname #1\endcsname{int(random(#2,#3))}
+}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%  Random Permutation Command  %%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\newcounter{Iteration1}%	Dummy Iteration variable.
+\newcounter{RndQuant}%		Tracks the number of desired counters
+\newcounter{Temp@Hold}%		Temp counter to hold the command value because tex is weird.
+\newcounter{Temp@RandMe}%	Temp counter like previous.
+
+\newcommand*\ifcounter[2]{% Function checks if a counter named #1 exists. If not it creates it. After existance is confirmed (or implemented), set the counter to #2.
+  \ifcsname c@#1\endcsname
+  \else
+    \newcounter{#1}
+  \fi
+\setcounter{#1}{#2}
+}
+
+\newcommand{\RandMe}[3]
+{% #1 is the max number for range, #2 is the name of the counter to hold the list, and #3 is how many from that list to generate. Thus \RandMe{100}{TEMP}{5} will generate 5 counters, named \TEMPI, \TEMPII, \TEMPIII, \TEMPIV, \TEMPV. Each of which will have a (unique) number between 1 and 100.
+
+%Assign a maximum on how many numbers to pick. Set default to the max list size, and save in counter "RndQuant"
+\ifthenelse{\isempty{#3}}
+{
+\setcounter{RndQuant}{#1+1}
+}
+{
+\setcounter{RndQuant}{#3+1}
+}
+
+%Generate a starting list of numbers 1 to maximum number given
+\forloop{Iteration1}{1}{\arabic{Iteration1} < \arabic{RndQuant}}{
+\ifcounter{#2\Roman{Iteration1}}{\arabic{Iteration1}}
+}
+
+
+%Permute using Knuth method
+\forloop{Iteration1}{1}{\arabic{Iteration1} < \arabic{RndQuant}}{
+\genrand{TempRandMe}{\arabic{Iteration1}}{#1}
+
+\ifcounter{Temp@RandMe}{\TempRandMe}
+\ifcounter{Temp@Hold}{\arabic{#2\Roman{Temp@RandMe}}}
+
+\ifcounter{#2\Roman{Temp@RandMe}}{\arabic{#2\Roman{Iteration1}}}
+\ifcounter{#2\Roman{Iteration1}}{\arabic{Temp@Hold}}
+}
+}
