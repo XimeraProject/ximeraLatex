@@ -82,9 +82,6 @@
 \wordchoicegivenfalse
 \DeclareOption{wordchoicegiven}{\wordchoicegiventrue}
 
-\newif\ifshuffle
-\shufflefalse
-
 \newif\ifspace 
 \spacefalse
 \DeclareOption{space}{\spacetrue}
@@ -100,7 +97,7 @@
 \DeclareOption{tikzexport}{%
   \tikzexporttrue%
   \handoutfalse%
-  \shufflefalse%
+%  \shufflefalse%
   \spacefalse%  
   \numbersfalse%
   \newpagefalse%
@@ -810,147 +807,6 @@ Interactive
 }%
 
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%		  Randomize Commands		%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-% This section loads and defines all the commands needed for randomizing content. Hacked together by Jason Nowell
-
-\RequirePackage{tikz, pgfplots}
-\pgfmathsetseed{\number\pdfrandomseed}
-\RequirePackage{forloop}
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%   Generate and Store Random Latex Number   %%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-%Create a command to randomly generate a number and record it into a given name. Recorded as the command \#1 for given input to not break things in LaTeX.
-\newcommand{\genrand}[3]
-{
-\expandafter\pgfmathtruncatemacro\csname #1\endcsname{int(random(#2,#3))}
-}
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%  Random Permutation Command  %%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-\newcounter{Iteration1}%	Dummy Iteration variable.
-\newcounter{RndQuant}%		Tracks the number of desired counters
-\newcounter{Temp@Hold}%		Temp counter to hold the command value because tex is weird.
-\newcounter{Temp@RandMe}%	Temp counter like previous.
-
-\newcommand*\ifcounter[2]{% Function checks if a counter named #1 exists. If not it creates it. After existance is confirmed (or implemented), set the counter to #2.
-  \ifcsname c@#1\endcsname
-  \else
-    \newcounter{#1}
-  \fi
-\setcounter{#1}{#2}
-}
-
-\newcommand{\RandMe}[3]
-{% #1 is the max number for range, #2 is the name of the counter to hold the list, and #3 is how many from that list to generate. Thus \RandMe{100}{TEMP}{5} will generate 5 counters, named \TEMPI, \TEMPII, \TEMPIII, \TEMPIV, \TEMPV. Each of which will have a (unique) number between 1 and 100.
-
-%Assign a maximum on how many numbers to pick. Set default to the max list size, and save in counter "RndQuant"
-\ifthenelse{\isempty{#3}}
-{
-\setcounter{RndQuant}{#1+1}
-}
-{
-\setcounter{RndQuant}{#3+1}
-}
-
-%Generate a starting list of numbers 1 to maximum number given
-\forloop{Iteration1}{1}{\arabic{Iteration1} < \arabic{RndQuant}}{
-\ifcounter{#2\Roman{Iteration1}}{\arabic{Iteration1}}
-}
-
-
-%Permute using Knuth method
-\forloop{Iteration1}{1}{\arabic{Iteration1} < \arabic{RndQuant}}{
-\genrand{TempRandMe}{\arabic{Iteration1}}{#1}
-
-\ifcounter{Temp@RandMe}{\TempRandMe}
-\ifcounter{Temp@Hold}{\arabic{#2\Roman{Temp@RandMe}}}
-
-\ifcounter{#2\Roman{Temp@RandMe}}{\arabic{#2\Roman{Iteration1}}}
-\ifcounter{#2\Roman{Iteration1}}{\arabic{Temp@Hold}}
-}
-}
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%  		Shuffle Environment		%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-% THE ENVRON PACKAGE CANNOT BE USED TO WRAP VERBATIM.
-% THE ENVRON PACKAGE CANNOT BE USED TO WRAP VERBATIM.
-\RequirePackage{environ}	% The environ package saves environment contents as commands. We will use this to save problem contents and then randomly place them.
-% THE ENVRON PACKAGE CANNOT BE USED TO WRAP VERBATIM.
-% THE ENVRON PACKAGE CANNOT BE USED TO WRAP VERBATIM.
-
-
-
-%Necessary counters
-%\newcounter{shuffle@trackProblem}% Tracks which problem in shuffle we're on.
-\newcounter{shuffle@blockNumber}
-\setcounter{shuffle@blockNumber}{1}% Roman numerals don't like zero
-\newcounter{shuffle@groupingNumber}
-\setcounter{shuffle@groupingNumber}{1}% Roman numerals don't like zero.
-\newcounter{shuffle@Given}% Tracks how many questions are desired.
-
-% Shuffle has changed from truncating to randomizing (and possibly truncating). There will likely be a lot of redundant/pointless code that use to track truncation when we don't need it anymore.
-
-\newenvironment{shuffle}[1][1]{ % shuffle takes an optional argument as a number. It will collect all the problem-type environments within it (anything configured with \problemEnvironConfig below should work), and randomly select/order the optionally given number of them. If the optional argument exceeds the number of problems in the shuffle environment, shuffle will only randomize up to the number of available problems (i.e. no random extra empty problems listed on the page.) 
-	% Shuffle Start: Collect and save numbers that will be needed later.
-	\shuffletrue
-	\setcounter{shuffle@Given}{#1}% Track how many problems we want
-	\setcounter{problemType}{0}% We are in a new shuffle block, time to reset the subquestion counter
-	}
-	{
-	\ifnum\value{shuffle@blockNumber}>0
-		\ifnum\value{shuffle@blockNumber}>\value{shuffle@Given}% Check to see if we have enough shuffle blocks to pull the number of shuffle blocks you want.
-		\else% If not...
-		\setcounter{shuffle@Given}{\arabic{shuffle@blockNumber}}% We can only call as many shuffle bloks as there exists, no matter how much you want more.
-		\fi
-		
-		\RandMe{\arabic{shuffle@blockNumber}}{shuffle@G\roman{shuffle@groupingNumber}}{\arabic{shuffle@blockNumber}}% Get a vector of numbers in the new shuffle block, and rearrange them using RandMe to shuffle placements.
-		\stepcounter{shuffle@Given}% Step for the < symbol
-		\forloop{Iteration1}{1}{\arabic{Iteration1} < \arabic{shuffle@Given}}{% Iterate through all the blocks to place them
-			\csname shuffle@question\roman{shuffle@groupingNumber}\Roman{shuffle@G\roman{shuffle@groupingNumber}\Roman{Iteration1}}\endcsname
-		}
-	\fi
-	\shufflefalse% No longer in shuffle
-	\setcounter{shuffle@blockNumber}{1}% We are back to no new blocks
-	\stepcounter{shuffle@groupingNumber}% Track new groups of shuffling blocks
-	}
-
-%%%% Below is the shuffleBlock Environment, designed to work with shuffle. See below for usage.
-% This is a block that the shuffle environment will shuffle as a block. So the correct usage would be to do something like;
-%	\begin{shuffle{
-%	\shuffleBlock{
-%	\begin{problem}
-%	A problem goes here!
-%	\end{problem}
-%	}
-%	\shuffleBlock{
-%	\begin{exercise}
-%	And here is an exercise!
-%	\end{exercise}
-%	}
-%	\end{shuffle}
-\newcommand{\shuffleBlock}[1]{
-\ifshuffle% What to do if we're in a shuffle environment
-	\expandafter\newcommand\csname shuffle@question\roman{shuffle@groupingNumber}\Roman{shuffle@blockNumber}\endcsname{% If so, we want to define the next Question in the list to display to be this questions' content. That way we can call it later.
-	#1
-	}
-			
-	\stepcounter{shuffle@blockNumber}% We have finished this shuffleBlock, step the counter.
-
-\else% If we're not in a shuffle environment just pass everything through without doing anything
-#1
-\fi
-}
-
-
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%  		Problem Environments		%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -966,23 +822,9 @@ Interactive
 \ifhandout % Currently handout mode doesn't allow hints. Putting this code in place in case that changes.
 		\theproblem 
 \else
-	\ifshuffle
-		\theproblem.\theproblemType
-	\else
-		\theproblem 
-	\fi
+	\theproblem 
 \fi
 }
-
-
-% The \problemEnvironmentStart and \problemEnvironmentEnd are now
-% being depreciated in favor of \problemEnvironConfig. There is plenty
-% of code here to cleanup now that the termination is done at the
-% shuffle level, instead of this 'first problem' nonsense.
-
-%% %Configure environments start content
-%% \newcommand{\problemEnvironmentStart}[2]{%This takes in 2 arguments. The first is optional and is the old optional argument from existing environments. The second argument is mandatory and is the name of the 'problem' environment, such as problem, question, exercise, etc. It then configures everything needed at the start of that environment.
-
 
 
 
@@ -996,25 +838,8 @@ Interactive
 \firstproblemtrue
 
 \newcommand{\problemEnvironmentStart}[2]{%This takes in 2 arguments. The first is optional and is the old optional argument from existing environments. The second argument is mandatory and is the name of the 'problem' environment, such as problem, question, exercise, etc. It then configures everything needed at the start of that environment.
-%\ifshuffle
-%	\ifthenelse{\arabic{track@Problem}<\arabic{shuffle@Count}}
-%		{% If we haven't gotten to the last problem yet, track the problem
-%		\stepcounter{track@Problem}
-%		}
-%		{%	If we have all our problems, turn off the problem environment.
-%		\global\firstproblemfalse
-%		}
-%\fi
 
-%\iffirstproblem
-\ifhandout
-\else
-	\ifshuffle% Moved to env start for nested environs
-		\addtocounter{problem}{-1}
-	\fi  %% the problem does not increase within shuffle
-\fi
-
-\def\spaceatend{#1}\refstepcounter{problem}\refstepcounter{problemType}
+\def\spaceatend{#1}\refstepcounter{problem}%\refstepcounter{problemType}
 \begin{trivlist}
 \item
 	[
@@ -1079,121 +904,21 @@ Interactive
 }
 
 
-%\newcounter{hintStep}% Track if we're on a new hint step
-%\setcounter{hintStep}{0}
-%
-%% To use hintStep, you need to nest each step in the previous steps. This way if you want to have mutliple hint-steps for the same hint, then you can have multiple hint-step nests to represent this.
-%\newenvironment{hintStep}% Use this for multi-step hints
-%	{
-%	\stepcounter{hintStep}
-%	\ifnum\thehintStep =1% If this isn't the first step, just add another \item
-%		\begin{enumerate}
-%		\item
-%	\else%					If this is the first step, then we need a \begin{enumerate} first
-%		\item
-%	\fi
-%	}
-%	{
-%	\addtocounter{hintStep}{-1} %	Since we've closed a step, we want to depreciate what hint step level we're on.
-%	\ifnum\thehintStep =0		 %	If we've closed all the hint steps we opened, we are done with the steps 
-%		\end{enumerate}
-%	\fi
-%	}
-
-%% % This is currently a small shell to contain the
-%% % soon-to-be-depreciated start/stop commands. Once we merge them into
-%% % the below command, we can then remove the above commands.
-%% \newcommand{\problemEnvironConfig}[2]{
-%% \ifshuffle{
-%% \global\expandafter\edef\csname\roman{shuffle@count}ContentProblem\Roman{shuffle@trackProblem}\endcsname{% Record problem env content
-%% \BODY
-%% }
-%% \global\expandafter\edef\csname\roman{shuffle@count}ContentProblemType\Roman{shuffle@trackProblem}\endcsname{% Record problem env type
-%% #2
-%% }
-%% \stepcounter{shuffle@trackProblem}
-%% }
-%% \else{
-%% \problemEnvironmentStart{#1}{#2}
-%% \BODY
-%% \problemEnvironmentEnd
-%% }
-%% \fi
-%% }
-
-%% %%%%%%%%%%% Config specific problem environments. Note new
-%% %%%%%%%%%%% environments can be added easily if you simply want a new
-%% %%%%%%%%%%% "name".
-
-%% \NewEnviron{problem}[1][2in]
-%% {
-%% \problemEnvironConfig{#1}{Problem}
-%% }
-
-%% \NewEnviron{exercise}[1][2in]
-%% {
-%% \problemEnvironConfig{#1}{Exercise}
-%% }
-
-%% \NewEnviron{exploration}[1][2in]
-%% {
-%% \problemEnvironConfig{#1}{Exploration}
-%% }
-
-%% \NewEnviron{question}[1][2in]
-%% {
-%% \problemEnvironConfig{#1}{Question}
-%% }
-
-%% Below is included the old code in case it needs referencing. Should probably delete it at some point.
-
-
-%\newenvironment{problem}[1][2in]
-%{
-%\ifshuffle
-%	\ifthenelse{\arabic{track@Problem}<\arabic{shuffle@maxCount}}
-%		{% If we haven't gotten to the last problem yet, track the problem
-%		\stepcounter{track@Problem}
-%		}
-%		{%	If we have all our problems, turn off the problem environment.
-%		\global\firstproblemfalse
-%		}
-%\fi
-%\iffirstproblem
+%\newenvironment{xarmaBoost}[1][2in]
+%{\iffirstproblem
 %\def\spaceatend{#1}\refstepcounter{problem}\refstepcounter{problemType}
 %\begin{trivlist}\item[\hskip\labelsep\sffamily\bfseries 
-%Problem \ifhandout\theproblem\else\ifshuffle\theproblem.\theproblemType\else\theproblem\fi\fi]
+%Xarma Boost \ifhandout\theproblem\else\ifshuffle\theproblem.\theproblemType\else\theproblem\fi\fi]
 %\slshape
-%\else\setbox0\vbox\bgroup\fi
-%} %% removes exercise if in shuffle and not first problem
-%{
-%\iffirstproblem
+%\else\setbox0\vbox\bgroup\fi} %% removes exercise if in shuffle and not first problem
+%{\iffirstproblem
 %\ifhandout\ifspace\vspace{\spaceatend}\fi\fi %% space at end
 %\par\addvspace{.5ex}\nobreak\noindent\hung %% line at the bottom
-%\ifhandout\else\ifshuffle\addtocounter{problem}{-1}\fi\fi %% the problem does not increase within shuffle
-%%\ifhandout\ifshuffle\global\firstproblemfalse\fi\fi %% removes other problems from shuffle in handout
+%\ifshuffle\addtocounter{problem}{-1}\fi %% the problem does not increase within shuffle
+%\ifhandout\ifshuffle\global\firstproblemfalse\fi\fi %% removes other problems from shuffle in handout
 %\ifhandout\ifnewpage\newpage\fi\fi %% adds newpage
 %\end{trivlist}
-%\else\egroup\fi
-%}
-
-
-
-\newenvironment{xarmaBoost}[1][2in]
-{\iffirstproblem
-\def\spaceatend{#1}\refstepcounter{problem}\refstepcounter{problemType}
-\begin{trivlist}\item[\hskip\labelsep\sffamily\bfseries 
-Xarma Boost \ifhandout\theproblem\else\ifshuffle\theproblem.\theproblemType\else\theproblem\fi\fi]
-\slshape
-\else\setbox0\vbox\bgroup\fi} %% removes exercise if in shuffle and not first problem
-{\iffirstproblem
-\ifhandout\ifspace\vspace{\spaceatend}\fi\fi %% space at end
-\par\addvspace{.5ex}\nobreak\noindent\hung %% line at the bottom
-\ifshuffle\addtocounter{problem}{-1}\fi %% the problem does not increase within shuffle
-\ifhandout\ifshuffle\global\firstproblemfalse\fi\fi %% removes other problems from shuffle in handout
-\ifhandout\ifnewpage\newpage\fi\fi %% adds newpage
-\end{trivlist}
-\else\egroup\fi}
+%\else\egroup\fi}
 
 %%%%%%%%%%%%%%%%
 %% validator
@@ -1268,7 +993,6 @@ Xarma Boost \ifhandout\theproblem\else\ifshuffle\theproblem.\theproblemType\else
 }
 
 \newcounter{problem} %% for the main problem
-\newcounter{problemType} %% for variations within shuffle
 
 \colorlet{textColor}{black} % since textColor is referenced below
 \colorlet{background}{white} % since background is referenced below
