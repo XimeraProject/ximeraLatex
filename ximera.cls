@@ -119,34 +119,34 @@
 \LoadClass{article}
 
 %%%% for allowing a ximera document to be input into a master ximera document
+%%%% SNAPP COMMENTED THIS OUT.
 
-
-% The first thing to do is to save the regular \LaTeX\ definitions of |\document|, |\enddocument|, and  |\documentclass|:
-%    \begin{macrocode}
-\let\old@document@subfiles\document
-\let\old@enddocument@subfiles\enddocument
-\let\old@documentclass@subfiles\documentclass
-%    \end{macrocode}
-%
-% Now the |document| `environment' is redefined and equaled to |comment|. As a consequence, the body of the main file is ignored by \LaTeX, and only the preamble is read (and anything that comes after |\end{document}|!). For |\documentclass|, having been already loaded one (|subfiles|), it is redefined and equaled to |\LoadClass|. The class and options of the main file are loaded identically.
-%    \begin{macrocode}
-\let\document\comment
-\let\enddocument\endcomment
-\let\documentclass\LoadClass\relax
-%    \end{macrocode}
-%
-% Here it comes something not so obvious. In the usual situations, the |\preamble@file| contains some |\usepackage| commands, which, at the end, make |@| no longer a letter. That is why the next part needs a |\catcode| command, grouping, and |\global|'s.
-%    \begin{macrocode}
-{\catcode`\@=11
-\global\let\document\old@document@subfiles
-\global\let\enddocument\old@enddocument@subfiles
-\global\let\documentclass\old@documentclass@subfiles
-\global\let\old@document@subfiles\undefined
-\global\let\old@enddocument@subfiles\undefined
-\global\let\old@documentclass@subfiles\undefined}
-%</class>
-%    \end{macrocode}
-%
+%% % The first thing to do is to save the regular \LaTeX\ definitions of |\document|, |\enddocument|, and  |\documentclass|:
+%% %    \begin{macrocode}
+%% \let\old@document@subfiles\document
+%% \let\old@enddocument@subfiles\enddocument
+%% \let\old@documentclass@subfiles\documentclass
+%% %    \end{macrocode}
+%% %
+%% % Now the |document| `environment' is redefined and equaled to |comment|. As a consequence, the body of the main file is ignored by \LaTeX, and only the preamble is read (and anything that comes after |\end{document}|!). For |\documentclass|, having been already loaded one (|subfiles|), it is redefined and equaled to |\LoadClass|. The class and options of the main file are loaded identically.
+%% %    \begin{macrocode}
+%% \let\document\comment
+%% \let\enddocument\endcomment
+%% \let\documentclass\LoadClass\relax
+%% %    \end{macrocode}
+%% %
+%% % Here it comes something not so obvious. In the usual situations, the |\preamble@file| contains some |\usepackage| commands, which, at the end, make |@| no longer a letter. That is why the next part needs a |\catcode| command, grouping, and |\global|'s.
+%% %    \begin{macrocode}
+%% {\catcode`\@=11
+%% \global\let\document\old@document@subfiles
+%% \global\let\enddocument\old@enddocument@subfiles
+%% \global\let\documentclass\old@documentclass@subfiles
+%% \global\let\old@document@subfiles\undefined
+%% \global\let\old@enddocument@subfiles\undefined
+%% \global\let\old@documentclass@subfiles\undefined}
+%% %</class>
+%% %    \end{macrocode}
+%% %
 
 
 
@@ -222,7 +222,8 @@
 
 % Don't use hyperref when using Tex4ht
 \ifdefined\HCode
-\newcommand{\href}[1]{}
+\RequirePackage{hyperref}
+%\newcommand{\href}[1]{}
 \else
 \RequirePackage[pdfpagelabels,colorlinks=true,allcolors=blue!30!black]{hyperref}
 \pdfstringdefDisableCommands{\def\hskip{}}%% quiets warning
