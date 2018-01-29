@@ -560,7 +560,7 @@ Interactive
 \setkeys{choice}{correct=false,value=}
 \newcommand{\choice}[2][]{%
 \setkeys{choice}{#1}%
-\item #2\ifthenelse{\boolean{\choice@correct}}{\ifhandout \else \,\checkmark\,\setkeys{choice}{correct=false}\fi}{}}
+\item {#2\ifthenelse{\boolean{\choice@correct}}{\ifhandout \else \,\checkmark\,\setkeys{choice}{correct=false}\fi}{}}} %% note all the {} are needed in case the choice has [] in it.
 \makeatother
 
 %% Not really meant to be used outside this package (used in wordChoice)
