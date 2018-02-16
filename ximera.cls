@@ -571,7 +571,6 @@ Interactive
 \setkeys{choice}{correct=false,value=}
 \newcommand{\choice}[2][]{%
 \setkeys{choice}{#1}%
-<<<<<<< HEAD
 \item #2\ifthenelse{\boolean{\choice@correct}}{\ifhandout \else \,\checkmark\,\setkeys{choice}{correct=false}\fi}{}}
 
 %Define an expandable version of choice
