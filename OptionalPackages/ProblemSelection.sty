@@ -564,6 +564,32 @@
 	\expandafter\input{\QBank@loc Polar-Input}
 	}
 
+\SearchForTag{Topic@Volume}{
+	\ifVerbose 
+		I detected that I should input the Volume-Input file 
+		\ifquestionCount 
+			in order to get question counts!\\
+		\else
+			in order to find problems!\\
+		\fi	
+	\fi
+	\expandafter\input{\QBank@loc Volume-Input}
+	}
+
+\SearchForTag{Topic@Precalc}{
+	\ifVerbose 
+		I detected that I should input the Precalc-Input file 
+		\ifquestionCount 
+			in order to get question counts!\\
+		\else
+			in order to find problems!\\
+		\fi	
+	\fi
+	\expandafter\input{\QBank@loc Precalc-Input}
+	}
+
+
+
 %\SearchForTag{Topic@Derivative-Imp}{
 %	\ifVerbose 
 %		I detected that I should input the Integral-Input file 
