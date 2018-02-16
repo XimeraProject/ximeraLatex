@@ -14,16 +14,6 @@
 \RequirePackage{forloop}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%   Generate and Store Random Latex Number   %%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-%Create a command to randomly generate a number and record it into a given name. Recorded as the command \#1 for given input to not break things in LaTeX.
-\newcommand{\genrand}[3]
-{
-\expandafter\pgfmathtruncatemacro\csname #1\endcsname{int(random(#2,#3))}
-}
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%  Random Permutation Command  %%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -59,7 +49,7 @@
 
 %Permute using Knuth method
 \forloop{Iteration1}{1}{\arabic{Iteration1} < \arabic{RndQuant}}{
-\genrand{TempRandMe}{\arabic{Iteration1}}{#1}
+\@genrand{TempRandMe}{\arabic{Iteration1}}{#1}
 
 \ifcounter{Temp@RandMe}{\TempRandMe}
 \ifcounter{Temp@Hold}{\arabic{#2\Roman{Temp@RandMe}}}
