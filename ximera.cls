@@ -20,7 +20,7 @@
 %%% Department of Mathematics
 %%% The Ohio State University
 
-\def\fileversion{1.31}
+\def\fileversion{1.33}
 \def\filedate{2016/08/17}
 
 % ---------------------------------------------------------------------
@@ -557,12 +557,13 @@ Interactive
 \setkeys{choice}{correct=false,value=}
 \newcommand{\choice}[2][]{%
 \setkeys{choice}{#1}%
+<<<<<<< HEAD
 \item #2\ifthenelse{\boolean{\choice@correct}}{\ifhandout \else \,\checkmark\,\setkeys{choice}{correct=false}\fi}{}}
 
 %Define an expandable version of choice
 \newcommand{\choiceEXP}[2][]{%
 \expandafter\setkeys\expandafter{choice}{#1}%
-\item #2\ifthenelse{\boolean{\choice@correct}}{\ifhandout \else \,\checkmark\,\setkeys{choice}{correct=false}\fi}{}}
+\item {#2} \ifthenelse{\boolean{\choice@correct}}{\ifhandout \else \,\checkmark\,\setkeys{choice}{correct=false}\fi}{}} %% note all the {} are needed in case the choice has [] in it.
 \makeatother
 
 %% Not really meant to be used outside this package (used in wordChoice)

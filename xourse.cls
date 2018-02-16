@@ -112,11 +112,19 @@
 \fi
 \relax
 
+\ifhandout
+\newcommand{\practice}[2][]{
+	\setkeys{practice}{#1}%!!!!!
+  \renewcommand{\input}[1]{}
+  \begingroup\skip@preamble\otherinput{#2}\endgroup
+  \let\input\otherinput}
+\else
 \newcommand{\practice}[2][]{\texttt{\detokenize{#2}}%% gives file name for practice
 	\setkeys{practice}{#1}%!!!!!
   \renewcommand{\input}[1]{}
   \begingroup\skip@preamble\otherinput{#2}\endgroup
   \let\input\otherinput}
+\fi
 \relax
 
 
