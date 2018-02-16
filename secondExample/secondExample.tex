@@ -68,9 +68,9 @@ If you like, check out this video\youtube{0aQpLSu2fMs}.
 
 
 
-\begin{exploration}
+%\begin{exploration}
 Write a Python script that will compute factorial for you.
-\begin{python}
+\begin{lstlisting}
 def honest_factorial(x):
   result = 1
   for i in range(1,x+1):
@@ -82,8 +82,8 @@ def verifier():
     if factorial(i) != honest_factorial(i):
       raise "Your function failed for input " + str(i)
   return True
-\end{python}
-\end{exploration}
+\end{lstlisting}
+%\end{exploration}
 
 \end{document}
 
