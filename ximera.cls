@@ -877,16 +877,13 @@ Interactive
 %\firstproblemtrue
 
 \newcommand{\problemEnvironmentStart}[2]{%This takes in 2 arguments. The first is optional and is the old optional argument from existing environments. The second argument is mandatory and is the name of the 'problem' environment, such as problem, question, exercise, etc. It then configures everything needed at the start of that environment.
-
 \stepcounter{problem@Depth}% Started a problem, so we've sunk another problem layer.
-
-
-\def\spaceatend{#1}
-\begin{trivlist}
-\item
-	[
-	\hskip\labelsep\sffamily\bfseries 
-	#2
+\def\spaceatend{#1}%
+\begin{trivlist}%
+\item%
+  [%
+	\hskip\labelsep\sffamily\bfseries% 
+	#2%
 % Now we need to determine the correct number of the problem, and the format of that number.
 	\problemNumber
 	]
@@ -896,7 +893,7 @@ Interactive
 %Configure environments end content
 \newcommand{\problemEnvironmentEnd}{%This configures all the end content for a problem.
 %\ifiscodeingTest
-
+%
 % First we need to see if we've dropped fully out of a depth level, so we can reset that counter back to zero for the next time we enter that depth level.
 \stepcounter{problem@Depth}
 \ifcsname c@depth\Roman{problem@Depth}Count\endcsname
@@ -926,7 +923,7 @@ Interactive
 
 
 
-\newenvironment{problem}[1][2in]
+\newenvironment{problem}[1][2in]%
 {%Env start code
 \problemEnvironmentStart{#1}{Problem}
 }
@@ -934,7 +931,7 @@ Interactive
 \problemEnvironmentEnd
 }
 
-\newenvironment{exercise}[1][2in]
+\newenvironment{exercise}[1][2in]%
 {%Env start code
 \problemEnvironmentStart{#1}{Exercise}
 }
@@ -942,7 +939,7 @@ Interactive
 \problemEnvironmentEnd
 }
 
-\newenvironment{exploration}[1][2in]
+\newenvironment{exploration}[1][2in]%
 {%Env start code
 \problemEnvironmentStart{#1}{Exploration}
 }
@@ -950,7 +947,7 @@ Interactive
 \problemEnvironmentEnd
 }
 
-\newenvironment{question}[1][2in]
+\newenvironment{question}[1][2in]%
 {%Env start code
 \problemEnvironmentStart{#1}{Question}
 }
