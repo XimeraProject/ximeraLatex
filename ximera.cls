@@ -396,7 +396,7 @@
 % --------------------------------------------------------------------
 % Interactives
 
-\DefineVerbatimEnvironment{javascript}{Verbatim}{numbers=left,frame=lines,label=SAGE,labelposition=topline}
+\DefineVerbatimEnvironment{javascript}{Verbatim}{numbers=left,frame=lines,label=JavaScript,labelposition=topline}
 \def\js#1{\mbox{\texttt{\detokenize{#1}}}}
 
 %Geogebra link
@@ -548,7 +548,7 @@ Interactive
   \GenericError{\space\space\space\space}
   {Attempt to use \@backslashchar answer outside of math mode}
   {See https://github.com/ximeraProject/ximeraLatex for explanation.}
-  {Need to use either use inline or display math.}%
+  {Need to use either inline or display math.}%
   \fi
 }
              
