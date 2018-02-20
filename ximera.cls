@@ -822,26 +822,46 @@ Interactive
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%  		Problem Environments		%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%  		Problem Environments		%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
+%% Most of the below added by Jason Nowell
 
 \newcommand{\latexProblemContent}[1]{#1}%% Added for those that want to use UF problems without using the problem filter code. This command is renewed into something meaningful in the 'ProblemSelector.sty'.
+\newcounter{Iteration@probCnt}% Iterate count for problem counts.
 
-
+\RequirePackage{forloop}
 %%%%%% Configure environment configuration commands
 
 % The command \problemNumber contains all the format code to determine the number (and the format of the number) for any of the problem environments.
 \newcommand{\problemNumber}{
-\ifnum\value{problem}<1
-	\setcounter{problem}{1}% If the problem counter is every 0 or negative, reset to one. This is a hack that should probably be more appropriately handled at some point but the problem counter is changed all over the place in this document.
-\fi
 
-\ifhandout % Currently handout mode doesn't allow hints. Putting this code in place in case that changes.
-		\theproblem 
-\else
-	\theproblem 
-\fi
+% First we determine if we have a counter for this question depth level.
+\ifcsname c@depth\Roman{problem@Depth}Count\endcsname	% Check to see if counter exists
+	%If so, do nothing.
+%	\newcounter{depthICount}
+	\else
+	%If not, create it.
+	\expandafter\newcounter{depth\Roman{problem@Depth}Count}
+	\expandafter\setcounter{depth\Roman{problem@Depth}Count}{0}
+	\fi
+
+
+
+% The problem ifnum check should be depreciated.
+%\ifnum\value{problem}<1
+%	\setcounter{problem}{1}% If the problem counter is ever 0 or negative, reset to one. This is a hack that should probably be more appropriately handled at some point but the problem counter is changed all over the place in this document.
+%\fi
+\expandafter\stepcounter{depth\Roman{problem@Depth}Count}
+\arabic{depthICount}% The first problem depth, what use to be "\theproblem".
+\forloop{Iteration@probCnt}{2}{\arabic{Iteration@probCnt} < \numexpr \value{problem@Depth} + 1 \relax}{%
+.\expandafter\arabic{depth\Roman{Iteration@probCnt}Count}% Get the problem number of the next depth level and append it with a ".".
+}
+%\ifhandout % Currently handout mode doesn't allow hints. Putting this code in place in case that changes.
+%	\theproblem 
+%\else
+%	\theproblem 
+%\fi
 }
 
 
@@ -849,15 +869,19 @@ Interactive
 %%%%%%%%%%%%%%%%%%%%%%%
 
 %%%%%% Configure various problem environment commands
-
+\newcounter{problem@Depth}
+\setcounter{problem@Depth}{0}
 %Configure environments start content
 
-\newif\iffirstproblem
-\firstproblemtrue
+%\newif\iffirstproblem Depreciated boolean.
+%\firstproblemtrue
 
 \newcommand{\problemEnvironmentStart}[2]{%This takes in 2 arguments. The first is optional and is the old optional argument from existing environments. The second argument is mandatory and is the name of the 'problem' environment, such as problem, question, exercise, etc. It then configures everything needed at the start of that environment.
 
-\def\spaceatend{#1}\refstepcounter{problem}%\refstepcounter{problemType}
+\stepcounter{problem@Depth}% Started a problem, so we've sunk another problem layer.
+
+
+\def\spaceatend{#1}
 \begin{trivlist}
 \item
 	[
@@ -872,6 +896,19 @@ Interactive
 %Configure environments end content
 \newcommand{\problemEnvironmentEnd}{%This configures all the end content for a problem.
 %\ifiscodeingTest
+
+% First we need to see if we've dropped fully out of a depth level, so we can reset that counter back to zero for the next time we enter that depth level.
+\stepcounter{problem@Depth}
+\ifcsname c@depth\Roman{problem@Depth}Count\endcsname
+	\expandafter\ifnum\expandafter\value{depth\Roman{problem@Depth}Count}>0
+		\expandafter\setcounter{depth\Roman{problem@Depth}Count}{0}
+	\fi
+\fi
+
+\addtocounter{problem@Depth}{-2}% Exited a problem so we've exited a problem layer. Need -2 because we steppped once at the start to check for needing a depth-level count reset. 
+
+
+
 \ifhandout
 	\ifspace
 		\vspace{\spaceatend}
