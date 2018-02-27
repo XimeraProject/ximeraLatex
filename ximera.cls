@@ -993,7 +993,7 @@ Interactive
 \else
 
 \def\feedback{\@ifnextchar[{\@feedbackcode}{\@feedbackattempt}}
-\def\@feedbackcode[#1]{\begin{trivlist}\item[\hskip \labelsep\small\slshape\bfseries Feedback (\texttt{\detokenize{#1}}):\hspace{2ex}]\small\slshape}
+\def\@feedbackcode[#1]{\begin{trivlist}\item[\hskip \labelsep\small\slshape\bfseries Feedback (#1):\hspace{2ex}]\small\slshape}
 \def\@feedbackattempt{\begin{trivlist}\item[\hskip \labelsep\small\slshape\bfseries Feedback (attempt):\hspace{2ex}]\small\slshape}
 \def\endfeedback{\end{trivlist}}
                
