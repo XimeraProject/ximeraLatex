@@ -78,6 +78,7 @@
 \newcommand {\epstopdfsetup }[0]{\setkeys {ETE}}
 \newcommand {\epstopdfcall }[1]{\ifETE@InsideSetfile \expandafter \@firstoftwo \else \expandafter \@secondoftwo \fi {`##1}{\Gin@base \Gin@ext }}
 \newcommand {\epstopdfDeclareGraphicsRule }[4]{\ifx \\##4\\\@PackageError {epstopdf-base}{Conversion command is missing}\@ehc \else \begingroup \@ifundefined {Gin@rule@##1}{}{\@PackageInfo {epstopdf-base}{Redefining graphics rule for `##1'}}\endgroup \@namedef {Gin@rule@##1}####1{{##2}{##3}{\epstopdfcall {##4}}}\fi }
+\newcommand {\ST@wsf }[1]{\immediate \write \ST@sf {##1}}
 \newcommand {\mdf@patchamsthm }[0]{\let \mdf@deferred@thm@head \deferred@thm@head \pretocmd {\deferred@thm@head }{\@inlabelfalse }{\mdf@PackageInfo {mdframed detected package amsthm 
  changed the theorem header of amsthm\MessageBreak }}{\mdf@PackageError {mdframed detected package amsthm 
  changed the theorem header of amsthm failed\MessageBreak }}}
