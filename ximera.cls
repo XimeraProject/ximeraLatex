@@ -396,7 +396,7 @@
 % --------------------------------------------------------------------
 % Interactives
 
-\DefineVerbatimEnvironment{javascript}{Verbatim}{numbers=left,frame=lines,label=SAGE,labelposition=topline}
+\DefineVerbatimEnvironment{javascript}{Verbatim}{numbers=left,frame=lines,label=JavaScript,labelposition=topline}
 \def\js#1{\mbox{\texttt{\detokenize{#1}}}}
 
 %Geogebra link
@@ -548,7 +548,7 @@ Interactive
   \GenericError{\space\space\space\space}
   {Attempt to use \@backslashchar answer outside of math mode}
   {See https://github.com/ximeraProject/ximeraLatex for explanation.}
-  {Need to use either use inline or display math.}%
+  {Need to use either inline or display math.}%
   \fi
 }
              
@@ -955,46 +955,71 @@ Interactive
 \problemEnvironmentEnd
 }
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%  				Validator			%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% New Validator code added by Jason Nowell
+%
+% Validator is an environment designed to run a custom check on answers (usually) using javascript code. 
 
-%\newenvironment{xarmaBoost}[1][2in]
-%{\iffirstproblem
-%\def\spaceatend{#1}\refstepcounter{problem}\refstepcounter{problemType}
-%\begin{trivlist}\item[\hskip\labelsep\sffamily\bfseries 
-%Xarma Boost \ifhandout\theproblem\else\ifshuffle\theproblem.\theproblemType\else\theproblem\fi\fi]
-%\slshape
-%\else\setbox0\vbox\bgroup\fi} %% removes exercise if in shuffle and not first problem
-%{\iffirstproblem
-%\ifhandout\ifspace\vspace{\spaceatend}\fi\fi %% space at end
-%\par\addvspace{.5ex}\nobreak\noindent\hung %% line at the bottom
-%\ifshuffle\addtocounter{problem}{-1}\fi %% the problem does not increase within shuffle
-%\ifhandout\ifshuffle\global\firstproblemfalse\fi\fi %% removes other problems from shuffle in handout
-%\ifhandout\ifnewpage\newpage\fi\fi %% adds newpage
-%\end{trivlist}
-%\else\egroup\fi}
 
-%%%%%%%%%%%%%%%%
-%% validator
+% Define a placeholder command for validator and feedback.
+\makeatletter
+\newcommand{\PH@Command}{}
 
-\def\validator[#1]{\mbox{\texttt{\detokenize{#1}}}}
-\def\endvalidator{}
+%% Validator should take an argument and detokenize it and display it at the start of the environment. The original Validator environment had everything framed in an mbox; presumably to make the text look a bit nicer, although this seems redundant with texttt. It shouldn't cause any harm so I have left it in for now.
+
+\newenvironment{validator}[1][]{
+	\def\PH@Command{#1}% Use PH@Command to hold the content and be a target for "\expandafter" to expand once.
+	\mbox{\texttt{\detokenize\expandafter{\PH@Command}}}% Now expand PH@Command once and then detokenize. 
+	}{}
+
+%%% Old validator environment definition has been depreciated.
+%\def\validator[#1]{\mbox{\texttt{\detokenize{#1}}}}
+%\def\endvalidator{}
 
 %% Feedback
-\makeatletter
-\ifhandout
 
-\def\feedback{\@ifnextchar[{\@feedbackcode}{\@feedbackattempt}}
-\def\@feedbackcode[#1]{\setbox0\vbox\bgroup}
-\def\@feedbackattempt{\setbox0\vbox\bgroup}
-\def\endfeedback{\egroup}
+\ifhandout%	First, if it's a handout, we want feedback to eat everything and then disappear entirely. So we use the environ package to eat the content by not using \BODY command anywhere.
+\NewEnviron{feedback}[1][]{}
 
-\else
+\else% If this isn't a handout, then we want to display the Feedback by using a label, positioned and formated as a \item in a trivlist. It is important that we also detokenize the content of the optional argument, as it is likely to contain javascript or other code that latex won't be able to make sense of.
 
-\def\feedback{\@ifnextchar[{\@feedbackcode}{\@feedbackattempt}}
-\def\@feedbackcode[#1]{\begin{trivlist}\item[\hskip \labelsep\small\slshape\bfseries Feedback (\texttt{\detokenize{#1}}):\hspace{2ex}]\small\slshape}
-\def\@feedbackattempt{\begin{trivlist}\item[\hskip \labelsep\small\slshape\bfseries Feedback (attempt):\hspace{2ex}]\small\slshape}
-\def\endfeedback{\end{trivlist}}
-               
+\newenvironment{feedback}[1][]{
+
+	\def\PH@Command{#1}% Use PH@Command to hold the content and be a target for "\expandafter" to expand once.
+	
+	\begin{trivlist}% Begin the trivlist to use formating of the "Feedback" label.
+	\item[\hskip \labelsep\small\slshape\bfseries Feedback % Format the "Feedback" label. Don't forget the space.
+	(\texttt{\detokenize\expandafter{\PH@Command}}):% Format (and detokenize) the condition for feedback to trigger
+	\hspace{2ex}]\small\slshape% Insert some space before the actual feedback given.
+	}{
+	\end{trivlist}	
+	}
+
 \fi
+
+
+%Old feedback code is retained below during depreciation period.
+
+%\ifhandout
+%
+%\def\feedback{\@ifnextchar[{\@feedbackcode}{\@feedbackattempt}}
+%\def\@feedbackcode[#1]{\setbox0\vbox\bgroup}
+%\def\@feedbackattempt{\setbox0\vbox\bgroup}
+%\def\endfeedback{\egroup}
+%
+%\else
+%
+%\def\feedback{\@ifnextchar[{\@feedbackcode}{\@feedbackattempt}}
+%\def\@feedbackcode[#1]{\begin{trivlist}\item[\hskip \labelsep\small\slshape\bfseries Feedback (\texttt{\detokenize{#1}}):\hspace{2ex}]\small\slshape}
+%
+%\def\@feedbackattempt{\begin{trivlist}\item[\hskip \labelsep\small\slshape\bfseries Feedback (attempt):\hspace{2ex}]\small\slshape}
+%
+%\def\endfeedback{\end{trivlist}}
+               
+%\fi
+
 \makeatother               
 
 
