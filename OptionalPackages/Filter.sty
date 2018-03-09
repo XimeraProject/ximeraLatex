@@ -1,0 +1,238 @@
+\usepackage{xparse}
+
+\ExplSyntaxOn
+
+\clist_new:N \l_tags_strict_active_list_clist%	Strict tag List
+\clist_new:N \l_tags_relax_active_list_clist%	Relaxed tag List
+\clist_new:N \l_tags_avoid_active_list_clist%	List of tags we want to avoid.
+\clist_new:N \l_tags_all_active_list_clist%	Full tag List
+
+
+\bool_new:N \g_tags_strict_bool%				Logic check if strict list is a match
+\bool_new:N \g_tags_relax_bool%				Logic check if relax list is a match
+\bool_new:N \g_tags_avoid_bool%				Logic check if aboid list is a match
+\bool_new:N \g_tags_search_bool%				Logic check if we have base tags
+
+\bool_new:N \l_tags_requirestrict_bool%		Logic check if we *want* strict tags
+\bool_new:N \l_tags_requiresuperstrict_bool%Logic check if we *want* *super* strict tags
+
+
+
+
+\cs_new_protected:Nn \tags_strict_test:n
+	{
+  	% check whether the input items are in the fixed list
+	\clist_map_inline:Nn \l_tags_strict_active_list_clist
+  		{
+	    \clist_if_in:nnF { #1 } { ##1 }
+	    	{
+	    	\bool_set_false:N \g_tags_strict_bool 
+	    	}
+  	 	}
+%   	\bool_if:NTF \g_tags_strict_bool {TRUE}{FALSE}
+  	% check whether the fixed items are in the input list for superstrict
+	\bool_if:NT \l_tags_requiresuperstrict_bool 
+	  	{
+	  	\clist_concat:NNN \l_tags_all_active_list_clist \l_tags_strict_active_list_clist \l_tags_relax_active_list_clist
+	  	\clist_map_inline:nn { #1 }
+		   	{
+			\clist_if_in:NnF \l_tags_all_active_list_clist { ##1 }
+		    	{
+		    	\bool_set_false:N \g_tags_strict_bool 
+		    	}
+		   	}
+	   	}
+	}
+
+
+\cs_new_protected:Nn \tags_relax_test:n
+	{
+	\bool_set_false:N \l_tags_relax_bool
+	
+    \clist_map_inline:nn { #1 }
+		{
+		\clist_if_in:NnT \l_tags_relax_active_list_clist { ##1 }
+    		{
+   			\bool_set_true:N \g_tags_relax_bool 
+		  	}
+		}
+	}
+
+\cs_new_protected:Nn \tags_avoid_test:n
+	{
+	\bool_set_false:N \l_tags_avoid_bool% Initialize to no avoid tags detected.
+	
+    \clist_map_inline:nn { #1 }
+		{
+		\clist_if_in:NnT \l_tags_avoid_active_list_clist { ##1 }
+    		{
+   			\bool_set_true:N \g_tags_avoid_bool% If you find a tag you want to avoid, flag logic as true.
+		  	}
+		}
+	}
+
+
+%
+\NewDocumentCommand{\set@StrictActiveTags}{m}
+ {
+  \clist_set:Nn \l_tags_strict_active_list_clist { #1 }
+ }
+
+%
+\NewDocumentCommand{\set@RelaxActiveTags}{m}
+ {
+  \clist_set:Nn \l_tags_relax_active_list_clist { #1 }
+ }
+
+%
+\NewDocumentCommand{\set@AvoidActiveTags}{m}
+ {
+  \clist_set:Nn \l_tags_avoid_active_list_clist { #1 }
+ }
+
+
+%
+\NewDocumentCommand{\addTo@StrictActiveTags}{m}
+ {
+ \clist_if_empty:NTF \l_tags_strict_active_list_clist {
+    \clist_set:Nn \l_tags_strict_active_list_clist { #1 } 	
+ 	}
+ 	{
+	\clist_put_left:Nn \l_tags_strict_active_list_clist { #1 } 	
+ 	}
+ }
+%
+\NewDocumentCommand{\addTo@AvoidActiveTags}{m}
+ {
+ \clist_if_empty:NTF \l_tags_avoid_active_list_clist {
+    \clist_set:Nn \l_tags_avoid_active_list_clist { #1 } 	
+ 	}
+ 	{
+	\clist_put_left:Nn \l_tags_avoid_active_list_clist { #1 } 	
+ 	}
+ }
+%
+\NewDocumentCommand{\addTo@RelaxActiveTags}{m}
+ 	{
+	 \clist_if_empty:NTF \l_tags_relax_active_list_clist 
+	 	{
+	    \clist_set:Nn \l_tags_relax_active_list_clist { #1 } 	
+	 	}
+	 	{
+		\clist_put_left:Nn \l_tags_relax_active_list_clist { #1 } 	
+	 	}
+	}
+
+\NewDocumentCommand{\tagged}{mm}
+	{
+	\clist_if_empty:NTF \l_tags_relax_active_list_clist
+		{%	If not, then defalt true.
+		\bool_set_true:N \g_tags_relax_bool
+		}
+		{%	Check if there is anything to check
+		\bool_set_false:N \g_tags_relax_bool
+		\tags_relax_test:n {#1}
+		}
+				
+	\clist_if_empty:NTF \l_tags_strict_active_list_clist
+		{%	If there is nothing to check, default to satisfied. 
+		\bool_set_true:N \g_tags_strict_bool
+		}
+		{%	See if there is anything to check
+		\bool_if:NTF \l_tags_requirestrict_bool
+			{%	If so, then test the tags
+		  	\bool_set_true:N \g_tags_strict_bool
+			\tags_strict_test:n { #1 }
+			}
+			{%	If not, default to true.
+			\bool_set_true:N \g_tags_strict_bool
+			}
+		}
+
+	\clist_if_empty:NTF \l_tags_avoid_active_list_clist
+		{%	If not, then defalt false.
+		\bool_set_false:N \g_tags_avoid_bool
+		}
+		{%	Check if there is anything to check
+		\bool_set_false:N \g_tags_avoid_bool
+		\tags_avoid_test:n {#1}
+		}
+				
+
+	\bool_if:NT \g_tags_relax_bool
+		{%	If we have the relax tag move on
+		\bool_if:NT \g_tags_strict_bool
+			{%	If we *also* have to check the strict tags
+			\bool_if:NF \g_tags_avoid_bool
+				{% And we *also* want to avoid any "avoid" tags.
+				#2
+				}
+			}
+		}
+	}
+
+
+\NewDocumentCommand{\maketagsstrict}{}
+ {
+	\bool_set_true:N \l_tags_requirestrict_bool
+	\bool_set_false:N \l_tags_requiresuperstrict_bool
+ }
+
+\NewDocumentCommand{\maketagssuperstrict}{}
+ {
+	\bool_set_true:N \l_tags_requirestrict_bool
+	\bool_set_true:N \l_tags_requiresuperstrict_bool
+ }
+
+\NewDocumentCommand{\maketagsrelax}{}
+ {
+	\bool_set_false:N \l_tags_requirestrict_bool
+	\bool_set_false:N \l_tags_requiresuperstrict_bool
+ }
+
+\NewDocumentCommand{\relaxtest}{mm}
+	{
+	\clist_if_empty:NTF \l_tags_relax_active_list_clist
+		{%	If not, then defalt true.
+		#2
+		}
+		{%	Check if there is anything to check
+		\bool_set_false:N \g_tags_relax_bool
+		\tags_relax_test:n {#1}
+		\bool_if:NT \g_tags_relax_bool {#2}
+		}
+	}
+
+\NewDocumentCommand{\SearchForTag}{mm}
+	{
+	\bool_set_false:N \g_tags_search_bool
+		\clist_map_inline:nn { #1 }
+			{
+		    \clist_if_in:NnT \l_tags_strict_active_list_clist { ##1 }
+	    		{
+	   			\bool_set_true:N \g_tags_search_bool
+		  		}
+			}
+		\clist_map_inline:nn { #1 }
+			{
+			    \clist_if_in:NnTF \l_tags_relax_active_list_clist { ##1 }
+	    			{
+	   			\bool_set_true:N \g_tags_search_bool
+				}
+				{}
+			}
+		\bool_if:NT \g_tags_search_bool {#2}
+	}
+
+\NewDocumentCommand{\avoidTags}{m}
+	{
+	\set@AvoidActiveTags{#1}
+	}
+
+
+\NewDocumentCommand{\iterate@List}{mm}{
+\clist_map_inline:nn { #1 } { \renewcommand{\temp@Input}{##1} #2 }
+}
+
+
+\ExplSyntaxOff

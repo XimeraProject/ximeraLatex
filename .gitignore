@@ -1,4 +1,4 @@
-*~
+
 *.4ct
 *.4tc
 *.aux
@@ -33,3 +33,6 @@
 *.toc
 *.xref
 *.ids
+*
+*.sage*
+Config.sty

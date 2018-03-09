@@ -1,0 +1,29 @@
+\ProvidesPackage{PackageLoader}
+
+%Error Code Checks.
+\newif\ifVerbose
+\Verbosefalse
+\newcounter{Total@Question}
+\setcounter{Total@Question}{0}
+
+%%%%%%%%%%%%%%%   Default Packages provided by LaTeX   %%%%%%%%%%%%%%%%%%%%%%%%
+
+
+\RequirePackage{tikz, pgfplots}
+\pgfmathsetseed{\number\pdfrandomseed}
+\RequirePackage{etoolbox,verbatim}
+\RequirePackage{ifthen}
+\RequirePackage[margin=1in]{geometry}
+\RequirePackage{amsmath}
+\RequirePackage{forloop}
+\RequirePackage{xifthen}
+
+%%%%%%%%%%%%%%%   Custom Packages provided by UF Students %%%%%%%%%%%%%%%%%%%%%
+
+
+\RequirePackage{Filter}
+\RequirePackage{TagMasterList}
+\RequirePackage{ProblemSelection}
+\RequirePackage{Config}
+\RequirePackage{shuffle}
+\RequirePackage{randomize}

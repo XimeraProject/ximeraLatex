@@ -1,0 +1,168 @@
+\begin{sagesilent}
+#####Define default Sage variables.
+#Default function variables
+var('x,y,z,X,Y,Z')
+#Default function names
+var('f,g,h,dx,dy,dz,dh,df')
+#Default Wild cards
+w0 = SR.wild(0)
+
+
+#Define a function to get a random computable angle between 0 and 2pi. 
+#Syntax: RandAng(AngMin, AngMax) Where Angmin is minimum desired angle, Angmax is maximum desired angle. These are not strict inequalities, be wary.
+
+def RandAng(s,t):
+   angle=[0, pi/6,pi/4,pi/3,pi/2, 2*pi/3,3*pi/4,5*pi/6,pi, 7*pi/6,5*pi/4,4*pi/3,3*pi/2, 5*pi/3,7*pi/4,11*pi/6,2*pi ]
+   theta=Integer(randint(0,16))
+   Ang=angle[theta]
+   while Ang<=s or Ang>=t:
+      theta=Integer(randint(0,16))
+      Ang=angle[theta]
+   return simplify(Ang)
+
+#####Define a sage function to take in a number and return the signed number, so -3 returns "-3" and 3 returns "+3" to interface with Latex correctly. Note this only works with numbers, and if 0 is entered, it returns blank space (To avoid the +0 or -0 result).
+
+var('TempSignVar11')
+
+def ISP(b):
+   if b > 0:
+      TempSignVar11 ="+" 
+   elif b < 0:
+      TempSignVar11 ="-"
+      b = -b
+   else:
+      b =""
+      TempSignVar11 =""
+   b = str(b)
+   return TempSignVar11 + b
+###################################
+
+# Define a function to substitute a number for a variable in a function without actually evaluating that function.
+
+def NoEval(f, c):
+    cstr = str(c)
+#    flatex = latex(f)
+    fstring = latex(f)
+    fstrlist = list(fstring)
+    length = len(fstrlist)
+    fstrlist2 = range(length)
+    for i in range(0, length):
+        if fstrlist[i] == "x":
+            fstrlist2[i] = "("+cstr+")"
+        else:
+            fstrlist2[i] = fstrlist[i]
+    f2 = join(fstrlist2,"")
+    return LatexExpr(f2)
+
+###################################
+# Define a function that will convert out hyperbolic expressions and simplify them.
+
+def HyperSimp(f):
+    ftemp = f
+    ftemp1 = ftemp.substitute(sinh(w0) == (exp(w0) - exp(-w0))/2)
+    ftemp2 = ftemp1.substitute(cosh(w0) == (exp(w0) + exp(-w0))/2)
+    ftemp6 = ftemp2.substitute(tanh(w0) == (exp(w0) - exp(-w0))/(exp(w0) + exp(-w0)))
+#Not working yet    ftemp4 = ftemp3.substitute(sech(w0) == 2/(exp(w0) + exp(-w0)))
+#Not working yet    ftemp5 = ftemp4.substitute(csch(w0) == 2/(exp(w0) - exp(-w0)))
+#Not working yet    ftemp6 = ftemp5.substitute(coth(w0) == (exp(w0) + exp(-w0))/(exp(w0) - exp(-w0)))
+    ftemp7 = ftemp6.substitute(arcsinh(w0) == ln( w0 + sqrt((w0)^2 + 1)))
+    ftemp8 = ftemp7.substitute(arccosh(w0) == ln( w0 + sqrt((w0)^2 - 1)))
+    ftemp9 = ftemp8.substitute(arctanh(w0) == 1/2 * ln( (1 + w0)/ (1 - w0) ))
+    ftemp10 = ftemp9.substitute(arccsch(w0) == ln( (1 + sqrt((w0)^2 + 1))/w0))
+    ftemp11 = ftemp10.substitute(arcsech(w0) == ln( (1 + sqrt(1 - (w0)^2))/w0))
+    ftemp12 = ftemp11.substitute(arccoth(w0) == 1/2 * ln( (1 + w0)/ (w0 - 1) ))
+    ffinal = ftemp12
+    return simplify(ffinal)
+
+###################################
+
+# Define a quick version of Integer(randint(-a,b))
+
+def RandInt(a,b):
+    return Integer(randint(a,b))
+
+
+###################################
+
+# Define a function to check the reasonable-ness of an answer. It checks the numerator and denominator to see if they are reasonable numbers.
+# a is the input number to check, and b is the threshold you want the numerator and denominator (if present) to be below. Default is 1000. Thus 1/596 would pass, 5419/209 would not.
+
+def saneCheck(a,b = 1000):
+   aTemp = abs(a/(7919*7907*6883)) # I need to force a denominator. Odds are, whatever you're checking won't have all these primes as factors. If they do, then you have fucked up royally anyway. Also take absolute value in order to test magnitude of values.
+   
+   # Initialize answer to -1 to detect if anything happened.
+   check = -1
+   
+   if aTemp.numerator() > b or aTemp.denominator() > (b*7919*7907*6883):
+      check = 0
+   else:
+      check = 1
+   
+   return check
+
+
+###################################
+#Define a function to create an integer from b to c that is not some set of numbers (default is not 0).
+## 
+## Syntax: To generate a non zero integer between -3 and 17, use NonZeroInt(-3,17).
+## To generate a number between -3 and 17, that is not 0, 5, or ROOT1 (Where ROOT1 is a variable calculated earlier in the code) use NonZeroInt(-3,17, [0, 5, ROOT1]).
+## 
+
+
+var('TempVar21')
+
+def NonZeroInt(b,c, D = [0]):
+   TempVar21 = Integer(randint(b,c))
+   while TempVar21 in D:
+      TempVar21 = Integer(randint(b,c))
+   return TempVar21
+###################################
+
+
+### Define a Random Nonzero vector in range b to c inclusive
+## Syntax: RandomVector(A,B,[LIST], C):
+##
+## The function will generate a list of numbers from A to B, in randomized order. 
+## If you wish to remove any values from the list (such as 0, or the sage number calculated earlier) include it in the LIST area. Note the [], they are necessary. This argument is optional.
+## If you wish to duplicate the string (before it is randomized) a certain number of times, put that number in for C. This argument is optional.
+## 
+## So, for example, if you want to just generate a list of numbers in random order from -5 to 17, use: RandomVector(-5,17).
+## If you want to generate a list of random numbers that include -4 to 12, but not 0, -2, or ROOT1 (a variable calculated earlier in the code), and have each number occuring 3 times use: RandomVector(-4,12,[0,-2,ROOT1], 3).
+
+var('TVecFun11')
+var('TVecFun12')
+var('TVecFun13')
+var('TVecFun14')
+var('TVecFun15')
+import random
+
+def RandomVector(b,c,TVecFun12=[],TVecFun13 = 1):
+   TVecFun11 = range(b, c+1)
+   TVecFun15 = [p for p in TVecFun11 if p not in TVecFun12]
+   TVecFun14 = TVecFun15
+   for j in range(1, TVecFun13):
+      TVecFun14 = TVecFun14 + TVecFun15
+   random.shuffle(TVecFun14)
+   return TVecFun14
+
+## Diagonal of the matrix.
+def diag(A,dim,B):
+   for i in range(dim):
+      B[i,i] = A[i,i]
+   return B
+   
+   
+## Generate a random QQ matrix
+def gen_matrix(dim1, dim2, LBnum,UBnum,LBden,UBden):
+   Temp = matrix(QQ, dim1, dim2, 0)
+   for i in range(dim1):
+      for j in range(dim2):
+         num = RandInt(LBnum, UBnum)
+         den = RandInt(LBden, UBden)
+         Temp[i,j] = num/den
+   return Temp
+   
+   
+###################################
+
+\end{sagesilent}

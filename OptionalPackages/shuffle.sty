@@ -1,0 +1,181 @@
+\ProvidesPackage{shuffle}
+\RequirePackage{randomize}
+
+% Shuffle Package
+
+
+%%%%% Usage %%%%
+
+% Shuffle is an environment designed to shuffle "blocks" of content into a random order. A "Shuffle Block" is a block of content wrapped in the \shuffleBlock command and will be shuffled with other "shuffle blocks" into randomized order. The content of the block itself is NOT shuffled.
+
+%% Example
+
+%\shuffleBlock{
+%\begin{problem}
+%
+%Problem 1 $\answer{42}$
+%\end{problem}
+%
+%\begin{problem}
+%
+%Problem 2 $\answer{42}$
+%\end{problem}
+%}
+%
+%\shuffleBlock{
+%\begin{problem}
+%
+%Problem 3 $\answer{42}$
+%\end{problem}
+%}
+%
+%\shuffleBlock{
+%\begin{problem}
+%
+%Problem 4 $\answer{42}$
+%\end{problem}
+%}
+
+
+% In the above you have 3 shuffle blocks, one containing problem 1 and 2, one containing problem 3, and one containing problem 4. Without the "\begin{shuffle} ... \end{shuffle}" environments, by default this will compile as if the \shuffleBlock isn't there, ie it will display problem 1, then problem 2, then problem 3, then problem 4. If you put the entire content into the shuffle environment however, the blocks will be randomly permuted, resulting in problem 2 always following problem 1, but otherwise problems three, four and (one and two together) will appear in a random order, for example problem 3, then problem 1, then problem 2 (which must follow problem 1 as it's in the same shuffle block), then problem 4.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%  		Shuffle Environment		%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\newif\ifshuffle
+\shufflefalse
+
+%Necessary counters
+%\Make@Counter{shuffle@trackProblem}% Tracks which problem in shuffle we're on.
+\Make@Counter{shuffle@blockNumber}
+\setcounter{shuffle@blockNumber}{1}% Roman numerals don't like zero
+\Make@Counter{shuffle@groupingNumber}
+\setcounter{shuffle@groupingNumber}{1}% Roman numerals don't like zero.
+\Make@Counter{shuffle@Given}% Tracks how many questions are desired.
+\Make@Counter{problemType} %% for variations within shuffle
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%	Shuffle Environment - User Command to Group Shuffle Blocks		%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+% Shuffle has changed from truncating to randomizing (and possibly truncating). There will likely be a lot of redundant/pointless code that use to track truncation when we don't need it anymore.
+
+\newenvironment{shuffle}[1][1]{ % shuffle takes an optional argument (default 1) as a number. It will randomly select/order the optionally given number of shuffleBlocks within the shuffle environment. If the optional argument exceeds the number of shuffleBlocks in the shuffle environment, shuffle will only randomize up to the number of available shuffleBlocks (i.e. no random extra empty problems listed on the page.) 
+	% Shuffle Start: Collect and save numbers that will be needed later.
+	\shuffletrue
+	\setcounter{shuffle@Given}{#1}% Track how many problems we want
+	\setcounter{problemType}{0}% We are in a new shuffle block, time to reset the subquestion counter
+	}
+	{
+	\ifnum\value{shuffle@blockNumber}>0
+		\ifnum\value{shuffle@blockNumber}>\value{shuffle@Given}% Check to see if we have enough shuffle blocks to pull the number of shuffle blocks you want.
+		\else% If not...
+		\setcounter{shuffle@Given}{\arabic{shuffle@blockNumber}}% We can only call as many shuffle bloks as exists, no matter how much you want more.
+		\fi
+		
+		\RandMe{\arabic{shuffle@blockNumber}}{shuffle@G\roman{shuffle@groupingNumber}}{\arabic{shuffle@blockNumber}}% Get a vector of numbers in the new shuffle block, and rearrange them using RandMe to shuffle placements.
+		\stepcounter{shuffle@Given}% Step for the < symbol
+		\forloop{Iteration1}{1}{\arabic{Iteration1} < \arabic{shuffle@Given}}{% Iterate through all the blocks to place them
+			\csname shuffle@question\roman{shuffle@groupingNumber}\Roman{shuffle@G\roman{shuffle@groupingNumber}\Roman{Iteration1}}\endcsname
+		}
+	\fi
+	\shufflefalse% No longer in shuffle
+	\setcounter{shuffle@blockNumber}{1}% We are back to no new blocks
+	\stepcounter{shuffle@groupingNumber}% Track new groups of shuffling blocks
+	}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%	Shuffle Block - User Command to Shuffle	%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+
+
+%%%% Below is the shuffleBlock Environment, designed to work with shuffle. See below for usage.
+% This is a block that the shuffle environment will shuffle as a block. So the correct usage would be to do something like;
+%	\begin{shuffle{
+%	\shuffleBlock{
+%	\begin{problem}
+%	A problem goes here!
+%	\end{problem}
+%	}
+%	\shuffleBlock{
+%	\begin{exercise}
+%	And here is an exercise!
+%	\end{exercise}
+%	}
+%	\end{shuffle}
+
+
+\newcommand{\shuffleBlock}[1]{
+\ifshuffle% What to do if we're in a shuffle environment
+	\expandafter\newcommand\csname shuffle@question\roman{shuffle@groupingNumber}\Roman{shuffle@blockNumber}\endcsname{% If so, we want to define the next Question in the list to display to be this questions' content. That way we can call it later.
+	#1
+	}
+			
+	\stepcounter{shuffle@blockNumber}% We have finished this shuffleBlock, step the counter.
+
+\else% If we're not in a shuffle environment just pass everything through without doing anything
+#1
+\fi
+}
+
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%	Edits to Existing Commands in cls to implement Shuffle 	%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+
+
+%%% Edits to Numbering; To add numbering to the shuffled problems to denote sub-problems.
+
+\renewcommand{\problemNumber}{
+\ifnum\value{problem}<1
+	\setcounter{problem}{1}% If the problem counter is every 0 or negative, reset to one. This is a hack that should probably be more appropriately handled at some point but the problem counter is changed all over the place in this document so we need to rewrite this from scratch for consistency.
+\fi
+
+\ifhandout % Currently handout mode doesn't allow hints. Putting this code in place in case that changes.
+		\theproblem 
+\else
+	\ifshuffle
+		\theproblem.\theproblemType
+	\else
+		\theproblem 
+	\fi
+\fi
+}
+
+
+
+%% Edit to the problem environment start code to check if you are in a shuffle block, and to implement correct numbering (and correct global numbering) if you are.
+
+\renewcommand{\problemEnvironmentStart}[2]{%This takes in 2 arguments. The first is optional and is the old optional argument from existing environments. The second argument is mandatory and is the name of the 'problem' environment, such as problem, question, exercise, etc. It then configures everything needed at the start of that environment.
+
+\ifhandout
+\else
+	\ifshuffle% Moved to env start for nested environs
+		\addtocounter{problem}{-1}
+	\fi  %% the problem does not increase within shuffle
+\fi
+
+\def\spaceatend{#1}\refstepcounter{problem}\refstepcounter{problemType}
+\begin{trivlist}
+\item
+	[
+	\hskip\labelsep\sffamily\bfseries 
+	#2
+% Now we need to determine the correct number of the problem, and the format of that number.
+	\problemNumber
+	]
+\slshape
+}
+

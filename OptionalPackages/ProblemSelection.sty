@@ -1,0 +1,749 @@
+\ProvidesPackage{ProblemSelection}
+\RequirePackage{Config}
+\RequirePackage{randomize}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%				Necessary Counters					%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\Make@Counter{Iteration@1}
+\Make@Counter{Iteration@2}
+\Make@Counter{Iteration@3}
+\Make@Counter{Iteration@4}
+\Make@Counter{Temp@1}
+\Make@Counter{Temp@2}
+\Make@Counter{Temp@3}
+\Make@Counter{Given@ProblemNumber}
+\Make@Counter{Problem@ToList}
+\Make@Counter{Problem@RemainToCheck}
+\Make@Counter{Last@Question}
+\Make@Counter{Question@CurNumber}
+\Make@Counter{Question@DisplayCounter}
+\Make@Counter{Problem@TotalToList}
+\Make@Counter{Problem@GroupingNumber}
+\setcounter{Problem@GroupingNumber}{1}
+\Make@Counter{Problem@Range}
+\Make@Counter{Problem@EndRef}
+\setcounter{Problem@EndRef}{1}
+\Make@Counter{Problem@NextRef}
+\Make@Counter{file@GroupRef}
+\setcounter{file@GroupRef}{1}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%				Necessary Conditionals					%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\newif\iffindingQuestion
+\findingQuestionfalse
+
+\newif\ifquestionCount
+\questionCounttrue
+
+\newif\ifquestionPull
+\questionPullfalse
+
+\newif\ifPerFileQ
+\PerFileQfalse
+
+\newif\ifproblemToFind
+\problemToFindfalse
+
+\newif\ifPSShuffle
+\PSShufflefalse
+
+\newif\ifQSShuffle
+\QSShufflefalse
+
+\newif\ifveryVerbose
+\veryVerbosefalse
+
+\newif\ifVerboseCount
+\VerboseCountfalse
+
+\newif\ifVerboseLocation
+\VerboseLocationfalse
+
+\newif\ifquestion@Static
+\question@Staticfalse
+
+\newif\ifInner@Shuffle
+\Inner@Shufflefalse
+
+\newif\ifInner@OrderReverse
+\Inner@OrderReversefalse
+
+\newif\ifInner@OrderForward
+\Inner@OrderForwardfalse
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%				File-Writing shortcuts					%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\newcommand{\file@Write}[2]{
+\expandafter\immediate\expandafter\write\csname#1\endcsname{#2}
+}
+
+\newcommand{\file@Initialize}[1]{
+\expandafter\newwrite\csname#1\endcsname
+\expandafter\immediate\expandafter\openout\csname#1\endcsname=file-\jobname--ProblemList-#1.tex
+}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%				Necessary Key-Values					%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+%%%%%%% User-set Keys
+%% These are for users to put into commands
+
+\define@key{key@ProblemSelect}{Static}{
+\ifthenelse{\equal{#1}{true}}
+	{% If the key is 'true' then set Static to true.
+	\question@Statictrue
+	}{}% If the key is something else, then don't.
+
+% The conditionals below are to account for users not checking what the correct flag is.
+\ifthenelse{\equal{#1}{True}}
+	{% 
+	\question@Statictrue
+	}{}% 
+\ifthenelse{\equal{#1}{on}}
+	{% 
+	\question@Statictrue
+	}{}% 
+\ifthenelse{\equal{#1}{On}}
+	{% 
+	\question@Statictrue
+	}{}% 
+}
+
+\define@key{key@ProblemSelect}{PerFile}{
+\ifthenelse{\equal{#1}{true}}
+	{% If the key is 'true' then set Static to true.
+	\PerFileQtrue
+	}{}% If the key is something else, then don't.
+
+% The conditionals below are to account for users not checking what the correct flag is.
+\ifthenelse{\equal{#1}{True}}
+	{% 
+	\PerFileQtrue
+	}{}% 
+\ifthenelse{\equal{#1}{on}}
+	{% 
+	\PerFileQtrue
+	}{}% 
+\ifthenelse{\equal{#1}{On}}
+	{% 
+	\PerFileQtrue
+	}{}% 
+}
+
+\define@key{key@ProblemSelect}{Shuffle}{
+\ifthenelse{\equal{#1}{true}}
+	{% If the key is 'true' then set Static to true.
+	\PSShuffletrue
+	}{}% If the key is something else, then don't.
+
+% The conditionals below are to account for users not checking what the correct flag is.
+\ifthenelse{\equal{#1}{True}}
+	{%
+	\PSShuffletrue
+	}{}% 
+\ifthenelse{\equal{#1}{on}}
+	{% 
+	\PSShuffletrue
+	}{}% 
+\ifthenelse{\equal{#1}{On}}
+	{% 
+	\PSShuffletrue
+	}{}% 
+}
+
+\define@key{key@ProblemSelect}{GroupShuffle}{
+\ifthenelse{\equal{#1}{true}}
+	{% If the key is 'true' then set Static to true.
+	\QSShuffletrue
+	}{}% If the key is something else, then don't.
+
+% The conditionals below are to account for users not checking what the correct flag is.
+\ifthenelse{\equal{#1}{True}}
+	{%
+	\QSShuffletrue
+	}{}% 
+\ifthenelse{\equal{#1}{on}}
+	{% 
+	\QSShuffletrue
+	}{}% 
+\ifthenelse{\equal{#1}{On}}
+	{% 
+	\QSShuffletrue
+	}{}% 
+}
+
+\newcommand{\question@SetKeys}[1]{
+\setkeys{key@ProblemSelect}{PerFile={}, Static={}, Shuffle={}, GroupShuffle={},#1}
+}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%			Track Question Number and Content		%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+
+
+\renewcommand{\latexProblemContent}[1]{%
+	\stepcounter{Question@CurNumber}% We're checking a new question.
+	\ifveryVerbose We are checking problem \arabic{Question@CurNumber}. \\ \fi
+	\ifnum\value{Problem@RemainToCheck}>1% Only bother to keep looking if there are more problems to look for
+
+		\ifVerbose	
+		Registered the last question to be: \arabic{Problem@ToList}\\
+		Registered the Current question to be: \arabic{Question@CurNumber}\\
+		\fi
+
+		\ifVerbose Looking for question \arabic{Problem@NextRef}.\\ \fi
+
+		\ifnum\value{Question@CurNumber}=\value{Problem@NextRef}% Check to see if the question we're currently on, is one of the questions in the list of questions we are after (contained in Question@Location Values)
+			\ifVerbose I think I found question \arabic{Problem@NextRef} so I am assigning a new command now.\\ \fi
+			\stepcounter{Question@DisplayCounter}% We found a displayable question.
+			\expandafter\newcommand\csname Question@Display\roman{Problem@GroupingNumber}\Roman{Question@DisplayCounter}\endcsname{% If so, we want to define the next Question in the list to display to be this questions' content. That way we can call it later.
+			#1
+			}
+			\file@Write{\Roman{file@GroupRef}}{\unexpanded{#1}}
+			\ifVerbose I assigned the command to be Question@Display\roman{Problem@GroupingNumber}\Roman{Question@DisplayCounter} in theory.\\ \fi
+			\addtocounter{Problem@RemainToCheck}{-1}% Decrement the total number of questions to look for since we found one. This will only work because the questions are given in *reverse* numeric order.
+			\addtocounter{Problem@EndRef}{-1}% Decrement the End Pointer as well.
+			\ifnum\value{Problem@EndRef}>0% If there are more questions to look for, set the next one.
+				\ifVerbose I think found and properly assigned question \arabic{Problem@NextRef}\\ \fi
+				\setcounter{Problem@NextRef}{\arabic{Question@Location\Roman{Problem@EndRef}}}
+				\ifVerbose Now I'm looking for problem \arabic{Problem@NextRef}\\ \fi
+			\fi
+		\fi% If it's not on the list, we ignore it.
+	\fi
+	\ifveryVerbose
+		The current problem is \arabic{Question@CurNumber}.\\
+		The Current number of remaining problems is \arabic{Problem@EndRef}.\\
+		The next problem to find is \arabic{Problem@NextRef}.\\
+		\fi
+}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%					Filter Questions 				%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Look in Filter.sty for all the filtering code, specifically the \tagged system. 
+% Fair warning; it is written in LaTeX3 which is very different than "normal" LaTeX.
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%					Header and Foooter 				%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\newcommand{\ProblemFileHeader}[1]{%
+\ifquestionCount
+\addtocounter{Total@Question}{#1}
+\fi
+\ifPerFileQ
+	\setcounter{Total@Question}{#1}
+	\questionPulltrue
+		\ifVerbose We should now be Pulling Questions (questionPulltrue)\\ \fi
+	\addtocounter{Problem@ToList}{\arabic{Given@ProblemNumber}}
+	\ChooseQuestions{\arabic{Given@ProblemNumber}}
+	\problemToFindtrue% We want to pull problems from this file by definition.
+		\ifVerbose There is a question to Find (questionFindtrue)\\ \fi
+
+\else% Worrying about finding a problem only makes sense if we aren't pulling every file.
+	\ifVerbose The end ref is currently \arabic{Problem@EndRef}.\\ \fi
+
+	\ifnum\value{Problem@EndRef}>0% We only want to look for problems if we haven't already found them all.
+	
+		\ifquestionPull% Check to see if we're trying to pull problems at all
+			\ifVerbose We are now checking that this file contains problems in our range. \\ \fi
+			
+			\setcounter{Problem@Range}{\arabic{Question@CurNumber}}% If so, set the increased range to be how far we've currently looked
+			\addtocounter{Problem@Range}{#1}% Add how much further we are going in this file.
+			
+			\ifnum\value{Problem@Range}>\value{Problem@NextRef}
+				\problemToFindtrue
+					\ifVerbose There is a question to Find (questionFindtrue)\\ \fi
+			\else
+				\addtocounter{Question@CurNumber}{#1}
+			\fi
+		\fi
+	\fi
+\fi
+%\problemToFindtrue
+}
+
+\newcommand{\ProblemFileFooter}{%
+\problemToFindfalse
+\ifPerFileQ
+\setcounter{Question@CurNumber}{0}
+\questionPullfalse
+\fi
+}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%			Randomize Question Choice Code			%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\newcommand{\ChooseQuestions}[1]{% Decides which problems to choose
+		\make@Vector[Order@Direction=reverse]{Question@Location}{1}{\arabic{Total@Question}}{#1}% Determine which problems to call at random. Assign them to the "Question@Location\Roman{}" Counters
+
+		\questionPulltrue% Now we're pulling questions
+			\ifVerbose We should now be Pulling Questions (questionPulltrue)\\ \fi
+		\setcounter{Problem@RemainToCheck}{\arabic{Given@ProblemNumber}}
+		\setcounter{Problem@EndRef}{\arabic{Given@ProblemNumber}}
+		\stepcounter{Problem@RemainToCheck}
+		\setcounter{Problem@NextRef}{\arabic{Question@Location\Roman{Problem@EndRef}}}
+		\ifVerbose 	Problems That Remain to Check \arabic{Problem@RemainToCheck}\\
+				End Reference pointer: \arabic{Problem@EndRef}\\
+				I think our first problem is \arabic{Problem@NextRef}\\
+				I think our ending reference is \arabic{Problem@EndRef}\\
+				\fi
+	
+}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%		Master Input Command  	%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+\newcommand{\Master@Input@Test}{%	Input only relevant files.
+\ifVerbose I tried to run Master Input Test \fi
+
+\SearchForTag{Topic@Limit}{
+	\ifVerbose 
+	I detected that I should input the Limit-Input file 
+		\ifquestionCount 
+			in order to get question counts!\\
+		\else
+			in order to find problems!\\
+		\fi	
+	\fi
+	\expandafter\input{\QBank@loc Limit-Input}
+	}
+
+\SearchForTag{Topic@Derivative}{
+	\ifVerbose 
+		I detected that I should input the Derivative-Input file 
+		\ifquestionCount 
+			in order to get question counts!\\
+		\else
+			in order to find problems!\\
+		\fi	
+	\fi
+\expandafter\input{\QBank@loc Derivative-Input}
+	}
+
+\SearchForTag{Topic@Integral}{
+	\ifVerbose 
+		I detected that I should input the Integral-Input file 
+		\ifquestionCount 
+			in order to get question counts!\\
+		\else
+			in order to find problems!\\
+		\fi	
+	\fi
+\expandafter\input{\QBank@loc Integral-Input}
+	}
+
+\SearchForTag{Topic@Sequence}{
+        \ifVerbose 
+                I detected that I should input the Sequence-Input file 
+                \ifquestionCount 
+                        in order to get question counts!\\
+                \else
+                        in order to find problems!\\
+                \fi     
+        \fi
+\expandafter\input{\QBank@loc Sequence-Input}
+        }
+
+\SearchForTag{Topic@Series}{
+        \ifVerbose 
+                I detected that I should input the Series-Input file 
+                \ifquestionCount 
+                        in order to get question counts!\\
+                \else
+                        in order to find problems!\\
+                \fi     
+        \fi
+\expandafter\input{\QBank@loc Series-Input}
+        }
+
+
+\SearchForTag{Topic@Parametric}{
+	        \ifVerbose
+                I detected that I should input the Parametric-Input file
+                \ifquestionCount
+                        in order to get question counts!\\
+                \else
+                        in order to find problems!\\
+                \fi
+        \fi
+\expandafter\input{\QBank@loc Parametric-Input}
+	}
+
+\SearchForTag{Topic@Polar}{
+	\ifVerbose 
+		I detected that I should input the Polar-Input file 
+		\ifquestionCount 
+			in order to get question counts!\\
+		\else
+			in order to find problems!\\
+		\fi	
+	\fi
+	\expandafter\input{\QBank@loc Polar-Input}
+	}
+
+\SearchForTag{Topic@Volume}{
+	\ifVerbose 
+		I detected that I should input the Volume-Input file 
+		\ifquestionCount 
+			in order to get question counts!\\
+		\else
+			in order to find problems!\\
+		\fi	
+	\fi
+	\expandafter\input{\QBank@loc Volume-Input}
+	}
+
+\SearchForTag{Topic@Precalc}{
+	\ifVerbose 
+		I detected that I should input the Precalc-Input file 
+		\ifquestionCount 
+			in order to get question counts!\\
+		\else
+			in order to find problems!\\
+		\fi	
+	\fi
+	\expandafter\input{\QBank@loc Precalc-Input}
+	}
+
+%\SearchForTag{Topic@Derivative-Imp}{
+%	\ifVerbose 
+%		I detected that I should input the Integral-Input file 
+%		\ifquestionCount 
+%			in order to get question counts!\\
+%		\else
+%			in order to find problems!\\
+%		\fi	
+%	\fi
+%	\expandafter\input{\QBank@loc Derivative-Imp-Input}
+%	}
+%
+%\SearchForTag{Topic@Integral-Imp}{
+%	\ifVerbose 
+%		I detected that I should input the Integral-Input file 
+%		\ifquestionCount 
+%			in order to get question counts!\\
+%		\else
+%			in order to find problems!\\
+%		\fi	
+%	\fi
+%	\expandafter\input{\QBank@loc Integral-Imp-Input}
+%	}
+%
+%\SearchForTag{Topic@Limit-Multi}{
+%	\ifVerbose 
+%		I detected that I should input the Integral-Input file 
+%		\ifquestionCount 
+%			in order to get question counts!\\
+%		\else
+%			in order to find problems!\\
+%		\fi	
+%	\fi
+%	\expandafter\input{\QBank@loc Limit-Multi-Input}
+%	}
+%
+%\SearchForTag{Topic@Derivative-Multi}{
+%	\ifVerbose 
+%		I detected that I should input the Integral-Input file 
+%		\ifquestionCount 
+%			in order to get question counts!\\
+%		\else
+%			in order to find problems!\\
+%		\fi	
+%	\fi
+%	\expandafter\input{\QBank@loc Derivative-Multi-Input}
+%	}
+%
+%\SearchForTag{Topic@Integral-Multi}{
+%	\ifVerbose 
+%		I detected that I should input the Integral-Input file 
+%		\ifquestionCount 
+%			in order to get question counts!\\
+%		\else
+%			in order to find problems!\\
+%		\fi	
+%	\fi
+%	\expandafter\input{\QBank@loc Integral-Multi-Input}
+%	}
+
+\SearchForTag{Topic@TestBank}{
+        \ifVerbose 
+                I detected that I should input the TestBank-Input file 
+                \ifquestionCount 
+                        in order to get question counts!\\
+                \else
+                        in order to find problems!\\
+                \fi     
+        \fi
+\expandafter\input{\QBank@loc TestBank-Input}
+        }
+
+
+}% End of master input test command
+
+\newcommand{\select@Question}[1]{
+	\ifVerbose 
+		\ifquestionCount 
+			We called the file #1 to find problem counts!\\ 
+		\else
+			We called the file #1, this time to find problems!\\
+		\fi	
+	\fi
+	\input{#1}
+}
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%	Display Question Command	%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\Make@Counter{Problem@GroupNumberStart}
+\setcounter{Problem@GroupNumberStart}{1}
+\Make@Counter{Problem@GroupNumberEnd}
+\setcounter{Problem@GroupNumberEnd}{1}
+\Make@Counter{Iteration@ListProb}
+\Make@Counter{TmpQuantCount}
+
+\newcommand{\listQuestions}[1][GroupShuffle=false]{
+		%%%%% Now we display the problems. Currently this will *Not* shuffle the problems by default. I may deacitvate this once the "shuffle" environment is fully functional.
+
+		\question@SetKeys{#1}% Set any given keys
+			% Potential Keys:
+				% GroupShuffle = true ; this makes every question since the last listQuestions have a randomized position
+\forloop{Iteration@ListProb}
+	{\value{Problem@GroupNumberStart}}% Start at current batch start
+	{\value{Iteration@ListProb} < \arabic{Problem@GroupNumberEnd}}% End at current batch end
+	{
+	\setcounter{TmpQuantCount}{	\expandafter\arabic{Problem@GroupingNumber\roman{Iteration@ListProb}@Quant}}
+	
+	\ifVerbose
+	
+	Total Problems that should list: \arabic{Problem@TotalToList}
+
+	GRP Start: 
+	\arabic{Problem@GroupNumberStart}
+	
+	Current: 
+	\arabic{Iteration@ListProb}
+		
+	GRP End: 
+	\arabic{Problem@GroupNumberEnd}
+	
+	Current number of questions that should be pulled in this pass: 
+	\expandafter\arabic{TmpQuantCount}
+	
+	\fi
+		
+	% Let's check if this was a static question. If so, pull the relevant file.
+	\ifnum\value{TmpQuantCount}<-99
+		\expandafter\expandafter\expandafter\input{file-\jobname--ProblemList-\Roman{Iteration@ListProb}}
+	\else
+
+		% First, determine if the list is shuffled.
+		
+		\ifPSShuffle
+			\make@Vector[InnerShuffle=true]{Shuffle@Position@}{1}{\arabic{TmpQuantCount}}{\arabic{TmpQuantCount}}% Create random ordering for the questions about to be displayed.
+		\else
+			\make@Vector[InnerShuffle=false, Order@Direction=forward]{Shuffle@Position@}{1}{\arabic{TmpQuantCount}}{\arabic{TmpQuantCount}}% Else make a (forward) ordered list
+		\fi
+		
+		
+		\stepcounter{TmpQuantCount}% Step the total number of problems to list by 1 so that we can use <
+	
+		\forloop{Iteration@1}{1}{\arabic{Iteration@1} < \arabic{TmpQuantCount}}
+			{
+			\ifVerbose			
+			
+			Current Value of It1: \arabic{Iteration@1}
+
+			Current Value of It2: \arabic{Iteration@ListProb}
+			
+			\fi
+			
+			\csname Question@Display\roman{Iteration@ListProb}\Roman{Shuffle@Position@\Roman{Iteration@1}}\endcsname
+			}
+	\fi
+	}% End of overall forloop
+	\setcounter{Problem@TotalToList}{0}
+	\setcounter{Problem@GroupNumberStart}{\arabic{Problem@GroupNumberEnd}}
+	\PSShufflefalse
+}
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%			User Selection Question Command			%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+\newcommand{\QuestionSelect}[4][Static=false, PerFile=false, Shuffle=false]{% This is the master user command to call questions
+		% #1 is optional and is the "Per File Flag"
+		% #2 is the Topic
+		% #3 is the secondary criteria, like sub@rational
+		% #4 is the number of questions we want to pull (either in total or per file)
+		% First we set up how many problems we are pulling, either in total or per file.
+	
+	\question@SetKeys{#1}% First we set the flags for PerFile or Static.
+		% Potential Keys to use:
+			% Static = true ; This inputs the last compile for this question block, ths negating re-randomizing
+			% PerFile = true ; This tells \QuestionSelect to pull the #4 number of questions from EACH file that 						matches the given tags. Warning: This can make an *awful* lot of questions appear if you aren't 							careful.
+			% Shuffle = true ; This shuffles the problems within this specific QuestionSelect block.
+	
+	
+	\ifquestion@Static% Check to see if we want to reuse the old problems.
+		\expandafter\Make@Counter{Problem@GroupingNumber\roman{Problem@GroupingNumber}@Quant}% Make the Counter
+		\expandafter\setcounter{Problem@GroupingNumber\roman{Problem@GroupingNumber}@Quant}{-100}% Define it to -100 to flag it as a static, ie already existing, file.
+	\else
+		\file@Initialize{\Roman{file@GroupRef}}
+
+		\setcounter{Given@ProblemNumber}{#4}
+	
+	       %%%%%% Set Tags that have been given;
+			%Start by resetting tags from any previous command usage	
+			%Now set the active tags that are given.
+		\set@StrictActiveTags{#2}% The topic is necessary, so it is strict
+		\set@RelaxActiveTags{#3}% The secondaries are relaxed by default
+	%	\addTo@RelaxActiveTags{#2}% Strict tags are also relax tags.
+	
+	
+			%%%%% Set whether we are doing "per file" questions, or just grabbing them from the full list.
+%		\ifthenelse{\isempty{#1}}{% Check if we have anything in the optional category. If not we want to set PerFileQ flag to be false.
+		\ifPerFileQ % Set flag false
+		\setcounter{Problem@ToList}{0}% Since we are pulling per file this will be calculated as we go.
+		\else
+		\setcounter{Problem@ToList}{#4}% Since we are not pulling per file we only want #4 amount of problems.
+		\fi
+		
+	
+			%%%%% Now we need to select the problems
+	%	\input{Master-Input-List}% Testing file; Get problem counts and assign them if we're pulling per file.
+		\Master@Input@Test% Get problem counts and assign them if we're pulling per file.
+		
+		\ifVerbose I Just did the first master pull and found a total of \arabic{Total@Question} questions\fi
+	        \ifVerboseCount There are a total of \arabic{Total@Question} Questions. \fi
+
+	% Check to see if we actually found any problems to display. If not, display an error instead of problems. Otherwise, continue on.
+%		\ifnum\value{Total@Question}<1
+%			Nothing was found matching your desired tag combinations so something went very very wrong or you typo'ed something. Please double check your entry!
+%		\else
+			\ifPerFileQ% The problems have already been assigned if this flag is active, so we don't need to do much.
+				\stepcounter{Problem@ToList}% Only need to step the final problem counter for the < sign
+				\ifVerbose I think I'm pulling \arabic{Given@ProblemNumber} questions \textbf{per file} \fi
+			\else% If the flag is false then we need to use the counts to get problems and assign them to commands.
+				\questionCountfalse% We are no longer just counting problems.
+					\ifVerbose I think I'm pulling \arabic{Given@ProblemNumber} questions \textbf{in total} \fi
+		
+				\ChooseQuestions{#4}
+				\stepcounter{Problem@ToList}% Only need to step the final problem counter for the < sign
+		
+				\Master@Input@Test% Now we're pulling the latexProblemContent commands, not just question counts
+		%		\input{Master-Input-List}% Testing File
+				\ifVerbose I just did the second Master Pull\fi
+		
+			\fi
+
+		\expandafter\Make@Counter{Problem@GroupingNumber\roman{Problem@GroupingNumber}@Quant}
+		\expandafter\setcounter{Problem@GroupingNumber\roman{Problem@GroupingNumber}@Quant}{\arabic{Problem@ToList}-1}
+		
+	\fi% End static/Non static conditional
+
+	% Now we have pulled and assigned problems to commands of the form \Question@Display\Roman{Question@DisplayCounter}
+		\ifVerbose Current Pull Quant: \expandafter\arabic{Problem@GroupingNumber\roman{Problem@GroupingNumber}@Quant}
+			\fi
+
+		\addtocounter{Problem@TotalToList}{\arabic{Problem@ToList}-1}
+
+		%%%%%  Reset all counters
+	\QSelectEnd
+	
+}
+
+\newcommand{\QSelectEnd}{
+	\setcounter{Total@Question}{0}% Reset counters
+	\setcounter{Problem@ToList}{0}
+	\setcounter{Question@CurNumber}{0}
+	\stepcounter{file@GroupRef}
+	\questionCounttrue
+	\questionPullfalse
+	\question@Staticfalse
+	\PerFileQfalse
+	\QSShufflefalse
+	\stepcounter{Problem@GroupNumberEnd}
+	\stepcounter{Problem@GroupingNumber}
+	\setcounter{Question@DisplayCounter}{0}
+
+%	\expandafter\edef\expandafter\theProblem@GroupingNumber{\value{Problem@GroupingNumber} + 1}
+}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%		   Practice Select Question Command			%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%		   		findQuestion Command				%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%The intent of the \findQuestion command is to be able to find all questions associated with a given set of tags.
+\newcommand{\findQuestion}[4]{
+\findingQuestiontrue
+
+\set@RelaxActiveTags{}
+\set@StrictActiveTags{}
+
+\ifthenelse{\isempty{#1}}
+	{
+	\expandafter\addTo@RelaxActiveTags\TagList@MasterCatOne
+	}
+	{
+	\addTo@RelaxActiveTags{#1}
+	}
+
+\ifthenelse{\isempty{#2}}
+	{
+	\expandafter\addTo@RelaxActiveTags\TagList@MasterCatTwo
+	}
+	{
+	\addTo@RelaxActiveTags{#2}
+	}
+
+\ifthenelse{\isempty{#3}}
+	{
+	\expandafter\addTo@RelaxActiveTags\TagList@MasterCatThree
+	}
+	{
+	\addTo@RelaxActiveTags{#3}
+	}
+
+\ifthenelse{\isempty{#4}}
+	{
+	\expandafter\addTo@RelaxActiveTags\TagList@MasterCatFour
+	}
+	{
+	\addTo@StrictActiveTags{#4}
+	}
+\Master@Input@Test
+
+\findingQuestionfalse
+}
+
+
+
+

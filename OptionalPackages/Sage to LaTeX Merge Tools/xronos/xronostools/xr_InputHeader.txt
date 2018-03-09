@@ -1,0 +1,14 @@
+%% Begin xr_InputHeader.txt
+%%
+%% Edit this file at /usr/local/etc/xronostools/
+%%
+%% Data here is read in and processed BEFORE the file is processed by xronosraw
+%% In most cases this implies it is tossed away as it occurs before the first problem
+%%
+%% This file is used BEFORE pdf/sage processing
+%%
+%% This file is used BEFORE pdf/sage processing
+%% it may be useful if all you raw files start with a common block of code
+%% That code could be placed in this file and then prepended to all the raw files read in
+%%
+%% End xr_InputHeader.txt

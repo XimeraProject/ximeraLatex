@@ -20,7 +20,7 @@
 %%% Department of Mathematics
 %%% The Ohio State University
 
-\def\fileversion{1.31}
+\def\fileversion{1.33}
 \def\filedate{2016/08/17}
 
 % ---------------------------------------------------------------------
@@ -82,12 +82,18 @@
 \wordchoicegivenfalse%DONE
 \DeclareOption{wordchoicegiven}{\wordchoicegiventrue}%DONE
 
+<<<<<<< HEAD:ximera/OLDximera.cls
 \newif\ifshuffle
 \shufflefalse
 
 \newif\ifspace%DONE 
 \spacefalse%DONE
 \DeclareOption{space}{\spacetrue}%DONE
+=======
+\newif\ifspace 
+\spacefalse
+\DeclareOption{space}{\spacetrue}
+>>>>>>> master:ximera.cls
 %% This basically works for exercises, though page breaks are weird. 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -95,6 +101,7 @@
 %
 % This option is automatically chosen when compiling inside the Ximera sandbox
 %
+<<<<<<< HEAD:ximera/OLDximera.cls
 \newif\iftikzexport%DONE
 \tikzexportfalse%DONE
 \DeclareOption{tikzexport}{%%DONE
@@ -117,9 +124,33 @@
 }%DONE
 \ProcessOptions\relax%DONE
 \LoadClass{article}%DONE
+=======
+\newif\iftikzexport
+\tikzexportfalse
+\DeclareOption{tikzexport}{%
+  \tikzexporttrue%
+  \handoutfalse%
+%  \shufflefalse%
+  \spacefalse%  
+  \numbersfalse%
+  \newpagefalse%
+  \hintsfalse%
+  \nooutcomesfalse%
+}
+
+\newif\ifxake
+\xakefalse
+\DeclareOption{xake}{\xaketrue}
+
+\DeclareOption*{%
+  \PassOptionsToClass{\CurrentOption}{article}%
+}
+\ProcessOptions\relax
+\LoadClass{article}
+>>>>>>> master:ximera.cls
 
 %%%% for allowing a ximera document to be input into a master ximera document
-
+%%%% SNAPP COMMENTED THIS OUT.
 
 %% % The first thing to do is to save the regular \LaTeX\ definitions of |\document|, |\enddocument|, and  |\documentclass|:
 %% %    \begin{macrocode}
@@ -149,8 +180,52 @@
 %% %
 
 
+<<<<<<< HEAD:ximera/OLDximera.cls
+%% % The first thing to do is to save the regular \LaTeX\ definitions of |\document|, |\enddocument|, and  |\documentclass|:
+%% %    \begin{macrocode}
+%% \let\old@document@subfiles\document
+%% \let\old@enddocument@subfiles\enddocument
+%% \let\old@documentclass@subfiles\documentclass
+%% %    \end{macrocode}
+%% %
+%% % Now the |document| `environment' is redefined and equaled to |comment|. As a consequence, the body of the main file is ignored by \LaTeX, and only the preamble is read (and anything that comes after |\end{document}|!). For |\documentclass|, having been already loaded one (|subfiles|), it is redefined and equaled to |\LoadClass|. The class and options of the main file are loaded identically.
+%% %    \begin{macrocode}
+%% \let\document\comment
+%% \let\enddocument\endcomment
+%% \let\documentclass\LoadClass\relax
+%% %    \end{macrocode}
+%% %
+%% % Here it comes something not so obvious. In the usual situations, the |\preamble@file| contains some |\usepackage| commands, which, at the end, make |@| no longer a letter. That is why the next part needs a |\catcode| command, grouping, and |\global|'s.
+%% %    \begin{macrocode}
+%% {\catcode`\@=11
+%% \global\let\document\old@document@subfiles
+%% \global\let\enddocument\old@enddocument@subfiles
+%% \global\let\documentclass\old@documentclass@subfiles
+%% \global\let\old@document@subfiles\undefined
+%% \global\let\old@enddocument@subfiles\undefined
+%% \global\let\old@documentclass@subfiles\undefined}
+%% %</class>
+%% %    \end{macrocode}
+%% %
 
+=======
+>>>>>>> master:ximera.cls
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%  	Make Counter Command  		%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%Improved version of \newcounter to check for existance before creating a counter to minimize conflicts with packages.
+
+\newcommand{\Make@Counter}[1]{
+	\@ifundefined{c@#1}	% Check to see if counter exists
+		{									%If not, create it.
+		\newcounter{#1}
+		}
+		{									%If so, reset to 0.
+		\setcounter{#1}{0}
+		}
+}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % externalize tikz images
@@ -217,12 +292,22 @@
 
 
 % Don't use hyperref when using Tex4ht
+<<<<<<< HEAD:ximera/OLDximera.cls
 \ifdefined\HCode%DONE
 \newcommand{\href}[1]{}%DONE
 \else%DONE
 \RequirePackage[pdfpagelabels,colorlinks=true,allcolors=blue!30!black]{hyperref}%DONE
 \pdfstringdefDisableCommands{\def\hskip{}}%% quiets warning%DONE
 \fi%DONE
+=======
+\ifdefined\HCode
+\RequirePackage{hyperref}
+%\newcommand{\href}[1]{}
+\else
+\RequirePackage[pdfpagelabels,colorlinks=true,allcolors=blue!30!black]{hyperref}
+\pdfstringdefDisableCommands{\def\hskip{}}%% quiets warning
+\fi
+>>>>>>> master:ximera.cls
 % We put hyperref after all other packages becuase that is better.
 
 % the article document class is made to have lines of text that are
@@ -380,7 +465,7 @@
 % --------------------------------------------------------------------
 % Interactives
 
-\DefineVerbatimEnvironment{javascript}{Verbatim}{numbers=left,frame=lines,label=SAGE,labelposition=topline}
+\DefineVerbatimEnvironment{javascript}{Verbatim}{numbers=left,frame=lines,label=JavaScript,labelposition=topline}
 \def\js#1{\mbox{\texttt{\detokenize{#1}}}}
 
 %Geogebra link
@@ -532,7 +617,7 @@ Interactive
   \GenericError{\space\space\space\space}
   {Attempt to use \@backslashchar answer outside of math mode}
   {See https://github.com/ximeraProject/ximeraLatex for explanation.}
-  {Need to use either use inline or display math.}%
+  {Need to use either inline or display math.}%
   \fi
 }
              
@@ -555,7 +640,12 @@ Interactive
 \setkeys{choice}{correct=false,value=}
 \newcommand{\choice}[2][]{%
 \setkeys{choice}{#1}%
-\item #2\ifthenelse{\boolean{\choice@correct}}{\ifhandout \else \,\checkmark\,\setkeys{choice}{correct=false}\fi}{}}
+\item{#2}\ifthenelse{\boolean{\choice@correct}}{\ifhandout \else \,\checkmark\,\setkeys{choice}{correct=false}\fi}{}}
+
+%Define an expandable version of choice
+\newcommand{\choiceEXP}[2][]{%
+\expandafter\setkeys\expandafter{choice}{#1}%
+\item{#2}\ifthenelse{\boolean{\choice@correct}}{\ifhandout \else \,\checkmark\,\setkeys{choice}{correct=false}\fi}{}} %% note all the {} are needed in case the choice has [] in it.
 \makeatother
 
 %% Not really meant to be used outside this package (used in wordChoice)
@@ -742,28 +832,29 @@ Interactive
 
 
 %% code answer environment
-%% You cannot use Envrion with the fancyvrb/listings package if you want nested environments
+%% You cannot use Environ with the fancyvrb/listings package if you want nested environments
 
 \DefineVerbatimEnvironment{code}{Verbatim}{numbers=left,frame=lines,label=Code,labelposition=topline}
-%% \lstnewenvironment{python}
-%% {\lstset{language=python,numbers=left}}
-%% {}
+
+
+
+
 
 
 %% python answer environment
-%% You cannot use Envrion with the fancyvrb/listings package if you want nested environments
+%% You cannot use Environ with the fancyvrb/listings package if you want nested environments
 
 \DefineVerbatimEnvironment{python}{Verbatim}{numbers=left,frame=lines,label=Python,labelposition=topline}
- %% \lstnewenvironment{python}
- %%                   {\lstset{language=python,numbers=left}}
- %%                   {}
+%% \lstnewenvironment{python}
+%%                   {\lstset{language=python,numbers=left}}
+%%                   {}
 
 
 
 % ---------------------------------------------------------------------
 % Problem environment decorations (these should be user invoked, not default)
 
-% The decoration for these envrionments were inspired by
+% The decoration for these environments were inspired by
 % http://tex.stackexchange.com/questions/11098/nice-formatting-for-theorems?lq=1
 
 %\makeatletter%
@@ -799,226 +890,109 @@ Interactive
 }%
 
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%		  Randomize Commands		%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%  		Problem Environments		%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-% This section loads and defines all the commands needed for randomizing content. Hacked together by Jason Nowell
+%% Most of the below added by Jason Nowell
 
-\RequirePackage{tikz, pgfplots}
-\pgfmathsetseed{\number\pdfrandomseed}
+\newcommand{\latexProblemContent}[1]{#1}%% Added for those that want to use UF problems without using the problem filter code. This command is renewed into something meaningful in the 'ProblemSelector.sty'.
+\newcounter{Iteration@probCnt}% Iterate count for problem counts.
+
 \RequirePackage{forloop}
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%   Generate and Store Random Latex Number   %%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-%Create a command to randomly generate a number and record it into a given name. Recorded as the command \#1 for given input to not break things in LaTeX.
-\newcommand{\genrand}[3]
-{
-\expandafter\pgfmathtruncatemacro\csname #1\endcsname{int(random(#2,#3))}
-}
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%  Random Permutation Command  %%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-\newcounter{Iteration1}%	Dummy Iteration variable.
-\newcounter{RndQuant}%		Tracks the number of desired counters
-\newcounter{Temp@Hold}%		Temp counter to hold the command value because tex is weird.
-\newcounter{Temp@RandMe}%	Temp counter like previous.
-
-\newcommand*\ifcounter[2]{% Function checks if a counter named #1 exists. If not it creates it. After existance is confirmed (or implemented), set the counter to #2.
-  \ifcsname c@#1\endcsname
-  \else
-    \newcounter{#1}
-  \fi
-\setcounter{#1}{#2}
-}
-
-\newcommand{\RandMe}[3]
-{% #1 is the max number for range, #2 is the name of the counter to hold the list, and #3 is how many from that list to generate. Thus \RandMe{100}{TEMP}{5} will generate 5 counters, named \TEMPI, \TEMPII, \TEMPIII, \TEMPIV, \TEMPV. Each of which will have a (unique) number between 1 and 100.
-
-%Assign a maximum on how many numbers to pick. Set default to the max list size, and save in counter "RndQuant"
-\ifthenelse{\isempty{#3}}
-{
-\setcounter{RndQuant}{#1+1}
-}
-{
-\setcounter{RndQuant}{#3+1}
-}
-
-%Generate a starting list of numbers 1 to maximum number given
-\forloop{Iteration1}{1}{\arabic{Iteration1} < \arabic{RndQuant}}{
-\ifcounter{#2\Roman{Iteration1}}{\arabic{Iteration1}}
-}
-
-
-%Permute using Knuth method
-\forloop{Iteration1}{1}{\arabic{Iteration1} < \arabic{RndQuant}}{
-\genrand{TempRandMe}{\arabic{Iteration1}}{#1}
-
-\ifcounter{Temp@RandMe}{\TempRandMe}
-\ifcounter{Temp@Hold}{\arabic{#2\Roman{Temp@RandMe}}}
-
-\ifcounter{#2\Roman{Temp@RandMe}}{\arabic{#2\Roman{Iteration1}}}
-\ifcounter{#2\Roman{Iteration1}}{\arabic{Temp@Hold}}
-}
-}
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%  		Shuffle Environment		%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-% THE ENVRON PACKAGE CANNOT BE USED TO WRAP VERBATIM.
-% THE ENVRON PACKAGE CANNOT BE USED TO WRAP VERBATIM.
-\RequirePackage{environ}	% The environ package saves environment contents as commands. We will use this to save problem contents and then randomly place them.
-% THE ENVRON PACKAGE CANNOT BE USED TO WRAP VERBATIM.
-% THE ENVRON PACKAGE CANNOT BE USED TO WRAP VERBATIM.
-
-
-\newif\iffirstproblem% Condition for first problem This may become obsolete once someone can clean up the \problemEnvironmentStart/End code.
-\firstproblemtrue
-
-%Necessary counters
-\newcounter{shuffle@maxCount}%	Tracks how many questions we want in shuffle.
-\newcounter{shuffle@count}%		Tracks which shuffle we're on (on the page).
-\newcounter{shuffle@trackProblem}% Tracks which problem in shuffle we're on.
-\newcounter{shuffle@desiredProblems}% takes min of desired and available random Qs.
-
-% Shuffle has changed from truncating to randomizing (and possibly truncating). There will likely be a lot of redundant/pointless code that use to track truncation when we don't need it anymore.
-
-\newenvironment{shuffle}[1][1] % shuffle takes an optional argument as a number. It will collect all the problem-type environments within it (anything configured with \problemEnvironConfig below should work), and randomly select/order the optionally given number of them. If the optional argument exceeds the number of problems in the shuffle environment, shuffle will only randomize up to the number of available problems (i.e. no random extra empty problems listed on the page.) 
-	{% Shuffle Start: Collect and save numbers that will be needed later.
-	\shuffletrue\setcounter{problemType}{0}
-	\setcounter{shuffle@maxCount}{#1}
-	\stepcounter{shuffle@maxCount}% Need to step for the < logic check
-	\setcounter{shuffle@count}{\theproblem}% Fluke of how tex records things.
-	\setcounter{shuffle@trackProblem}{1}
-	}
-	{
-	\setcounter{shuffle@desiredProblems}{\value{shuffle@trackProblem} - 1} % Select questions from any question in the shuffle environment.
-	
-	\ifthenelse{\arabic{shuffle@trackProblem} < \arabic{shuffle@maxCount}}{% If there are fewer problems than the optional argument, only take up to the number of problems available.
-		\setcounter{shuffle@maxCount}{\value{shuffle@trackProblem}}
-		}
-		{
-		}
-	%Below code randomizes which problems go where.
-	\RandMe{\arabic{shuffle@desiredProblems}}{shuffleOrder}{}
-	\forloop{Iteration1}{1}{\arabic{Iteration1} < \arabic{shuffle@maxCount}}{
-		\expandafter\problemEnvironmentStart{2in}{% This first one finds the env name
-		\csname\roman{shuffle@count}ContentProblemType\expandafter\Roman{shuffleOrder\Roman{Iteration1}}\endcsname}% Now we find the env content
-		\csname\roman{shuffle@count}ContentProblem\expandafter\Roman{shuffleOrder\Roman{Iteration1}}\endcsname
-		\problemEnvironmentEnd
-		}
-	\ifhandout\else\refstepcounter{problem}\fi
-	\shufflefalse\global\firstproblemtrue% Legacy code that can probably be removed with minor editing.
-	}
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%  		Problem Environments		%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
 %%%%%% Configure environment configuration commands
 
-% The \problemEnvironmentStart and \problemEnvironmentEnd are now
-% being depreciated in favor of \problemEnvironConfig. There is plenty
-% of code here to cleanup now that the termination is done at the
-% shuffle level, instead of this 'first problem' nonsense.
+% The command \problemNumber contains all the format code to determine the number (and the format of the number) for any of the problem environments.
+\newcommand{\problemNumber}{
 
-%% %Configure environments start content
-%% \newcommand{\problemEnvironmentStart}[2]{%This takes in 2 arguments. The first is optional and is the old optional argument from existing environments. The second argument is mandatory and is the name of the 'problem' environment, such as problem, question, exercise, etc. It then configures everything needed at the start of that environment.
+% First we determine if we have a counter for this question depth level.
+\ifcsname c@depth\Roman{problem@Depth}Count\endcsname	% Check to see if counter exists
+	%If so, do nothing.
+%	\newcounter{depthICount}
+	\else
+	%If not, create it.
+	\expandafter\newcounter{depth\Roman{problem@Depth}Count}
+	\expandafter\setcounter{depth\Roman{problem@Depth}Count}{0}
+	\fi
 
-%% \iffirstproblem
-%% \def\spaceatend{#1}\refstepcounter{problem}\refstepcounter{problemType}
-%% \begin{trivlist}\item[\hskip\labelsep\sffamily\bfseries 
-%% #2 \ifhandout\theproblem\else\ifshuffle\theproblem.\theproblemType\else\theproblem\fi\fi]
-%% \slshape
-%% \else\setbox0\vbox\bgroup\fi
-%% }
 
-%% %Configure environments end content
-%% \newcommand{\problemEnvironmentEnd}{%This configures all the end content for a problem.
-%% \iffirstproblem
-%% 	\ifhandout
-%% 		\ifspace
-%% 			\vspace{\spaceatend}
-%% 		\fi
-%% 	\fi %% space at end
-%% 	\par\addvspace{.5ex}\nobreak\noindent\hung %% line at the bottom
-%% 	\ifhandout
-%% 	\else
-%% 	\ifshuffle
-%% 		\addtocounter{problem}{-1}
-%% 	\fi
-%% \fi %% the problem does not increase within shuffle
-%% %\ifhandout\ifshuffle\global\firstproblemfalse\fi\fi %% removes other problems from shuffle in handout
-%% \ifhandout
-%% 	\ifnewpage
-%% 		\newpage
-%% 	\fi
-%% \fi 
-%% \end{trivlist}
-%% \else
-%% 	\egroup
-%% \fi
 
-%% }
+% The problem ifnum check should be depreciated.
+%\ifnum\value{problem}<1
+%	\setcounter{problem}{1}% If the problem counter is ever 0 or negative, reset to one. This is a hack that should probably be more appropriately handled at some point but the problem counter is changed all over the place in this document.
+%\fi
+\expandafter\stepcounter{depth\Roman{problem@Depth}Count}
+\arabic{depthICount}% The first problem depth, what use to be "\theproblem".
+\forloop{Iteration@probCnt}{2}{\arabic{Iteration@probCnt} < \numexpr \value{problem@Depth} + 1 \relax}{%
+.\expandafter\arabic{depth\Roman{Iteration@probCnt}Count}% Get the problem number of the next depth level and append it with a ".".
+}
+%\ifhandout % Currently handout mode doesn't allow hints. Putting this code in place in case that changes.
+%	\theproblem 
+%\else
+%	\theproblem 
+%\fi
+}
+
 
 
 %%%%%%%%%%%%%%%%%%%%%%%
 
 %%%%%% Configure various problem environment commands
-
+\newcounter{problem@Depth}
+\setcounter{problem@Depth}{0}
 %Configure environments start content
+
+%\newif\iffirstproblem Depreciated boolean.
+%\firstproblemtrue
+
 \newcommand{\problemEnvironmentStart}[2]{%This takes in 2 arguments. The first is optional and is the old optional argument from existing environments. The second argument is mandatory and is the name of the 'problem' environment, such as problem, question, exercise, etc. It then configures everything needed at the start of that environment.
-\ifshuffle
-	\ifthenelse{\arabic{track@Problem}<\arabic{shuffle@Count}}
-		{% If we haven't gotten to the last problem yet, track the problem
-		\stepcounter{track@Problem}
-		}
-		{%	If we have all our problems, turn off the problem environment.
-		\global\firstproblemfalse
-		}
-\fi
-\iffirstproblem
-\def\spaceatend{#1}\refstepcounter{problem}\refstepcounter{problemType}
-\begin{trivlist}\item[\hskip\labelsep\sffamily\bfseries 
-#2 \ifhandout\theproblem\else\ifshuffle\theproblem.\theproblemType\else\theproblem\fi\fi]
+\stepcounter{problem@Depth}% Started a problem, so we've sunk another problem layer.
+\def\spaceatend{#1}%
+\begin{trivlist}%
+\item%
+  [%
+	\hskip\labelsep\sffamily\bfseries% 
+	#2%
+% Now we need to determine the correct number of the problem, and the format of that number.
+	\problemNumber
+	]
 \slshape
-\else\setbox0\vbox\bgroup\fi
 }
 
 %Configure environments end content
 \newcommand{\problemEnvironmentEnd}{%This configures all the end content for a problem.
-\iffirstproblem
-	\ifhandout
-		\ifspace
-			\vspace{\spaceatend}
-		\fi
-	\fi %% space at end
-	\par\addvspace{.5ex}\nobreak\noindent\hung %% line at the bottom
-	\ifhandout
-	\else
-	\ifshuffle
-		\addtocounter{problem}{-1}
+%\ifiscodeingTest
+%
+% First we need to see if we've dropped fully out of a depth level, so we can reset that counter back to zero for the next time we enter that depth level.
+\stepcounter{problem@Depth}
+\ifcsname c@depth\Roman{problem@Depth}Count\endcsname
+	\expandafter\ifnum\expandafter\value{depth\Roman{problem@Depth}Count}>0
+		\expandafter\setcounter{depth\Roman{problem@Depth}Count}{0}
 	\fi
-\fi %% the problem does not increase within shuffle
-%\ifhandout\ifshuffle\global\firstproblemfalse\fi\fi %% removes other problems from shuffle in handout
+\fi
+
+\addtocounter{problem@Depth}{-2}% Exited a problem so we've exited a problem layer. Need -2 because we steppped once at the start to check for needing a depth-level count reset. 
+
+
+
+\ifhandout
+	\ifspace
+		\vspace{\spaceatend}
+	\fi
+\fi %% space at end
+\par\addvspace{.5ex}\nobreak\noindent\hung %% line at the bottom
+
 \ifhandout
 	\ifnewpage
 		\newpage
 	\fi
 \fi 
 \end{trivlist}
-\else
-	\egroup
-\fi
-
 }
 
-\newenvironment{problem}[1][2in]
+
+
+\newenvironment{problem}[1][2in]%
 {%Env start code
 \problemEnvironmentStart{#1}{Problem}
 }
@@ -1026,7 +1000,7 @@ Interactive
 \problemEnvironmentEnd
 }
 
-\newenvironment{exercise}[1][2in]
+\newenvironment{exercise}[1][2in]%
 {%Env start code
 \problemEnvironmentStart{#1}{Exercise}
 }
@@ -1034,7 +1008,7 @@ Interactive
 \problemEnvironmentEnd
 }
 
-\newenvironment{exploration}[1][2in]
+\newenvironment{exploration}[1][2in]%
 {%Env start code
 \problemEnvironmentStart{#1}{Exploration}
 }
@@ -1042,7 +1016,7 @@ Interactive
 \problemEnvironmentEnd
 }
 
-\newenvironment{question}[1][2in]
+\newenvironment{question}[1][2in]%
 {%Env start code
 \problemEnvironmentStart{#1}{Question}
 }
@@ -1050,148 +1024,101 @@ Interactive
 \problemEnvironmentEnd
 }
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%  				Validator			%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% New Validator code added by Jason Nowell
+%
+% Validator is an environment designed to run a custom check on answers (usually) using javascript code. 
 
 
+% Define a placeholder command for validator and feedback.
+\makeatletter
+\newcommand{\PH@Command}{}
 
+%% Validator should take an argument and detokenize it and display it at the start of the environment. The original Validator environment had everything framed in an mbox; presumably to make the text look a bit nicer, although this seems redundant with texttt. It shouldn't cause any harm so I have left it in for now.
 
+\newenvironment{validator}[1][]{
+	\def\PH@Command{#1}% Use PH@Command to hold the content and be a target for "\expandafter" to expand once.
+	\mbox{\texttt{\detokenize\expandafter{\PH@Command}}}% Now expand PH@Command once and then detokenize. 
+	}{}
 
-
-
-
-
-%% % This is currently a small shell to contain the
-%% % soon-to-be-depreciated start/stop commands. Once we merge them into
-%% % the below command, we can then remove the above commands.
-%% \newcommand{\problemEnvironConfig}[2]{
-%% \ifshuffle{
-%% \global\expandafter\edef\csname\roman{shuffle@count}ContentProblem\Roman{shuffle@trackProblem}\endcsname{% Record problem env content
-%% \BODY
-%% }
-%% \global\expandafter\edef\csname\roman{shuffle@count}ContentProblemType\Roman{shuffle@trackProblem}\endcsname{% Record problem env type
-%% #2
-%% }
-%% \stepcounter{shuffle@trackProblem}
-%% }
-%% \else{
-%% \problemEnvironmentStart{#1}{#2}
-%% \BODY
-%% \problemEnvironmentEnd
-%% }
-%% \fi
-%% }
-
-%% %%%%%%%%%%% Config specific problem environments. Note new
-%% %%%%%%%%%%% environments can be added easily if you simply want a new
-%% %%%%%%%%%%% "name".
-
-%% \NewEnviron{problem}[1][2in]
-%% {
-%% \problemEnvironConfig{#1}{Problem}
-%% }
-
-%% \NewEnviron{exercise}[1][2in]
-%% {
-%% \problemEnvironConfig{#1}{Exercise}
-%% }
-
-%% \NewEnviron{exploration}[1][2in]
-%% {
-%% \problemEnvironConfig{#1}{Exploration}
-%% }
-
-%% \NewEnviron{question}[1][2in]
-%% {
-%% \problemEnvironConfig{#1}{Question}
-%% }
-
-%% Below is included the old code in case it needs referencing. Should probably delete it at some point.
-
-
-%\newenvironment{problem}[1][2in]
-%{
-%\ifshuffle
-%	\ifthenelse{\arabic{track@Problem}<\arabic{shuffle@maxCount}}
-%		{% If we haven't gotten to the last problem yet, track the problem
-%		\stepcounter{track@Problem}
-%		}
-%		{%	If we have all our problems, turn off the problem environment.
-%		\global\firstproblemfalse
-%		}
-%\fi
-%\iffirstproblem
-%\def\spaceatend{#1}\refstepcounter{problem}\refstepcounter{problemType}
-%\begin{trivlist}\item[\hskip\labelsep\sffamily\bfseries 
-%Problem \ifhandout\theproblem\else\ifshuffle\theproblem.\theproblemType\else\theproblem\fi\fi]
-%\slshape
-%\else\setbox0\vbox\bgroup\fi
-%} %% removes exercise if in shuffle and not first problem
-%{
-%\iffirstproblem
-%\ifhandout\ifspace\vspace{\spaceatend}\fi\fi %% space at end
-%\par\addvspace{.5ex}\nobreak\noindent\hung %% line at the bottom
-%\ifhandout\else\ifshuffle\addtocounter{problem}{-1}\fi\fi %% the problem does not increase within shuffle
-%%\ifhandout\ifshuffle\global\firstproblemfalse\fi\fi %% removes other problems from shuffle in handout
-%\ifhandout\ifnewpage\newpage\fi\fi %% adds newpage
-%\end{trivlist}
-%\else\egroup\fi
-%}
-
-
-
-\newenvironment{xarmaBoost}[1][2in]
-{\iffirstproblem
-\def\spaceatend{#1}\refstepcounter{problem}\refstepcounter{problemType}
-\begin{trivlist}\item[\hskip\labelsep\sffamily\bfseries 
-Xarma Boost \ifhandout\theproblem\else\ifshuffle\theproblem.\theproblemType\else\theproblem\fi\fi]
-\slshape
-\else\setbox0\vbox\bgroup\fi} %% removes exercise if in shuffle and not first problem
-{\iffirstproblem
-\ifhandout\ifspace\vspace{\spaceatend}\fi\fi %% space at end
-\par\addvspace{.5ex}\nobreak\noindent\hung %% line at the bottom
-\ifshuffle\addtocounter{problem}{-1}\fi %% the problem does not increase within shuffle
-\ifhandout\ifshuffle\global\firstproblemfalse\fi\fi %% removes other problems from shuffle in handout
-\ifhandout\ifnewpage\newpage\fi\fi %% adds newpage
-\end{trivlist}
-\else\egroup\fi}
-
-%%%%%%%%%%%%%%%%
-%% validator
-
-\def\validator[#1]{\mbox{\texttt{\detokenize{#1}}}}
-\def\endvalidator{}
+%%% Old validator environment definition has been depreciated.
+%\def\validator[#1]{\mbox{\texttt{\detokenize{#1}}}}
+%\def\endvalidator{}
 
 %% Feedback
-\makeatletter
-\ifhandout
 
-\def\feedback{\@ifnextchar[{\@feedbackcode}{\@feedbackattempt}}
-\def\@feedbackcode[#1]{\setbox0\vbox\bgroup}
-\def\@feedbackattempt{\setbox0\vbox\bgroup}
-\def\endfeedback{\egroup}
+\ifhandout%	First, if it's a handout, we want feedback to eat everything and then disappear entirely. So we use the environ package to eat the content by not using \BODY command anywhere.
+\NewEnviron{feedback}[1][]{}
 
-\else
+\else% If this isn't a handout, then we want to display the Feedback by using a label, positioned and formated as a \item in a trivlist. It is important that we also detokenize the content of the optional argument, as it is likely to contain javascript or other code that latex won't be able to make sense of.
 
-\def\feedback{\@ifnextchar[{\@feedbackcode}{\@feedbackattempt}}
-\def\@feedbackcode[#1]{\begin{trivlist}\item[\hskip \labelsep\small\slshape\bfseries Feedback (\texttt{\detokenize{#1}}):\hspace{2ex}]\small\slshape}
-\def\@feedbackattempt{\begin{trivlist}\item[\hskip \labelsep\small\slshape\bfseries Feedback (attempt):\hspace{2ex}]\small\slshape}
-\def\endfeedback{\end{trivlist}}
-               
+\newenvironment{feedback}[1][]{
+
+	\def\PH@Command{#1}% Use PH@Command to hold the content and be a target for "\expandafter" to expand once.
+	
+	\begin{trivlist}% Begin the trivlist to use formating of the "Feedback" label.
+	\item[\hskip \labelsep\small\slshape\bfseries Feedback % Format the "Feedback" label. Don't forget the space.
+	(\texttt{\detokenize\expandafter{\PH@Command}}):% Format (and detokenize) the condition for feedback to trigger
+	\hspace{2ex}]\small\slshape% Insert some space before the actual feedback given.
+	}{
+	\end{trivlist}	
+	}
+
 \fi
+
+
+%Old feedback code is retained below during depreciation period.
+
+%\ifhandout
+%
+%\def\feedback{\@ifnextchar[{\@feedbackcode}{\@feedbackattempt}}
+%\def\@feedbackcode[#1]{\setbox0\vbox\bgroup}
+%\def\@feedbackattempt{\setbox0\vbox\bgroup}
+%\def\endfeedback{\egroup}
+%
+%\else
+%
+%\def\feedback{\@ifnextchar[{\@feedbackcode}{\@feedbackattempt}}
+%\def\@feedbackcode[#1]{\begin{trivlist}\item[\hskip \labelsep\small\slshape\bfseries Feedback (\texttt{\detokenize{#1}}):\hspace{2ex}]\small\slshape}
+%
+%\def\@feedbackattempt{\begin{trivlist}\item[\hskip \labelsep\small\slshape\bfseries Feedback (attempt):\hspace{2ex}]\small\slshape}
+%
+%\def\endfeedback{\end{trivlist}}
+               
+%\fi
+
 \makeatother               
 
 
 %% Hints
-\ifhandout
-\newenvironment{hint}{\setbox0\vbox\bgroup}
-{\egroup\ignorespacesafterend}
-
-\else
-
-\newenvironment{hint}{
-\begin{trivlist}\item[\hskip \labelsep\small\slshape\bfseries Hint:\hspace{2ex}]
-\small\slshape}
-{\end{trivlist}}
-\fi
+%Create a counter that will track how deeply nested the current hint is
+\newcounter{hintLevel}
+\setcounter{hintLevel}{0}
+%Create an empty shell to renew
+\newenvironment{hint}{}{}
+%Now we renew the environment as needed, this should allow support for any transition code that treats some parts as a "handout" and some parts as non-handout. 
+\renewenvironment{hint}
+	{
+	\ifhandout
+		\setbox0\vbox\bgroup
+	\else
+		\begin{trivlist}\item[\hskip \labelsep\small\slshape\bfseries Hint:\hspace{2ex}]
+		\small\slshape
+	\fi
+	%Step up hint level to track the nested level of the hint. This will be used for problem numbering
+	\stepcounter{hintLevel}
+	}
+	{
+	\ifhandout
+		\egroup\ignorespacesafterend
+	\else
+		\end{trivlist}
+	\fi
+	%detract from hint level counter to track hint nested level
+	\addtocounter{hintLevel}{-1}
+	}
 
 \ifhints
 \renewenvironment{hint}{
@@ -1212,47 +1139,6 @@ Xarma Boost \ifhandout\theproblem\else\ifshuffle\theproblem.\theproblemType\else
 }
 
 \newcounter{problem} %% for the main problem
-\newcounter{problemType} %% for variations within shuffle
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%% Foldables
-
-%% \newcounter{globalFold} %Global Flag to tell if environments should be folded.
-%%     % Set to 0 to fold, 
-%%     % Set to 1 to unfold, 
-%%     % Set to 2 to unfold without the foldable option (\unfoldable)
-%%     % Set to any other value to remove global override
-%% \setcounter{globalFold}{3} %default to no global override
-
-%% \newcounter{localFold} %Local Flag to tell if environments should be folded. 
-%%     % Set to 0 to fold, 
-%%     % Set to 1 to unfold, 
-%%     % Set to 2 to unfold without the foldable option (\unfoldable)
-%%     % Set to any other value to remove global override
-%% \setcounter{localFold}{3} %default to no local value
-
-
-%% %% Global set commands:
-
-%% %set global override to folded
-%% \newcommand{\expandAllFolds}{%
-%% \setcounter{globalFold}{0} 
-%% }
-
-%% %set global override to expanded
-%% \newcommand{\collapseAllFolds}{%
-%% \setcounter{globalFold}{1} 
-%% }
-
-%% %set global to override with printable pdf form
-%% \newcommand{\expandAllFoldsPDF}{%
-%% \setcounter{globalFold}{2}
-%% }
-
-%% %Reset global variable to return to local control
-%% \newcommand{\noGlobalFolds}{%
-%% \setcounter{globalFold}{3}
-%% }
 
 \colorlet{textColor}{black} % since textColor is referenced below
 \colorlet{background}{white} % since background is referenced below
@@ -1306,57 +1192,6 @@ Xarma Boost \ifhandout\theproblem\else\ifshuffle\theproblem.\theproblemType\else
 
 \newcommand{\unfoldable}[1]{#1}
 
-%% % Command to set folded or unfolded.
-%% % \flexFold{#1}{#2}, #1 is the fold state, #2 is the content. 
-%%     % For fold state:
-%%     % Set to 0 to fold, 
-%%     % Set to 1 to unfold, 
-%%     % Set to 2 to unfold without the foldable option (\unfoldable)
-%%     % Set to any other value to remove global override
-
-%% \newcommand{\flexFold}[2]{%
-
-%% \setcounter{localFold}{#1} %set local fold flag to user's value.
-
-%% \ifthenelse{\value{globalFold} = 0}{
-%%     \begin{expandable} %Make an unfolded version
-%%     #2
-%%     \end{expandable}
-%%     }
-%%     {
-%%     \ifthenelse{\value{globalFold} = 1}{
-%%         \begin{foldable} %make an unfolded version
-%%         #2
-%%         \end{foldable}
-%%         }
-%%         {
-%%         \ifthenelse{\value{globalFold} = 2}{
-%%             \unfoldable{#2}
-%%             }
-%%             {
-%%             \ifthenelse{\value{localFold}=0}
-%%                 {
-%%                 \begin{expandable}
-%%                 #2
-%%                 \end{expandable}
-%%                 }
-%%                 {
-%%                 \ifthenelse{\value{localFold} = 1}
-%%                     {
-%%                     \begin{foldable}
-%%                     #2
-%%                     \end{foldable}
-%%                     }
-%%                     {
-%%                     \unfoldable{#2}
-%%                     }
-%%                 }
-%%             }
-%%         }
-%%     }
-%%     %Reset local fold flag
-%% \setcounter{localFold}{3} %reset to remove local fold flag
-%% }
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
