@@ -213,9 +213,6 @@
 \textwidth 345pt %% so we don't get weird margins in 2-sided mode
 \headheight 14pt %% so we don't get weird margins in 2-sided mode
 
-
-
-
 % Don't use hyperref when using Tex4ht
 \ifdefined\HCode%DONE
 \newcommand{\href}[1]{}%DONE
