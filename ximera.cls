@@ -985,7 +985,7 @@ Interactive
 
 \else% If this isn't a handout, then we want to display the Feedback by using a label, positioned and formated as a \item in a trivlist. It is important that we also detokenize the content of the optional argument, as it is likely to contain javascript or other code that latex won't be able to make sense of.
 
-\newenvironment{feedback}[1][]{
+\newenvironment{feedback}[1][attempt]{
 
 	\def\PH@Command{#1}% Use PH@Command to hold the content and be a target for "\expandafter" to expand once.
 	
