@@ -299,6 +299,7 @@
 \let\@emptyauthor\@author
 \def\author#1{\gdef\@author{#1}}
 \def\@author{\@latex@warning@no@line{No \noexpand\author given}}
+\def\and{ and } 
 
 \renewcommand\maketitle{%
   \addtocounter{titlenumber}{1}\phantomsection \ifnumbers\addcontentsline{toc}{section}{\thetitlenumber~\@title}\else\addcontentsline{toc}{section}{\@title}\fi %% puts titles in the toc, with or without numbers.
