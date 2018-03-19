@@ -298,6 +298,7 @@
 \let\@emptyauthor\@author
 \def\author#1{\gdef\@author{#1}}
 \def\@author{\@latex@warning@no@line{No \noexpand\author given}}
+\def\and{ and } 
 
 \renewcommand\maketitle{%
   \addtocounter{titlenumber}{1}\phantomsection \ifnumbers\addcontentsline{toc}{section}{\thetitlenumber~\@title}\else\addcontentsline{toc}{section}{\@title}\fi %% puts titles in the toc, with or without numbers.
@@ -570,12 +571,12 @@ Interactive
 \setkeys{choice}{correct=false,value=}
 \newcommand{\choice}[2][]{%
 \setkeys{choice}{#1}%
-\item #2\ifthenelse{\boolean{\choice@correct}}{\ifhandout \else \,\checkmark\,\setkeys{choice}{correct=false}\fi}{}}
+\item{#2}\ifthenelse{\boolean{\choice@correct}}{\ifhandout \else \,\checkmark\,\setkeys{choice}{correct=false}\fi}{}}
 
 %Define an expandable version of choice
 \newcommand{\choiceEXP}[2][]{%
 \expandafter\setkeys\expandafter{choice}{#1}%
-\item {#2} \ifthenelse{\boolean{\choice@correct}}{\ifhandout \else \,\checkmark\,\setkeys{choice}{correct=false}\fi}{}} %% note all the {} are needed in case the choice has [] in it.
+\item{#2}\ifthenelse{\boolean{\choice@correct}}{\ifhandout \else \,\checkmark\,\setkeys{choice}{correct=false}\fi}{}} %% note all the {} are needed in case the choice has [] in it.
 \makeatother
 
 %% Not really meant to be used outside this package (used in wordChoice)
@@ -984,7 +985,7 @@ Interactive
 
 \else% If this isn't a handout, then we want to display the Feedback by using a label, positioned and formated as a \item in a trivlist. It is important that we also detokenize the content of the optional argument, as it is likely to contain javascript or other code that latex won't be able to make sense of.
 
-\newenvironment{feedback}[1][]{
+\newenvironment{feedback}[1][attempt]{
 
 	\def\PH@Command{#1}% Use PH@Command to hold the content and be a target for "\expandafter" to expand once.
 	
