@@ -20,8 +20,8 @@
 %%% Department of Mathematics
 %%% The Ohio State University
 
-\def\fileversion{1.33}
-\def\filedate{2016/08/17}
+\def\fileversion{1.4}
+\def\filedate{2018/03/01}
 
 % ---------------------------------------------------------------------
 % ---------------------------------------------------------------------
@@ -97,7 +97,6 @@
 \DeclareOption{tikzexport}{%
   \tikzexporttrue%
   \handoutfalse%
-%  \shufflefalse%
   \spacefalse%  
   \numbersfalse%
   \newpagefalse%
