@@ -69,7 +69,7 @@
 \renewcommand{\choice}[2][]{%
 \setkeys{choice}{correct=false}%
 \setkeys{choice}{#1}%
-\stepcounter{choiceId}\ifvmode \IgnorePar\fi \EndP% 
+\stepcounter{choiceId}\IgnorePar%
 \HCode{<span class="choice }%
 \ifthenelse{\boolean{\choice@correct}}{\HCode{correct}}{}
 \HCode{" }
