@@ -204,6 +204,7 @@
 \RequirePackage{url}
 \RequirePackage{xcolor}
 \RequirePackage{pgfplots}
+\pgfplotsset{compat=newest}
 \usepgfplotslibrary{groupplots}
 \usetikzlibrary{calc}
 \RequirePackage{fancyvrb}
