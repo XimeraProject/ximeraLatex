@@ -2,7 +2,7 @@
 % via Ximera.
 
 %% ximera.cls
-%% Copyright (c) 2013 Bart Snapp and Jim Fowler
+%% Copyright (c) 2013 Bart Snapp, Jim Fowler, and Jason Nowell
 %
 % This work may be distributed and/or modified under the
 % conditions of the LaTeX Project Public License, either version 1.3c
@@ -20,13 +20,17 @@
 %%% Department of Mathematics
 %%% The Ohio State University
 
+%%% Jason Nowell
+%%% Department of Mathematics
+%%% University of Florida
+
 \def\fileversion{1.4}
 \def\filedate{2018/03/01}
 
 % ---------------------------------------------------------------------
 % ---------------------------------------------------------------------
 % If there's some feature that you'd like that this file doesn't
-% provide, tell Bart Snapp or Jim Fowler about it.  
+% provide, tell Bart Snapp, Jim Fowler or Jason Nowell about it.  
 %
 % Thanks to: 
 %
@@ -279,8 +283,6 @@
 \IfFileExists{sagetex.sty}{\RequirePackage{sagetex}}{}
 
 
-
-
 % ---------------------------------------------------------------------
 % ---------------------------------------------------------------------
 % Exercise Headers
@@ -453,15 +455,21 @@ Interactive
 
 
 %HTML 
-\NewEnviron{html}{\textbf{INTERACTIVE NOT AVAILABLE.}}
+
+\newenvironment{html}{\textbf{INTERACTIVE NOT AVAILABLE}\suppress}{\endsuppress}% New version using suppress method
+
+% Old code. Delete by 6/28/2018 if no errors reported.
+%\NewEnviron{html}{\textbf{INTERACTIVE NOT AVAILABLE.}} 
+
 	
 % --------------------------------------------------------------------
 % Hyperlinks to outside documents
 
 \newcommand*{\link}[2][]{#1%
-\ifthenelse{\equal{#1}{}}%
-{\footnote{Link: \url{#2}}}%
-{\footnote{See #1 at \url{#2}}}}
+	\ifthenelse{\equal{#1}{}}%
+		{\footnote{Link: \url{#2}}}%
+		{\footnote{See #1 at \url{#2}}}
+	}
                               
 
 %% image environment
@@ -471,7 +479,6 @@ Interactive
 }
 
 \newtheorem{theorem}{Theorem}
-%\newtheorem{acknowledgement}{Acknowledgement}
 \newtheorem{algorithm}{Algorithm}
 \newtheorem{axiom}{Axiom}
 \newtheorem{claim}{Claim}
