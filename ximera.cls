@@ -82,9 +82,13 @@
 \wordchoicegivenfalse
 \DeclareOption{wordchoicegiven}{\wordchoicegiventrue}
 
-\newif\ifspace 
-\spacefalse
-\DeclareOption{space}{\spacetrue}
+
+% "space" option depreciated. Keeping code in, in case of conflicts. Should remove this code if no conflicts are detected/reported by 6/28/2018 -- Jason Nowell
+%\newif\ifspace 
+%\spacefalse
+%\DeclareOption{space}{\spacetrue}
+
+
 %% This basically works for exercises, though page breaks are weird. 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -114,36 +118,107 @@
 \ProcessOptions\relax
 \LoadClass{article}
 
-%%%% for allowing a ximera document to be input into a master ximera document
-%%%% SNAPP COMMENTED THIS OUT.
 
-%% % The first thing to do is to save the regular \LaTeX\ definitions of |\document|, |\enddocument|, and  |\documentclass|:
-%% %    \begin{macrocode}
-%% \let\old@document@subfiles\document
-%% \let\old@enddocument@subfiles\enddocument
-%% \let\old@documentclass@subfiles\documentclass
-%% %    \end{macrocode}
-%% %
-%% % Now the |document| `environment' is redefined and equaled to |comment|. As a consequence, the body of the main file is ignored by \LaTeX, and only the preamble is read (and anything that comes after |\end{document}|!). For |\documentclass|, having been already loaded one (|subfiles|), it is redefined and equaled to |\LoadClass|. The class and options of the main file are loaded identically.
-%% %    \begin{macrocode}
-%% \let\document\comment
-%% \let\enddocument\endcomment
-%% \let\documentclass\LoadClass\relax
-%% %    \end{macrocode}
-%% %
-%% % Here it comes something not so obvious. In the usual situations, the |\preamble@file| contains some |\usepackage| commands, which, at the end, make |@| no longer a letter. That is why the next part needs a |\catcode| command, grouping, and |\global|'s.
-%% %    \begin{macrocode}
-%% {\catcode`\@=11
-%% \global\let\document\old@document@subfiles
-%% \global\let\enddocument\old@enddocument@subfiles
-%% \global\let\documentclass\old@documentclass@subfiles
-%% \global\let\old@document@subfiles\undefined
-%% \global\let\old@enddocument@subfiles\undefined
-%% \global\let\old@documentclass@subfiles\undefined}
-%% %</class>
-%% %    \end{macrocode}
-%% %
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%						Required Packages
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+% This is a list of required packages. As packages are added to this list, we should include a comment
+% as to where they are being utilized. This will help keep this list from being redundant and/or
+% outdated. -- Jason Nowell
+
+\RequirePackage[inline]{enumitem}
+\RequirePackage[pagestyles]{titlesec} 
+\RequirePackage{titletoc} 
+\RequirePackage{titling}  
+\RequirePackage{url}
+\RequirePackage{xcolor}
+\RequirePackage{pgfplots}
+\usepgfplotslibrary{groupplots}
+\usetikzlibrary{calc}
+\RequirePackage{fancyvrb}
+\RequirePackage{forloop}% Used for (at least) the problem environment dynamic naming and building.
+
+\RequirePackage{environ}% Included to allow saving of environment contents. This does *not* play well with various verbatem environments however and would be great to find a way around utilizing this package. One option is the "Suppress" command included below.
+\RequirePackage{amssymb}% Included to have access to math typeset.
+\RequirePackage{amsmath}% Included to have access to math typeset.
+\RequirePackage{amsthm}%  Included to have access to math typeset.
+\RequirePackage{xifthen}% http://ctan.org/pkg/xifthen
+\RequirePackage{multido}% http://ctan.org/pkg/multido
+\RequirePackage{listings} %% is this required???
+
+\RequirePackage{xkeyval}
+
+\RequirePackage[framemethod=TikZ]{mdframed} %% Used to make pretty foldable
+% BADBAD: the amsthm/mdframed conflict also messes up the .jax file
+
+\RequirePackage{comment}
+
+\oddsidemargin 62pt %% so we don't get weird margins in 2-sided mode
+\evensidemargin 62pt %% so we don't get weird margins in 2-sided mode
+\textwidth 345pt %% so we don't get weird margins in 2-sided mode
+\headheight 14pt %% so we don't get weird margins in 2-sided mode
+
+
+
+\makeatletter
+% Don't use hyperref when using Tex4ht
+\ifdefined\HCode
+\RequirePackage{hyperref}
+%\newcommand{\href}[1]{}
+\else
+\RequirePackage[pdfpagelabels,colorlinks=true,allcolors=blue!30!black]{hyperref}
+\pdfstringdefDisableCommands{\def\hskip{}}%% quiets warning
+\fi
+% We put hyperref after all other packages becuase that is better.
+
+% the article document class is made to have lines of text that are
+% not too long. 
+
+% http://tex.stackexchange.com/questions/71172/why-are-default-latex-margins-so-big
+
+
+% ---------------------------------------------------------------------
+% ---------------------------------------------------------------------
+% 				Custom Intrapackage Commands
+% ---------------------------------------------------------------------
+% ---------------------------------------------------------------------
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%  		Suppress Command  		%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%  
+% The suppress command is a good way to suppress output without commenting it.
+% This way we can avoid many of the places we use environ package and this should also
+% avoid most of the verbatim conflicts.
+%
+% Jason Nowell -- Code adapted from syntonly.sty
+
+
+\font\dummyft@=dummy \relax
+\def\suppress{%
+  \begingroup\par
+  \parskip\z@
+  \offinterlineskip
+  \baselineskip=\z@skip
+  \lineskip=\z@skip
+  \lineskiplimit=\maxdimen
+  \dummyft@
+  \count@\sixt@@n
+  \loop\ifnum\count@ >\z@
+    \advance\count@\m@ne
+    \textfont\count@\dummyft@
+    \scriptfont\count@\dummyft@
+    \scriptscriptfont\count@\dummyft@
+  \repeat
+  \let\selectfont\relax
+  \let\mathversion\@gobble
+  \let\getanddefine@fonts\@gobbletwo
+  \tracinglostchars\z@
+  \frenchspacing
+  \hbadness\@M}
+\def\endsuppress{\par\endgroup}
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -162,8 +237,15 @@
 		}
 }
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% externalize tikz images
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%						Tikz Fix.
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+% Currently Tikz doesn't compile natively into the website because of how the xake bake compilation works.
+% ::IMPORTANT NOTE FOR TIKZ::
+% In order to make Tikz work, you need to get the tool "mutool" on the machine that is performing xake bake.
+
 \PassOptionsToPackage{table}{xcolor}
 \RequirePackage{tikz}
 
@@ -196,54 +278,8 @@
 % Load sagetex if it exists
 \IfFileExists{sagetex.sty}{\RequirePackage{sagetex}}{}
 
-\RequirePackage[inline]{enumitem}
-\RequirePackage[pagestyles]{titlesec} 
-\RequirePackage{titletoc} 
-\RequirePackage{titling}  
-\RequirePackage{url}
-\RequirePackage{xcolor}
-\RequirePackage{pgfplots}
-\usepgfplotslibrary{groupplots}
-\usetikzlibrary{calc}
-\RequirePackage{fancyvrb}
-%\RequirePackage{verbatim}
-\RequirePackage{environ}
-\RequirePackage{amssymb}
-\RequirePackage{amsmath}
-\RequirePackage{amsthm}
-\RequirePackage{xifthen}% http://ctan.org/pkg/xifthen
-\RequirePackage{multido}% http://ctan.org/pkg/multido
-\RequirePackage{listings} %% is this required???
-
-\RequirePackage{xkeyval}
-
-\RequirePackage[framemethod=TikZ]{mdframed} %% Used to make pretty foldable
-% BADBAD: the amsthm/mdframed conflict also messes up the .jax file
-
-\RequirePackage{comment}
-
-\oddsidemargin 62pt %% so we don't get weird margins in 2-sided mode
-\evensidemargin 62pt %% so we don't get weird margins in 2-sided mode
-\textwidth 345pt %% so we don't get weird margins in 2-sided mode
-\headheight 14pt %% so we don't get weird margins in 2-sided mode
 
 
-
-
-% Don't use hyperref when using Tex4ht
-\ifdefined\HCode
-\RequirePackage{hyperref}
-%\newcommand{\href}[1]{}
-\else
-\RequirePackage[pdfpagelabels,colorlinks=true,allcolors=blue!30!black]{hyperref}
-\pdfstringdefDisableCommands{\def\hskip{}}%% quiets warning
-\fi
-% We put hyperref after all other packages becuase that is better.
-
-% the article document class is made to have lines of text that are
-% not too long. 
-
-% http://tex.stackexchange.com/questions/71172/why-are-default-latex-margins-so-big
 
 % ---------------------------------------------------------------------
 % ---------------------------------------------------------------------
@@ -264,18 +300,18 @@
 \setlength{\parindent}{0pt}
 \setlength{\parskip}{5pt}
 
-\makeatletter
+
 \let\title\relax
 \newcommand{\title}[1][]{{\protected@xdef\@pretitle{#1}}\protected@xdef\@title}
-\makeatother
+
 
 \title{}
 
-\makeatletter
+
 \let\abstract\relax
 \let\endabstract\relax
-\NewEnviron{abstract}{\protected@xdef\theabstract{\BODY}}
-\makeatother
+\NewEnviron{abstract}{\protected@xdef\theabstract{\BODY}}% Use of environ package, may want to find a better way.
+
 
 \newcounter{titlenumber}
 \renewcommand{\thetitlenumber}{\arabic{titlenumber}}
@@ -283,7 +319,7 @@
 \setcounter{titlenumber}{0}
 
 
-\makeatletter
+
 \newpagestyle{main}{
 \sethead[\textsl{\ifnumbers\thetitlenumber\quad\fi\@title}][][] % even
 {}{}{\textsl{\ifnumbers\thetitlenumber\quad\fi\@title}} % odd
@@ -291,10 +327,10 @@
 {}{}{\thepage} % odd
 }
 \pagestyle{main}
-\makeatother
+
 
 % Redefine maketitle and put them in a table of contents.  The \phantomsection is to fix the hrefs.
-\makeatletter
+
 \let\@emptyauthor\@author
 \def\author#1{\gdef\@author{#1}}
 \def\@author{\@latex@warning@no@line{No \noexpand\author given}}
@@ -309,7 +345,7 @@
   \ifnoauthor\else\let\thefootnote\relax\footnote{Author(s):~\@author}\fi
   \aftergroup\@afterindentfalse
   \aftergroup\@afterheading}
-\makeatother
+
 \relax
 
 \ifnumbers
@@ -317,18 +353,11 @@
 \renewcommand{\thesection}{\arabic{titlenumber}.\arabic{section}~} 
 \else
 \setcounter{secnumdepth}{-2}
-%\renewcommand{\thesection}{}
-%%magic to unindent unnumbered sections:
-%\makeatletter
-%\def\@seccntformat#1{\csname #1ignore\expandafter\endcsname\csname the#1\endcsname\quad}
-%\let\sectionignore\@gobbletwo
-%\let\latex@numberline\numberline
-%\def\numberline#1{\if\relax#1\relax\else\latex@numberline{#1}\fi}
-%\makeatother
+
 \fi
 \relax
 
-\makeatletter
+
 \def\activitystyle{}
 \newcounter{sectiontitlenumber}
 \setcounter{secnumdepth}{0}
@@ -351,7 +380,7 @@
     {\flushleft\Large\sffamily\bfseries\thetitlenumber.\thesectiontitlenumber\quad\@title \par}%
     {\vskip .6em\noindent\textit\theabstract}%
     \par\vspace{2em}}}
-\makeatother
+
 
 \iftikzexport%% allows xake to handle \chapterstyle and \sectionstye
 \renewcommand\chapterstyle{\def\activitystyle{chapter}}
@@ -361,11 +390,14 @@
 
 
 %% makes everymath display style even when inline, could be optional
-\everymath{\displaystyle} 
+\everymath{\displaystyle}
 %% Ok not everything, we also need this
 \let\prelim\lim 
 \renewcommand{\lim}{\displaystyle\prelim} 
 %% for display style limits
+
+
+
 
 % --------------------------------------------------------------------
 % --------------------------------------------------------------------
@@ -385,10 +417,6 @@
   \immediate\write\outcomefile{\unexpanded{\outcome}{#1}}}
 \fi%
 
-% --------------------------------------------------------------------
-% Videos
-
-%\newcommand{\video}[1]{\footnote{Video link: \url{#1}}}
 
 % Youtube link
 \newcommand{\youtube}[1]{YouTube link: \url{https://www.youtube.com/watch?v=#1}}
@@ -414,7 +442,7 @@
 \newcommand{\graph}[2][]{\text{Graph of $#2$}}
 
 % Interactive element
-\makeatletter
+
 \define@key{interactive}{id}{\def\interactive@id{#1}}
 \setkeys{interactive}{id=}
 \newcommand{\includeinteractive}[2][]{
@@ -422,7 +450,7 @@
 \ifthenelse{\equal{\interactive@id}{}}{}{\recordvariable{\interactive@id}}
 Interactive
 }
-\makeatother
+
 
 %HTML 
 \NewEnviron{html}{\textbf{INTERACTIVE NOT AVAILABLE.}}
@@ -485,31 +513,29 @@ Interactive
 
 %% Prompt environment
 \ifhandout
-\NewEnviron{prompt}{}
+	\newenvironment{prompt}{\suppress}{\endsuppress}
 \else
-\newenvironment{prompt}
-               {\bgroup\color{gray!50!black}}
-               {\egroup}
-               \fi
+	\newenvironment{prompt}
+    	{\bgroup\color{gray!50!black}}
+        {\egroup}
+\fi
 
-               %% Prompt environment
+%% onlineOnly environment
 \ifhandout
-\NewEnviron{onlineOnly}{\iftikzexport\BODY
-\else\fi}
+	\NewEnviron{onlineOnly}{
+	\iftikzexport
+		\BODY
+	\else
+	\fi
+	}
 \else
-\newenvironment{onlineOnly}
-               {\bgroup\color{red!50!black}}
-               {\egroup}
-               \fi
+	\newenvironment{onlineOnly}
+    	{\bgroup\color{red!50!black}}
+		{\egroup}
+\fi
                
-%\newenvironment{pdfOnly}{\iftikzexport\else}{\fi}
 \newcommand{\pdfOnly}[1]{\iftikzexport\else #1\fi}
  
-               
-
-%% \newenvironment{prompt} %broke in true math mode
-%%                {\ifhandout\setbox0\vbox\bgroup\else\bgroup\color{gray!50!black}\fi}
-%%                {\ifhandout\egroup\else\egroup\fi}
 
 % ---------------------------------------------------------------------
 % ---------------------------------------------------------------------
@@ -517,23 +543,33 @@ Interactive
 % ---------------------------------------------------------------------
 % ---------------------------------------------------------------------
 
-\makeatletter
+
 \ifdefined\HCode
-\newcommand{\recordvariable}[1]{}
+	\newcommand{\recordvariable}[1]{}
 \else
-\newwrite\idfile
-\immediate\openout\idfile=\jobname.ids
-\newcommand{\recordvariable}[1]{\ifthenelse{\equal{#1}{}}{}{\immediate\write\idfile{var #1;}}}
+	\newwrite\idfile
+	\immediate\openout\idfile=\jobname.ids
+	\newcommand{\recordvariable}[1]{\ifthenelse{\equal{#1}{}}{}{\immediate\write\idfile{var #1;}}}
 \fi
 
-%defining keys for answer command key=value pairs
-\define@key{answer}{given}[true]{\def\ans@given{#1}}
-\define@key{answer}{tolerance}{\def\ans@tol{#1}} %note: currently no affect on pdf output
-\define@key{answer}{validator}{}
-\define@key{answer}{id}{\def\ans@id{#1}} %note: currently no affect on pdf output
-\define@key{answer}{format}{}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% 	Defining keys for answer command key=value pairs
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-%setting default values for answer command key=value pairs
+\define@key{answer}{given}[true]{\def\ans@given{#1}}% Determines if answer is shown in handout mode.
+\define@key{answer}{tolerance}{\def\ans@tol{#1}}% Used for setting numeric answer tolerance for online student input. 
+												 %  Note: currently no affect on pdf output.
+\define@key{answer}{validator}{}%			Used to run dynamic js code on student provided answers.
+\define@key{answer}{id}{\def\ans@id{#1}} %	Used for assigning a js ID to answer for dynamic code (eg validators).
+												 %  Note: currently no affect on pdf output.
+\define@key{answer}{format}{}%				Used to set anticipated input format; eg "string".
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%	Set default values for answer command key=value pairs
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
 \setkeys{answer}{id=,given=false}
 \newcommand{\answer}[2][]{%
   \ifmmode%
@@ -552,7 +588,7 @@ Interactive
   \fi
 }
              
-\makeatother
+
 
 %% multiple choice environment
 
@@ -565,7 +601,7 @@ Interactive
 \renewcommand{\labelenumii}{\theenumii}
 
 %% correct answers for multiple choice
-\makeatletter
+
 \define@key{choice}{value}[]{\def\choice@value{#1}}
 \define@boolkey{choice}{correct}[true]{\def\choice@correct{#1}}
 \setkeys{choice}{correct=false,value=}
@@ -577,11 +613,11 @@ Interactive
 \newcommand{\choiceEXP}[2][]{%
 \expandafter\setkeys\expandafter{choice}{#1}%
 \item{#2}\ifthenelse{\boolean{\choice@correct}}{\ifhandout \else \,\checkmark\,\setkeys{choice}{correct=false}\fi}{}} %% note all the {} are needed in case the choice has [] in it.
-\makeatother
+
 
 %% Not really meant to be used outside this package (used in wordChoice)
 %% \otherchoice outputs the item if correct and nothing if incorrect.
-\makeatletter
+
 \define@key{otherchoice}{value}[]{\def\otherchoice@value{#1}}
 \define@boolkey{otherchoice}{correct}[true]{\def\otherchoice@correct{#1}}
 \setkeys{otherchoice}{correct=false,value=}
@@ -589,11 +625,11 @@ Interactive
   \ignorespaces
   \setkeys{otherchoice}{#1}
   \ifthenelse{\boolean{\otherchoice@correct}}{#2\setkeys{otherchoice}{correct=false}}{}\ignorespaces}
-\makeatother
+
 %%%
 
 %setting default values for multipleChoice command key=value pairs
-\makeatletter
+
 \define@key{multipleChoice}{id}{\def\mc@id{#1}}
 \setkeys{multipleChoice}{id=}
 
@@ -610,7 +646,7 @@ Interactive
 \ifthenelse{\equal{\mc@id}{}}{}{\immediate\write\idfile{var \mc@id;}}%
 \begin{enumerate*}[before={\upshape{(\hspace{-.25em}}}, itemjoin={/\hspace{-.25em}}, after={\upshape{)}}, label={}]}
 {\end{enumerate*}}
-\makeatother
+
 
 %multipleChoice** is for internal use only! (used in wordChoice)
 %this is simply a wrapper for the sole showing (other)choice.
@@ -626,7 +662,7 @@ Interactive
 {\begin{trivlist}\item[\hskip \labelsep\small\bfseries Select All Correct Answers:]\hfil\begin{enumerate}}
 {\end{enumerate}\end{trivlist}}
 
-%% In the future we need this to (optionally) be desplayed in the
+%% In the future we need this to (optionally) be displayed in the
 %% problem, while the actual code lives in the solution. Here is how
 %% this could be implemented: Like the title/maketitle commands, the
 %% multiple-choice could be stored in \themultiplechoice, flip a
@@ -658,60 +694,60 @@ Interactive
 \setboolean{given}{true} %% could be replaced by a key=value pair later if needed
 
 \ifhandout
-\newenvironment{freeResponse}[1][false]%
-{%
-\def\givenatend{\boolean{#1}}\ifthenelse{\boolean{#1}}{\begin{trivlist}\item}{\setbox0\vbox\bgroup}{}
-}
-{%
-\ifthenelse{\givenatend}{\end{trivlist}}{\egroup}{}
-}
+	\newenvironment{freeResponse}[1][false]%
+		{%
+		\def\givenatend{\boolean{#1}}\ifthenelse{\boolean{#1}}{\begin{trivlist}\item}{\setbox0\vbox\bgroup}{}
+		}
+		{%
+		\ifthenelse{\givenatend}{\end{trivlist}}{\egroup}{}
+		}
 \else
-\newenvironment{freeResponse}[1][false]%
-{%
-  \ifthenelse{\boolean{#1}}{\begin{trivlist}\item[\hskip \labelsep\bfseries Free Response (Given):\hspace{2ex}]}
-{\begin{trivlist}\item[\hskip \labelsep\bfseries Free Response:\hspace{2ex}]}
-{}
-}
-{\end{trivlist}}
+	\newenvironment{freeResponse}[1][false]%
+		{%
+		  \ifthenelse{\boolean{#1}}
+		  	{\begin{trivlist}\item[\hskip \labelsep\bfseries Free Response (Given):\hspace{2ex}]}
+			{\begin{trivlist}\item[\hskip \labelsep\bfseries Free Response:\hspace{2ex}]}
+		}
+		{\end{trivlist}}
 \fi
 
 
 %% instructor intro/instructor notes
 %%
 \ifhandout % what follows is handout behavior
-\ifinstructornotes
-\newenvironment{instructorIntro}%
-{%
-  \begin{trivlist}\item[\hskip \labelsep\bfseries Instructor Introduction:\hspace{2ex}]
-}
-% %% line at the bottom} 
-{\end{trivlist}\par\addvspace{.5ex}\nobreak\noindent\hung}
-\else
-\newenvironment{instructorIntro}%
-{%
-\setbox0\vbox\bgroup
-}
-{%
-\egroup\ignorespacesafterend %% If this mysteriously starts breaking remove \ignorespacesafterend
-}
-\fi
+	\ifinstructornotes
+		\newenvironment{instructorIntro}%
+			{%
+			  \begin{trivlist}\item[\hskip \labelsep\bfseries Instructor Introduction:\hspace{2ex}]
+			}
+			% %% line at the bottom} 
+			{\end{trivlist}\par\addvspace{.5ex}\nobreak\noindent\hung}
+	\else
+		\newenvironment{instructorIntro}%
+			{%
+			\setbox0\vbox\bgroup
+			}
+			{%
+			\egroup\ignorespacesafterend %% If this mysteriously starts breaking remove \ignorespacesafterend
+			}
+	\fi
 \else% for handout, so what follows is default
-\ifinstructornotes
-\newenvironment{instructorIntro}%
-{%
-\setbox0\vbox\bgroup
-}
-{%
-\egroup
-}
-\else
-\newenvironment{instructorIntro}%
-{%
-  \begin{trivlist}\item[\hskip \labelsep\bfseries Instructor Introduction:\hspace{2ex}]
-}
-% %% line at the bottom} 
-{\end{trivlist}\par\addvspace{.5ex}\nobreak\noindent\hung}
-\fi
+	\ifinstructornotes
+		\newenvironment{instructorIntro}%
+			{%
+			\setbox0\vbox\bgroup
+			}
+			{%
+			\egroup
+			}
+	\else
+		\newenvironment{instructorIntro}%
+			{%
+			  \begin{trivlist}\item[\hskip \labelsep\bfseries Instructor Introduction:\hspace{2ex}]
+			}
+			% %% line at the bottom} 
+			{\end{trivlist}\par\addvspace{.5ex}\nobreak\noindent\hung}
+	\fi
 \fi
 
 
@@ -719,56 +755,54 @@ Interactive
 
 %% instructorNotes environment
 \ifhandout % what follows is handout behavior
-\ifinstructornotes
-\newenvironment{instructorNotes}%
-{%
-  \begin{trivlist}\item[\hskip \labelsep\bfseries Instructor Notes:\hspace{2ex}]
-}
-% %% line at the bottom} 
-{\end{trivlist}\par\addvspace{.5ex}\nobreak\noindent\hung}
-\else
-\newenvironment{instructorNotes}%
-{%
-\setbox0\vbox\bgroup
-}
-{%
-\egroup
-}
-\fi
+	\ifinstructornotes
+		\newenvironment{instructorNotes}%
+			{%
+			  \begin{trivlist}\item[\hskip \labelsep\bfseries Instructor Notes:\hspace{2ex}]
+			}
+			% %% line at the bottom} 
+			{\end{trivlist}\par\addvspace{.5ex}\nobreak\noindent\hung}
+	\else
+		\newenvironment{instructorNotes}%
+			{%
+			\setbox0\vbox\bgroup
+			}
+			{%
+			\egroup
+			}
+	\fi
 \else% for handout, so what follows is default
-\ifinstructornotes
-\newenvironment{instructorNotes}%
-{%
-\setbox0\vbox\bgroup
-}
-{%
-\egroup
-}
-\else
-\newenvironment{instructorNotes}%
-{%
-  \begin{trivlist}\item[\hskip \labelsep\bfseries Instructor Notes:\hspace{2ex}]
-}
-% %% line at the bottom} 
-{\end{trivlist}\par\addvspace{.5ex}\nobreak\noindent\hung}
+	\ifinstructornotes
+		\newenvironment{instructorNotes}%
+			{%
+			\setbox0\vbox\bgroup
+			}
+			{%
+			\egroup
+			}
+	\else
+		\newenvironment{instructorNotes}%
+			{%
+			  \begin{trivlist}\item[\hskip \labelsep\bfseries Instructor Notes:\hspace{2ex}]
+			}
+			% %% line at the bottom} 
+			{\end{trivlist}\par\addvspace{.5ex}\nobreak\noindent\hung}
+	\fi
 \fi
-\fi
 
 
 
 
 
 
-
-
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%		Verbatim Environments for displaying programming code
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 %% code answer environment
 %% You cannot use Environ with the fancyvrb/listings package if you want nested environments
 
 \DefineVerbatimEnvironment{code}{Verbatim}{numbers=left,frame=lines,label=Code,labelposition=topline}
-
-
-
 
 
 
@@ -788,7 +822,7 @@ Interactive
 % The decoration for these environments were inspired by
 % http://tex.stackexchange.com/questions/11098/nice-formatting-for-theorems?lq=1
 
-%\makeatletter%
+%%
 \newcommand{\hang}{% top theorem decoration
   \begingroup%
   \setlength{\unitlength}{.005\linewidth}% \linewidth/200
@@ -830,7 +864,8 @@ Interactive
 \newcommand{\latexProblemContent}[1]{#1}%% Added for those that want to use UF problems without using the problem filter code. This command is renewed into something meaningful in the 'ProblemSelector.sty'.
 \newcounter{Iteration@probCnt}% Iterate count for problem counts.
 
-\RequirePackage{forloop}
+
+
 %%%%%% Configure environment configuration commands
 
 % The command \problemNumber contains all the format code to determine the number (and the format of the number) for any of the problem environments.
@@ -839,19 +874,12 @@ Interactive
 % First we determine if we have a counter for this question depth level.
 \ifcsname c@depth\Roman{problem@Depth}Count\endcsname	% Check to see if counter exists
 	%If so, do nothing.
-%	\newcounter{depthICount}
 	\else
 	%If not, create it.
 	\expandafter\newcounter{depth\Roman{problem@Depth}Count}
 	\expandafter\setcounter{depth\Roman{problem@Depth}Count}{0}
 	\fi
 
-
-
-% The problem ifnum check should be depreciated.
-%\ifnum\value{problem}<1
-%	\setcounter{problem}{1}% If the problem counter is ever 0 or negative, reset to one. This is a hack that should probably be more appropriately handled at some point but the problem counter is changed all over the place in this document.
-%\fi
 \expandafter\stepcounter{depth\Roman{problem@Depth}Count}
 \arabic{depthICount}% The first problem depth, what use to be "\theproblem".
 \forloop{Iteration@probCnt}{2}{\arabic{Iteration@probCnt} < \numexpr \value{problem@Depth} + 1 \relax}{%
@@ -873,10 +901,14 @@ Interactive
 \setcounter{problem@Depth}{0}
 %Configure environments start content
 
-%\newif\iffirstproblem Depreciated boolean.
-%\firstproblemtrue
 
-\newcommand{\problemEnvironmentStart}[2]{%This takes in 2 arguments. The first is optional and is the old optional argument from existing environments. The second argument is mandatory and is the name of the 'problem' environment, such as problem, question, exercise, etc. It then configures everything needed at the start of that environment.
+\newcommand{\problemEnvironmentStart}[2]{%
+% This takes in 2 arguments. 
+% The first is optional and is the old optional argument from existing environments. 
+% The second argument is mandatory and is the name of the 'problem' environment, 
+%	such as problem, question, exercise, etc. 
+% It then configures everything needed at the start of that environment.
+
 \stepcounter{problem@Depth}% Started a problem, so we've sunk another problem layer.
 \def\spaceatend{#1}%
 \begin{trivlist}%
@@ -892,9 +924,9 @@ Interactive
 
 %Configure environments end content
 \newcommand{\problemEnvironmentEnd}{%This configures all the end content for a problem.
-%\ifiscodeingTest
 %
-% First we need to see if we've dropped fully out of a depth level, so we can reset that counter back to zero for the next time we enter that depth level.
+% First we need to see if we've dropped fully out of a depth level, 
+% so we can reset that counter back to zero for the next time we enter that depth level.
 \stepcounter{problem@Depth}
 \ifcsname c@depth\Roman{problem@Depth}Count\endcsname
 	\expandafter\ifnum\expandafter\value{depth\Roman{problem@Depth}Count}>0
@@ -907,9 +939,6 @@ Interactive
 
 
 \ifhandout
-	\ifspace
-		\vspace{\spaceatend}
-	\fi
 \fi %% space at end
 \par\addvspace{.5ex}\nobreak\noindent\hung %% line at the bottom
 
@@ -958,13 +987,13 @@ Interactive
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%  				Validator			%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% New Validator code added by Jason Nowell
+% New Validator rewrite code added by Jason Nowell. Original code provided by Jim Fowler
 %
 % Validator is an environment designed to run a custom check on answers (usually) using javascript code. 
 
 
 % Define a placeholder command for validator and feedback.
-\makeatletter
+
 \newcommand{\PH@Command}{}
 
 %% Validator should take an argument and detokenize it and display it at the start of the environment. The original Validator environment had everything framed in an mbox; presumably to make the text look a bit nicer, although this seems redundant with texttt. It shouldn't cause any harm so I have left it in for now.
@@ -974,16 +1003,21 @@ Interactive
 	\mbox{\texttt{\detokenize\expandafter{\PH@Command}}}% Now expand PH@Command once and then detokenize. 
 	}{}
 
-%%% Old validator environment definition has been depreciated.
+%%% Old validator environment definition has been depreciated. -- remove by 5/28/2018 if no issues reported.
 %\def\validator[#1]{\mbox{\texttt{\detokenize{#1}}}}
 %\def\endvalidator{}
 
 %% Feedback
 
 \ifhandout%	First, if it's a handout, we want feedback to eat everything and then disappear entirely. So we use the environ package to eat the content by not using \BODY command anywhere.
-\NewEnviron{feedback}[1][]{}
+%\NewEnviron{feedback}[1][]{}
+% No! We are going to replace with the suppress command method. Delete the above old code by 6/28/2018 if no errors
+\newenvironment{feedback}{\suppress}{\endsuppress}
 
-\else% If this isn't a handout, then we want to display the Feedback by using a label, positioned and formated as a \item in a trivlist. It is important that we also detokenize the content of the optional argument, as it is likely to contain javascript or other code that latex won't be able to make sense of.
+\else% If this isn't a handout, then we want to display the Feedback by using a label, 
+%	positioned and formated as a \item in a trivlist. It is important that we also detokenize the content 
+%	of the optional argument, as it is likely to contain javascript or other code that latex won't be 
+%	able to make sense of.
 
 \newenvironment{feedback}[1][attempt]{
 
@@ -1000,7 +1034,7 @@ Interactive
 \fi
 
 
-%Old feedback code is retained below during depreciation period.
+%Old feedback code is retained below during depreciation period. -- delete by 5/28/2018 if no errors reported.
 
 %\ifhandout
 %
@@ -1020,7 +1054,7 @@ Interactive
                
 %\fi
 
-\makeatother               
+               
 
 
 %% Hints
@@ -1030,6 +1064,7 @@ Interactive
 %Create an empty shell to renew
 \newenvironment{hint}{}{}
 %Now we renew the environment as needed, this should allow support for any transition code that treats some parts as a "handout" and some parts as non-handout. 
+% renewing the environment on the fly is a bit hacky. Maybe we should have a hintHandout env or option.
 \renewenvironment{hint}
 	{
 	\ifhandout
@@ -1052,10 +1087,10 @@ Interactive
 	}
 
 \ifhints
-\renewenvironment{hint}{
-\begin{trivlist}\item[\hskip \labelsep\small\slshape\bfseries Hint:\hspace{2ex}]
-\small\slshape}
-{\end{trivlist}}
+	\renewenvironment{hint}{
+	\begin{trivlist}\item[\hskip \labelsep\small\slshape\bfseries Hint:\hspace{2ex}]
+	\small\slshape}
+	{\end{trivlist}}
 \fi
 
 
@@ -1155,7 +1190,7 @@ Interactive
     \immediate\openout\myfile=\jobname.jax
     \immediate\write\myfile{\unexpanded{\newenvironment}{prompt}{}{}}
 
-    \makeatletter
+    
 
 \let\@oldargdef\@argdef
 \long\def\@argdef#1[#2]#3{%
@@ -1166,5 +1201,9 @@ Interactive
 \let\@OldDeclareMathOperator\DeclareMathOperator
 \renewcommand{\DeclareMathOperator}[2]{\@OldDeclareMathOperator{#1}{#2}\immediate\write\myfile{\unexpanded{\DeclareMathOperator}{\unexpanded{#1}}{\unexpanded{#2}}}}
 
-    \makeatother
+    
 \fi
+
+
+
+\makeatother
