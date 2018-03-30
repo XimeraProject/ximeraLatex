@@ -523,7 +523,7 @@ Interactive
 
 %% Prompt environment
 \ifhandout
-	\NewEnivron{prompt}{}
+	\NewEnviron{prompt}{}
 %	\newenvironment{prompt}{\suppress}{\endsuppress} -- Currently breaks when put in mathemode
 \else
 	\newenvironment{prompt}
