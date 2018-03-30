@@ -230,11 +230,14 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 %Improved version of \newcounter to check for existance before creating a counter to minimize conflicts with packages.
+%
+% Added by Jason Nowell
 
 \newcommand{\Make@Counter}[1]{
 	\@ifundefined{c@#1}	% Check to see if counter exists
-		{									%If not, create it.
+		{									%If not, create it and set it to 0.
 		\newcounter{#1}
+		\setcounter{#1}{0}
 		}
 		{									%If so, reset to 0.
 		\setcounter{#1}{0}
@@ -564,44 +567,79 @@ Interactive
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \define@key{answer}{given}[true]{\def\ans@given{#1}}% Determines if answer is shown in handout mode.
-\define@key{answer}{tolerance}{\def\ans@tol{#1}}% Used for setting numeric answer tolerance for online student input. 
-												 %  Note: currently no affect on pdf output.
-\define@key{answer}{validator}{}%			Used to run dynamic js code on student provided answers.
-\define@key{answer}{id}{\def\ans@id{#1}} %	Used for assigning a js ID to answer for dynamic code (eg validators).
-												 %  Note: currently no affect on pdf output.
-\define@key{answer}{format}{}%				Used to set anticipated input format; eg "string".
-
-
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%	Set default values for answer command key=value pairs
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-\setkeys{answer}{id=,given=false}
-\newcommand{\answer}[2][]{%
-  \ifmmode%
-	\setkeys{answer}{#1}%
 	%% when given=true, show answer in handout mode, show answer in "given box" outside handout mode
 	%% when given=false, do not show answer in handout mode, show answer outside handout mode
-        \recordvariable{\ans@id}
-	\ifthenelse{\boolean{\ans@given}}
-		{\ifhandout #2\else\underset{\scriptstyle\mathrm{given}}{\fbox{\ensuremath{#2}}}\fi}
-		{\ifhandout\fbox{\rm{?}}\else\fbox{\ensuremath{#2}}\fi}% show answer in box outside handout mode
-  \else%
-  \GenericError{\space\space\space\space}
-  {Attempt to use \@backslashchar answer outside of math mode}
-  {See https://github.com/ximeraProject/ximeraLatex for explanation.}
-  {Need to use either inline or display math.}%
-  \fi
+
+\define@key{answer}{tolerance}{\def\ans@tol{#1}}% Used for setting numeric answer tolerance for online student input. 
+												 %  Note: currently no affect on pdf output.
+
+\define@key{answer}{validator}{}%			Used to run dynamic js code on student provided answers.
+												 %  Note: currently pdf outputs the validator code itself.
+
+\define@key{answer}{id}{\def\ans@id{#1}} %	Used for assigning a js ID to answer for dynamic code (eg validators).
+												 %  Note: currently no affect on pdf output.
+
+\define@key{answer}{format}{}%				Used to set anticipated input format; eg "string".
+												 %  Note: currently no affect on pdf output.
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%			Set default values for answer command key=value pairs
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Default values are:
+%
+% given = false
+
+\setkeys{answer}{id=,given=false}
+
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%						Answer command base code.
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+\newcommand{\answer}[2][]{%
+	\ifmmode%
+		\setkeys{answer}{#1}%
+		\recordvariable{\ans@id}
+		\ifthenelse{\boolean{\ans@given}}
+			{% Start then statement
+			\ifhandout 
+				#2
+			\else
+				\underset{\scriptstyle\mathrm{given}}{\fbox{\ensuremath{#2}}}
+			\fi
+			}% End then statement
+			{% Start else statement
+			\ifhandout
+				\fbox{\rm{?}}
+			\else% show answer in box outside handout mode
+				\fbox{\ensuremath{#2}}
+			\fi
+			}% End else statement
+	\else%
+		\GenericError{\space\space\space\space}% Throw an error based on... something? -- Jason
+		{Attempt to use \@backslashchar answer outside of math mode}
+		{See https://github.com/ximeraProject/ximeraLatex for explanation.}
+		{Need to use either inline or display math.}%
+	\fi
 }
              
 
 
-%% multiple choice environment
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%				Answer: Multiple Choice Environment.
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
 
 % Jim: Originally this was \renewcommand{\theenumi}{$(\mathrm{\alph{enumi}})$}
 % but that breaks tex4ht because mathmode can only be processed by mathjax.
 % so now I made this just italicized.
+
+%% Not sure what role these renewed commands make? -- Jason
 \renewcommand{\theenumi}{\textup{(\alph{enumi})}}
 \renewcommand{\labelenumi}{\theenumi}
 \renewcommand{\theenumii}{\textup{(\roman{enumii})}}
@@ -609,50 +647,110 @@ Interactive
 
 %% correct answers for multiple choice
 
+
+%%%%  key=value pairs for multiple choice options.
+
 \define@key{choice}{value}[]{\def\choice@value{#1}}
-\define@boolkey{choice}{correct}[true]{\def\choice@correct{#1}}
-\setkeys{choice}{correct=false,value=}
-\newcommand{\choice}[2][]{%
-\setkeys{choice}{#1}%
-\item{#2}\ifthenelse{\boolean{\choice@correct}}{\ifhandout \else \,\checkmark\,\setkeys{choice}{correct=false}\fi}{}}
-
-%Define an expandable version of choice
-\newcommand{\choiceEXP}[2][]{%
-\expandafter\setkeys\expandafter{choice}{#1}%
-\item{#2}\ifthenelse{\boolean{\choice@correct}}{\ifhandout \else \,\checkmark\,\setkeys{choice}{correct=false}\fi}{}} %% note all the {} are needed in case the choice has [] in it.
-
-
-%% Not really meant to be used outside this package (used in wordChoice)
-%% \otherchoice outputs the item if correct and nothing if incorrect.
-
-\define@key{otherchoice}{value}[]{\def\otherchoice@value{#1}}
-\define@boolkey{otherchoice}{correct}[true]{\def\otherchoice@correct{#1}}
-\setkeys{otherchoice}{correct=false,value=}
-\newcommand{\otherchoice}[2][]{%
-  \ignorespaces
-  \setkeys{otherchoice}{#1}
-  \ifthenelse{\boolean{\otherchoice@correct}}{#2\setkeys{otherchoice}{correct=false}}{}\ignorespaces}
-
-%%%
-
-%setting default values for multipleChoice command key=value pairs
+\define@boolkey{choice}{correct}[true]{\def\choice@correct{#1}}% This flags the answer as the correct answer
 
 \define@key{multipleChoice}{id}{\def\mc@id{#1}}
-\setkeys{multipleChoice}{id=}
+
+%% \otherchoice outputs the item if correct and nothing if incorrect.
+\define@key{otherchoice}{value}[]{\def\otherchoice@value{#1}}
+\define@boolkey{otherchoice}{correct}[true]{\def\otherchoice@correct{#1}}
+
+%%%%  Default key choices for multiple choice options.
+%
+% Default for choice pairs
+\setkeys{choice}{correct=false,value=}% Default: answers without the option "correct=true" is "incorrect".
+
+% Defaults for multipleChoice pairs.
+\setkeys{multipleChoice}{id=}% Default to no id? -- Jason
+
+% Defaults for otherchoice pairs.
+\setkeys{otherchoice}{correct=false,value=}% Default "otherchoice" to behave like "choice" for error checking.
+
+%%%%  Default choice command.
+%
+% choice command denotes a possible answer choice for the multiple choice question.
+
+\newcommand{\choice}[2][]{%
+	\setkeys{choice}{#1}%
+	\item{#2}
+	\ifthenelse{\boolean{\choice@correct}}
+		{% Begin then result
+		\ifhandout% if it's a handout do nothing.
+		\else% otherwise place a checkmark when you select the "correct choice"... maybe? -- Jason
+			\,\checkmark\,\setkeys{choice}{correct=false}
+		\fi
+		}% End then result
+		{}% Begin/End else result.
+		}
+
+%Define an expandable version of choice Not really meant to be used outside this package (used in wordChoice)
+% Is there a reason we can't just always use this as default? -- Jason
+\newcommand{\choiceEXP}[2][]{%
+	\expandafter\setkeys\expandafter{choice}{#1}%
+	\item{#2}
+	\ifthenelse{\boolean{\choice@correct}}
+		{% Begin then result
+		\ifhandout 
+		\else 
+			\,\checkmark\,\setkeys{choice}{correct=false}
+		\fi
+		}% End then result
+		{}% Begin/End else result.
+	} %% note all the {} are needed in case the choice has [] in it.
+
+
+
+
+\newcommand{\otherchoice}[2][]{%
+	\ignorespaces
+	\setkeys{otherchoice}{#1}
+	\ifthenelse{\boolean{\otherchoice@correct}}
+		{% Start then result
+		#2\setkeys{otherchoice}{correct=false}
+		}% End then result
+		{}% Start/End else result
+	\ignorespaces
+	}
+
+%%%%  multipleChoice Environment(s).
+%
+% multipleChoice* and multipleChoice** are for internal use only. 
+%% Given normal LaTeX syntax, we may want to change this to something more like 
+%% multipleChoice@ and multipleChoice@@. -- Jason
+
 
 \newenvironment{multipleChoice}[1][]
-{\setkeys{multipleChoice}{#1}%
-\recordvariable{\mc@id}%
-\begin{trivlist}\item[\hskip \labelsep\small\bfseries Multiple Choice:]\hfil\begin{enumerate}}
-{\end{enumerate}\end{trivlist}}
+	{% Environment Start Code
+	\setkeys{multipleChoice}{#1}%
+	\recordvariable{\mc@id}%
+	\begin{trivlist}
+		\item[\hskip \labelsep\small\bfseries Multiple Choice:]\hfil
+		\begin{enumerate}
+	}% Note this means that \item has to be the first line after \begin{multipleChoice}.
+	{% Environment End Code
+		\end{enumerate}
+	\end{trivlist}
+	}
 
 %multipleChoice* is for internal use only! (used in wordChoice)
 %It displays all choices in a list separated by /
 \newenvironment{multipleChoice*}[1][]
-{\setkeys{multipleChoice}{#1}%
-\ifthenelse{\equal{\mc@id}{}}{}{\immediate\write\idfile{var \mc@id;}}%
-\begin{enumerate*}[before={\upshape{(\hspace{-.25em}}}, itemjoin={/\hspace{-.25em}}, after={\upshape{)}}, label={}]}
-{\end{enumerate*}}
+	{% Environment Start Code
+	\setkeys{multipleChoice}{#1}%
+	\ifthenelse{\equal{\mc@id}{}}% Test if \mc@ID is empty. This is not a robust check, is this dangerous? -- Jason
+		{}% Begin/End then result.
+		{% Begin else result
+		\immediate\write\idfile{var \mc@id;}
+		}% End else result
+	\begin{enumerate*}[before={\upshape{(\hspace{-.25em}}}, itemjoin={/\hspace{-.25em}}, after={\upshape{)}}, label={}]% Weird formatting choices, as stated displays "/" between items.
+	}
+	{% Environment End Code
+	\end{enumerate*}
+	}
 
 
 %multipleChoice** is for internal use only! (used in wordChoice)
@@ -663,7 +761,21 @@ Interactive
 
 %wordChoice is an in-line version of multipleChoice:  uses enumitem package
 %note, it is coded as a single line to avoid unwanted spaces in "given" mode
-\newcommand{\wordChoice}[1]{\let\choicetemp\choice\ifwordchoicegiven\def\choice{\otherchoice}\begin{multipleChoice**}#1\end{multipleChoice**}\else\begin{multipleChoice*}#1\end{multipleChoice*}\fi\let\choice\choicetemp}
+\newcommand{\wordChoice}[1]{%
+	\let\choicetemp\choice% Assign a "choicetemp" command to duplicate choice.
+	\ifwordchoicegiven
+		\def\choice{\otherchoice}
+		\begin{multipleChoice**}
+			#1
+		\end{multipleChoice**}
+	\else
+		\begin{multipleChoice*}
+			#1
+		\end{multipleChoice*}
+	\fi
+	\let\choice\choicetemp% Now that choicetmp has been manipulated to what we want, replace choice with it.
+	}
+
 
 \newenvironment{selectAll}[1][]
 {\begin{trivlist}\item[\hskip \labelsep\small\bfseries Select All Correct Answers:]\hfil\begin{enumerate}}
@@ -703,19 +815,43 @@ Interactive
 \ifhandout
 	\newenvironment{freeResponse}[1][false]%
 		{%
-		\def\givenatend{\boolean{#1}}\ifthenelse{\boolean{#1}}{\begin{trivlist}\item}{\setbox0\vbox\bgroup}{}
+		\def\givenatend{\boolean{#1}}
+		\ifthenelse{\boolean{#1}}
+			{% Begin then result
+			\begin{trivlist}
+				\item
+			}% End then result
+			{% Begin else result
+			\setbox0\vbox\bgroup
+			}% End else result
+%		{}% Don't think this is doing anything? -- Jason
 		}
 		{%
-		\ifthenelse{\givenatend}{\end{trivlist}}{\egroup}{}
+		\ifthenelse{\givenatend}
+			{% Begin then result
+			\end{trivlist}
+			}% End then result
+			{% Begin else result
+			\egroup
+			}% End else result
+%			{}% Don't think this is doing anything? -- Jason
 		}
 \else
 	\newenvironment{freeResponse}[1][false]%
-		{%
-		  \ifthenelse{\boolean{#1}}
-		  	{\begin{trivlist}\item[\hskip \labelsep\bfseries Free Response (Given):\hspace{2ex}]}
-			{\begin{trivlist}\item[\hskip \labelsep\bfseries Free Response:\hspace{2ex}]}
+		{% Environment Beginning Code
+		  \ifthenelse{\boolean{#1}}%% Could probably change this with just putting the (given) in the boolean?-- Jason
+		  	{% Begin then result
+		  	\begin{trivlist}
+		  		\item[\hskip \labelsep\bfseries Free Response (Given):\hspace{2ex}]
+		  	}% End then result
+			{% Begin else result
+			\begin{trivlist}
+				\item[\hskip \labelsep\bfseries Free Response:\hspace{2ex}]
+			}% End else result
 		}
-		{\end{trivlist}}
+		{% Environment Ending Code
+			\end{trivlist}
+		}
 \fi
 
 
@@ -725,10 +861,14 @@ Interactive
 	\ifinstructornotes
 		\newenvironment{instructorIntro}%
 			{%
-			  \begin{trivlist}\item[\hskip \labelsep\bfseries Instructor Introduction:\hspace{2ex}]
+			\begin{trivlist}
+				\item[\hskip \labelsep\bfseries Instructor Introduction:\hspace{2ex}]
 			}
 			% %% line at the bottom} 
-			{\end{trivlist}\par\addvspace{.5ex}\nobreak\noindent\hung}
+			{
+			\end{trivlist}
+			\par\addvspace{.5ex}\nobreak\noindent\hung
+			}
 	\else
 		\newenvironment{instructorIntro}%
 			{%
@@ -750,10 +890,14 @@ Interactive
 	\else
 		\newenvironment{instructorIntro}%
 			{%
-			  \begin{trivlist}\item[\hskip \labelsep\bfseries Instructor Introduction:\hspace{2ex}]
+			\begin{trivlist}
+				\item[\hskip \labelsep\bfseries Instructor Introduction:\hspace{2ex}]
 			}
 			% %% line at the bottom} 
-			{\end{trivlist}\par\addvspace{.5ex}\nobreak\noindent\hung}
+			{
+			\end{trivlist}
+			\par\addvspace{.5ex}\nobreak\noindent\hung
+			}
 	\fi
 \fi
 
@@ -765,10 +909,14 @@ Interactive
 	\ifinstructornotes
 		\newenvironment{instructorNotes}%
 			{%
-			  \begin{trivlist}\item[\hskip \labelsep\bfseries Instructor Notes:\hspace{2ex}]
+			\begin{trivlist}
+				\item[\hskip \labelsep\bfseries Instructor Notes:\hspace{2ex}]
 			}
 			% %% line at the bottom} 
-			{\end{trivlist}\par\addvspace{.5ex}\nobreak\noindent\hung}
+			{
+			\end{trivlist}
+			\par\addvspace{.5ex}\nobreak\noindent\hung
+			}
 	\else
 		\newenvironment{instructorNotes}%
 			{%
@@ -790,10 +938,14 @@ Interactive
 	\else
 		\newenvironment{instructorNotes}%
 			{%
-			  \begin{trivlist}\item[\hskip \labelsep\bfseries Instructor Notes:\hspace{2ex}]
+			\begin{trivlist}
+				\item[\hskip \labelsep\bfseries Instructor Notes:\hspace{2ex}]
 			}
 			% %% line at the bottom} 
-			{\end{trivlist}\par\addvspace{.5ex}\nobreak\noindent\hung}
+			{
+			\end{trivlist}
+			\par\addvspace{.5ex}\nobreak\noindent\hung
+			}
 	\fi
 \fi
 
@@ -817,6 +969,7 @@ Interactive
 %% You cannot use Environ with the fancyvrb/listings package if you want nested environments
 
 \DefineVerbatimEnvironment{python}{Verbatim}{numbers=left,frame=lines,label=Python,labelposition=topline}
+
 %% \lstnewenvironment{python}
 %%                   {\lstset{language=python,numbers=left}}
 %%                   {}
@@ -869,7 +1022,7 @@ Interactive
 %% Most of the below added by Jason Nowell
 
 \newcommand{\latexProblemContent}[1]{#1}%% Added for those that want to use UF problems without using the problem filter code. This command is renewed into something meaningful in the 'ProblemSelector.sty'.
-\newcounter{Iteration@probCnt}% Iterate count for problem counts.
+\Make@Counter{Iteration@probCnt}% Iterate count for problem counts.
 
 
 
@@ -879,6 +1032,8 @@ Interactive
 \newcommand{\problemNumber}{
 
 % First we determine if we have a counter for this question depth level.
+% -- Can probably replace this with Make@Counter at some point -- Jason
+
 \ifcsname c@depth\Roman{problem@Depth}Count\endcsname	% Check to see if counter exists
 	%If so, do nothing.
 	\else
@@ -904,14 +1059,16 @@ Interactive
 %%%%%%%%%%%%%%%%%%%%%%%
 
 %%%%%% Configure various problem environment commands
-\newcounter{problem@Depth}
-\setcounter{problem@Depth}{0}
-%Configure environments start content
+\Make@Counter{problem@Depth}
 
+
+
+%%%% Configure environments start content
 
 \newcommand{\problemEnvironmentStart}[2]{%
 % This takes in 2 arguments. 
 % The first is optional and is the old optional argument from existing environments. 
+%	This is passed down to the associated problem environment name in case you want a global value.
 % The second argument is mandatory and is the name of the 'problem' environment, 
 %	such as problem, question, exercise, etc. 
 % It then configures everything needed at the start of that environment.
@@ -923,13 +1080,15 @@ Interactive
   [%
 	\hskip\labelsep\sffamily\bfseries% 
 	#2%
-% Now we need to determine the correct number of the problem, and the format of that number.
-	\problemNumber
+	\problemNumber% Determine the correct number of the problem, and the format of that number.
 	]
 \slshape
 }
 
-%Configure environments end content
+
+
+%%%%% Configure environments end content
+
 \newcommand{\problemEnvironmentEnd}{%This configures all the end content for a problem.
 %
 % First we need to see if we've dropped fully out of a depth level, 
@@ -943,10 +1102,6 @@ Interactive
 
 \addtocounter{problem@Depth}{-2}% Exited a problem so we've exited a problem layer. Need -2 because we steppped once at the start to check for needing a depth-level count reset. 
 
-
-
-\ifhandout
-\fi %% space at end
 \par\addvspace{.5ex}\nobreak\noindent\hung %% line at the bottom
 
 \ifhandout
@@ -957,6 +1112,12 @@ Interactive
 \end{trivlist}
 }
 
+
+
+%%%% Now populate the old environment names
+%
+% Old environments were "problem", "exercise", "exploration", and "question".
+% Note that you can add content to the start/end code on top of these base code pieces if you want.
 
 
 \newenvironment{problem}[1][2in]%
@@ -991,6 +1152,8 @@ Interactive
 \problemEnvironmentEnd
 }
 
+
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%  				Validator			%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -1014,7 +1177,9 @@ Interactive
 %\def\validator[#1]{\mbox{\texttt{\detokenize{#1}}}}
 %\def\endvalidator{}
 
-%% Feedback
+
+
+%%%% Feedback
 
 \ifhandout%	First, if it's a handout, we want feedback to eat everything and then disappear entirely. So we use the environ package to eat the content by not using \BODY command anywhere.
 %\NewEnviron{feedback}[1][]{}
