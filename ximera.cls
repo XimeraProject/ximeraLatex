@@ -523,7 +523,8 @@ Interactive
 
 %% Prompt environment
 \ifhandout
-	\newenvironment{prompt}{\suppress}{\endsuppress}
+	\NewEnivron{prompt}{}
+%	\newenvironment{prompt}{\suppress}{\endsuppress} -- Currently breaks when put in mathemode
 \else
 	\newenvironment{prompt}
     	{\bgroup\color{gray!50!black}}
