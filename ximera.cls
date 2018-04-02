@@ -86,12 +86,10 @@
 \wordchoicegivenfalse
 \DeclareOption{wordchoicegiven}{\wordchoicegiventrue}
 
-
 % "space" option depreciated. Keeping code in, in case of conflicts. Should remove this code if no conflicts are detected/reported by 6/28/2018 -- Jason Nowell
 %\newif\ifspace 
 %\spacefalse
 %\DeclareOption{space}{\spacetrue}
-
 
 %% This basically works for exercises, though page breaks are weird. 
 
@@ -105,7 +103,6 @@
 \DeclareOption{tikzexport}{%
   \tikzexporttrue%
   \handoutfalse%
-  \spacefalse%  
   \numbersfalse%
   \newpagefalse%
   \hintsfalse%
