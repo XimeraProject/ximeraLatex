@@ -136,6 +136,7 @@
 \RequirePackage{url}
 \RequirePackage{xcolor}
 \RequirePackage{pgfplots}
+\RequirePackage{cancel} % for \cancel; loaded here to avoid polluting the .jax output
 \usepgfplotslibrary{groupplots}
 \usetikzlibrary{calc}
 \RequirePackage{fancyvrb}
