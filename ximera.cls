@@ -129,6 +129,8 @@
 % as to where they are being utilized. This will help keep this list from being redundant and/or
 % outdated. -- Jason Nowell
 
+
+\RequirePackage[makeroom]{cancel} % for \cancel; loaded here to avoid polluting the .jax output
 \RequirePackage[inline]{enumitem}
 \RequirePackage[pagestyles]{titlesec} 
 \RequirePackage{titletoc} 
@@ -136,7 +138,6 @@
 \RequirePackage{url}
 \RequirePackage{xcolor}
 \RequirePackage{pgfplots}
-\RequirePackage{cancel} % for \cancel; loaded here to avoid polluting the .jax output
 \usepgfplotslibrary{groupplots}
 \usetikzlibrary{calc}
 \RequirePackage{fancyvrb}
