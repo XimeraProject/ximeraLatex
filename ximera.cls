@@ -459,10 +459,10 @@ Interactive
 
 %HTML 
 
-\newenvironment{html}{\textbf{INTERACTIVE NOT AVAILABLE}\suppress}{\endsuppress}% New version using suppress method
+%\newenvironment{html}{\textbf{INTERACTIVE NOT AVAILABLE}\suppress}{\endsuppress}% New version using suppress method
 
 % Old code. Delete by 6/28/2018 if no errors reported.
-%\NewEnviron{html}{\textbf{INTERACTIVE NOT AVAILABLE.}} 
+\NewEnviron{html}{\textbf{INTERACTIVE NOT AVAILABLE.}} 
 
 	
 % --------------------------------------------------------------------
@@ -1183,9 +1183,9 @@ Interactive
 %%%% Feedback
 
 \ifhandout%	First, if it's a handout, we want feedback to eat everything and then disappear entirely. So we use the environ package to eat the content by not using \BODY command anywhere.
-%\NewEnviron{feedback}[1][]{}
+\NewEnviron{feedback}[1][]{}
 % No! We are going to replace with the suppress command method. Delete the above old code by 6/28/2018 if no errors
-\newenvironment{feedback}{\suppress}{\endsuppress}
+%\newenvironment{feedback}{\expandafter\phantom\expandafter\begingroup\expandafter\noexpand\begingroup}{\endgroup\endgroup}
 
 \else% If this isn't a handout, then we want to display the Feedback by using a label, 
 %	positioned and formated as a \item in a trivlist. It is important that we also detokenize the content 
@@ -1197,7 +1197,7 @@ Interactive
 	\def\PH@Command{#1}% Use PH@Command to hold the content and be a target for "\expandafter" to expand once.
 	
 	\begin{trivlist}% Begin the trivlist to use formating of the "Feedback" label.
-	\item[\hskip \labelsep\small\slshape\bfseries Feedback % Format the "Feedback" label. Don't forget the space.
+	\item[\hskip \labelsep\small\slshape\bfseries Feedback% Format the "Feedback" label. Don't forget the space.
 	(\texttt{\detokenize\expandafter{\PH@Command}}):% Format (and detokenize) the condition for feedback to trigger
 	\hspace{2ex}]\small\slshape% Insert some space before the actual feedback given.
 	}{
