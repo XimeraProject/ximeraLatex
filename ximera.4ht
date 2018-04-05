@@ -69,7 +69,7 @@
 \renewcommand{\choice}[2][]{%
 \setkeys{choice}{correct=false}%
 \setkeys{choice}{#1}%
-\stepcounter{choiceId}\ifvmode \IgnorePar\fi \EndP% 
+\stepcounter{choiceId}\IgnorePar%
 \HCode{<span class="choice }%
 \ifthenelse{\boolean{\choice@correct}}{\HCode{correct}}{}
 \HCode{" }
@@ -94,7 +94,7 @@
 % This is actually just word choice
 \renewenvironment{multipleChoice*}{\refstepcounter{problem}}{}%
 
-\ConfigureEnv{multipleChoice*}{\stepcounter{identification}\ifvmode \IgnorePar\fi \EndP\HCode{<span class="word-choice" id="word-choice\arabic{identification}">}}{\HCode{</span>}\IgnoreIndent}{}{}
+\ConfigureEnv{multipleChoice*}{\stepcounter{identification}\IgnorePar\HCode{<span class="word-choice" id="word-choice\arabic{identification}">}}{\HCode{</span>}\IgnoreIndent}{}{}
 
 \renewenvironment{selectAll}{\refstepcounter{problem}}{}%
 \ConfigureEnv{selectAll}{\stepcounter{identification}\ifvmode \IgnorePar\fi \EndP\HCode{<div class="select-all" id="problem\arabic{identification}">}}{\HCode{</div>}\IgnoreIndent}{}{}
@@ -261,6 +261,10 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \renewcommand{\label}[1]{\HCode{<a class="ximera-label" id="#1"></a>}}
 \renewcommand{\ref}[1]{\HCode{<a class="reference" href="\##1">#1</a>}}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\renewenvironment{sagesilent}{\NoFonts}{\EndNoFonts}
+\ScriptEnv{sagesilent}{\ifvmode \IgnorePar\fi \EndP\HCode{<script type="text/sagemath">\Hnewline\#<![CDATA[\Hnewline}\HtmlParOff}{\HtmlParOn\HCode{\Hnewline\#]]>\Hnewline</script></div>}}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \renewenvironment{javascript}{\NoFonts}{\EndNoFonts}
