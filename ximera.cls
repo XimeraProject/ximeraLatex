@@ -105,7 +105,7 @@
 \DeclareOption{tikzexport}{%
   \tikzexporttrue%
   \handoutfalse%
-  \spacefalse%  
+%  \spacefalse%  
   \numbersfalse%
   \newpagefalse%
   \hintsfalse%
