@@ -158,6 +158,9 @@
 
 \RequirePackage{comment}
 
+\RequirePackage{cancel}% Temporarily added to make mooculus compile cleanly.
+\RequirePackage{multicol}% Temporarily added to make mooculus compile cleanly.
+
 \oddsidemargin 62pt %% so we don't get weird margins in 2-sided mode
 \evensidemargin 62pt %% so we don't get weird margins in 2-sided mode
 \textwidth 345pt %% so we don't get weird margins in 2-sided mode
