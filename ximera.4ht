@@ -267,6 +267,8 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \renewcommand{\label}[1]{\HCode{<a class="ximera-label" id="#1"></a>}}
 \renewcommand{\ref}[1]{\HCode{<a class="reference" href="\##1">#1</a>}}
+% because hyperref redefines stuff atbegindocument, we do too.
+\AtBeginDocument{\renewcommand{\ref}[1]{\HCode{<a class="reference" href="\##1">#1</a>}}}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \renewenvironment{sagesilent}{\NoFonts}{\EndNoFonts}
