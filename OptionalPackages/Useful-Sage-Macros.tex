@@ -99,14 +99,14 @@ def RandPoly(d, zeroes=[], avoid=[], monic = False, expanded = False):
 
     # First, compute the part that has the specified zeroes.
     if monic:
-        P = product((x-a) for a in zeroes)
+        P = prod((x-a) for a in zeroes)
     else:
-        P = product((a.denominator()*x - a.numerator()) for a in zeroes)
+        P = prod((a.denominator()*x - a.numerator()) for a in zeroes)
 
     # Second, compute the missing factor.
     if avoid:
         missingZeroes =[NonZeroInt(-10,10,avoid) for _ in range(missingDegree)]
-        missingFactor = product((x-a) for a in missingZeroes)
+        missingFactor = prod((x-a) for a in missingZeroes)
     else:
         if monic:
             missingFactor = x**missingDegree
@@ -186,4 +186,7 @@ def RandMatrix(dim1, dim2, LBnum,UBnum,LBden,UBden):
 #   else:
 #       return a + ("0" * missing)
 
-\end{sagesilent}
+if __name__ == "__main__":
+    print(RandPoly(4))
+
+# \end{sagesilent}
