@@ -143,6 +143,11 @@
 \RequirePackage{fancyvrb}
 \RequirePackage{forloop}% Used for (at least) the problem environment dynamic naming and building.
 
+%% mdframed is used to make pretty foldable, but the amsthm/mdframed
+%% conflict also messes up the .jax file so don't load mdframed when
+%% performing the xake step
+\iftikzexport\else\RequirePackage[framemethod=TikZ]{mdframed}\fi
+
 \RequirePackage{environ}% Included to allow saving of environment contents. This does *not* play well with various verbatem environments however and would be great to find a way around utilizing this package. One option is the "Suppress" command included below.
 \RequirePackage{amssymb}% Included to have access to math typeset.
 \RequirePackage{amsmath}% Included to have access to math typeset.
@@ -152,9 +157,6 @@
 \RequirePackage{listings} %% is this required???
 
 \RequirePackage{xkeyval}
-
-\RequirePackage[framemethod=TikZ]{mdframed} %% Used to make pretty foldable
-% BADBAD: the amsthm/mdframed conflict also messes up the .jax file
 
 \RequirePackage{comment}
 
@@ -1336,6 +1338,8 @@ Interactive
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\DefineVerbatimEnvironment{javascriptCode}{Verbatim}{numbers=left,frame=lines,label=JavaScript,labelposition=topline}
 
 \DefineVerbatimEnvironment{sageCell}{Verbatim}{numbers=left,frame=lines,label=SAGE,labelposition=topline}
 \DefineVerbatimEnvironment{sageOutput}{Verbatim}{numbers=left,frame=lines,label=SAGE-Output,labelposition=topline}
