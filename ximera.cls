@@ -237,13 +237,18 @@
 %
 % Added by Jason Nowell
 
-\newcommand{\Make@Counter}[1]{
+\newcommand{\MakeCounter}[1]{
 	\@ifundefined{c@#1}	% Check to see if counter exists
 		{									%If not, create it and set it to 0.
+		\message{The counter #1 didn't exist, so I created it and set it to 0.}
 		\newcounter{#1}
 		\setcounter{#1}{0}
 		}
 		{									%If so, reset to 0.
+		\expandafter\ifnum \arabic{#1}>0 
+    		\@latex@warning{I just overwrote the counter #1, it was set to \arabic{#1} and I forced it to 0.}
+    	\fi
+		\message{Hopefully it wasn't needed anymore.}
 		\setcounter{#1}{0}
 		}
 }
@@ -1027,7 +1032,7 @@ Interactive
 %% Most of the below added by Jason Nowell
 
 \newcommand{\latexProblemContent}[1]{#1}%% Added for those that want to use UF problems without using the problem filter code. This command is renewed into something meaningful in the 'ProblemSelector.sty'.
-\Make@Counter{Iteration@probCnt}% Iterate count for problem counts.
+\MakeCounter{Iteration@probCnt}% Iterate count for problem counts.
 
 
 
@@ -1037,7 +1042,7 @@ Interactive
 \newcommand{\problemNumber}{
 
 % First we determine if we have a counter for this question depth level.
-% -- Can probably replace this with Make@Counter at some point -- Jason
+% -- Can probably replace this with MakeCounter at some point -- Jason
 
 \ifcsname c@depth\Roman{problem@Depth}Count\endcsname	% Check to see if counter exists
 	%If so, do nothing.
@@ -1064,7 +1069,7 @@ Interactive
 %%%%%%%%%%%%%%%%%%%%%%%
 
 %%%%%% Configure various problem environment commands
-\Make@Counter{problem@Depth}
+\MakeCounter{problem@Depth}
 
 
 

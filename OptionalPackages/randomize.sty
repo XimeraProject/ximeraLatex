@@ -17,14 +17,14 @@
 %%%%%%%%%%%%  Random Permutation Command  %%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\Make@Counter{RndQuant}%		Tracks the number of desired counters
-\Make@Counter{Temp@Hold}%		Temp counter to hold the command value because tex is weird.
-\Make@Counter{Temp@RandMe}%	Temp counter like previous.
+\MakeCounter{RndQuant}%		Tracks the number of desired counters
+\MakeCounter{Temp@Hold}%		Temp counter to hold the command value because tex is weird.
+\MakeCounter{Temp@RandMe}%	Temp counter like previous.
 
 \newcommand*\ifcounter[2]{% Function checks if a counter named #1 exists. If not it creates it. After existance is confirmed (or implemented), set the counter to #2.
   \ifcsname c@#1\endcsname
   \else
-    \Make@Counter{#1}
+    \MakeCounter{#1}
   \fi
 \setcounter{#1}{#2}
 }
@@ -81,14 +81,14 @@
 %%%%%%%%%  		Make Vector is used to generate most random lists		%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\Make@Counter{Temp@1}
-\Make@Counter{Temp@2}
-\Make@Counter{Temp@3}
-\Make@Counter{Iteration@1}
-\Make@Counter{Iteration@2}
-\Make@Counter{Iteration@3}
-\Make@Counter{Iteration@4}
-\Make@Counter{Placement@1}
+\MakeCounter{Temp@1}
+\MakeCounter{Temp@2}
+\MakeCounter{Temp@3}
+\MakeCounter{Iteration@1}
+\MakeCounter{Iteration@2}
+\MakeCounter{Iteration@3}
+\MakeCounter{Iteration@4}
+\MakeCounter{Placement@1}
 \setcounter{Placement@1}{1}
 
 
@@ -151,8 +151,8 @@
 	\ifnum #5 = \value{Temp@1}% The special case where we want all the values. Randomizing into a full list just to order it is silly so we deal with this case separately.
 		\forloop{Iteration@1}{1}{\arabic{Iteration@1} < \arabic{Temp@1}}
 			{% Start of forloop
-			\Make@Counter{Ordered@\Roman{Iteration@1}}	% Check to see if counter exists
-			\Make@Counter{C@Shuffle\Roman{Iteration@1}}
+			\MakeCounter{Ordered@\Roman{Iteration@1}}	% Check to see if counter exists
+			\MakeCounter{C@Shuffle\Roman{Iteration@1}}
 			\setcounter{Ordered@\Roman{Iteration@1}}{\arabic{Iteration@1}}
 			\setcounter{C@Shuffle\Roman{Iteration@1}}{\arabic{Iteration@1}}
 			}
@@ -162,9 +162,9 @@
 		\forloop{Iteration@1}{1}{\arabic{Iteration@1} < \arabic{Temp@1}}
 			{% Start of forloop
 	
-			\Make@Counter{Ordered@\Roman{Iteration@1}}	% Check to see if counter exists
-			\Make@Counter{CTemp\Roman{Iteration@1}}	% Check to see if counter exists
-			\Make@Counter{C@Shuffle\Roman{Iteration@1}}
+			\MakeCounter{Ordered@\Roman{Iteration@1}}	% Check to see if counter exists
+			\MakeCounter{CTemp\Roman{Iteration@1}}	% Check to see if counter exists
+			\MakeCounter{C@Shuffle\Roman{Iteration@1}}
 		
 			\@genrand{Temp@2}{#3}{#4}
 			\ifVerbose{Your first choice for the question number is \arabic{Temp@2}}\\ \fi
@@ -213,14 +213,14 @@
 		\setcounter{Temp@3}{#5}
 		\forloop{Iteration@1}{1}{\arabic{Iteration@1} < \arabic{Temp@1}}
 			{
-			\Make@Counter{#2\Roman{Iteration@1}}% Make the counter if it doesn't exist.
+			\MakeCounter{#2\Roman{Iteration@1}}% Make the counter if it doesn't exist.
 			\setcounter{#2\Roman{Iteration@1}}{\arabic{Ordered@\Roman{Temp@3}}}% Set the final counter version to the current "last" unused value.
 			\addtocounter{Temp@3}{-1}% Decrement the counter for next assignment
 			}
 	\else% If we aren't doing it in reverse, assume we want forward order. This is default.
 		\forloop{Iteration@1}{1}{\arabic{Iteration@1} < \arabic{Temp@1}}
 			{
-			\Make@Counter{#2\Roman{Iteration@1}}% Make the counter if it doesn't exist.
+			\MakeCounter{#2\Roman{Iteration@1}}% Make the counter if it doesn't exist.
 			\setcounter{#2\Roman{Iteration@1}}{\arabic{Ordered@\Roman{Iteration@1}}}% Set the final counter version to the next value.
 			}
 	
@@ -229,7 +229,7 @@
 	\ifInner@Shuffle
 		\forloop{Iteration@1}{1}{\arabic{Iteration@1} < \arabic{Temp@1}}
 			{
-			\Make@Counter{#2\Roman{Iteration@1}}% Make the counter if it doesn't exist.
+			\MakeCounter{#2\Roman{Iteration@1}}% Make the counter if it doesn't exist.
 			\setcounter{#2\Roman{Iteration@1}}{\arabic{C@Shuffle\Roman{Iteration@1}}}% Set the counter to the next value.
 			}
 
