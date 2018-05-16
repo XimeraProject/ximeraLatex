@@ -52,7 +52,7 @@ Bart Snapp. The source code can be found at:
 
 https://github.com/XimeraProject/ximeraLatex
 
-This work consists of the file ximera.dtx and a Makefile.
+This work consists of the file ximeraLatex.dtx source files and a Makefile.
 Running "make" generates the derived files README, ximeraLaTeX.pdf, ximera.cls, xourse.cls.
 Running "make inst" installs the files in the user's TeX tree.
 Running "make install" installs the files in the local TeX tree.
@@ -63,7 +63,11 @@ Running "make install" installs the files in the local TeX tree.
 \input docstrip
 \askforoverwritefalse
 \generate{
-  \file{ximera.cls}{\from{ximeraLaTeX.dtx}{classXimera}}
+  \file{ximera.cls}{
+    \from{ximeraLaTeX.dtx}{classXimera}
+    \from{src/options.dtx}{classXimera}
+    \from{src/tikzexport.dtx}{classXimera}
+  }
   \file{xourse.cls}{\from{ximeraLaTeX.dtx}{classXourse}}
   \file{ximera.cfg}{\from{ximeraLaTeX.dtx}{cfgXimera}}
   \file{ximera.4ht}{\from{ximeraLaTeX.dtx}{htXimera}}
@@ -109,7 +113,10 @@ Running "make install" installs the files in the local TeX tree.
 \CodelineIndex
 \RecordChanges
 \begin{document}
-  \DocInput{\jobname.dtx}
+\DocInput{\jobname.dtx}
+\section{ximera.cls}
+\DocInput{src/options.dtx}
+\DocInput{src/tikzexport.dtx}
 \end{document}
 %</driver>
 % \fi
@@ -120,7 +127,7 @@ Running "make install" installs the files in the local TeX tree.
 %\title{\textsf{ximera\LaTeX} --- \LaTeX\ classes for simultaneously writing print and online interactive materials.\thanks{This file
 %   describes version \fileversion, last revised \filedate.}
 %}
-%\author{Bart Snapp\thanks{E-mail: bart.snapp@gmail.com}}
+%\author{Jim Fowler, Jeramiah Hocutt, Jason Nowell, and Bart Snapp}
 %\date{Released \filedate}
 %
 %\maketitle
@@ -138,190 +145,7 @@ Running "make install" installs the files in the local TeX tree.
 % \section{Introduction}
 %
 %
-% \section{ximera.cls}
-% \subsection{Options for the class}
-%    We start by listing the options for the \textsf{ximera} document class. Note, since the \textsf{xourse} class is based on the \textsf{ximera} class, all listed options are available there too.
-%
-%    \begin{macrocode}
 %<*classXimera>
-%    \end{macrocode}
-% \begin{macro}{handout}
-%    The default behavior of the class is to display \textbf{all} content. This means that if any questions are asked, all answers are shown. Moreover, some content will only have a meaningful presentation when displayed online. When compiled without any options, this content will be shown too. This option will supress such content and generate a reasonable printiable ``handout.''
-%
-%    \begin{macrocode}
-\newif\ifhandout
-\handoutfalse
-\DeclareOption{handout}{\handouttrue}
-%    \end{macrocode}
-% \end{macro}
-%
-% \begin{macro}{noauthor}
-%    By default, authors are listed at the bottom of the first page of a document. This option will supress the listing of the authors.
-%    \begin{macrocode}
-\newif\ifnoauthor
-\noauthorfalse
-\DeclareOption{noauthor}{\noauthortrue}
-%    \end{macrocode}
-% \end{macro}
-%
-% \begin{macro}{nooutcomes}
-%    By default, learning outcomes are listed at the bottom of the first page of a document. This option will supress the listing of the learning outcomes.
-%    \begin{macrocode}
-\newif\ifnooutcomes
-\nooutcomesfalse
-\DeclareOption{nooutcomes}{\nooutcomestrue}
-%    \end{macrocode}
-% \end{macro}
-%
-% \begin{macro}{instructornotes}
-%    This option will turn on (and off) notes written for the instructor.
-%    \begin{macrocode}
-\newif\ifinstructornotes
-\instructornotesfalse
-\DeclareOption{instructornotes}{\instructornotestrue}
-%    \end{macrocode}
-% \end{macro}
-% \begin{macro}{noinstructornotes}
-%    This option will turn off (and on) notes written for the instructor.
-%    \begin{macrocode}
-\DeclareOption{noinstructornotes}{\instructornotestrue}
-%    \end{macrocode}
-% \end{macro}
-%
-% \begin{macro}{hints}
-%    When the \texttt{handout} options is used, hints are not shown. This option will make hints visible in handout mode. 
-%    \begin{macrocode}
-\newif\ifhints
-\hintsfalse
-\DeclareOption{hints}{\hintstrue}
-%    \end{macrocode}
-% \end{macro}
-%
-% \begin{macro}{space}
-%    This option will place space after each problem-like environment (\texttt{exercise}, \texttt{question}, \texttt{problem}, and \texttt{exploration}).
-%    \begin{macrocode}
-\newif\ifspace 
-\spacefalse
-\DeclareOption{space}{\spacetrue}
-%    \end{macrocode}
-% \end{macro}
-%
-% \begin{macro}{newpage}
-%    This option will start each problem-like environment (\texttt{exercise}, \texttt{question}, \texttt{problem}, and \texttt{exploration}) start on a new page.
-%    \begin{macrocode}
-\newif\ifnewpage
-\newpagefalse
-\DeclareOption{newpage}{\newpagetrue}
-%    \end{macrocode}
-% \end{macro}
-%
-% \begin{macro}{numbers}
-%    This option will number the titles of the activity. By default the activities are unnumbered.
-%    \begin{macrocode}
-\newif\ifnumbers
-\numbersfalse
-\DeclareOption{numbers}{\numberstrue}
-%    \end{macrocode}
-% \end{macro}
-%
-% \begin{macro}{wordchoicegiven}
-%    This option will replace the choices shown by \texttt{wordChoice} with the correct choice. No indication of the \texttt{wordChoice} environment will be shown.
-%    \begin{macrocode}
-\newif\ifwordchoicegiven
-\wordchoicegivenfalse
-\DeclareOption{wordchoicegiven}{\wordchoicegiventrue}
-%    \end{macrocode}
-% \end{macro}
-%
-%    \begin{macrocode}
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%% tikzexport will generate SVGs and PNGs for tikzpictures
-%%
-%% This option is an internal option used for deploying to the web
-%%
-\newif\iftikzexport
-\tikzexportfalse
-\DeclareOption{tikzexport}{%
-  \tikzexporttrue%
-  \handoutfalse%
-  \shufflefalse%
-  \spacefalse%  
-  \numbersfalse%
-  \newpagefalse%
-  \hintsfalse%
-  \nooutcomesfalse%
-}
-\newif\ifxake
-\xakefalse
-\DeclareOption{xake}{\xaketrue}
-%    \end{macrocode}
-%    \begin{macrocode}
-\DeclareOption*{\PassOptionsToClass{\CurrentOption}{article}}
-\ProcessOptions\relax
-\LoadClass{article}
-%    \end{macrocode}
-% \subsection{Loading packages}
-%    Quite a few packages are required by the document class. 
-%    \begin{macrocode}
-\RequirePackage[table]{xcolor}
-\RequirePackage{pgfplots}
-\pgfplotsset{compat=newest,compat/show suggested version=false}
-\usepgfplotslibrary{groupplots}
-\usetikzlibrary{calc}
-\IfFileExists{sagetex.sty}{\RequirePackage{sagetex}}{}
-\RequirePackage[inline]{enumitem}
-\RequirePackage[pagestyles]{titlesec} 
-\RequirePackage{titletoc} 
-\RequirePackage{titling}  
-\RequirePackage{url}
-\RequirePackage{fancyvrb}
-\RequirePackage{environ}
-\RequirePackage{amssymb}
-\RequirePackage{amsmath}
-\RequirePackage{amsthm}
-\RequirePackage{xifthen}
-\RequirePackage{multido}
-\RequirePackage{listings}
-\RequirePackage{xkeyval}
-\RequirePackage[framemethod=TikZ]{mdframed}
-\RequirePackage{comment}
-%    \end{macrocode}
-% \subsection{Preparation for TeX4ht}
-%   Some commands need to be redefined in preparation web deployment.
-%    \begin{macrocode}
-\ifdefined\HCode
-\newcommand{\href}[1]{}
-\else
-\RequirePackage[pdfpagelabels,colorlinks=true,allcolors=blue!30!black]{hyperref}
-\pdfstringdefDisableCommands{\def\hskip{}}%% quiets warning
-\fi
-%    \end{macrocode}
-% \subsection{Exporting graphics}
-%    When compiling with \textit{xake}, all Ti\textit{k}Z images are extracted, and rendered separately. The following code makes this happen:
-%    \begin{macrocode}
-\ifdefined\HCode
-\tikzexporttrue
-\fi
-\iftikzexport
-\usetikzlibrary{external}
-\ifdefined\HCode
-% in htlatex, just include the svg files
-\def\pgfsys@imagesuffixlist{.svg}
-\tikzexternalize[prefix=./,mode=graphics if exists]
-\else
-% in pdflatex, actually generate the svg files
-\tikzset{
-  /tikz/external/system call={
-    pdflatex \tikzexternalcheckshellescape -halt-on-error -interaction=batchmode -jobname "\image" "\\PassOptionsToClass{tikzexport}{ximera}\texsource";
-    mutool draw -o \image.svg \image.pdf ;
-    mutool draw -r 150 -c rgbalpha -o \image.png \image.pdf ;
-  }
-}
-\tikzexternalize[optimize=false,prefix=./]
-\fi
-\fi
-%    \end{macrocode}
-%
 % \begin{macro}{\dummyMacro}
 % This is a dummy macro.  If it did anything, we'd describe its
 % implementation here.
