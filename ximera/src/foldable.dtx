@@ -1,0 +1,59 @@
+%    \begin{macrocode}
+%<*classXimera>
+
+\colorlet{textColor}{black} % since textColor is referenced below
+\colorlet{background}{white} % since background is referenced below
+
+% The core environments. Find results in 4ht file.
+%% pretty-foldable
+\iftikzexport
+\newenvironment{foldable}{%
+}{%
+}
+\else
+\renewmdenv[
+  font=\upshape,
+  outerlinewidth=3,
+  topline=false,
+  bottomline=false,
+  leftline=true,
+  rightline=false, 
+  leftmargin=0,
+  innertopmargin=0pt,
+  innerbottommargin=0pt,
+  skipbelow=\baselineskip,
+  linecolor=textColor!20!white,
+  fontcolor=textColor,
+  backgroundcolor=background
+]{foldable}%
+\fi
+
+%% pretty-expandable
+\iftikzexport\newenvironment{expandable}{%
+}{%
+}
+\else
+\newmdenv[
+  font=\upshape,
+  outerlinewidth=3,
+  topline=false,
+  bottomline=false,
+  leftline=true,
+  rightline=false, 
+  leftmargin=0,
+  innertopmargin=0pt,
+  innerbottommargin=0pt,
+  skipbelow=\baselineskip,
+  linecolor=black,
+]{expandable}%
+\fi
+%% \newenvironment{expandable}{%
+%% }{%
+%% }
+
+\newcommand{\unfoldable}[1]{#1}
+
+
+
+%</classXimera>
+%    \end{macrocode}

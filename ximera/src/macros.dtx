@@ -1,0 +1,52 @@
+%    \begin{macrocode}
+%<*classXimera>
+
+%% makes everymath display style even when inline, could be optional
+\everymath{\displaystyle}
+%% Ok not everything, we also need this
+\let\prelim\lim 
+\renewcommand{\lim}{\displaystyle\prelim} 
+%% for display style limits
+
+
+\renewcommand{\qedsymbol}{$\blacksquare$}
+\renewenvironment{proof}[1][\proofname]{\begin{trivlist}\item[\hskip \labelsep \itshape \bfseries #1{}\hspace{2ex}]}
+{\qed\end{trivlist}}
+
+\newtheorem{theorem}{Theorem}
+\newtheorem{algorithm}{Algorithm}
+\newtheorem{axiom}{Axiom}
+\newtheorem{claim}{Claim}
+\newtheorem{conclusion}{Conclusion}
+\newtheorem{condition}{Condition}
+\newtheorem{conjecture}{Conjecture}
+\newtheorem{corollary}{Corollary}
+\newtheorem{criterion}{Criterion}
+\newtheorem{definition}{Definition}
+\newtheorem{example}{Example}
+\newtheorem*{explanation}{Explanation}
+\newtheorem{fact}{Fact}
+\newtheorem{formula}{Formula}
+\newtheorem{idea}{Idea}
+\newtheorem{lemma}{Lemma}
+\newtheorem{model}{Model}
+\newtheorem{notation}{Notation}
+\newtheorem{observation}{Observation}
+\newtheorem{paradox}{Paradox}
+\newtheorem{procedure}{Procedure}
+\newtheorem{proposition}{Proposition}
+\newtheorem{remark}{Remark}
+\newtheorem{summary}{Summary}
+\newtheorem{template}{Template}
+\newtheorem{warning}{Warning}
+
+
+%% Make enumerate use a letter
+\renewcommand{\theenumi}{\textup{(\alph{enumi})}}
+\renewcommand{\labelenumi}{\theenumi}
+\renewcommand{\theenumii}{\textup{(\roman{enumii})}}
+\renewcommand{\labelenumii}{\theenumii}
+
+
+%</classXimera>
+%    \end{macrocode}

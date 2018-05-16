@@ -1,0 +1,155 @@
+%    \begin{macrocode}
+%<*classXimera>
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%% Multiple Choice Environment.
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+% Jim: Originally this was \renewcommand{\theenumi}{$(\mathrm{\alph{enumi}})$}
+% but that breaks tex4ht because mathmode can only be processed by mathjax.
+% so now I made this just italicized.
+
+
+
+%%%%  key=value pairs for multiple choice options.
+
+\define@key{choice}{value}[]{\def\choice@value{#1}}
+\define@boolkey{choice}{correct}[true]{\def\choice@correct{#1}}% This flags the answer as the correct answer
+
+\define@key{multipleChoice}{id}{\def\mc@id{#1}}
+
+%% \otherchoice outputs the item if correct and nothing if incorrect.
+\define@key{otherchoice}{value}[]{\def\otherchoice@value{#1}}
+\define@boolkey{otherchoice}{correct}[true]{\def\otherchoice@correct{#1}}
+
+%%%%  Default key choices for multiple choice options.
+%
+% Default for choice pairs
+\setkeys{choice}{correct=false,value=}% Default: answers without the option "correct=true" is "incorrect".
+
+% Defaults for multipleChoice pairs.
+\setkeys{multipleChoice}{id=}% Default to no id? -- Jason
+
+% Defaults for otherchoice pairs.
+\setkeys{otherchoice}{correct=false,value=}% Default "otherchoice" to behave like "choice" for error checking.
+
+%%%%  Default choice command.
+%
+% choice command denotes a possible answer choice for the multiple choice question.
+
+\newcommand{\choice}[2][]{%
+	\setkeys{choice}{#1}%
+	\item{#2}
+	\ifthenelse{\boolean{\choice@correct}}
+		{% Begin then result
+		\ifhandout% if it's a handout do nothing.
+		\else% otherwise place a checkmark when you select the "correct choice"... maybe? -- Jason
+			\,\checkmark\,\setkeys{choice}{correct=false}
+		\fi
+		}% End then result
+		{}% Begin/End else result.
+		}
+
+%Define an expandable version of choice Not really meant to be used outside this package (used in wordChoice)
+% Is there a reason we can't just always use this as default? -- Jason
+\newcommand{\choiceEXP}[2][]{%
+	\expandafter\setkeys\expandafter{choice}{#1}%
+	\item{#2}
+	\ifthenelse{\boolean{\choice@correct}}
+		{% Begin then result
+		\ifhandout 
+		\else 
+			\,\checkmark\,\setkeys{choice}{correct=false}
+		\fi
+		}% End then result
+		{}% Begin/End else result.
+	} %% note all the {} are needed in case the choice has [] in it.
+
+
+
+
+\newcommand{\otherchoice}[2][]{%
+	\ignorespaces
+	\setkeys{otherchoice}{#1}
+	\ifthenelse{\boolean{\otherchoice@correct}}
+		{% Start then result
+		#2\setkeys{otherchoice}{correct=false}
+		}% End then result
+		{}% Start/End else result
+	\ignorespaces
+	}
+
+%%%%  multipleChoice Environment(s).
+%
+% multipleChoice* and multipleChoice** are for internal use only. 
+%% Given normal LaTeX syntax, we may want to change this to something more like 
+%% multipleChoice@ and multipleChoice@@. -- Jason
+
+
+\newenvironment{multipleChoice}[1][]
+	{% Environment Start Code
+	\setkeys{multipleChoice}{#1}%
+	\recordvariable{\mc@id}%
+	\begin{trivlist}
+		\item[\hskip \labelsep\small\bfseries Multiple Choice:]\hfil
+		\begin{enumerate}
+	}% Note this means that \item has to be the first line after \begin{multipleChoice}.
+	{% Environment End Code
+		\end{enumerate}
+	\end{trivlist}
+	}
+
+%multipleChoice* is for internal use only! (used in wordChoice)
+%It displays all choices in a list separated by /
+\newenvironment{multipleChoice*}[1][]
+	{% Environment Start Code
+	\setkeys{multipleChoice}{#1}%
+	\ifthenelse{\equal{\mc@id}{}}% Test if \mc@ID is empty. This is not a robust check, is this dangerous? -- Jason
+		{}% Begin/End then result.
+		{% Begin else result
+		\immediate\write\idfile{var \mc@id;}
+		}% End else result
+	\begin{enumerate*}[before={\upshape{(\hspace{-.25em}}}, itemjoin={/\hspace{-.25em}}, after={\upshape{)}}, label={}]% Weird formatting choices, as stated displays "/" between items.
+	}
+	{% Environment End Code
+	\end{enumerate*}
+	}
+
+
+%multipleChoice** is for internal use only! (used in wordChoice)
+%this is simply a wrapper for the sole showing (other)choice.
+\newenvironment{multipleChoice**}[1][]{}{}
+
+
+
+%wordChoice is an in-line version of multipleChoice:  uses enumitem package
+%note, it is coded as a single line to avoid unwanted spaces in "given" mode
+\newcommand{\wordChoice}[1]{%
+	\let\choicetemp\choice% Assign a "choicetemp" command to duplicate choice.
+	\ifwordchoicegiven
+		\def\choice{\otherchoice}
+		\begin{multipleChoice**}
+			#1
+		\end{multipleChoice**}
+	\else
+		\begin{multipleChoice*}
+			#1
+		\end{multipleChoice*}
+	\fi
+	\let\choice\choicetemp% Now that choicetmp has been manipulated to what we want, replace choice with it.
+	}
+
+
+\newenvironment{selectAll}[1][]
+{\begin{trivlist}\item[\hskip \labelsep\small\bfseries Select All Correct Answers:]\hfil\begin{enumerate}}
+{\end{enumerate}\end{trivlist}}
+
+%% In the future we need this to (optionally) be displayed in the
+%% problem, while the actual code lives in the solution. Here is how
+%% this could be implemented: Like the title/maketitle commands, the
+%% multiple-choice could be stored in \themultiplechoice, flip a
+%% boolean, and execute \makemultiplechoice at the \end of the
+%% problem.  We should also make a command called "\showchoices" that
+%% will show choices in the handout.
+%</classXimera>
+%    \end{macrocode}

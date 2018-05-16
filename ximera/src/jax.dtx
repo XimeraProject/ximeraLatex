@@ -1,0 +1,27 @@
+%    \begin{macrocode}
+%<*classXimera>
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% When using mathjax, it is useful to dump all the newcommands to a "jax" file
+
+\ifdefined\HCode
+  \else
+    \newwrite\myfile
+    \immediate\openout\myfile=\jobname.jax
+    \immediate\write\myfile{\unexpanded{\newenvironment}{prompt}{}{}}
+
+    
+
+\let\@oldargdef\@argdef
+\long\def\@argdef#1[#2]#3{%
+\immediate\write\myfile{\unexpanded{\newcommand}{\unexpanded{#1}}[\unexpanded{#2}]{\unexpanded{#3}}}%
+\@oldargdef#1[#2]{#3}%
+}
+
+\let\@OldDeclareMathOperator\DeclareMathOperator
+\renewcommand{\DeclareMathOperator}[2]{\@OldDeclareMathOperator{#1}{#2}\immediate\write\myfile{\unexpanded{\DeclareMathOperator}{\unexpanded{#1}}{\unexpanded{#2}}}}
+
+    
+\fi
+%</classXimera>
+%    \end{macrocode}

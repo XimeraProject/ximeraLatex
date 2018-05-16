@@ -1,0 +1,44 @@
+%    \begin{macrocode}
+%<*classXimera>
+
+
+%% Hints
+%Create a counter that will track how deeply nested the current hint is
+\newcounter{hintLevel}
+\setcounter{hintLevel}{0}
+%Create an empty shell to renew
+\newenvironment{hint}{}{}
+%Now we renew the environment as needed, this should allow support for
+% any transition code that treats some parts as a "handout" and some
+% parts as non-handout.  renewing the environment on the fly is a bit
+% hacky. 
+\renewenvironment{hint}
+	{
+	\ifhandout
+		\setbox0\vbox\bgroup
+	\else
+		\begin{trivlist}\item[\hskip \labelsep\small\slshape\bfseries Hint:\hspace{2ex}]
+		\small\slshape
+	\fi
+	%Step up hint level to track the nested level of the hint. This will be used for problem numbering
+	\stepcounter{hintLevel}
+	}
+	{
+	\ifhandout
+		\egroup\ignorespacesafterend
+	\else
+		\end{trivlist}
+	\fi
+	%detract from hint level counter to track hint nested level
+	\addtocounter{hintLevel}{-1}
+	}
+
+\ifhints
+	\renewenvironment{hint}{
+	\begin{trivlist}\item[\hskip \labelsep\small\slshape\bfseries Hint:\hspace{2ex}]
+	\small\slshape}
+	{\end{trivlist}}
+\fi
+
+%</classXimera>
+%    \end{macrocode}

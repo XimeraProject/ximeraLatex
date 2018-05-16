@@ -1,8 +1,14 @@
 %    \begin{macrocode}
 %<*classXimera>
+
+
+
+
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%  	Make Counter Command  	%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
 
 % Improved version of \newcounter to check for existance before
 % creating a counter to minimize conflicts with packages.  Added by
@@ -34,11 +40,54 @@
 
 
 
+% ---------------------------------------------------------------------
+% Problem environment decorations (these should be user invoked, not default)
+
+% The decoration for these environments were inspired by
+% http://tex.stackexchange.com/questions/11098/nice-formatting-for-theorems?lq=1
+
+%%
+\newcommand{\hang}{% top theorem decoration
+  \begingroup%
+  \setlength{\unitlength}{.005\linewidth}% \linewidth/200
+    \begin{picture}(0,0)(1.5,0)%
+      \linethickness{1pt} \color{black!50}%
+      \put(-3,2){\line(1,0){206}}% Top line
+      \multido{\iA=2+-1,\iB=50+-10}{5}{% Top hangs
+        \color{black!\iB}%
+        \put(-3,\iA){\line(0,-1){1}}% Top left hang
+        %\put(203,\iA){\line(0,-1){1}}% Top right hang
+      }%
+    \end{picture}%
+  \endgroup%
+}%
+\newcommand{\hung}{% bottom theorem decoration
+  \nobreak
+  \begingroup%
+    \setlength{\unitlength}{.005\linewidth}% \linewidth/200
+    \begin{picture}(0,0)(1.5,0)%
+      \linethickness{1pt} \color{black!50}%
+      \put(60,0){\line(1,0){143}}% Bottom line
+      \multido{\iA=0+1,\iB=50+-10}{5}{% Bottom hangs
+        \color{black!\iB}%
+        %\put(-3,\iA){\line(0,1){1}}% Bottom left hang
+        \put(203,\iA){\line(0,1){1}}% Bottom right hang
+        \put(\iB,0){\line(60,0){10}}% Left fade out
+      }%
+    \end{picture}%
+  \endgroup%
+}%
+
 
 
 %%%%%% Configure environment configuration commands
 
 % The command \problemNumber contains all the format code to determine the number (and the format of the number) for any of the problem environments.
+
+
+\newcounter{problem} %% for the main problem
+
+
 \newcommand{\problemNumber}{
 
 % First we determine if we have a counter for this question depth level.
@@ -57,11 +106,6 @@
 \forloop{Iteration@probCnt}{2}{\arabic{Iteration@probCnt} < \numexpr \value{problem@Depth} + 1 \relax}{%
 .\expandafter\arabic{depth\Roman{Iteration@probCnt}Count}% Get the problem number of the next depth level and append it with a ".".
 }
-%\ifhandout % Currently handout mode doesn't allow hints. Putting this code in place in case that changes.
-%	\theproblem 
-%\else
-%	\theproblem 
-%\fi
 }
 
 

@@ -1,0 +1,49 @@
+%    \begin{macrocode}
+%<*classXimera>
+% Youtube link
+\newcommand{\youtube}[1]{YouTube link: \url{https://www.youtube.com/watch?v=#1}}
+
+% --------------------------------------------------------------------
+% Interactives
+
+\DefineVerbatimEnvironment{javascript}{Verbatim}{numbers=left,frame=lines,label=JavaScript,labelposition=topline}
+\def\js#1{\mbox{\texttt{\detokenize{#1}}}}
+
+%Geogebra link
+\newcommand{\geogebra}[3]{Geogebra link: \url{https://tube.geogebra.org/m/#1}}
+
+%Desmos link
+\newcommand{\desmos}[3]{Desmos link: \url{https://www.desmos.com/calculator/#1}}
+
+% Google Spreadsheet link (read only)
+\newcommand{\googleSheet}[5]{%
+  Google Spreadsheet link: \url{https://docs.google.com/spreadsheets/d/#1}%
+}
+
+% Embedded graph (in math mode)
+\newcommand{\graph}[2][]{\text{Graph of $#2$}}
+
+% Interactive element
+
+\define@key{interactive}{id}{\def\interactive@id{#1}}
+\setkeys{interactive}{id=}
+\newcommand{\includeinteractive}[2][]{
+\setkeys*{interactive}{#1}%
+\ifthenelse{\equal{\interactive@id}{}}{}{\recordvariable{\interactive@id}}
+Interactive
+}
+
+% Old code. Delete by 6/28/2018 if no errors reported.
+\NewEnviron{html}{\textbf{INTERACTIVE NOT AVAILABLE.}} 
+
+% Hyperlinks to outside documents
+
+\newcommand*{\link}[2][]{#1%
+	\ifthenelse{\equal{#1}{}}%
+		{\footnote{Link: \url{#2}}}%
+		{\footnote{See #1 at \url{#2}}}
+	}
+                              
+
+%</classXimera>
+%    \end{macrocode}
