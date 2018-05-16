@@ -55,15 +55,6 @@
 %    \end{macrocode}
 % \end{macro}
 %
-% \begin{macro}{space}
-%    This option will place space after each problem-like environment (\texttt{exercise}, \texttt{question}, \texttt{problem}, and \texttt{exploration}).
-%    \begin{macrocode}
-\newif\ifspace 
-\spacefalse
-\DeclareOption{space}{\spacetrue}
-%    \end{macrocode}
-% \end{macro}
-%
 % \begin{macro}{newpage}
 %    This option will start each problem-like environment (\texttt{exercise}, \texttt{question}, \texttt{problem}, and \texttt{exploration}) start on a new page.
 %    \begin{macrocode}
@@ -91,6 +82,11 @@
 %    \end{macrocode}
 % \end{macro}
 %    \begin{macrocode}
+\DeclareOption*{%
+  \PassOptionsToClass{\CurrentOption}{article}%
+}
+\ProcessOptions\relax
+\LoadClass{article}
 %</classXimera>
 %    \end{macrocode}
 

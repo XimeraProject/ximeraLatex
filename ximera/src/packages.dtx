@@ -1,0 +1,46 @@
+%    \begin{macrocode}
+%<*classXimera>
+\DeclareOption*{\PassOptionsToClass{\CurrentOption}{article}}
+\ProcessOptions\relax
+\LoadClass{article}
+%    \end{macrocode}
+% \subsection{Loading packages}
+%    Quite a few packages are required by the document class. 
+%    \begin{macrocode}
+% This is a list of required packages. As packages are added to this list, we should include a comment
+% as to where they are being utilized. This will help keep this list from being redundant and/or
+% outdated. -- Jason Nowell
+
+\RequirePackage[makeroom]{cancel} % for \cancel; loaded here to avoid polluting the .jax output
+\RequirePackage[inline]{enumitem}
+\RequirePackage[pagestyles]{titlesec} 
+\RequirePackage{titletoc} 
+\RequirePackage{titling}  
+\RequirePackage{url}
+\RequirePackage[table]{xcolor}
+\RequirePackage{tikz}
+\RequirePackage{pgfplots}
+\usepgfplotslibrary{groupplots}
+\usetikzlibrary{calc}
+\RequirePackage{fancyvrb}
+\RequirePackage{forloop}% Used for (at least) the problem environment dynamic naming and building.
+\IfFileExists{sagetex.sty}{\RequirePackage{sagetex}}{}% Load sagetex if it exists
+
+%% mdframed is used to make pretty foldable, but the amsthm/mdframed
+%% conflict also messes up the .jax file so don't load mdframed when
+%% performing the xake step
+\iftikzexport\else\RequirePackage[framemethod=TikZ]{mdframed}\fi
+
+\RequirePackage{environ}% Included to allow saving of environment contents. This does *not* play well with various verbatem environments however and would be great to find a way around utilizing this package. One option is the "Suppress" command included below.
+\RequirePackage{amssymb}% Included to have access to math typeset.
+\RequirePackage{amsmath}% Included to have access to math typeset.
+\RequirePackage{amsthm}%  Included to have access to math typeset.
+\RequirePackage{xifthen}% http://ctan.org/pkg/xifthen
+\RequirePackage{multido}% http://ctan.org/pkg/multido
+\RequirePackage{listings} %% is this required???
+
+\RequirePackage{xkeyval}
+
+\RequirePackage{comment}
+%</classXimera>
+%    \end{macrocode}

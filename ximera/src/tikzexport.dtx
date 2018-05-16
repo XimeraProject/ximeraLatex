@@ -1,94 +1,59 @@
 %    \begin{macrocode}
 %<*classXimera>
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%% tikzexport will generate SVGs and PNGs for tikzpictures
-%%
-%% This option is an internal option used for deploying to the web
-%%
-\newif\iftikzexport
-\tikzexportfalse
-\DeclareOption{tikzexport}{%
-  \tikzexporttrue%
-  \handoutfalse%
-  \shufflefalse%
-  \spacefalse%  
-  \numbersfalse%
-  \newpagefalse%
-  \hintsfalse%
-  \nooutcomesfalse%
-}
-\newif\ifxake
-\xakefalse
-\DeclareOption{xake}{\xaketrue}
-%</classXimera>
-%    \end{macrocode}
+% tikzexport will generate SVGs and PNGs for tikzpictures
+%
+% This option is automatically chosen when compiling inside the Ximera sandbox
+%
 
-
-%    \begin{macrocode}
-%<*classXimera>
-\DeclareOption*{\PassOptionsToClass{\CurrentOption}{article}}
-\ProcessOptions\relax
-\LoadClass{article}
-%    \end{macrocode}
-% \subsection{Loading packages}
-%    Quite a few packages are required by the document class. 
-%    \begin{macrocode}
-\RequirePackage[table]{xcolor}
-\RequirePackage{pgfplots}
-\pgfplotsset{compat=newest,compat/show suggested version=false}
-\usepgfplotslibrary{groupplots}
-\usetikzlibrary{calc}
-\IfFileExists{sagetex.sty}{\RequirePackage{sagetex}}{}
-\RequirePackage[inline]{enumitem}
-\RequirePackage[pagestyles]{titlesec} 
-\RequirePackage{titletoc} 
-\RequirePackage{titling}  
-\RequirePackage{url}
-\RequirePackage{fancyvrb}
-\RequirePackage{environ}
-\RequirePackage{amssymb}
-\RequirePackage{amsmath}
-\RequirePackage{amsthm}
-\RequirePackage{xifthen}
-\RequirePackage{multido}
-\RequirePackage{listings}
-\RequirePackage{xkeyval}
-\RequirePackage[framemethod=TikZ]{mdframed}
-\RequirePackage{comment}
-%    \end{macrocode}
-% \subsection{Preparation for TeX4ht}
-%   Some commands need to be redefined in preparation web deployment.
-%    \begin{macrocode}
+% Don't use hyperref when using Tex4ht
 \ifdefined\HCode
-\newcommand{\href}[1]{}
+\RequirePackage{hyperref}
+%\newcommand{\href}[1]{}
 \else
 \RequirePackage[pdfpagelabels,colorlinks=true,allcolors=blue!30!black]{hyperref}
 \pdfstringdefDisableCommands{\def\hskip{}}%% quiets warning
 \fi
-%    \end{macrocode}
-% \subsection{Exporting graphics}
-%    When compiling with \textit{xake}, all Ti\textit{k}Z images are extracted, and rendered separately. The following code makes this happen:
-%    \begin{macrocode}
+% We put hyperref after all other packages becuase that is better.
+
+% the article document class is made to have lines of text that are
+% not too long. 
+
+% http://tex.stackexchange.com/questions/71172/why-are-default-latex-margins-so-big
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%						Tikz Fix.
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+% Currently Tikz doesn't compile natively into the website because of how the xake bake compilation works.
+% ::IMPORTANT NOTE FOR TIKZ::
+% In order to make Tikz work, you need to get the tool "mutool" on the machine that is performing xake bake.
+
+
 \ifdefined\HCode
-\tikzexporttrue
+  \tikzexporttrue
 \fi
+
 \iftikzexport
-\usetikzlibrary{external}
-\ifdefined\HCode
-% in htlatex, just include the svg files
-\def\pgfsys@imagesuffixlist{.svg}
-\tikzexternalize[prefix=./,mode=graphics if exists]
-\else
-% in pdflatex, actually generate the svg files
-\tikzset{
-  /tikz/external/system call={
-    pdflatex \tikzexternalcheckshellescape -halt-on-error -interaction=batchmode -jobname "\image" "\\PassOptionsToClass{tikzexport}{ximera}\texsource";
-    mutool draw -o \image.svg \image.pdf ;
-    mutool draw -r 150 -c rgbalpha -o \image.png \image.pdf ;
-  }
-}
-\tikzexternalize[optimize=false,prefix=./]
-\fi
-\fi
+  \usetikzlibrary{external}
+
+  \ifdefined\HCode
+    % in htlatex, just include the svg files
+    \def\pgfsys@imagesuffixlist{.svg}
+    
+    \tikzexternalize[prefix=./,mode=graphics if exists]
+  \else
+    % in pdflatex, actually generate the svg files
+    \tikzset{
+      /tikz/external/system call={
+        pdflatex \tikzexternalcheckshellescape -halt-on-error -interaction=batchmode -jobname "\image" "\\PassOptionsToClass{tikzexport}{ximera}\texsource";
+        mutool draw -o \image.svg \image.pdf ;
+        mutool draw -r 150 -c rgbalpha -o \image.png \image.pdf ;
+      }
+    }
+    \tikzexternalize[optimize=false,prefix=./]
+  \fi
+
+  \fi
+
 %</classXimera>
 %    \end{macrocode}
