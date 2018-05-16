@@ -7,7 +7,8 @@
 |
 ------------:| ------------------------------------------------------------
  ximeraLaTeX:| LaTeX classes for simultaneously writing print and online interactive materials.
-      Author:| Jim Fowler and Jeramiah Hocutt and Jason Nowell and Bart Snapp
+      Author:| Jim Fowler and Jeramiah Hocutt and Oscar Levin and Jason Nowell and Hans Parshall
+and Bart Snapp
       E-mail:| bart.snapp@gmail.com
      License:| Released under the LaTeX Project Public License v1.3c or later
          See:| http://www.latex-project.org/lppl.txt
@@ -30,7 +31,8 @@ Some text about the class: probably the same as the abstract.
 \preamble
 ------------:| ------------------------------------------------------------
  ximeraLaTeX:| LaTeX classes for simultaneously writing print and online interactive materials.
-      Author:| Jim Fowler and Jeramiah Hocutt and Jason Nowell and Bart Snapp
+      Author:| Jim Fowler and Jeramiah Hocutt and Oscar Levin and Jason Nowell and Hans Parshall
+and Bart Snapp
       E-mail:| bart.snapp@gmail.com
      License:| Released under the LaTeX Project Public License v1.3c or later
          See:| http://www.latex-project.org/lppl.txt
@@ -38,7 +40,7 @@ Some text about the class: probably the same as the abstract.
 \endpreamble
 \postamble
 
-Copyright (C) 2017 by Bart Snapp <bart.snapp@gmail.com> and Jim Fowler <kisonecat@gmail.com>
+Copyright (C) 2018 by Bart Snapp <bart.snapp@gmail.com> and Jim Fowler <kisonecat@gmail.com>
 
 This work may be distributed and/or modified under the
 conditions of the LaTeX Project Public License (LPPL), either
@@ -82,6 +84,7 @@ Running "make install" installs the files in the local TeX tree.
     \from{src/interactives.dtx}{classXimera}
     \from{src/answer.dtx}{classXimera}
     \from{src/choice.dtx}{classXimera}
+    \from{src/solution.dtx}{classXimera}
     \from{src/feedback.dtx}{classXimera}
     \from{src/freeresponse.dtx}{classXimera}
     \from{src/verbatim.dtx}{classXimera}
@@ -131,7 +134,7 @@ Running "make install" installs the files in the local TeX tree.
 %<classXimera|classXourse>\NeedsTeXFormat{LaTeX2e}[1999/12/01]
 %<classXimera>\ProvidesClass{ximera}
 %<classXourse>\ProvidesClass{xourse}
-%<classXimera|classXourse> [2017/10/17 v1.00
+%<classXimera|classXourse> [2018/10/17 v1.00
 %<classXimera> A LaTeX class for simultaneously writing print and online interactive materials.]
 %<classXourse> A LaTeX class for combining Ximera activities.]
 %<*driver>
@@ -163,6 +166,7 @@ Running "make install" installs the files in the local TeX tree.
 \DocInput{src/interactives.dtx}
 \DocInput{src/answer.dtx}
 \DocInput{src/choice.dtx}
+\DocInput{src/solution.dtx}
 \DocInput{src/feedback.dtx}
 \DocInput{src/freeresponse.dtx}
 \DocInput{src/verbatim.dtx}
@@ -188,12 +192,12 @@ Running "make install" installs the files in the local TeX tree.
 %\title{\textsf{ximera\LaTeX} --- \LaTeX\ classes for simultaneously writing print and online interactive materials.\thanks{This file
 %   describes version \fileversion, last revised \filedate.}
 %}
-%\author{Jim Fowler, Jeramiah Hocutt, Jason Nowell, and Bart Snapp}
+%\author{Jim Fowler and Jeramiah Hocutt and Oscar Levin and Jason Nowell and Hans Parshall and Bart Snapp}
 %\date{Released \filedate}
 %
 %\maketitle
 %
-%\changes{v1.00}{2017/10/17}{First public release}
+%\changes{v1.00}{2018/10/17}{First public release}
 %
 % \begin{abstract}
 % The \textsf{ximera} class aids in the creation of handouts,

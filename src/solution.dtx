@@ -1,0 +1,28 @@
+%    \begin{macrocode}
+%<*classXimera>
+%% instructorNotes environment
+\ifhandout % what follows is handout behavior
+\newenvironment{solution}%
+	       {%
+		 \begin{trivlist}
+		 \item[\hskip \labelsep\bfseries Solution:\hspace{2ex}]
+	       }
+	       % %% line at the bottom} 
+	       {
+			\end{trivlist}
+		 \par\addvspace{.5ex}\nobreak\noindent\hung
+	       }
+	       \else
+	       \newenvironment{solution}%
+			      {%
+			        \setbox0\vbox\bgroup
+			      }
+			      {%
+			  \egroup
+			}
+	                \fi
+                        
+                              
+
+%</classXimera>
+%    \end{macrocode}
