@@ -1,25 +1,5 @@
 %    \begin{macrocode}
 %<*classXimera>
-\ifhandout
-	\excludecomment{matrixAnswer}
-%% Note:  This workaround will throw an error "File ended while scanning use of \next" if "\end{matrixAnswer}" does not appear on its own line with no spaces preceding it.  This is a documented issue with the \excludecomment command.
-
-\else
-	\newenvironment{matrixAnswer}
-	{
-    % First, we tell fancyvrb that we're inside a verbatim environment.
-    \VerbatimEnvironment
-    % Now we start the actual environment:
-    \begin{Verbatim}[
-        frame=lines,
-        label=Matrix Answer,
-        labelposition=topline,
-      ]%
-	}
-	{\end{Verbatim}}
-\fi
-
-
 \newboolean{given} %% required for freeResponse
 \setboolean{given}{true} %% could be replaced by a key=value pair later if needed
 

@@ -23,8 +23,10 @@
 %% src/answer.dtx  (with options: `classXimera')
 %% src/choice.dtx  (with options: `classXimera')
 %% src/feedback.dtx  (with options: `classXimera')
+%% src/freeresponse.dtx  (with options: `classXimera')
 %% src/verbatim.dtx  (with options: `classXimera')
 %% src/dialogue.dtx  (with options: `classXimera')
+%% src/freeresponse.dtx  (with options: `classXimera')
 %% src/instructornotes.dtx  (with options: `classXimera')
 %% src/xkcd.dtx  (with options: `classXimera')
 %% src/foldable.dtx  (with options: `classXimera')
@@ -816,6 +818,49 @@ Interactive
 
 \fi
 
+\newboolean{given} %% required for freeResponse
+\setboolean{given}{true} %% could be replaced by a key=value pair later if needed
+
+\ifhandout
+\newenvironment{freeResponse}[1][false]%
+{%
+\def\givenatend{\boolean{#1}}
+\ifthenelse{\boolean{#1}}
+{% Begin then result
+\begin{trivlist}
+\item
+}% End then result
+{% Begin else result
+\setbox0\vbox\bgroup
+}% End else result
+}
+{%
+\ifthenelse{\givenatend}
+{% Begin then result
+\end{trivlist}
+}% End then result
+{% Begin else result
+\egroup
+}% End else result
+}
+\else
+\newenvironment{freeResponse}[1][false]%
+{% Environment Beginning Code
+  \ifthenelse{\boolean{#1}}%% Could probably change this with just putting the (given) in the boolean?-- Jason
+   {% Begin then result
+   \begin{trivlist}
+   \item[\hskip \labelsep\bfseries Free Response (Given):\hspace{2ex}]
+   }% End then result
+{% Begin else result
+\begin{trivlist}
+\item[\hskip \labelsep\bfseries Free Response:\hspace{2ex}]
+}% End else result
+}
+{% Environment Ending Code
+\end{trivlist}
+}
+\fi
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Verbatim Environments for displaying programming code
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -843,6 +888,49 @@ Interactive
 }{%
    \end{description}%
 }
+
+%\newboolean{given} %% required for freeResponse
+%\setboolean{given}{true} %% could be replaced by a key=value pair later if needed
+
+\ifhandout
+\newenvironment{freeResponse}[1][false]%
+{%
+\def\givenatend{\boolean{#1}}
+\ifthenelse{\boolean{#1}}
+{% Begin then result
+\begin{trivlist}
+\item
+}% End then result
+{% Begin else result
+\setbox0\vbox\bgroup
+}% End else result
+}
+{%
+\ifthenelse{\givenatend}
+{% Begin then result
+\end{trivlist}
+}% End then result
+{% Begin else result
+\egroup
+}% End else result
+}
+\else
+\newenvironment{freeResponse}[1][false]%
+{% Environment Beginning Code
+  \ifthenelse{\boolean{#1}}%% Could probably change this with just putting the (given) in the boolean?-- Jason
+   {% Begin then result
+   \begin{trivlist}
+   \item[\hskip \labelsep\bfseries Free Response (Given):\hspace{2ex}]
+   }% End then result
+{% Begin else result
+\begin{trivlist}
+\item[\hskip \labelsep\bfseries Free Response:\hspace{2ex}]
+}% End else result
+}
+{% Environment Ending Code
+\end{trivlist}
+}
+\fi
 
 
 %% instructor intro/instructor notes
