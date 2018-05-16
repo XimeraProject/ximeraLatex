@@ -7,7 +7,7 @@
 |
 ------------:| ------------------------------------------------------------
  ximeraLaTeX:| LaTeX classes for simultaneously writing print and online interactive materials.
-      Author:| Bart Snapp
+      Author:| Jim Fowler and Jeramiah Hocutt and Jason Nowell and Bart Snapp
       E-mail:| bart.snapp@gmail.com
      License:| Released under the LaTeX Project Public License v1.3c or later
          See:| http://www.latex-project.org/lppl.txt
@@ -30,7 +30,7 @@ Some text about the class: probably the same as the abstract.
 \preamble
 ------------:| ------------------------------------------------------------
  ximeraLaTeX:| LaTeX classes for simultaneously writing print and online interactive materials.
-      Author:| Bart Snapp
+      Author:| Jim Fowler and Jeramiah Hocutt and Jason Nowell and Bart Snapp
       E-mail:| bart.snapp@gmail.com
      License:| Released under the LaTeX Project Public License v1.3c or later
          See:| http://www.latex-project.org/lppl.txt
@@ -65,6 +65,9 @@ Running "make install" installs the files in the local TeX tree.
 \generate{
   \file{ximera.cls}{\from{ximeraLaTeX.dtx}{classXimera}}
   \file{xourse.cls}{\from{ximeraLaTeX.dtx}{classXourse}}
+  \file{ximera.cfg}{\from{ximeraLaTeX.dtx}{cfgXimera}}
+  \file{ximera.4ht}{\from{ximeraLaTeX.dtx}{htXimera}}
+  \file{xourse.4ht}{\from{ximeraLaTeX.dtx}{htXourse}}
 }
 %</install>
 %<install>\endbatchfile

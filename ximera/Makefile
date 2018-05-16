@@ -15,7 +15,7 @@ $(NAME).pdf: $(NAME).dtx
 clean:
 	rm -f $(NAME).{aux,fls,glo,gls,hd,idx,ilg,ind,ins,log,out}
 distclean: clean
-	rm -f ximeraLaTeX.pdf ximera.cls README xourse.cls
+	rm -f ximeraLaTeX.pdf ximera.cls README xourse.cls ximera.cfg ximera.4ht xourse.4ht
 inst: all
 	mkdir -p $(UTREE)/{tex,source,doc}/latex/$(NAME)
 	cp $(NAME).dtx $(UTREE)/source/latex/$(NAME)
