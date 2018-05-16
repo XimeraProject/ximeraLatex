@@ -22,6 +22,7 @@
 %% src/interactives.dtx  (with options: `classXimera')
 %% src/answer.dtx  (with options: `classXimera')
 %% src/choice.dtx  (with options: `classXimera')
+%% src/solution.dtx  (with options: `classXimera')
 %% src/feedback.dtx  (with options: `classXimera')
 %% src/freeresponse.dtx  (with options: `classXimera')
 %% src/verbatim.dtx  (with options: `classXimera')
@@ -33,14 +34,15 @@
 %% src/jax.dtx  (with options: `classXimera')
 %% ------------:| ------------------------------------------------------------
 %%  ximeraLaTeX:| LaTeX classes for simultaneously writing print and online interactive materials.
-%%       Author:| Jim Fowler and Jeramiah Hocutt and Jason Nowell and Bart Snapp
+%%       Author:| Jim Fowler and Jeramiah Hocutt and Oscar Levin and Jason Nowell and Hans Parshall
+%% and Bart Snapp
 %%       E-mail:| bart.snapp@gmail.com
 %%      License:| Released under the LaTeX Project Public License v1.3c or later
 %%          See:| http://www.latex-project.org/lppl.txt
 %% 
 \NeedsTeXFormat{LaTeX2e}[1999/12/01]
 \ProvidesClass{ximera}
- [2017/10/17 v1.00
+ [2018/10/17 v1.00
  A LaTeX class for simultaneously writing print and online interactive materials.]
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -772,6 +774,28 @@ Interactive
 %% boolean, and execute \makemultiplechoice at the \end of the
 %% problem.  We should also make a command called "\showchoices" that
 %% will show choices in the handout.
+%% instructorNotes environment
+\ifhandout % what follows is handout behavior
+\newenvironment{solution}%
+       {%
+ \begin{trivlist}
+ \item[\hskip \labelsep\bfseries Solution:\hspace{2ex}]
+       }
+       % %% line at the bottom}
+       {
+\end{trivlist}
+ \par\addvspace{.5ex}\nobreak\noindent\hung
+       }
+       \else
+       \newenvironment{solution}%
+      {%
+        \setbox0\vbox\bgroup
+      }
+      {%
+  \egroup
+}
+                \fi
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%% Validator
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -1061,7 +1085,7 @@ Interactive
 
 \fi
 %% 
-%% Copyright (C) 2017 by Bart Snapp <bart.snapp@gmail.com> and Jim Fowler <kisonecat@gmail.com>
+%% Copyright (C) 2018 by Bart Snapp <bart.snapp@gmail.com> and Jim Fowler <kisonecat@gmail.com>
 %% 
 %% This work may be distributed and/or modified under the
 %% conditions of the LaTeX Project Public License (LPPL), either
