@@ -1,33 +1,6 @@
 
 
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% tikzexport will generate SVGs and PNGs for tikzpictures
-%
-% This option is automatically chosen when compiling inside the Ximera sandbox
-%
-
-
-\oddsidemargin 62pt %% so we don't get weird margins in 2-sided mode
-\evensidemargin 62pt %% so we don't get weird margins in 2-sided mode
-\textwidth 345pt %% so we don't get weird margins in 2-sided mode
-\headheight 14pt %% so we don't get weird margins in 2-sided mode
-
-
-
-\makeatletter
-% Don't use hyperref when using Tex4ht
-\ifdefined\HCode
-\RequirePackage{hyperref}
-%\newcommand{\href}[1]{}
-\else
-\RequirePackage[pdfpagelabels,colorlinks=true,allcolors=blue!30!black]{hyperref}
-\pdfstringdefDisableCommands{\def\hskip{}}%% quiets warning
-\fi
-% We put hyperref after all other packages becuase that is better.
-
-% the article document class is made to have lines of text that are
-% not too long. 
 
 % http://tex.stackexchange.com/questions/71172/why-are-default-latex-margins-so-big
 
@@ -74,63 +47,6 @@
 \def\endsuppress{\par\endgroup}
 
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%  	Make Counter Command  		%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-%Improved version of \newcounter to check for existance before creating a counter to minimize conflicts with packages.
-%
-% Added by Jason Nowell
-
-\newcommand{\Make@Counter}[1]{
-	\@ifundefined{c@#1}	% Check to see if counter exists
-		{									%If not, create it and set it to 0.
-		\newcounter{#1}
-		\setcounter{#1}{0}
-		}
-		{									%If so, reset to 0.
-		\setcounter{#1}{0}
-		}
-}
-
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%						Tikz Fix.
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-% Currently Tikz doesn't compile natively into the website because of how the xake bake compilation works.
-% ::IMPORTANT NOTE FOR TIKZ::
-% In order to make Tikz work, you need to get the tool "mutool" on the machine that is performing xake bake.
-
-
-\ifdefined\HCode
-  \tikzexporttrue
-\fi
-
-\iftikzexport
-  \usetikzlibrary{external}
-
-  \ifdefined\HCode
-    % in htlatex, just include the svg files
-    \def\pgfsys@imagesuffixlist{.svg}
-    
-    \tikzexternalize[prefix=./,mode=graphics if exists]
-  \else
-    % in pdflatex, actually generate the svg files
-    \tikzset{
-      /tikz/external/system call={
-        pdflatex \tikzexternalcheckshellescape -halt-on-error -interaction=batchmode -jobname "\image" "\\PassOptionsToClass{tikzexport}{ximera}\texsource";
-        mutool draw -o \image.svg \image.pdf ;
-        mutool draw -r 150 -c rgbalpha -o \image.png \image.pdf ;
-      }
-    }
-    \tikzexternalize[optimize=false,prefix=./]
-  \fi
-
-  \fi
-
-% Load sagetex if it exists
-\IfFileExists{sagetex.sty}{\RequirePackage{sagetex}}{}
 
 
 % ---------------------------------------------------------------------
@@ -143,102 +59,17 @@
 \newcommand{\acknowledgement}{\excludecomment}
 \renewcommand{\tag}{\excludecomment}
              
-% ---------------------------------------------------------------------
-% ---------------------------------------------------------------------
-% Print Formatting
-% ---------------------------------------------------------------------
-% ---------------------------------------------------------------------
-
-\setlength{\parindent}{0pt}
-\setlength{\parskip}{5pt}
-
-
-\let\title\relax
-\newcommand{\title}[1][]{{\protected@xdef\@pretitle{#1}}\protected@xdef\@title}
-
-
-\title{}
-
-
-\let\abstract\relax
-\let\endabstract\relax
-\NewEnviron{abstract}{\protected@xdef\theabstract{\BODY}}% Use of environ package, may want to find a better way.
-
-
-\newcounter{titlenumber}
-\renewcommand{\thetitlenumber}{\arabic{titlenumber}}
-%\renewcommand{\thesection}{\arabic{titlenumber}} %% Makes section numbers work
-\setcounter{titlenumber}{0}
 
 
 
-\newpagestyle{main}{
-\sethead[\textsl{\ifnumbers\thetitlenumber\quad\fi\@title}][][] % even
-{}{}{\textsl{\ifnumbers\thetitlenumber\quad\fi\@title}} % odd
-\setfoot[\thepage][][] % even
-{}{}{\thepage} % odd
-}
-\pagestyle{main}
-
-
-% Redefine maketitle and put them in a table of contents.  The \phantomsection is to fix the hrefs.
-
-\let\@emptyauthor\@author
-\def\author#1{\gdef\@author{#1}}
-\def\@author{\@latex@warning@no@line{No \noexpand\author given}}
-\def\and{ and } 
-
-\renewcommand\maketitle{%
-  \addtocounter{titlenumber}{1}\phantomsection \ifnumbers\addcontentsline{toc}{section}{\thetitlenumber~\@title}\else\addcontentsline{toc}{section}{\@title}\fi %% puts titles in the toc, with or without numbers.
-  {\flushleft\large\bfseries \@pretitle\par\vspace{-1em}}
-  {\flushleft\LARGE\bfseries {\ifnumbers\thetitlenumber\fi}{\ifnumbers\hspace{1em}\else\hspace{0em}\fi}\@title \par }
-  \vskip .6em\noindent\textit\theabstract\setcounter{problem}{0}\setcounter{section}{0}\setcounter{subsection}{0}\par\vspace{2em}
-  \ifnooutcomes\else\let\thefootnote\relax\footnote{Learning outcomes: \theoutcomes}\fi
-  \ifnoauthor\else\let\thefootnote\relax\footnote{Author(s):~\@author}\fi
-  \aftergroup\@afterindentfalse
-  \aftergroup\@afterheading}
 
 \relax
 
-\ifnumbers
-\setcounter{secnumdepth}{2}
-\renewcommand{\thesection}{\arabic{titlenumber}.\arabic{section}~} 
-\else
-\setcounter{secnumdepth}{-2}
 
-\fi
 \relax
 
 
-\def\activitystyle{}
-\newcounter{sectiontitlenumber}
-\setcounter{secnumdepth}{0}
-\newcommand\chapterstyle{%
-  \def\activitystyle{activity-chapter}
-  \def\maketitle{%
-    \addtocounter{titlenumber}{1}%
-    \addcontentsline{toc}{section}{\textbf{\thetitlenumber\quad\@title}}%
-                    {\flushleft\small\sffamily\bfseries\@pretitle\par\vspace{-1.5em}}%
-                    {\flushleft\LARGE\sffamily\bfseries\thetitlenumber\quad\@title \par }%
-                    {\vskip .6em\noindent\textit\theabstract\setcounter{problem}{0}\setcounter{sectiontitlenumber}{0}}%
-                    \par\vspace{2em}}}
 
-\newcommand\sectionstyle{%
-  \def\activitystyle{activity-section}
-  \def\maketitle{%
-    \addtocounter{sectiontitlenumber}{1}
-    \addcontentsline{toc}{subsection}{\thetitlenumber.\thesectiontitlenumber\quad\@title}%
-    {\flushleft\small\sffamily\bfseries\@pretitle\par\vspace{-1.5em}}%
-    {\flushleft\Large\sffamily\bfseries\thetitlenumber.\thesectiontitlenumber\quad\@title \par}%
-    {\vskip .6em\noindent\textit\theabstract}%
-    \par\vspace{2em}}}
-
-
-\iftikzexport%% allows xake to handle \chapterstyle and \sectionstye
-\renewcommand\chapterstyle{\def\activitystyle{chapter}}
-\renewcommand\sectionstyle{\def\activitystyle{section}}
-\else
-\fi
 
 
 %% makes everymath display style even when inline, could be optional

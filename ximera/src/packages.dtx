@@ -1,16 +1,12 @@
 %    \begin{macrocode}
 %<*classXimera>
-\DeclareOption*{\PassOptionsToClass{\CurrentOption}{article}}
-\ProcessOptions\relax
-\LoadClass{article}
 %    \end{macrocode}
 % \subsection{Loading packages}
 %    Quite a few packages are required by the document class. 
-%    \begin{macrocode}
 % This is a list of required packages. As packages are added to this list, we should include a comment
 % as to where they are being utilized. This will help keep this list from being redundant and/or
 % outdated. -- Jason Nowell
-
+%    \begin{macrocode}
 \RequirePackage[makeroom]{cancel} % for \cancel; loaded here to avoid polluting the .jax output
 \RequirePackage[inline]{enumitem}
 \RequirePackage[pagestyles]{titlesec} 
