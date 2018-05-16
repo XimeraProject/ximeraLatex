@@ -1,164 +1,12 @@
-% A LaTeX2e document class for preparing handouts and online material
-% via Ximera.
-
-%% ximera.cls
-%% Copyright (c) 2013 Bart Snapp, Jim Fowler, and Jason Nowell
-%
-% This work may be distributed and/or modified under the
-% conditions of the LaTeX Project Public License, either version 1.3c
-% of this license or (at your option) any later version.
-% The latest version of this license is in
-%   http://www.latex-project.org/lppl.txt
-% and version 1.3c or later is part of all distributions of LaTeX
-% version 2013/12/01 or later.
-%
-% This work has the LPPL maintenance status "author-maintained".
-% 
-% This work consists of the files ximera.cls
-
-%%% Bart Snapp
-%%% Department of Mathematics
-%%% The Ohio State University
-
-%%% Jason Nowell
-%%% Department of Mathematics
-%%% University of Florida
-
-\def\fileversion{1.4}
-\def\filedate{2018/03/01}
-
-% ---------------------------------------------------------------------
-% ---------------------------------------------------------------------
-% If there's some feature that you'd like that this file doesn't
-% provide, tell Bart Snapp, Jim Fowler or Jason Nowell about it.  
-%
-% Thanks to: 
-%
-% Philip Hirschhorn as this document class is based on his
-% ``exam.cls.'' The original work can be found at:
-% http://www-math.mit.edu/~psh/
-% --------------------------------------------------------------------
-% --------------------------------------------------------------------
 
 
-% --------------------------------------------------------------------
-% --------------------------------------------------------------------
-% Class Options
-% --------------------------------------------------------------------
-% --------------------------------------------------------------------
-
-\NeedsTeXFormat{LaTeX2e}
-
-\ProvidesClass{ximera}[\filedate\space Version \fileversion\space by
-  Bart Snapp]
-
-\newif\ifhandout
-\handoutfalse
-\DeclareOption{handout}{\handouttrue}
-
-\newif\ifinstructornotes
-\instructornotesfalse
-\DeclareOption{instructornotes}{\instructornotestrue}   %% Yes. 
-\DeclareOption{noinstructornotes}{\instructornotestrue} %% This is hilarious.
-
-\newif\ifnooutcomes
-\nooutcomesfalse
-\DeclareOption{nooutcomes}{\nooutcomestrue}
-
-\newif\ifnoauthor
-\noauthorfalse
-\DeclareOption{noauthor}{\noauthortrue}
-
-\newif\ifhints
-\hintsfalse
-\DeclareOption{hints}{\hintstrue}
-
-
-\newif\ifnewpage
-\newpagefalse
-\DeclareOption{newpage}{\newpagetrue}
-
-\newif\ifnumbers
-\numbersfalse
-\DeclareOption{numbers}{\numberstrue}
-
-\newif\ifwordchoicegiven%% suppresses choices in handout mode
-\wordchoicegivenfalse
-\DeclareOption{wordchoicegiven}{\wordchoicegiventrue}
-
-% "space" option depreciated. Keeping code in, in case of conflicts. Should remove this code if no conflicts are detected/reported by 6/28/2018 -- Jason Nowell
-%\newif\ifspace 
-%\spacefalse
-%\DeclareOption{space}{\spacetrue}
-
-%% This basically works for exercises, though page breaks are weird. 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % tikzexport will generate SVGs and PNGs for tikzpictures
 %
 % This option is automatically chosen when compiling inside the Ximera sandbox
 %
-\newif\iftikzexport
-\tikzexportfalse
-\DeclareOption{tikzexport}{%
-  \tikzexporttrue%
-  \handoutfalse%
-  \numbersfalse%
-  \newpagefalse%
-  \hintsfalse%
-  \nooutcomesfalse%
-}
 
-\newif\ifxake
-\xakefalse
-\DeclareOption{xake}{\xaketrue}
-
-\DeclareOption*{%
-  \PassOptionsToClass{\CurrentOption}{article}%
-}
-\ProcessOptions\relax
-\LoadClass{article}
-
-
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%						Required Packages
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-% This is a list of required packages. As packages are added to this list, we should include a comment
-% as to where they are being utilized. This will help keep this list from being redundant and/or
-% outdated. -- Jason Nowell
-
-
-\RequirePackage[makeroom]{cancel} % for \cancel; loaded here to avoid polluting the .jax output
-\RequirePackage[inline]{enumitem}
-\RequirePackage[pagestyles]{titlesec} 
-\RequirePackage{titletoc} 
-\RequirePackage{titling}  
-\RequirePackage{url}
-\RequirePackage{xcolor}
-\RequirePackage{pgfplots}
-\usepgfplotslibrary{groupplots}
-\usetikzlibrary{calc}
-\RequirePackage{fancyvrb}
-\RequirePackage{forloop}% Used for (at least) the problem environment dynamic naming and building.
-
-%% mdframed is used to make pretty foldable, but the amsthm/mdframed
-%% conflict also messes up the .jax file so don't load mdframed when
-%% performing the xake step
-\iftikzexport\else\RequirePackage[framemethod=TikZ]{mdframed}\fi
-
-\RequirePackage{environ}% Included to allow saving of environment contents. This does *not* play well with various verbatem environments however and would be great to find a way around utilizing this package. One option is the "Suppress" command included below.
-\RequirePackage{amssymb}% Included to have access to math typeset.
-\RequirePackage{amsmath}% Included to have access to math typeset.
-\RequirePackage{amsthm}%  Included to have access to math typeset.
-\RequirePackage{xifthen}% http://ctan.org/pkg/xifthen
-\RequirePackage{multido}% http://ctan.org/pkg/multido
-\RequirePackage{listings} %% is this required???
-
-\RequirePackage{xkeyval}
-
-\RequirePackage{comment}
 
 \oddsidemargin 62pt %% so we don't get weird margins in 2-sided mode
 \evensidemargin 62pt %% so we don't get weird margins in 2-sided mode
@@ -254,8 +102,6 @@
 % ::IMPORTANT NOTE FOR TIKZ::
 % In order to make Tikz work, you need to get the tool "mutool" on the machine that is performing xake bake.
 
-\PassOptionsToPackage{table}{xcolor}
-\RequirePackage{tikz}
 
 \ifdefined\HCode
   \tikzexporttrue
