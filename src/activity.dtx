@@ -1,54 +1,5 @@
-% A LaTeX2e document class for preparing handouts and online material
-% via Ximera.
-
-%% xourse.cls Copyright (c) 2015 Bart Snapp and Jim Fowler
-
-% This work may be distributed and/or modified under the conditions of
-% the LaTeX Project Public License, either version 1.3c of this
-% license or (at your option) any later version.  The latest version
-% of this license is in http://www.latex-project.org/lppl.txt and
-% version 1.3c or later is part of all distributions of LaTeX version
-% 2013/12/01 or later.  It is based on the subfiles class and package
-% LaTeX Copyright 2002, 2012 Federico Garcia (feg8@pitt.edu,
-% fedegarcia@hotmail.com) This work has the LPPL maintenance status
-% "author-maintained".  
-
-%%% Bart Snapp
-%%% Department of Mathematics
-%%% The Ohio State University
-
-%%% Oscar Levin
-%%% School of Mathematical Sciences
-%%% University of Northern Colorado
-
-%%% Hans Parshall
-%%% Department of Mathematics
-%%% University of Georgia
-
-\def\fileversion{1.26}
-\def\filedate{2015/07/15}
-
-\NeedsTeXFormat{LaTeX2e}
-
-\ProvidesClass{xourse}[\filedate\space Version \fileversion\space by
-  Bart Snapp, Oscar Levin, Hans Parshall]
-
-\newif\ifnotoc
-\notocfalse
-\DeclareOption{notoc}{\notoctrue}
-
-\newif\ifnonewpage
-\nonewpagefalse
-\DeclareOption{nonewpage}{\nonewpagetrue}
-
-
-% Passes xourse class options to the underlying ximera class
-\DeclareOption*{\PassOptionsToClass{\CurrentOption}{ximera}}
-\ProcessOptions
-
-\LoadClass{ximera} 
-
-
+%    \begin{macrocode}
+%<*classXourse>
 %%%%% ximera documents included with \activity{} will be included in the body of the xourse document
 %%%%% \input commands within included ximera documents will be ignored
 %%%%% \usepackage commands within included ximera documents will cause an error
@@ -138,29 +89,6 @@
 \renewcommand\practice[2][]{}
 \fi
 
-% the "graded" environment does nothing in latex, but in html, it
-% wraps the activities in a div in order to assign some weight to
-% them for grading.
-\newenvironment{graded}[1]{}{}
-
-% makes the toc look a bit better... can be redefined in the preamble.
-\makeatletter
-\renewcommand*\l@section{\@dottedtocline{1}{1.5em}{4.2em}}
-\renewcommand*\l@subsection{\@dottedtocline{2}{3.8em}{4.2em}}
-\makeatother
-\relax
-
-\makeatletter
-\newcommand*{\logo}[1]{%
-  \ifx\@onlypreamble\@notprerr \ClassError{xourse}{logo can only be used in the preamble}{Move your logo command to the preamble}\else %
-  \IfFileExists{#1}%
-    {\gdef\xourse@logo{#1}}%
-    {\ClassError{xourse}{logo file does not exist}{To use logo, make sure that the referenced image file exists}}%
-  \fi%
-}
-\makeatother
-
-%</package>
-
-
+%</classXourse>
+%    \end{macrocode}
 

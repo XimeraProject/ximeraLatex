@@ -82,6 +82,11 @@
 %    \end{macrocode}
 % \end{macro}
 %    \begin{macrocode}
+
+\newif\ifxake
+\xakefalse
+\DeclareOption{xake}{\xaketrue}
+
 \DeclareOption*{%
   \PassOptionsToClass{\CurrentOption}{article}%
 }
