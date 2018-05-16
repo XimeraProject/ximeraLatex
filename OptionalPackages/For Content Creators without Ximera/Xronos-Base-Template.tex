@@ -1,0 +1,156 @@
+\documentclass{article}
+
+%%%%%%%%%%%%%%%%%%%%%
+% Required Packages %
+%%%%%%%%%%%%%%%%%%%%%
+
+    \usepackage{amsmath}
+    \usepackage{forloop}
+
+%%%%%%%%%%%%%%%%%%%%
+% New Environments %
+%%%%%%%%%%%%%%%%%%%%
+
+    \newenvironment{problem}{
+        \textbf{\ifFirstStep Problem \else Step \arabic{ProbNum}\fi }
+        \stepcounter{ProbNum}
+        }
+        {
+        }
+    \newenvironment{multipleChoice}{\textbf{Multiple Choice:} \\ \begin{enumerate}}{\end{enumerate}}
+
+%%%%%%%%%%%%%%%%%%%%
+% New Conditionals %
+%%%%%%%%%%%%%%%%%%%%
+
+    \newif\ifFirstStep
+    \FirstSteptrue
+    \newif\ifHW
+    \HWtrue
+
+%%%%%%%%%%%%%%%%
+% New Counters %
+%%%%%%%%%%%%%%%%
+
+    \newcounter{QNumb}
+    \setcounter{QNumb}{0}
+    \newcounter{trackAns}
+    \setcounter{trackAns}{0}
+    \newcounter{IterationPH}
+    \newcounter{ProbNum}
+
+%%%%%%%%%%%%%%%%
+% New Commands %
+%%%%%%%%%%%%%%%%
+    \newcommand{\answer}[1]{
+        \overline{\underline{\left\vert \text{ \textbf{Answer:} }#1 \text{ }\right\vert}}
+        }
+    \newcommand{\choice}[2][incorrect]{\item #2 (You have marked this as #1}
+
+    \newcommand{\newstep}[2]{% This identifies a new "step" in the assessment/build process.
+% Syntax / Usage:
+% \newstep{ Question Code }{ Answer Code }
+
+\ifFirstStep
+\else
+    \begin{problem}% Begin a new "problem", unless it's the first step.
+    %This is really just a step in the real problem, but code is quirky currently so it has to be listed as a "problem" for now.
+\fi
+
+#1% Display question code as you go.
+
+#2% Followup with the answer code; so that it stays above, and not below, followup questions.
+
+\stepcounter{trackAns}% keep track of which answer this is.
+
+\FirstStepfalse
+}
+%%%
+
+    \newcommand{\assessmentEnd}{%
+\forloop{IterationPH}
+	{0}%
+	{\value{IterationPH} < \arabic{trackAns}}% iterate through the assessment depth one step at a time.
+	{
+	\end{problem}
+	}
+}
+%%%
+
+    \newcommand{\buildAssess}[3]{%
+% Context / template
+%\buildAssess{
+%        Master Question/Problem Code
+%    }{
+%        Steps to build to the answer
+%    }{
+%        Master Problem Answer
+%    }
+\FirstSteptrue
+\stepcounter{QNumb}
+\begin{problem}
+#1
+\ifHW
+#2
+\begin{problem}
+#3
+\end{problem}
+\assessmentEnd
+\else% If we are making an assessment, then don't display anything but the original question.
+\vfill
+\fi
+}
+%%%
+
+\begin{document}
+
+\buildAssess{% First Entry is the question
+    Calculate the following improper integral:
+    \[
+    \int -12xe^{3x} dx. 
+    \]
+}% End of \buildassess first argument
+{% Second Argument are the steps. Each step should be entered using \newstep{ Question Code }{ Answer Code }
+    \newstep{
+        First, need to determine which integration technique would be appropriate here. 
+    }
+    {
+        \begin{multipleChoice}
+        \choice{We should just integrate directly, integrating the monomial term $x$ and the exponentional term $-12e^{3x}$ separately to get our integral.}
+        \choice{We should integrate using (only) a $u$-substitution on the power of the exponent: $u = 3x$, and rewriting the $-12e^{3x}$ in terms of $u$ }
+        \choice{We should integrate using (only) a $u$-substitution of: $u = x$, and rewriting the exponent of $-12e^{3x}$ in terms of $u$}
+        \choice[correct]{We should use Integration by parts, using $u = x$ and $dv = -12e^{3x}$}
+        \choice{We will should Integration by parts, using $u = -12e^{3x}$ and $dv = x$}
+        \end{multipleChoice}
+    }
+
+    \newstep{
+        Now that we have determined we need to use integration by parts (and chosen $u$ and $dv$), we need to compute $du$ and $v$;
+    }
+    {
+        \[
+        \begin{array}{lr}
+        u = x & dv = -12e^{3x} \\
+        du = \answer{1} & v = \answer{-4e^{3x}} 
+        \end{array}
+        \]
+    }
+
+    \newstep{
+        Next we can determine the result of the integration by parts step.
+    }
+    {
+        \[
+        \int -12xe^{3x} = \answer{-4xe^{3x}} - \int \answer{-4e^{3x}}dx
+        \]
+    }
+}% End of \buildassess second argument
+{% Start of \buildassess Third Argument; the End result Question/Answer Code
+    Now, using the previous steps, we can calculate our answer!
+        \[
+        \int -12xe^{3x} dx = \answer{-\dfrac{4}{3}(3x-1)e^{3x} + C}
+        \]
+}% End of \buildassess third argument
+
+
+\end{document}
