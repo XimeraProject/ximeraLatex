@@ -1,0 +1,29 @@
+\begin{javascript}
+  function isPositive(number) {
+    return number > 0;
+  };
+
+  function sameParity(a,b) {
+    return (a-b)%2 == 0;
+  };
+
+  caseInsensitive = function(a,b) {
+    return a.toLowerCase() == b.toLowerCase();
+  };
+  
+// sameDerivative checks to see if the derivative with respect to x and c are equal.
+  sameDerivative = function(a,b) {
+    return (a.derivative('x').equals( b.derivative('x') ) && a.derivative('C').equals( b.derivative('C') )) ;
+  };
+
+  slowOdd = function(a) {
+    return new Promise( function(resolve, reject) {
+      if (a == 0)
+        reject('I do not like zero.');
+      else
+        setTimeout(function(){
+          resolve(a % 2 == 1);
+        }, 1000);      
+    });
+  };  
+\end{javascript}
