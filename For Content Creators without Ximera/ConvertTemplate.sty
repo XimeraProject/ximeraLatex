@@ -30,7 +30,8 @@
 %%%%%%%%%%%%%%%%
 
 
-\newcommand{\newstep}[3][problem]{%
+\providecommand{\newstep}{}
+\renewcommand{\newstep}[3][problem]{%
     % This identifies a new "step" in the assessment/build process:
     %%%
     %%%     HOW TO USE THIS COMMAND::
@@ -83,8 +84,8 @@
 %\FirstStepfalse
 %}
 %%%%
-
-\newcommand\assessmentEnd{%
+\providecommand{\assessmentEnd}{}
+\renewcommand\assessmentEnd{%
   %
   % We need to start at the last depth level and iterate backwards:
   %
@@ -108,8 +109,8 @@
 %	}
 %}
 %%%%
-
-\newcommand{\buildAssess}[3]{%
+\providecommand{buildAssess}{}
+\renewcommand{\buildAssess}[3]{%
     % Context / template
     %\buildAssess{
     %        Master Question/Problem Code
