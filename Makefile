@@ -4,7 +4,7 @@ PWD     = $(shell pwd)
 VERS    = $(shell ltxfileinfo -v $(NAME).dtx|sed -e 's/^v//')
 LOCAL   = $(shell kpsewhich --var-value TEXMFLOCAL)
 UTREE   = $(shell kpsewhich --var-value TEXMFHOME)
-INPUTS  = $(wildcard src/*.dtx) $(NAME).dtx
+INPUTS  = $(wildcard src/*.dtx) $(wildcard src/interactives/*.dtx) $(NAME).dtx
 OUTPUTS = ximera.cls xourse.cls ximera.4ht xourse.4ht ximera.cfg
 
 # based on
