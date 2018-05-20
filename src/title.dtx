@@ -1,7 +1,7 @@
 % \subsection{Titles and authors}
 %
 % \subsubsection{Authors}
-% Activities have authors.  Warn the user if no author is provided.
+% \DescribeMacro{\author}{Activities have authors.  Warn the user if no author is provided.}
 %    \begin{macrocode}
 %<*classXimera>
 \let\@emptyauthor\@author
@@ -20,6 +20,8 @@
 %    \end{macrocode}
 
 % \subsubsection{Title}
+% \DescribeMacro{\title}{Activities have titles.}
+%    \begin{macrocode}
 %    \begin{macrocode}
 %<*classXimera>
 \let\title\relax
@@ -40,8 +42,9 @@
 }
 \pagestyle{main}
 %    \end{macrocode}
-% Redefine |\maketitle| and put them in a table of contents.  The
-% |\phantomsection| is to fix the hrefs.
+% \DescribeMacro{\maketitle}{In a \textsf{ximera} document, redefine
+% |\maketitle| and put them in a table of contents.  The
+% |\phantomsection| is to fix the hrefs.}
 %    \begin{macrocode}
 \renewcommand\maketitle{%
   \addtocounter{titlenumber}{1}\phantomsection \ifnumbers\addcontentsline{toc}{section}{\thetitlenumber~\@title}\else\addcontentsline{toc}{section}{\@title}\fi %% puts titles in the toc, with or without numbers.
