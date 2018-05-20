@@ -1,0 +1,94 @@
+% \subsubsection{Theorem and theorem-like environments}
+% On the web, a theorem is emitted as a special |<div>|.
+%    \begin{macrocode}
+%<*htXimera>
+\newcommand{\ConfigureTheoremEnv}[1]{%
+\renewenvironment{#1}[1][]{\refstepcounter{problem}%
+\ifthenelse{\equal{##1}{}}{}{%
+  \HCode{<span class="theorem-like-title">}##1\HCode{</span>}%
+}}{}
+\ConfigureEnv{#1}{\stepcounter{identification}\ifvmode \IgnorePar\fi \EndP\HCode{<div class="theorem-like problem-environment #1" id="problem\arabic{identification}">}}{\HCode{</div>}\IgnoreIndent}{}{}%
+}
+%</htXimera>
+%    \end{macrocode}
+% The key is to make sure that the theorem environments are defined in
+% a corresponding fashion on the web and on paper.
+%    \begin{macrocode}
+%<classXimera>      \newtheorem{theorem}{Theorem}
+%<htXimera>      \ConfigureTheoremEnv{theorem}
+
+%<classXimera>      \newtheorem{algorithm}{Algorithm}
+%<htXimera>      \ConfigureTheoremEnv{algorithm}
+
+%<classXimera>      \newtheorem{axiom}{Axiom}
+%<htXimera>      \ConfigureTheoremEnv{axiom}
+
+%<classXimera>      \newtheorem{claim}{Claim}
+%<htXimera>      \ConfigureTheoremEnv{claim}
+
+%<classXimera>      \newtheorem{conclusion}{Conclusion}
+%<htXimera>      \ConfigureTheoremEnv{conclusion}
+
+%<classXimera>      \newtheorem{condition}{Condition}
+%<htXimera>      \ConfigureTheoremEnv{condition}
+
+%<classXimera>      \newtheorem{conjecture}{Conjecture}
+%<htXimera>      \ConfigureTheoremEnv{conjecture}
+
+%<classXimera>      \newtheorem{corollary}{Corollary}
+%<htXimera>      \ConfigureTheoremEnv{corollary}
+
+%<classXimera>      \newtheorem{criterion}{Criterion}
+%<htXimera>      \ConfigureTheoremEnv{criterion}
+
+%<classXimera>      \newtheorem{definition}{Definition}
+%<htXimera>      \ConfigureTheoremEnv{definition}
+
+%<classXimera>      \newtheorem{example}{Example}
+%<htXimera>      \ConfigureTheoremEnv{example}
+
+%<classXimera>      \newtheorem*{explanation}{Explanation}
+%<htXimera>      \ConfigureTheoremEnv{explanation}
+
+%<classXimera>      \newtheorem{fact}{Fact}
+%<htXimera>      \ConfigureTheoremEnv{fact}
+
+%<classXimera>      \newtheorem{lemma}{Lemma}
+%<htXimera>      \ConfigureTheoremEnv{lemma}
+
+%<classXimera>      \newtheorem{formula}{Formula}
+
+%<classXimera>      \newtheorem{idea}{Idea}
+%<htXimera>      \ConfigureTheoremEnv{idea}
+
+%<classXimera>      \newtheorem{notation}{Notation}
+%<htXimera>      \ConfigureTheoremEnv{notation}
+
+%<classXimera>      \newtheorem{model}{Model}
+
+%<classXimera>      \newtheorem{observation}{Observation}
+%<htXimera>      \ConfigureTheoremEnv{observation}
+
+%<classXimera>      \newtheorem{proposition}{Proposition}
+%<htXimera>      \ConfigureTheoremEnv{proposition}
+
+%<classXimera>      \newtheorem{paradox}{Paradox}
+%<htXimera>      \ConfigureTheoremEnv{paradox}
+
+%<classXimera>      \newtheorem{procedure}{Procedure}
+
+%<classXimera>      \newtheorem{remark}{Remark}
+%<htXimera>      \ConfigureTheoremEnv{remark}
+
+%<classXimera>      \newtheorem{summary}{Summary}
+%<htXimera>      \ConfigureTheoremEnv{summary}
+
+%<classXimera>      \newtheorem{template}{Template}
+%<htXimera>      \ConfigureTheoremEnv{template}
+
+%<classXimera>      \newtheorem{warning}{Warning}
+%<htXimera>      \ConfigureTheoremEnv{warning}
+
+%<htXimera>      \ConfigureTheoremEnv{acknowledgement}
+
+%    \end{macrocode}

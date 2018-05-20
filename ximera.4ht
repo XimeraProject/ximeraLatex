@@ -9,6 +9,7 @@
 %% src/title.dtx  (with options: `htXimera')
 %% src/problem.dtx  (with options: `htXimera')
 %% src/macros.dtx  (with options: `htXimera')
+%% src/theorems.dtx  (with options: `htXimera')
 %% src/image.dtx  (with options: `htXimera')
 %% src/dialogue.dtx  (with options: `htXimera')
 %% src/foldable.dtx  (with options: `htXimera')
@@ -69,7 +70,6 @@
 \ConfigureQuestionEnv{hint}{hint}
 \ConfigureQuestionEnv{shuffle}{shuffle}
 
-
 \newcommand{\ConfigureTheoremEnv}[1]{%
 \renewenvironment{#1}[1][]{\refstepcounter{problem}%
 \ifthenelse{\equal{##1}{}}{}{%
@@ -77,31 +77,57 @@
 }}{}
 \ConfigureEnv{#1}{\stepcounter{identification}\ifvmode \IgnorePar\fi \EndP\HCode{<div class="theorem-like problem-environment #1" id="problem\arabic{identification}">}}{\HCode{</div>}\IgnoreIndent}{}{}%
 }
+      \ConfigureTheoremEnv{theorem}
 
-\ConfigureTheoremEnv{theorem}
-\ConfigureTheoremEnv{acknowledgement}
-\ConfigureTheoremEnv{algorithm}
-\ConfigureTheoremEnv{axiom}
-\ConfigureTheoremEnv{claim}
-\ConfigureTheoremEnv{conclusion}
-\ConfigureTheoremEnv{condition}
-\ConfigureTheoremEnv{conjecture}
-\ConfigureTheoremEnv{corollary}
-\ConfigureTheoremEnv{criterion}
-\ConfigureTheoremEnv{definition}
-\ConfigureTheoremEnv{example}
-\ConfigureTheoremEnv{explanation}
-\ConfigureTheoremEnv{lemma}
-\ConfigureTheoremEnv{notation}
-\ConfigureTheoremEnv{proposition}
-\ConfigureTheoremEnv{remark}
-\ConfigureTheoremEnv{summary}
-\ConfigureTheoremEnv{paradox}
-\ConfigureTheoremEnv{warning}
-\ConfigureTheoremEnv{observation}
-\ConfigureTheoremEnv{template}
-\ConfigureTheoremEnv{idea}
-\ConfigureTheoremEnv{fact}
+      \ConfigureTheoremEnv{algorithm}
+
+      \ConfigureTheoremEnv{axiom}
+
+      \ConfigureTheoremEnv{claim}
+
+      \ConfigureTheoremEnv{conclusion}
+
+      \ConfigureTheoremEnv{condition}
+
+      \ConfigureTheoremEnv{conjecture}
+
+      \ConfigureTheoremEnv{corollary}
+
+      \ConfigureTheoremEnv{criterion}
+
+      \ConfigureTheoremEnv{definition}
+
+      \ConfigureTheoremEnv{example}
+
+      \ConfigureTheoremEnv{explanation}
+
+      \ConfigureTheoremEnv{fact}
+
+      \ConfigureTheoremEnv{lemma}
+
+
+      \ConfigureTheoremEnv{idea}
+
+      \ConfigureTheoremEnv{notation}
+
+
+      \ConfigureTheoremEnv{observation}
+
+      \ConfigureTheoremEnv{proposition}
+
+      \ConfigureTheoremEnv{paradox}
+
+
+      \ConfigureTheoremEnv{remark}
+
+      \ConfigureTheoremEnv{summary}
+
+      \ConfigureTheoremEnv{template}
+
+      \ConfigureTheoremEnv{warning}
+
+      \ConfigureTheoremEnv{acknowledgement}
+
 \renewenvironment{image}[1][]{\ifvmode \IgnorePar\fi \EndP\HCode{<div class="image-environment">}}{\HCode{</div>}}
 \newcommand{\pgfsyspdfmark}[3]{}
 \renewenvironment{dialogue}{\begin{description}}{\end{description}}
