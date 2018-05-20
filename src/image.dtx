@@ -9,3 +9,43 @@
 
 %</classXimera>
 %    \end{macrocode}
+
+%    \begin{macrocode}
+%<*cfgXimera>
+% this should be before begni document
+\DeclareGraphicsExtensions{.jpg,.png,.gif,.svg}
+
+% this should be after begin document?
+
+% This is a hack to kill includegraphics commands in \documentclass{standalone} files
+\ifcsname ifstandalone\endcsname
+  \ifstandalone
+    \renewcommand\includegraphics[2][]{}
+  \fi
+  \fi
+
+\Configure{graphics*}
+{svg}{
+  {\Configure{Needs}{File: \Gin@base.svg}\Needs{}}
+  \Picture[\csname a:GraphicsAlt\endcsname]{\csname Gin@base\endcsname.svg \csname a:Gin-dim\endcsname}%
+}
+
+%</cfgXimera>
+%    \end{macrocode}
+
+% PGF sometimes causes trouble, but we simply don't care in tex4ht mode.
+%    \begin{macrocode}
+%<*htXimera>
+\newcommand{\pgfsyspdfmark}[3]{}
+%</htXimera>
+%    \end{macrocode}
+
+% Image environment doesn't actually work in tex4ht as defined with
+% NewEnviron; so this renewenvironment is needed.  image-environment
+% also gets formatted in a well, and when the user clicks on the
+% image, it zooms in.
+%    \begin{macrocode}
+%<*htXimera>
+\renewenvironment{image}[1][]{\ifvmode \IgnorePar\fi \EndP\HCode{<div class="image-environment">}}{\HCode{</div>}}
+%</htXimera>
+%    \end{macrocode}

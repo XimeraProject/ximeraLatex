@@ -20,7 +20,6 @@
 \usetikzlibrary{calc}
 \RequirePackage{fancyvrb}
 \RequirePackage{forloop}% Used for (at least) the problem environment dynamic naming and building.
-\IfFileExists{sagetex.sty}{\RequirePackage{sagetex}}{}% Load sagetex if it exists
 
 %% mdframed is used to make pretty foldable, but the amsthm/mdframed
 %% conflict also messes up the .jax file so don't load mdframed when
@@ -39,4 +38,12 @@
 
 \RequirePackage{comment}
 %</classXimera>
+%    \end{macrocode}
+
+
+%    \begin{macrocode}
+%<*cfgXimera>
+\usepackage{verbatim}
+\usepackage{fancyvrb}
+%</cfgXimera>
 %    \end{macrocode}

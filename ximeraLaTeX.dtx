@@ -82,7 +82,11 @@ Running "make install" installs the files in the local TeX tree.
     \from{src/abstract.dtx}{classXimera}
     \from{src/title.dtx}{classXimera}
     \from{src/image.dtx}{classXimera}
+    \from{src/javascript.dtx}{classXimera}    
     \from{src/interactives.dtx}{classXimera}
+    \from{src/graph.dtx}{classXimera}    
+    \from{src/link.dtx}{classXimera}    
+    \from{src/video.dtx}{classXimera}    
     \from{src/answer.dtx}{classXimera}
     \from{src/choice.dtx}{classXimera}
     \from{src/solution.dtx}{classXimera}
@@ -95,18 +99,70 @@ Running "make install" installs the files in the local TeX tree.
     \from{src/foldable.dtx}{classXimera}
     \from{src/leash.dtx}{classXimera}
     \from{src/jax.dtx}{classXimera}
+    \from{src/sagemath.dtx}{classXimera}        
   }
   \file{xourse.cls}{
     \from{ximeraLaTeX.dtx}{classXourse}
     \from{src/optionsxourse.dtx}{classXourse}
     \from{src/activity.dtx}{classXourse}
-    \from{src/xoursetoc.dtx}{classXourse}
+    \from{src/sectioning.dtx}{classXourse}
     \from{src/graded.dtx}{classXourse}
     \from{src/logo.dtx}{classXourse}
   }
-  \file{ximera.cfg}{\from{ximeraLaTeX.dtx}{cfgXimera}}
-  \file{ximera.4ht}{\from{ximeraLaTeX.dtx}{htXimera}}
-  \file{xourse.4ht}{\from{ximeraLaTeX.dtx}{htXourse}}
+}
+\generate{
+  \file{ximera.cfg}{
+    \from{ximeraLaTeX.dtx}{cfgXimera}
+    \from{src/pagesize.dtx}{cfgXimera}
+    \from{src/packages.dtx}{cfgXimera}
+    \from{src/jax.dtx}{cfgXimera}
+    \from{src/sectioning.dtx}{cfgXourse}        
+    \from{src/title.dtx}{cfgXimera}    
+    \from{src/image.dtx}{cfgXimera}
+    \from{src/outcomes.dtx}{cfgXimera}
+    \from{src/textcolor.dtx}{cfgXimera}
+    \from{src/verbatim.dtx}{cfgXimera}
+    \from{src/html.dtx}{cfgXimera}    
+    \from{src/ending.dtx}{cfgXimera}        
+  }
+}
+\generate{
+  \file{ximera.4ht}{
+    \from{ximeraLaTeX.dtx}{htXimera}
+    \from{src/pagesize.dtx}{htXimera}    
+    \from{src/title.dtx}{htXimera}
+    \from{src/problem.dtx}{htXimera}
+    \from{src/macros.dtx}{htXimera}
+    \from{src/image.dtx}{htXimera}               
+    \from{src/dialogue.dtx}{htXimera}
+    \from{src/foldable.dtx}{htXimera}
+    \from{src/video.dtx}{htXimera}
+    \from{src/xkcd.dtx}{htXimera}
+    \from{src/link.dtx}{htXimera}
+    \from{src/graph.dtx}{htXimera}
+    \from{src/answer.dtx}{htXimera}    
+    \from{src/choice.dtx}{htXimera}    
+    \from{src/freeresponse.dtx}{htXimera}
+    \from{src/javascript.dtx}{htXimera}    
+    \from{src/interactives.dtx}{htXimera}
+    \from{src/feedback.dtx}{htXimera}
+    \from{src/leash.dtx}{htXimera}
+    \from{src/labels.dtx}{htXimera}    
+    \from{src/sagemath.dtx}{htXimera}
+    \from{src/ending.dtx}{htXimera}    
+  }
+}
+\generate{
+  \file{xourse.4ht}{
+    \from{ximeraLaTeX.dtx}{htXourse}
+    \from{src/logo.dtx}{htXourse}
+    \from{src/metadata.dtx}{htXourse}
+    \from{src/activity.dtx}{htXourse}
+    \from{src/sectioning.dtx}{htXourse}    
+    \from{src/graded.dtx}{htXourse}                             
+    \from{src/video.dtx}{htXourse}             
+    \from{src/ending.dtx}{htXourse}         
+  }
 }
 %</install>
 %<install>\endbatchfile
@@ -164,7 +220,10 @@ Running "make install" installs the files in the local TeX tree.
 \DocInput{src/abstract.dtx}
 \DocInput{src/title.dtx}
 \DocInput{src/image.dtx}
+\DocInput{src/javascript.dtx}
 \DocInput{src/interactives.dtx}
+\DocInput{src/graph.dtx}
+\DocInput{src/video.dtx}
 \DocInput{src/answer.dtx}
 \DocInput{src/choice.dtx}
 \DocInput{src/solution.dtx}
@@ -177,10 +236,14 @@ Running "make install" installs the files in the local TeX tree.
 \DocInput{src/foldable.dtx}
 \DocInput{src/leash.dtx}
 \DocInput{src/jax.dtx}
+\DocInput{src/html.dtx}
+\DocInput{src/labels.dtx}
+\DocInput{src/sagemath.dtx}
+\DocInput{src/ending.dtx}
 \section{xourse.cls}
 \DocInput{src/optionsxourse.dtx}
 \DocInput{src/activity.dtx}
-\DocInput{src/xoursetoc.dtx}
+\DocInput{src/sectioning.dtx}
 \DocInput{src/graded.dtx}
 \DocInput{src/logo.dtx}
 \end{document}

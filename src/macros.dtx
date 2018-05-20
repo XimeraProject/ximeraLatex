@@ -8,11 +8,22 @@
 \renewcommand{\lim}{\displaystyle\prelim} 
 %% for display style limits
 
-
 \renewcommand{\qedsymbol}{$\blacksquare$}
 \renewenvironment{proof}[1][\proofname]{\begin{trivlist}\item[\hskip \labelsep \itshape \bfseries #1{}\hspace{2ex}]}
 {\qed\end{trivlist}}
 
+%% Make enumerate use a letter
+\renewcommand{\theenumi}{\textup{(\alph{enumi})}}
+\renewcommand{\labelenumi}{\theenumi}
+\renewcommand{\theenumii}{\textup{(\roman{enumii})}}
+\renewcommand{\labelenumii}{\theenumii}
+
+%</classXimera>
+%    \end{macrocode}
+
+% For convenience, we define a ton of ``box'' styles.
+%    \begin{macrocode}
+%<*classXimera>
 \newtheorem{theorem}{Theorem}
 \newtheorem{algorithm}{Algorithm}
 \newtheorem{axiom}{Axiom}
@@ -39,14 +50,42 @@
 \newtheorem{summary}{Summary}
 \newtheorem{template}{Template}
 \newtheorem{warning}{Warning}
-
-
-%% Make enumerate use a letter
-\renewcommand{\theenumi}{\textup{(\alph{enumi})}}
-\renewcommand{\labelenumi}{\theenumi}
-\renewcommand{\theenumii}{\textup{(\roman{enumii})}}
-\renewcommand{\labelenumii}{\theenumii}
-
-
 %</classXimera>
+%    \end{macrocode}
+
+%    \begin{macrocode}
+%<*htXimera>
+\newcommand{\ConfigureTheoremEnv}[1]{%
+\renewenvironment{#1}[1][]{\refstepcounter{problem}%
+\ifthenelse{\equal{##1}{}}{}{%
+  \HCode{<span class="theorem-like-title">}##1\HCode{</span>}%
+}}{}
+\ConfigureEnv{#1}{\stepcounter{identification}\ifvmode \IgnorePar\fi \EndP\HCode{<div class="theorem-like problem-environment #1" id="problem\arabic{identification}">}}{\HCode{</div>}\IgnoreIndent}{}{}%
+}
+
+\ConfigureTheoremEnv{theorem}
+\ConfigureTheoremEnv{acknowledgement}
+\ConfigureTheoremEnv{algorithm}
+\ConfigureTheoremEnv{axiom}
+\ConfigureTheoremEnv{claim}
+\ConfigureTheoremEnv{conclusion}
+\ConfigureTheoremEnv{condition}
+\ConfigureTheoremEnv{conjecture}
+\ConfigureTheoremEnv{corollary}
+\ConfigureTheoremEnv{criterion}
+\ConfigureTheoremEnv{definition}
+\ConfigureTheoremEnv{example}
+\ConfigureTheoremEnv{explanation}
+\ConfigureTheoremEnv{lemma}
+\ConfigureTheoremEnv{notation}
+\ConfigureTheoremEnv{proposition}
+\ConfigureTheoremEnv{remark}
+\ConfigureTheoremEnv{summary}
+\ConfigureTheoremEnv{paradox}
+\ConfigureTheoremEnv{warning}
+\ConfigureTheoremEnv{observation}
+\ConfigureTheoremEnv{template}
+\ConfigureTheoremEnv{idea}
+\ConfigureTheoremEnv{fact}
+%</htXimera>
 %    \end{macrocode}

@@ -1,3 +1,24 @@
+
+%    \begin{macrocode}
+%<*classXimera>
+\let\@emptyauthor\@author
+\def\author#1{\gdef\@author{#1}}
+\def\@author{\@latex@warning@no@line{No \noexpand\author given}}
+\def\and{ and } 
+%</classXimera>
+%    \end{macrocode}
+
+%    \begin{macrocode}
+%<*htXimera>
+% Include author name in meta tags
+\Configure{@HEAD}{\HCode{<meta name="author" content="}\@author\HCode{" />\Hnewline}}
+% the \and command would emit tabular environments which really should not appear in a meta tag
+\def\and{ and }
+%</htXimera>
+%    \end{macrocode}
+
+
+
 %    \begin{macrocode}
 %<*classXimera>
 \let\title\relax
@@ -26,11 +47,6 @@
 
 
 % Redefine maketitle and put them in a table of contents.  The \phantomsection is to fix the hrefs.
-
-\let\@emptyauthor\@author
-\def\author#1{\gdef\@author{#1}}
-\def\@author{\@latex@warning@no@line{No \noexpand\author given}}
-\def\and{ and } 
 
 \renewcommand\maketitle{%
   \addtocounter{titlenumber}{1}\phantomsection \ifnumbers\addcontentsline{toc}{section}{\thetitlenumber~\@title}\else\addcontentsline{toc}{section}{\@title}\fi %% puts titles in the toc, with or without numbers.
@@ -80,4 +96,18 @@
 \fi
 
 %</classXimera>
+%    \end{macrocode}
+
+%    \begin{macrocode}
+%<*cfgXimera>
+% The abstract has been stored in \theabstract and should be emitted as a div, but confusingly I guess <div class="abstract"> is defined somewhere deeper inside tex4ht, so actually the code below is unnecessary.
+\let\abstract\relax
+\let\endabstract\relax
+%</cfgXimera>
+%    \end{macrocode}
+% Eliminate some formatting that we'll handle later with CSS
+%    \begin{macrocode}
+%<*htXimera>
+\renewcommand{\maketitle}{}
+%</htXimera>
 %    \end{macrocode}

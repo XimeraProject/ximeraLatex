@@ -13,3 +13,21 @@
   \fi%
 %</classXimera>
 %    \end{macrocode}
+% These can appear in either the preamble or in problem-environments;
+% with pdflatex, we produce the .oc file which includes ALL the
+% outcomes; in the tex4ht world, we just produce spans for the
+% specific outcomes.
+%    \begin{macrocode}
+%<*cfgXimera>
+\renewcommand{\outcome}[1]{
+  \Configure{@HEAD}{\HCode{<meta name="learning-outcome" content="#1"/>\Hnewline}}
+}
+
+% Sometimes there are no outcomes at all
+\IfFileExists{\jobname.oc}{\input{\jobname.oc}}{}
+
+\renewcommand{\outcome}[1]{%
+  \HCode{<span class="learning-outcome">#1</span>}
+}
+%</cfgXimera>
+%    \end{macrocode}
