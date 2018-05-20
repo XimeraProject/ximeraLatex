@@ -4,7 +4,8 @@
 %<*classXimera>
 \let\abstract\relax
 \let\endabstract\relax
-\NewEnviron{abstract}{\protected@xdef\theabstract{\BODY}}% Use of environ package, may want to find a better way.
+% Use of environ package, may want to find a better way.
+\NewEnviron{abstract}{\protected@xdef\theabstract{\BODY}}
 %</classXimera>
 %    \end{macrocode}
 % The abstract has been stored in |\theabstract| and should be emitted
