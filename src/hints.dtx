@@ -25,7 +25,9 @@
 		\begin{trivlist}\item[\hskip \labelsep\small\slshape\bfseries Hint:\hspace{2ex}]
 		\small\slshape
 	\fi
-	%Step up hint level to track the nested level of the hint. This will be used for problem numbering
+%    \end{macrocode}
+% Step up hint level to track the nested level of the hint. This will be used for problem numbering.
+%    \begin{macrocode}
 	\stepcounter{hintLevel}
 	}
 	{
@@ -34,7 +36,9 @@
 	\else
 		\end{trivlist}
 	\fi
-	%detract from hint level counter to track hint nested level
+%    \end{macrocode}
+% Detract from hint level counter to track hint nested level
+%    \begin{macrocode}
 	\addtocounter{hintLevel}{-1}
 	}
 

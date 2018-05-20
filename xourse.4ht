@@ -32,6 +32,9 @@
   \HCode{<meta name="og:image" content="}%
   \xourse@logo%
   \HCode{" />\Hnewline}}
+
+
+
 \Configure{@HEAD}{\HCode{<meta name="description" content="xourse" />\Hnewline}}
 
 

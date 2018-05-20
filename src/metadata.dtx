@@ -1,10 +1,24 @@
 % \subsubsection{Metadata}
 % To encourage authors to include relevant parseable metadata in the
 % preamble, we define some currently ignored commands.
+
+% \DescribeMacro{\license}{In the preamble, use |\license| with an SPDX license expression.}
 %    \begin{macrocode}
 %<*classXimera>
 \newcommand{\license}{\excludecomment}
+%</classXimera>
+%    \end{macrocode}
+
+% \DescribeMacro{\acknowledgement}{In the preamble, use |\acknowledgement| to credit others who contributed to the intellectual content beside the author.}
+%    \begin{macrocode}
+%<*classXimera>
 \newcommand{\acknowledgement}{\excludecomment}
+%</classXimera>
+%    \end{macrocode}
+
+% \DescribeMacro{\tag}{In the preamble, a |\tag| provides a free-form taxonomy.}
+%    \begin{macrocode}
+%<*classXimera>
 \renewcommand{\tag}{\excludecomment}
 %</classXimera>
 %    \end{macrocode}

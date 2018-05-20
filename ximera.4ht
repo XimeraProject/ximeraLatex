@@ -77,6 +77,8 @@
 }}{}
 \ConfigureEnv{#1}{\stepcounter{identification}\ifvmode \IgnorePar\fi \EndP\HCode{<div class="theorem-like problem-environment #1" id="problem\arabic{identification}">}}{\HCode{</div>}\IgnoreIndent}{}{}%
 }
+
+
       \ConfigureTheoremEnv{theorem}
 
       \ConfigureTheoremEnv{algorithm}
@@ -105,11 +107,13 @@
 
       \ConfigureTheoremEnv{lemma}
 
+      \ConfigureTheoremEnv{formula}
 
       \ConfigureTheoremEnv{idea}
 
       \ConfigureTheoremEnv{notation}
 
+      \ConfigureTheoremEnv{model}
 
       \ConfigureTheoremEnv{observation}
 
@@ -117,6 +121,7 @@
 
       \ConfigureTheoremEnv{paradox}
 
+      \ConfigureTheoremEnv{procedure}
 
       \ConfigureTheoremEnv{remark}
 
@@ -125,8 +130,6 @@
       \ConfigureTheoremEnv{template}
 
       \ConfigureTheoremEnv{warning}
-
-      \ConfigureTheoremEnv{acknowledgement}
 
 \renewenvironment{image}[1][]{\ifvmode \IgnorePar\fi \EndP\HCode{<div class="image-environment">}}{\HCode{</div>}}
 \newcommand{\pgfsyspdfmark}[3]{}
@@ -141,8 +144,6 @@
    {\end:itm \global\def\end:itm{\EndP\Tg</dd>}\HCode{<dt
         class="actor">}\bgroup \bf}
    {\egroup\EndP\HCode{</dt><dd\Hnewline class="speech">}}
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
 \renewenvironment{foldable}{\stepcounter{identification}\ifvmode \IgnorePar\fi \EndP\HCode{<div id="foldable\arabic{identification}" class="foldable">}}{\HCode{</div>}\IgnoreIndent}
 
 \renewenvironment{expandable}{\stepcounter{identification}\ifvmode \IgnorePar\fi \EndP\HCode{<div data-original="expandable" id="foldable\arabic{identification}" class="foldable">}
@@ -180,7 +181,6 @@
 \HCode{id="choice\arabic{choiceId}">}%
 #2\HCode{</span>}}
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \renewenvironment{multipleChoice}[1][]
 {\setkeys{multipleChoice}{#1}%
@@ -193,7 +193,6 @@
 \renewenvironment{multipleChoice*}{\refstepcounter{problem}}{}%
 \ConfigureEnv{multipleChoice*}{\stepcounter{identification}\IgnorePar\HCode{<span class="word-choice" id="word-choice\arabic{identification}">}}{\HCode{</span>}\IgnoreIndent}{}{}
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
 \renewenvironment{selectAll}{\refstepcounter{problem}}{}%
