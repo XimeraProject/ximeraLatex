@@ -82,11 +82,14 @@ Running "make install" installs the files in the local TeX tree.
     \from{src/abstract.dtx}{classXimera}
     \from{src/title.dtx}{classXimera}
     \from{src/image.dtx}{classXimera}
-    \from{src/javascript.dtx}{classXimera}    
-    \from{src/interactives.dtx}{classXimera}
-    \from{src/graph.dtx}{classXimera}    
+    \from{src/interactives/javascript.dtx}{classXimera}    
+    \from{src/interactives/include.dtx}{classXimera}
+    \from{src/interactives/geogebra.dtx}{classXimera}
+    \from{src/interactives/desmos.dtx}{classXimera}
+    \from{src/interactives/google.dtx}{classXimera}            
+    \from{src/interactives/graph.dtx}{classXimera}    
     \from{src/link.dtx}{classXimera}    
-    \from{src/video.dtx}{classXimera}    
+    \from{src/interactives/video.dtx}{classXimera}    
     \from{src/answer.dtx}{classXimera}
     \from{src/choice.dtx}{classXimera}
     \from{src/solution.dtx}{classXimera}
@@ -137,15 +140,18 @@ Running "make install" installs the files in the local TeX tree.
     \from{src/image.dtx}{htXimera}               
     \from{src/dialogue.dtx}{htXimera}
     \from{src/foldable.dtx}{htXimera}
-    \from{src/video.dtx}{htXimera}
+    \from{src/interactives/video.dtx}{htXimera}
     \from{src/xkcd.dtx}{htXimera}
     \from{src/link.dtx}{htXimera}
-    \from{src/graph.dtx}{htXimera}
+    \from{src/interactives/graph.dtx}{htXimera}
     \from{src/answer.dtx}{htXimera}    
     \from{src/choice.dtx}{htXimera}    
     \from{src/freeresponse.dtx}{htXimera}
-    \from{src/javascript.dtx}{htXimera}    
-    \from{src/interactives.dtx}{htXimera}
+    \from{src/interactives/javascript.dtx}{htXimera}    
+    \from{src/interactives/include.dtx}{htXimera}
+    \from{src/interactives/geogebra.dtx}{htXimera}
+    \from{src/interactives/desmos.dtx}{htXimera}
+    \from{src/interactives/google.dtx}{htXimera}            
     \from{src/feedback.dtx}{htXimera}
     \from{src/leash.dtx}{htXimera}
     \from{src/labels.dtx}{htXimera}    
@@ -161,7 +167,7 @@ Running "make install" installs the files in the local TeX tree.
     \from{src/activity.dtx}{htXourse}
     \from{src/sectioning.dtx}{htXourse}    
     \from{src/graded.dtx}{htXourse}                             
-    \from{src/video.dtx}{htXourse}             
+    \from{src/interactives/video.dtx}{htXourse}             
     \from{src/ending.dtx}{htXourse}         
   }
 }
@@ -221,10 +227,14 @@ Running "make install" installs the files in the local TeX tree.
 \DocInput{src/abstract.dtx}
 \DocInput{src/title.dtx}
 \DocInput{src/image.dtx}
-\DocInput{src/javascript.dtx}
-\DocInput{src/interactives.dtx}
-\DocInput{src/graph.dtx}
-\DocInput{src/video.dtx}
+\subsection{Interactives}
+\DocInput{src/interactives/include.dtx}
+\DocInput{src/interactives/google.dtx}
+\DocInput{src/interactives/geogebra.dtx}
+\DocInput{src/interactives/desmos.dtx}
+\DocInput{src/interactives/graph.dtx}
+\DocInput{src/interactives/video.dtx}
+\DocInput{src/interactives/javascript.dtx}
 \DocInput{src/answer.dtx}
 \DocInput{src/choice.dtx}
 \DocInput{src/solution.dtx}
