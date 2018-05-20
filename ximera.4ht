@@ -70,7 +70,6 @@
 \ConfigureQuestionEnv{shuffle}{shuffle}
 
 
-
 \newcommand{\ConfigureTheoremEnv}[1]{%
 \renewenvironment{#1}[1][]{\refstepcounter{problem}%
 \ifthenelse{\equal{##1}{}}{}{%
