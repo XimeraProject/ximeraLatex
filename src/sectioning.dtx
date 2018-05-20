@@ -1,3 +1,4 @@
+% \subsection{Sectioning}
 % Makes the table of contents look a bit better.  This can be
 % redefined in the preamble if you do not like the appearance.
 %    \begin{macrocode}
@@ -7,6 +8,7 @@
 %</classXourse>
 %    \end{macrocode}
 % Xourse files can have parts.
+% \DescribeMacro{\part}{The name of a large part of a xourse.}
 %    \begin{macrocode}
 %<*htXourse>
 \newcounter{ximera@part}
@@ -18,9 +20,15 @@
 %</htXourse>
 %    \end{macrocode}
 % Paragraph commands emit spans.
+% \DescribeMacro{\paragraph}{A small heading.}
 %    \begin{macrocode}
 %<*cfgXimera>
 \renewcommand{\paragraph}[1]{\HCode{<span class="paragraphHead">}#1\HCode{</span>}\par\IgnorePar}
+%</cfgXimera>
+%    \end{macrocode}
+% \DescribeMacro{\subparagraph}{An even smaller heading.}
+%    \begin{macrocode}
+%<*cfgXimera>
 \renewcommand{\subparagraph}[1]{\HCode{<span class="subparagraphHead">}#1\HCode{</span>}\par\IgnorePar}
 %</cfgXimera>
 %    \end{macrocode}

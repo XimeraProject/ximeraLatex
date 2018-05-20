@@ -1,4 +1,5 @@
-% When using mathjax, it is useful to dump all the newcommands to a "jax" file
+% \subsection{MathJax support}
+% When using mathjax, dump all the |\newcommand|s to a |.jax| file.
 %    \begin{macrocode}
 %<*classXimera>
 
@@ -52,11 +53,11 @@
 }{%
 \HCode{</body>\Hnewline}%
 }
-
+%    \end{macrocode}
 % Now I just need to add a newcommand command which outputs the
 % appropriate newcommands to MathJax; then this should be "good
 % enough" for our purposes.
-
+%    \begin{macrocode}
 \newtoks\eqtoks
 \def\AltMath#1${\eqtoks{#1}%
         \HCode{<script type="math/tex"> <![CDATA[\Hnewline\the\eqtoks\Hnewline ]]>\Hnewline</script>}$}
@@ -73,14 +74,16 @@
 \def\AltlDisplayI#1$${\eqtoks{#1}%
        \HCode{<script type="math/tex; mode=display"> <![CDATA[\Hnewline\the\eqtoks\Hnewline ]]>\Hnewline</script>}$$}
 \Configure{$$}{}{}{\expandafter\AltlDisplayI}  
-
+%    \end{macrocode}
 % Need to turn off htmlpar too, as expained in http://tex.stackexchange.com/questions/204930/vertical-spaces-in-htlatex-scriptenv
+%    \begin{macrocode}
 \newcommand\VerbMath[1]{%
 \renewenvironment{#1}{\NoFonts}{\EndNoFonts}
 \ScriptEnv{#1}{\ifvmode \IgnorePar\fi \EndP\HCode{<script type="math/tex; mode=display"><![CDATA[\Hnewline \string\begin{#1}\Hnewline}\HtmlParOff}{\HtmlParOn\HCode{\string\end{#1}\Hnewline]]>\Hnewline</script>}}
 }
-
+%    \end{macrocode}
 % This is a fix for the LAODE book, which uses matlabEquation as if it were an equation
+%    \begin{macrocode}
 \ScriptEnv{matlabEquation}{\ifvmode \IgnorePar\fi \EndP\HCode{<script type="math/tex; mode=display"><![CDATA[\Hnewline \string\begin{equation}\Hnewline}\HtmlParOff}{\HtmlParOn\HCode{\string\end{equation}\Hnewline]]>\Hnewline</script>}}
 
 \VerbMath{equation}

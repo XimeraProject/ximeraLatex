@@ -71,7 +71,7 @@ Running "make install" installs the files in the local TeX tree.
     \from{src/options.dtx}{classXimera}
     \from{src/tikzexport.dtx}{classXimera}
     \from{src/packages.dtx}{classXimera}
-    \from{src/pagesize.dtx}{classXimera}
+    \from{src/pagesetup.dtx}{classXimera}
     \from{src/metadata.dtx}{classXimera}
     \from{src/outcomes.dtx}{classXimera}
     \from{src/macros.dtx}{classXimera}
@@ -113,11 +113,12 @@ Running "make install" installs the files in the local TeX tree.
 \generate{
   \file{ximera.cfg}{
     \from{ximeraLaTeX.dtx}{cfgXimera}
-    \from{src/pagesize.dtx}{cfgXimera}
+    \from{src/pagesetup.dtx}{cfgXimera}
     \from{src/packages.dtx}{cfgXimera}
     \from{src/jax.dtx}{cfgXimera}
     \from{src/sectioning.dtx}{cfgXourse}        
-    \from{src/title.dtx}{cfgXimera}    
+    \from{src/title.dtx}{cfgXimera}
+    \from{src/abstract.dtx}{cfgXimera}        
     \from{src/image.dtx}{cfgXimera}
     \from{src/outcomes.dtx}{cfgXimera}
     \from{src/textcolor.dtx}{cfgXimera}
@@ -129,7 +130,7 @@ Running "make install" installs the files in the local TeX tree.
 \generate{
   \file{ximera.4ht}{
     \from{ximeraLaTeX.dtx}{htXimera}
-    \from{src/pagesize.dtx}{htXimera}    
+    \from{src/pagesetup.dtx}{htXimera}    
     \from{src/title.dtx}{htXimera}
     \from{src/problem.dtx}{htXimera}
     \from{src/macros.dtx}{htXimera}
@@ -209,7 +210,7 @@ Running "make install" installs the files in the local TeX tree.
 \DocInput{src/options.dtx}
 \DocInput{src/tikzexport.dtx}
 \DocInput{src/packages.dtx}
-\DocInput{src/pagesize.dtx}
+\DocInput{src/pagesetup.dtx}
 \DocInput{src/metadata.dtx}
 \DocInput{src/outcomes.dtx}
 \DocInput{src/macros.dtx}
@@ -253,10 +254,10 @@ Running "make install" installs the files in the local TeX tree.
 % \GetFileInfo{\jobname.dtx}
 % \DoNotIndex{\newcommand,\newenvironment}
 % 
-%\title{\textsf{ximera\LaTeX} --- \LaTeX\ classes for simultaneously writing print and online interactive materials.\thanks{This file
+%\title{\textsf{ximera\LaTeX} --- Simultaneous write print and online interactive materials.\thanks{This file
 %   describes version \fileversion, last revised \filedate.}
 %}
-%\author{Jim Fowler and Jeramiah Hocutt and Oscar Levin and Jason Nowell and Hans Parshall and Bart Snapp}
+%\author{Jim Fowler \and Jeramiah Hocutt \and Oscar Levin \and Jason Nowell \and Hans Parshall \and Bart Snapp}
 %\date{Released \filedate}
 %
 %\maketitle

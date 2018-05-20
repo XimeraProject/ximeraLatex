@@ -1,17 +1,22 @@
+% \subsection{Hints}
+% \DescribeEnv{hint}{Hint environments can be embedded inside problems.}
 %    \begin{macrocode}
 %<*classXimera>
-
-
-%% Hints
-%Create a counter that will track how deeply nested the current hint is
+%    \end{macrocode}
+% Create a counter that will track how deeply nested the current hint is
+%    \begin{macrocode}
 \newcounter{hintLevel}
 \setcounter{hintLevel}{0}
-%Create an empty shell to renew
+%    \end{macrocode}
+% Create an empty shell to renew
+%    \begin{macrocode}
 \newenvironment{hint}{}{}
-%Now we renew the environment as needed, this should allow support for
-% any transition code that treats some parts as a "handout" and some
-% parts as non-handout.  renewing the environment on the fly is a bit
-% hacky. 
+%    \end{macrocode}
+% Now we renew the environment as needed, this should allow support
+% for any transition code that treats some parts as a "handout" and
+% some parts as non-handout.  renewing the environment on the fly is a
+% bit hacky.
+%    \begin{macrocode}
 \renewenvironment{hint}
 	{
 	\ifhandout

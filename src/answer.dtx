@@ -1,68 +1,47 @@
+% \subsection{Answers}
+% \DescribeMacro{\answer}{A math answer}
 %    \begin{macrocode}
 %<*classXimera>
-% -------------
-% -------------
-% Answers
-% -------------
-% -------------
-
 
 \ifdefined\HCode
-	\newcommand{\recordvariable}[1]{}
+\newcommand{\recordvariable}[1]{}
 \else
-	\newwrite\idfile
-	\immediate\openout\idfile=\jobname.ids
-	\newcommand{\recordvariable}[1]{\ifthenelse{\equal{#1}{}}{}{\immediate\write\idfile{var #1;}}}
+\newwrite\idfile
+\immediate\openout\idfile=\jobname.ids
+\newcommand{\recordvariable}[1]{\ifthenelse{\equal{#1}{}}{}{\immediate\write\idfile{var #1;}}}
 \fi
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%% 	Defining keys for answer command key=value pairs
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-\define@key{answer}{given}[true]{\def\ans@given{#1}} % Determines if
-	                                             % answer is shown
-	                                             % in handout
-	                                             % mode.  when
-	                                             % given=true,
-	                                             % show answer in
-	                                             % handout mode,
-	                                             % show answer in
-	                                             % "given box"
-	                                             % outside handout
-	                                             % mode
-	%% when given=false, do not show answer in handout mode, show answer outside handout mode
-
-\define@key{answer}{tolerance}{\def\ans@tol{#1}}% Used for setting numeric answer tolerance for online student input. 
-												 %  Note: currently no affect on pdf output.
-
-\define@key{answer}{validator}{}%			Used to run dynamic js code on student provided answers.
-												 %  Note: currently pdf outputs the validator code itself.
-
-\define@key{answer}{id}{\def\ans@id{#1}} %	Used for assigning a js ID to answer for dynamic code (eg validators).
-												 %  Note: currently no affect on pdf output.
-
-\define@key{answer}{format}{}%				Used to set anticipated input format; eg "string".
-												 %  Note: currently no affect on pdf output.
-
-
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%			Set default values for answer command key=value pairs
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% Default values are:
-%
-% given = false
-
+%    \end{macrocode}
+% Determines if answer is shown in handout mode.  when |given=true|,
+% show answer in handout mode, show answer in ``given box'' outside
+% handout mode.  When |given=false|, do not show answer in handout
+% mode, show answer outside handout mode
+%    \begin{macrocode}
+\define@key{answer}{given}[true]{\def\ans@given{#1}} 
+%    \end{macrocode}
+% Used for setting numeric answer tolerance for online student input.
+%    \begin{macrocode}
+\define@key{answer}{tolerance}{\def\ans@tol{#1}}
+%    \end{macrocode}
+% Used to run dynamic js code on student provided answers. Note:
+% currently pdf outputs the validator code itself.
+%    \begin{macrocode}
+\define@key{answer}{validator}{}
+%    \end{macrocode}
+% Used for assigning a js ID to answer for dynamic code (eg validators).
+%    \begin{macrocode}
+\define@key{answer}{id}{\def\ans@id{#1}}
+%    \end{macrocode}
+% Used to set anticipated input format; eg "string".
+%    \begin{macrocode}
+\define@key{answer}{format}{}
+%    \end{macrocode}
+% Set default values for |\answer| command |key=value| pairs.
+% Default values are |given = false|.
+%    \begin{macrocode}
 \setkeys{answer}{id=,given=false}
-
-
-
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%						Answer command base code.
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-
+%    \end{macrocode}
+% Basic code for |\answer|.
+%    \begin{macrocode}
 \newcommand{\answer}[2][]{%
 	\ifmmode%
 		\setkeys{answer}{#1}%
@@ -89,11 +68,10 @@
 		{Need to use either inline or display math.}%
 	\fi
 }
-             
-
 %</classXimera>
 %    \end{macrocode}
-
+% On the HTML side, |\answer| emits spans---but it is usually just
+% handled directly by MathJax.
 %    \begin{macrocode}
 %<*htXimera>
 \renewcommand{\answer}[2][false]{\HCode{<span class="answer respondable">}#2\HCode{</span>}}

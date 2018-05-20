@@ -1,16 +1,21 @@
+% \subsection{Page setup}
+% We want non-indented spaced-out paragraphs.
 %    \begin{macrocode}
 %<*classXimera>
-\oddsidemargin 62pt %% so we don't get weird margins in 2-sided mode
-\evensidemargin 62pt %% so we don't get weird margins in 2-sided mode
-\textwidth 345pt %% so we don't get weird margins in 2-sided mode
-\headheight 14pt %% so we don't get weird margins in 2-sided mode
-
-
 \setlength{\parindent}{0pt}
 \setlength{\parskip}{5pt}
 %</classXimera>
 %    \end{macrocode}
-
+% To avoid weird margins in 2-sided mode, change the margins.
+%    \begin{macrocode}
+%<*classXimera>
+\oddsidemargin 62pt
+\evensidemargin 62pt
+\textwidth 345pt
+\headheight 14pt
+%</classXimera>
+%    \end{macrocode}
+% On the HTML side, there is more complicated page setup to perform.
 %    \begin{macrocode}
 %<*cfgXimera>
 \Preamble{xhtml}
@@ -37,7 +42,6 @@
 \Configure{@HEAD}{\HCode{<script data-module="script" data-main="http://ximera.osu.edu/public/javascripts/app.min" src="http://ximera.osu.edu/components/requirejs/require.js"></script>\Hnewline}}
 %</cfgXimera>
 %    \end{macrocode}
-
 % Disable certain ligatures in HTML.
 %    \begin{macrocode}
 %<*htXimera>

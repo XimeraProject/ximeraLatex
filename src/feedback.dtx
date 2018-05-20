@@ -1,43 +1,46 @@
+% \subsection{Feedback}
+% \DescribeEnv{feedback}{An initially hidden environment that uncovers itself at an appropriate time.}
+% New Validator rewrite code added by Jason Nowell. Original code
+% orovided by Jim Fowler Validator is an environment designed to run a
+% custom check on answers (usually) using javascript code.
+%
+% Define a placeholder command for validator and feedback.
 %    \begin{macrocode}
 %<*classXimera>
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%% Validator
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-% New Validator rewrite code added by Jason Nowell. Original code
-%provided by Jim Fowler Validator is an environment designed to run a
-%custom check on answers (usually) using javascript code.
-
-
-% Define a placeholder command for validator and feedback.
-
 \newcommand{\PH@Command}{}
-
-%% Validator should take an argument and detokenize it and display it
-%% at the start of the environment. The original Validator environment
-%% had everything framed in an mbox; presumably to make the text look
-%% a bit nicer, although this seems redundant with texttt. It
-%% shouldn't cause any harm so I have left it in for now.
-
+%    \end{macrocode}
+% Validator should take an argument and detokenize it and display it
+% at the start of the environment. The original Validator environment
+% had everything framed in an mbox; presumably to make the text look
+% a bit nicer, although this seems redundant with |texttt|. It
+% shouldn't cause any harm so I have left it in for now.
+%    \begin{macrocode}
 \newenvironment{validator}[1][]{
 	\def\PH@Command{#1}% Use PH@Command to hold the content and be a target for "\expandafter" to expand once.
 	\mbox{\texttt{\detokenize\expandafter{\PH@Command}}}% Now expand PH@Command once and then detokenize. 
 	}{}
-
-%%%% Feedback
-
-\ifhandout%	First, if it's a handout, we want feedback to eat everything and then disappear entirely. So we use the environ package to eat the content by not using \BODY command anywhere.
+%    \end{macrocode}
+% First, if it's a handout, we want feedback to eat everything and
+% then disappear entirely. So we use the environ package to eat the
+% content by not using |\BODY| command anywhere.
+%    \begin{macrocode}
+\ifhandout%	
 \NewEnviron{feedback}[1][]{}
-
-% No! We are going to replace with the suppress command method. Delete the above old code by 6/28/2018 if no errors
-%\newenvironment{feedback}{\expandafter\phantom\expandafter\begingroup\expandafter\noexpand\begingroup}{\endgroup\endgroup}
-
-\else% If this isn't a handout, then we want to display the Feedback
-     %by using a label, positioned and formated as a \item in a
-     %trivlist. It is important that we also detokenize the content of
-     %the optional argument, as it is likely to contain javascript or
-     %other code that latex won't be able to make sense of.
-
+%    \end{macrocode}
+% No! We are going to replace with the suppress command method. Delete
+% the above old code by 6/28/2018 if no errors
+%    \begin{macrocode}
+\newenvironment{feedback}{\expandafter\phantom\expandafter\begingroup\expandafter\noexpand\begingroup}{\endgroup\endgroup}
+%    \end{macrocode}
+% If this isn't a handout, then we want to display the Feedback by
+% using a label, positioned and formated as a |\item| in a
+% trivlist. It is important that we also detokenize the content of
+% the optional argument, as it is likely to contain javascript or
+% other code that latex won't be able to make sense of.
+%    \begin{macrocode}
+\else
+%    \end{macrocode}
+%    \begin{macrocode}
 \newenvironment{feedback}[1][attempt]{
 
 	\def\PH@Command{#1}% Use PH@Command to hold the content and be a target for "\expandafter" to expand once.
@@ -51,17 +54,12 @@
 	}
 
 \fi
-
 %</classXimera>
 %    \end{macrocode}
-
-
-%    \begin{macrocode}
-%<*htXimera>
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Feedback environments take an optional parameter (which describes
 % when the feedback is to be provided)
-
+%    \begin{macrocode}
+%<*htXimera>
 \def\feedback{\@ifnextchar[{\@feedbackcode}{\@feedbackattempt}}
 \def\@feedbackattempt{\@feedbackcode[attempt]}
 \def\@feedbackcode[#1]{\stepcounter{identification}%

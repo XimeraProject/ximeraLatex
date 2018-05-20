@@ -1,24 +1,18 @@
+% \subsection{Dialogues}
+% \DescribeEnv{dialogue}{A dialogue between people.}
 %    \begin{macrocode}
 %<*classXimera>
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%% Dialogue
-
 \newenvironment{dialogue}{%
    \renewcommand\descriptionlabel[1]{\hspace{\labelsep}\textbf{##1:}}
    \begin{description}%
 }{%
    \end{description}%
 }
-
-
 %</classXimera>
 %    \end{macrocode}
-
+% On the web, the resulting |<dl>| should have an appropriate |class| set.
 %    \begin{macrocode}
 %<*htXimera>
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% dialogue environment
-
 \renewenvironment{dialogue}{\begin{description}}{\end{description}}
 
 \ConfigureList{dialogue}%

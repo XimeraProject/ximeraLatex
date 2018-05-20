@@ -1,19 +1,9 @@
+% \subsection{Interactives}
+% \DescribeMacro{\includeinteractive}{Cognate to |includegraphics| but
+% instead of a graphics file, accepts a |.js| file which will be
+% loaded as an interactive widget.}
 %    \begin{macrocode}
 %<*classXimera>
-
-%Geogebra link
-\newcommand{\geogebra}[3]{Geogebra link: \url{https://tube.geogebra.org/m/#1}}
-
-%Desmos link
-\newcommand{\desmos}[3]{Desmos link: \url{https://www.desmos.com/calculator/#1}}
-
-% Google Spreadsheet link (read only)
-\newcommand{\googleSheet}[5]{%
-  Google Spreadsheet link: \url{https://docs.google.com/spreadsheets/d/#1}%
-}
-
-% Interactive element
-
 \define@key{interactive}{id}{\def\interactive@id{#1}}
 \setkeys{interactive}{id=}
 \newcommand{\includeinteractive}[2][]{
@@ -21,25 +11,26 @@
 \ifthenelse{\equal{\interactive@id}{}}{}{\recordvariable{\interactive@id}}
 Interactive
 }
-
-% Old code. Delete by 6/28/2018 if no errors reported.
-\NewEnviron{html}{\textbf{INTERACTIVE NOT AVAILABLE.}} 
-
-
 %</classXimera>
 %    \end{macrocode}
-
 %    \begin{macrocode}
 %<*htXimera>
-
-% Interactive element
 \renewcommand{\includeinteractive}[2][]{\stepcounter{identification}\ifvmode \IgnorePar\fi \EndP\HCode{<div id="interactive\arabic{identification}" class="interactive"> </div>}\HCode{<script src="#2" data-argument="#1" data-target="interactive\arabic{identification}"> </script>}\IgnoreIndent}
+%</htXimera>
+%    \end{macrocode}
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% interactives
-
-% Geogebra command. Requires id, width, and height as arguments.
-%defining keys for answer geogebra key=value pairs
+% \subsubsection{Geogebra}
+% \DescribeMacro{\geogebra}{Geogebra command. Requires id, width, and
+% height as arguments.}
+%    \begin{macrocode}
+%<*classXimera>
+%Geogebra link
+\newcommand{\geogebra}[3]{Geogebra link: \url{https://tube.geogebra.org/m/#1}}
+%</classXimera>
+%    \end{macrocode}
+% Define keys for answer geogebra key=value pairs.
+%    \begin{macrocode}
+%<*htXimera>
 \define@key{geogebra}{rc}[true]{\def\geo@rc{#1}}
 \define@key{geogebra}{sdz}[true]{\def\geo@sdz{#1}}
 \define@key{geogebra}{smb}[true]{\def\geo@smb{#1}}
@@ -53,14 +44,37 @@ Interactive
 \renewcommand{\geogebra}[4][]{%
   \setkeys{geogebra}{#1}% Set new keys
   \HCode{<iframe scrolling="no" src="https://tube.geogebra.org/material/iframe/id/#2/width/#3/height/#4/border/888888/rc/\geo@rc/ai/false/sdz/\geo@sdz/smb/\geo@smb/stb/\geo@stb/stbh/\geo@stbh/ld/\geo@ld/sri/\geo@sri/at/auto" width="#3px" height="#4px" style="border:0px;"> </iframe>}}
+%</htXimera>
+%    \end{macrocode}
 
-
-% Desmos command. Requires id, width, and height as arguments.
+% \subsubsection{Desmos}
+% \DescribeMacro{\desmos}{Desmos command. Requires id, width, and height as arguments.}
+%    \begin{macrocode}
+%<*classXimera>
+\newcommand{\desmos}[3]{Desmos link: \url{https://www.desmos.com/calculator/#1}}
+%</classXimera>
+%    \end{macrocode}
+%    \begin{macrocode}
+%<*htXimera>
 \renewcommand{\desmos}[3]{\HCode{<iframe src="https://www.desmos.com/calculator/#1" width="100\%" height="#3px" style="border: 1px solid #ccc" frameborder=0>This browser does not support embedded elements.</iframe>}}
+%</htXimera>
+%    \end{macrocode}
 
-% googleSheet command. Requires id, width, and height as arguments.
-%  optional arguments are gid for sheet ID and range for cell range.
-%command definition
+% \subsubsection{Google Sheet}
+% \DescribeMacro{\googleSheet}{googleSheet command. Requires id,
+% width, and height as arguments.  optional arguments are gid for
+% sheet ID and range for cell range.  command definition}
+%    \begin{macrocode}
+%<*classXimera>
+% Google Spreadsheet link (read only)
+\newcommand{\googleSheet}[5]{%
+  Google Spreadsheet link: \url{https://docs.google.com/spreadsheets/d/#1}%
+}
+%</classXimera>
+%    \end{macrocode}
+
+%    \begin{macrocode}
+%<*htXimera>
 \renewcommand{\googleSheet}[5]{%
   \ifthenelse{\equal{#4}{}}%
     {\HCode{<iframe width="#2px" height="#3px" src="https://docs.google.com/spreadsheets/d/#1/htmlembed?widget=true">This browser does not support embedded elements.</iframe>}}%
@@ -69,7 +83,6 @@ Interactive
        {\HCode{<iframe width="#2px" height="#3px" src="https://docs.google.com/spreadsheets/d/#1/htmlembed?single=true&amp;gid=#4&amp;range=#5&amp;widget=false">This browser does not support embedded elements.</iframe>}}%
     }%
   }%
-
 %</htXimera>
 %    \end{macrocode}
 
