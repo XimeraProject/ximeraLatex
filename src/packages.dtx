@@ -28,12 +28,6 @@
 %    \begin{macrocode}
 \RequirePackage{forloop}
 %    \end{macrocode}
-% The package \verb|mdframed| is used to make pretty foldable, but the
-% amsthm/mdframed conflict also messes up the .jax file so we don't load
-% mdframed when performing the xake step
-%    \begin{macrocode}
-\iftikzexport\else\RequirePackage[framemethod=TikZ]{mdframed}\fi
-%    \end{macrocode}
 % Now we load even more packages.
 %    \begin{macrocode}
 \RequirePackage{environ}% Included to allow saving of environment contents. This does *not* play well with various verbatem environments however and would be great to find a way around utilizing this package. One option is the "Suppress" command included below.
