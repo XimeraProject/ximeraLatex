@@ -21,16 +21,10 @@
 	}{}
 %    \end{macrocode}
 % First, if it's a handout, we want feedback to eat everything and
-% then disappear entirely. So we use the environ package to eat the
-% content by not using |\BODY| command anywhere.
+% then disappear entirely. So we use |\suppress|.
 %    \begin{macrocode}
-\ifhandout%	
-\NewEnviron{feedback}[1][]{}
-%    \end{macrocode}
-% No! We are going to replace with the suppress command method. Delete
-% the above old code by 6/28/2018 if no errors
-%    \begin{macrocode}
-\newenvironment{feedback}{\expandafter\phantom\expandafter\begingroup\expandafter\noexpand\begingroup}{\endgroup\endgroup}
+\ifhandout%
+\newenvironment{feedback}{\suppress}{\endsuppress} 
 %    \end{macrocode}
 % If this isn't a handout, then we want to display the Feedback by
 % using a label, positioned and formated as a |\item| in a
