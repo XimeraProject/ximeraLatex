@@ -65,10 +65,16 @@
 %    \end{macrocode}
 
 % \subsubsection{Regular activities}
-% \DescribeMacro{\activity}{Documents included with |\activity| will be included in the body of the xourse document. Any |\input| commands within included ximera documents will be ignored.  Any |\usepackage| commands within included ximera documents will cause an error.  Overlapping |\newcommand| definitions within multiple ximera documents included simultaneously will cause an error.}
-% The |\activity| command inputs the file name provided without
-% |\documentclass|, without |\begin{document}|/|\end{document}| and
-% without any inputs in the preamble of the included file.
+% \DescribeMacro{\activity}{Documents included with |\activity| will
+% be included in the body of the xourse document. Any |\input|
+% commands within included \textsf{ximera} documents will be ignored.
+% Any |\usepackage| commands within included ximera documents will
+% cause an error.  Overlapping |\newcommand| definitions within
+% multiple ximera documents included simultaneously will cause an
+% error.}  The |\activity| command inputs the file name provided
+% without |\documentclass|, without
+% |\begin{document}|/|\end{document}| and without any inputs in the
+% preamble of the included file.
 %    \begin{macrocode}
 %<*classXourse>
 \ifnonewpage
