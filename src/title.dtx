@@ -48,9 +48,11 @@
 % |\phantomsection| is to fix the hrefs.}
 %    \begin{macrocode}
 \renewcommand\maketitle{%
-  \addtocounter{titlenumber}{1}\phantomsection \ifnumbers\addcontentsline{toc}{section}{\thetitlenumber~\@title}\else\addcontentsline{toc}{section}{\@title}\fi %% puts titles in the toc, with or without numbers.
+  \addtocounter{titlenumber}{1}%
   {\flushleft\large\bfseries \@pretitle\par\vspace{-1em}}
   {\flushleft\LARGE\bfseries {\ifnumbers\thetitlenumber\fi}{\ifnumbers\hspace{1em}\else\hspace{0em}\fi}\@title \par }
+  \phantomsection%
+  \ifnumbers\addcontentsline{toc}{section}{\thetitlenumber~\@title}\else\addcontentsline{toc}{section}{\@title}\fi
   \vskip .6em\noindent\textit\theabstract\setcounter{problem}{0}\setcounter{section}{0}\setcounter{subsection}{0}\par\vspace{2em}
   \ifnooutcomes\else\let\thefootnote\relax\footnote{Learning outcomes: \theoutcomes}\fi
   \ifnoauthor\else\let\thefootnote\relax\footnote{Author(s):~\@author}\fi
@@ -71,21 +73,23 @@
   \def\activitystyle{activity-chapter}
   \def\maketitle{%
     \addtocounter{titlenumber}{1}%
-    \addcontentsline{toc}{section}{\textbf{\thetitlenumber\quad\@title}}%
                     {\flushleft\small\sffamily\bfseries\@pretitle\par\vspace{-1.5em}}%
                     {\flushleft\LARGE\sffamily\bfseries\thetitlenumber\quad\@title \par }%
                     {\vskip .6em\noindent\textit\theabstract\setcounter{problem}{0}\setcounter{sectiontitlenumber}{0}}%
-                    \par\vspace{2em}}}
+                    \par\vspace{2em}
+                    \phantomsection\addcontentsline{toc}{section}{\textbf{\thetitlenumber\quad\@title}}%
+                  }}
 
 \newcommand\sectionstyle{%
   \def\activitystyle{activity-section}
   \def\maketitle{%
     \addtocounter{sectiontitlenumber}{1}
-    \addcontentsline{toc}{subsection}{\thetitlenumber.\thesectiontitlenumber\quad\@title}%
     {\flushleft\small\sffamily\bfseries\@pretitle\par\vspace{-1.5em}}%
     {\flushleft\Large\sffamily\bfseries\thetitlenumber.\thesectiontitlenumber\quad\@title \par}%
     {\vskip .6em\noindent\textit\theabstract}%
-    \par\vspace{2em}}}
+    \par\vspace{2em}
+    \phantomsection\addcontentsline{toc}{subsection}{\thetitlenumber.\thesectiontitlenumber\quad\@title}%
+  }}
 
 
 \iftikzexport%% allows xake to handle \chapterstyle and \sectionstye
