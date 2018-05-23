@@ -8,23 +8,37 @@
 }
 %</classXimera>
 %    \end{macrocode}
-% Image environment doesn't actually work in tex4ht as defined with
-% NewEnviron; so this renewenvironment is needed.  image-environment
-% also gets formatted in a well, and when the user clicks on the
-% image, it zooms in.
+% \DescribeMacro{\alt}{Inside an |image| environment, |\alt| provides alt-text for assistive technology like screenreaders.}
+%    \begin{macrocode}
+%<*classXimera>
+\newcommand{\alt}[1]{}
+%</classXimera>
+%    \end{macrocode}
+% The |image| environment doesn't actually work in tex4ht as defined
+% with NewEnviron; so this renewenvironment is needed.
+% image-environment also gets formatted in a well, and when the user
+% clicks on the image, it zooms in.
 %    \begin{macrocode}
 %<*htXimera>
-\renewenvironment{image}[1][]{\ifvmode \IgnorePar\fi \EndP\HCode{<div class="image-environment">}}{\HCode{</div>}}
+\newcounter{imagealt}
+\setcounter{imagealt}{0}
+\renewenvironment{image}[1][]{\stepcounter{imagealt}%
+  \ifvmode \IgnorePar\fi \EndP%
+  \HCode{<div class="image-environment" role="img" aria-labelledby="image-alt-\arabic{imagealt}">}%
+}{\HCode{</div>}}
+\renewcommand{\alt}[1]{\HCode{<div style="display: none;" id="image-alt-\arabic{imagealt}">}#1\HCode{</div>}}
 %</htXimera>
 %    \end{macrocode}
 % Although we accept many formats, SVG is preferred on the web.
+% Since we have a different mechanism for producing |alt| text, we
+% want to ignore tex4ht's own method fo producing alt text.
 %    \begin{macrocode}
 %<*cfgXimera>
 \DeclareGraphicsExtensions{.jpg,.png,.gif,.svg}
 \Configure{graphics*}
 {svg}{
   {\Configure{Needs}{File: \Gin@base.svg}\Needs{}}
-  \Picture[\csname a:GraphicsAlt\endcsname]{\csname Gin@base\endcsname.svg \csname a:Gin-dim\endcsname}%
+  \Picture[]{\csname Gin@base\endcsname.svg \csname a:Gin-dim\endcsname}%
 }
 %</cfgXimera>
 %    \end{macrocode}

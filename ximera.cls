@@ -556,6 +556,7 @@
 \NewEnviron{image}[1][3in]{%
   \begin{center}\resizebox{#1}{!}{\BODY}\end{center}% resize and center
 }
+\newcommand{\alt}[1]{}
 
 
 \DefineVerbatimEnvironment{javascript}{Verbatim}{numbers=left,frame=lines,label=JavaScript,labelposition=topline}
