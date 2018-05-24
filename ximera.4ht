@@ -172,7 +172,7 @@
 
 \renewcommand{\answer}[2][false]{\HCode{<span class="answer respondable">}#2\HCode{</span>}}
 
-\def\validator[#1]{\stepcounter{identification}\HCode{<div class="validator" id="validator\arabic{identification}"><script type="text/javascript">\Hnewline//<![CDATA[\Hnewline function validator\arabic{identification}() }\{\HCode{ return \detokenize{#1}; }\}\HCode{\Hnewline //]]>\Hnewline</script>}}
+\def\validator[#1]{\stepcounter{identification}\HCode{<div class="validator" id="validator\arabic{identification}"><script type="text/javascript">function validator\arabic{identification}() }\{\HCode{ return \detokenize{#1}; }\}\HCode{</script>}}
 \def\endvalidator{\HCode{</div>}}
 
 \newcounter{choiceId}
@@ -248,7 +248,7 @@
 \ifvmode \IgnorePar\fi \EndP%
 \ifthenelse{\equal{#1}{attempt}}{\HCode{<div class="feedback" data-feedback="attempt" id="feedback\arabic{identification}">}}%
 {\ifthenelse{\equal{#1}{correct}}{\HCode{<div class="feedback" data-feedback="correct" id="feedback\arabic{identification}">}}%
-{\HCode{<div class="feedback" data-feedback="script" id="feedback\arabic{identification}"><script type="text/javascript">\Hnewline//<![CDATA[\Hnewline function feedback\arabic{identification}() }\{\HCode{ return \detokenize{#1}; }\}\HCode{\Hnewline //]]>\Hnewline</script>}}}}
+{\HCode{<div class="feedback" data-feedback="script" id="feedback\arabic{identification}"><script type="text/javascript">function feedback\arabic{identification}() }\{\HCode{ return \detokenize{#1}; }\}\HCode{</script>}}}}
 \def\endfeedback{\HCode{</div>}\IgnoreIndent}
 
 \renewenvironment{leash}[1]{\ifvmode \IgnorePar\fi \EndP\HCode{<div style="overflow: auto; height: #1px">}}{\HCode{</div>}\IgnoreIndent}
@@ -264,7 +264,7 @@
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \renewenvironment{sagesilent}{\NoFonts}{\EndNoFonts}
-\ScriptEnv{sagesilent}{\ifvmode \IgnorePar\fi \EndP\HCode{<script type="text/sagemath">\Hnewline\#<![CDATA[\Hnewline}\HtmlParOff}{\HtmlParOn\HCode{\Hnewline\#]]>\Hnewline</script></div>}}
+\ScriptEnv{sagesilent}{\ifvmode \IgnorePar\fi \EndP\HCode{<script type="text/sagemath">}\HtmlParOff}{\HtmlParOn\HCode{</script></div>}}
 \Hinput{ximera}
 
 
