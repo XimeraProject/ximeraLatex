@@ -76,7 +76,7 @@
 %<*htXimera>
 \renewcommand{\answer}[2][false]{\HCode{<span class="answer respondable">}#2\HCode{</span>}}
 
-\def\validator[#1]{\stepcounter{identification}\HCode{<div class="validator" id="validator\arabic{identification}"><script type="text/javascript">\Hnewline//<![CDATA[\Hnewline function validator\arabic{identification}() }\{\HCode{ return \detokenize{#1}; }\}\HCode{\Hnewline //]]>\Hnewline</script>}}
+\def\validator[#1]{\stepcounter{identification}\HCode{<div class="validator" id="validator\arabic{identification}"><script type="text/javascript">function validator\arabic{identification}() }\{\HCode{ return \detokenize{#1}; }\}\HCode{</script>}}
 \def\endvalidator{\HCode{</div>}}
 
 %</htXimera>
