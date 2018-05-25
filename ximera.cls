@@ -180,7 +180,6 @@
 
   \fi
 
-\iftikzexport\else\RequirePackage[framemethod=TikZ]{mdframed}\fi
 \setlength{\parindent}{0pt}
 \setlength{\parskip}{5pt}
 \oddsidemargin 62pt
@@ -207,7 +206,6 @@
 \everymath{\displaystyle}
 \let\prelim\lim
 \renewcommand{\lim}{\displaystyle\prelim}
-
 
 
       \newtheorem{theorem}{Theorem}
@@ -923,50 +921,14 @@ Interactive
 \colorlet{background}{white} % since background is referenced below
 
 %% pretty-foldable
-\iftikzexport
 \newenvironment{foldable}{%
 }{%
 }
-\else
-\renewmdenv[
-  font=\upshape,
-  outerlinewidth=3,
-  topline=false,
-  bottomline=false,
-  leftline=true,
-  rightline=false,
-  leftmargin=0,
-  innertopmargin=0pt,
-  innerbottommargin=0pt,
-  skipbelow=\baselineskip,
-  linecolor=textColor!20!white,
-  fontcolor=textColor,
-  backgroundcolor=background
-]{foldable}%
-\fi
 
 %% pretty-expandable
-\iftikzexport\newenvironment{expandable}{%
+\newenvironment{expandable}{%
 }{%
 }
-\else
-\newmdenv[
-  font=\upshape,
-  outerlinewidth=3,
-  topline=false,
-  bottomline=false,
-  leftline=true,
-  rightline=false,
-  leftmargin=0,
-  innertopmargin=0pt,
-  innerbottommargin=0pt,
-  skipbelow=\baselineskip,
-  linecolor=black,
-]{expandable}%
-\fi
-%% \newenvironment{expandable}{%
-%% }{%
-%% }
 
 \newcommand{\unfoldable}[1]{#1}
 
