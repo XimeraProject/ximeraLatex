@@ -983,13 +983,17 @@ Interactive
 \DefineVerbatimEnvironment{sageOutput}{Verbatim}{numbers=left,frame=lines,label=SAGE-Output,labelposition=topline}
 
 
-
 \ifdefined\HCode
   \else
     \newwrite\myfile
     \immediate\openout\myfile=\jobname.jax
+\fi
+\ifdefined\HCode
+  \else
     \immediate\write\myfile{\unexpanded{\newenvironment}{prompt}{}{}}
-
+\fi
+\ifdefined\HCode
+  \else
 \let\@oldargdef\@argdef
 \long\def\@argdef#1[#2]#3{%
 \immediate\write\myfile{\unexpanded{\newcommand}{\unexpanded{#1}}[\unexpanded{#2}]{\unexpanded{#3}}}%

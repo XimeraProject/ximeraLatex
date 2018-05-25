@@ -1,14 +1,30 @@
 % \subsubsection{MathJax support}
 % When using mathjax, dump all the |\newcommand|s to a |.jax| file.
+%
+% First, create the |.jax| file.
 %    \begin{macrocode}
 %<*classXimera>
-
 \ifdefined\HCode
   \else
     \newwrite\myfile
     \immediate\openout\myfile=\jobname.jax
+\fi    
+%</classXimera>
+%    \end{macrocode}
+% From |only.dtx| we must also create |prompt| on the MathJax side.
+%    \begin{macrocode}
+%<*classXimera>
+\ifdefined\HCode
+  \else
     \immediate\write\myfile{\unexpanded{\newenvironment}{prompt}{}{}}
-
+\fi
+%</classXimera>
+%    \end{macrocode}
+% Redefine newcommand appropriately.
+%    \begin{macrocode}
+%<*classXimera>
+\ifdefined\HCode
+  \else
 \let\@oldargdef\@argdef
 \long\def\@argdef#1[#2]#3{%
 \immediate\write\myfile{\unexpanded{\newcommand}{\unexpanded{#1}}[\unexpanded{#2}]{\unexpanded{#3}}}%
