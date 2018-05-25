@@ -42,8 +42,8 @@
 %% src/xkcd.dtx  (with options: `classXimera')
 %% src/foldable.dtx  (with options: `classXimera')
 %% src/leash.dtx  (with options: `classXimera')
-%% src/jax.dtx  (with options: `classXimera')
 %% src/interactives/sagemath.dtx  (with options: `classXimera')
+%% src/jax.dtx  (with options: `classXimera')
 %% ------------:| ------------------------------------------------------------
 %%  ximeraLaTeX:| LaTeX classes for simultaneously writing print and online interactive materials.
 %%       Author:| Jim Fowler and Jeramiah Hocutt and Oscar Levin and Jason Nowell and Hans Parshall
@@ -140,6 +140,9 @@
 \RequirePackage{xkeyval}
 
 \RequirePackage{comment}
+\RequirePackage{gettitlestring}
+\RequirePackage{nameref}
+\RequirePackage{epstopdf}
 \ifdefined\HCode
 \RequirePackage{hyperref}
 \else
@@ -973,6 +976,13 @@ Interactive
 }
 
 
+\IfFileExists{sagetex.sty}{\RequirePackage{sagetex}}{}
+
+\DefineVerbatimEnvironment{sageCell}{Verbatim}{numbers=left,frame=lines,label=SAGE,labelposition=topline}
+
+\DefineVerbatimEnvironment{sageOutput}{Verbatim}{numbers=left,frame=lines,label=SAGE-Output,labelposition=topline}
+
+
 
 \ifdefined\HCode
   \else
@@ -990,13 +1000,6 @@ Interactive
 \renewcommand{\DeclareMathOperator}[2]{\@OldDeclareMathOperator{#1}{#2}\immediate\write\myfile{\unexpanded{\DeclareMathOperator}{\unexpanded{#1}}{\unexpanded{#2}}}}
 
 \fi
-\IfFileExists{sagetex.sty}{\RequirePackage{sagetex}}{}
-
-\DefineVerbatimEnvironment{sageCell}{Verbatim}{numbers=left,frame=lines,label=SAGE,labelposition=topline}
-
-\DefineVerbatimEnvironment{sageOutput}{Verbatim}{numbers=left,frame=lines,label=SAGE-Output,labelposition=topline}
-
-
 %% 
 %% Copyright (C) 2018 by Bart Snapp <bart.snapp@gmail.com> and Jim Fowler <kisonecat@gmail.com>
 %% 

@@ -51,3 +51,12 @@
 \usepackage{fancyvrb}
 %</cfgXimera>
 %    \end{macrocode}
+% Various packages must be loaded early to avoid polluting the |.jax|
+% file.
+%    \begin{macrocode}
+%<*classXimera>
+\RequirePackage{gettitlestring}
+\RequirePackage{nameref}
+\RequirePackage{epstopdf}
+%</classXimera>
+%    \end{macrocode}
