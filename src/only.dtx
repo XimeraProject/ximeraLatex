@@ -1,16 +1,21 @@
+% \subsubsection{Only}
+
+% \DescribeEnv{prompt}{The prompt part for mathmode}
 %    \begin{macrocode}
 %<*classXimera>
-%% Prompt environment
 \ifhandout
 	\NewEnviron{prompt}{}
-%	\newenvironment{prompt}{\suppress}{\endsuppress} -- Currently breaks when put in mathemode
+% Currently breaks when put in mathmode!
+%	\newenvironment{prompt}{\suppress}{\endsuppress} 
 \else
 	\newenvironment{prompt}
     	{\bgroup\color{gray!50!black}}
         {\egroup}
 \fi
+%    \end{macrocode}
 
-%% onlineOnly environment
+% \DescribeEnv{onlineOnly}{Only display it online}
+%    \begin{macrocode}
 \ifhandout
 	\NewEnviron{onlineOnly}{
 	\iftikzexport

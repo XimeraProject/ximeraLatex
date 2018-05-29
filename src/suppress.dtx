@@ -1,13 +1,11 @@
-%    \begin{macrocode}
-%<*classXimera>
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%  Suppress Command  %%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%   The suppress command is a good way to suppress output without
+% \subsubsection{Suppress}
+% \DescribeEnv{suppress}{The suppress environment is a good way to suppress output without
 % commenting it.  This way we can avoid many of the places we use
 % environ package and this should also avoid most of the verbatim
-% conflicts.  Jason Nowell -- Code adapted from syntonly.sty
-
+% conflicts.}
+% This is code adapted from |syntonly.sty|.
+%    \begin{macrocode}
+%<*classXimera>
 \font\dummyft@=dummy \relax
 \def\suppress{%
   \begingroup\par

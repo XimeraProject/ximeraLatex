@@ -5,6 +5,13 @@
 %% The original source files were:
 %%
 %% ximeraLaTeX.dtx  (with options: `htXourse')
+%% src/logo.dtx  (with options: `htXourse')
+%% src/metadata.dtx  (with options: `htXourse')
+%% src/activity.dtx  (with options: `htXourse')
+%% src/sectioning.dtx  (with options: `htXourse')
+%% src/graded.dtx  (with options: `htXourse')
+%% src/interactives/video.dtx  (with options: `htXourse')
+%% src/ending.dtx  (with options: `htXourse')
 %% ------------:| ------------------------------------------------------------
 %%  ximeraLaTeX:| LaTeX classes for simultaneously writing print and online interactive materials.
 %%       Author:| Jim Fowler and Jeramiah Hocutt and Oscar Levin and Jason Nowell and Hans Parshall
@@ -19,6 +26,49 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+\Configure{@HEAD}{%
+  \HCode{<meta name="og:image" content="}%
+  \xourse@logo%
+  \HCode{" />\Hnewline}}
+
+
+
+\Configure{@HEAD}{\HCode{<meta name="description" content="xourse" />\Hnewline}}
+
+
+\renewcommand\activity[2][]{%
+\ifvmode \IgnorePar\fi \EndP\HCode{<a class="activity card \activitystyle" href="#2" data-options="#1">#2</a>}\IgnoreIndent%
+}
+
+
+
+
+\renewcommand\practice[2][]{%
+  \ifvmode\IgnorePar\fi\EndP%
+  \HCode{<a class="activity card practice" href="#2" data-options="#1">#2</a>}%
+  \IgnoreIndent%
+}
+
+\newcounter{ximera@part}
+\setcounter{ximera@part}{0}
+\renewcommand\part[1]{%
+\stepcounter{ximera@part}%
+\ifvmode \IgnorePar\fi \EndP%
+\HCode{<h1 id="part\arabic{ximera@part}" class="card part">#1</h1>}%
+\IgnoreIndent%
+}
+\renewenvironment{graded}[1]{%
+\ifvmode \IgnorePar\fi \EndP\HCode{<div class="graded" data-weight="#1">}\IgnoreIndent%
+}{
+\ifvmode \IgnorePar\fi \EndP\HCode{</div>}}\IgnoreIndent%
+}
+\renewcommand\youtube[1]{%
+\ifvmode \IgnorePar\fi \EndP\HCode{<a class="youtube" href="https://www.youtube.com/watch?v=#1">#1</a>}\IgnoreIndent%
+}
+
+\Hinput{xourse}
 
 %% 
 %% Copyright (C) 2018 by Bart Snapp <bart.snapp@gmail.com> and Jim Fowler <kisonecat@gmail.com>

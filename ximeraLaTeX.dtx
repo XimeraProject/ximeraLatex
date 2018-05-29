@@ -69,12 +69,15 @@ Running "make install" installs the files in the local TeX tree.
     \from{ximeraLaTeX.dtx}{classXimera}
     \from{src/banner.dtx}{classXimera}    
     \from{src/options.dtx}{classXimera}
-    \from{src/tikzexport.dtx}{classXimera}
     \from{src/packages.dtx}{classXimera}
-    \from{src/pagesize.dtx}{classXimera}
+    \from{src/tikzexport.dtx}{classXimera}
+    \from{src/pagesetup.dtx}{classXimera}
     \from{src/metadata.dtx}{classXimera}
     \from{src/outcomes.dtx}{classXimera}
     \from{src/macros.dtx}{classXimera}
+    \from{src/theorems.dtx}{classXimera}    
+    \from{src/enumerate.dtx}{classXimera}    
+    \from{src/proof.dtx}{classXimera}    
     \from{src/suppress.dtx}{classXimera}
     \from{src/only.dtx}{classXimera}
     \from{src/problem.dtx}{classXimera}
@@ -82,7 +85,14 @@ Running "make install" installs the files in the local TeX tree.
     \from{src/abstract.dtx}{classXimera}
     \from{src/title.dtx}{classXimera}
     \from{src/image.dtx}{classXimera}
-    \from{src/interactives.dtx}{classXimera}
+    \from{src/interactives/javascript.dtx}{classXimera}    
+    \from{src/interactives/include.dtx}{classXimera}
+    \from{src/interactives/geogebra.dtx}{classXimera}
+    \from{src/interactives/desmos.dtx}{classXimera}
+    \from{src/interactives/google.dtx}{classXimera}            
+    \from{src/interactives/graph.dtx}{classXimera}    
+    \from{src/link.dtx}{classXimera}    
+    \from{src/interactives/video.dtx}{classXimera}    
     \from{src/answer.dtx}{classXimera}
     \from{src/choice.dtx}{classXimera}
     \from{src/solution.dtx}{classXimera}
@@ -94,19 +104,76 @@ Running "make install" installs the files in the local TeX tree.
     \from{src/xkcd.dtx}{classXimera}
     \from{src/foldable.dtx}{classXimera}
     \from{src/leash.dtx}{classXimera}
+    \from{src/interactives/sagemath.dtx}{classXimera}        
     \from{src/jax.dtx}{classXimera}
   }
   \file{xourse.cls}{
     \from{ximeraLaTeX.dtx}{classXourse}
     \from{src/optionsxourse.dtx}{classXourse}
     \from{src/activity.dtx}{classXourse}
-    \from{src/xoursetoc.dtx}{classXourse}
+    \from{src/sectioning.dtx}{classXourse}
     \from{src/graded.dtx}{classXourse}
     \from{src/logo.dtx}{classXourse}
   }
-  \file{ximera.cfg}{\from{ximeraLaTeX.dtx}{cfgXimera}}
-  \file{ximera.4ht}{\from{ximeraLaTeX.dtx}{htXimera}}
-  \file{xourse.4ht}{\from{ximeraLaTeX.dtx}{htXourse}}
+}
+\generate{
+  \file{ximera.cfg}{
+    \from{ximeraLaTeX.dtx}{cfgXimera}
+    \from{src/pagesetup.dtx}{cfgXimera}
+    \from{src/packages.dtx}{cfgXimera}
+    \from{src/jax.dtx}{cfgXimera}
+    \from{src/sectioning.dtx}{cfgXourse}        
+    \from{src/title.dtx}{cfgXimera}
+    \from{src/abstract.dtx}{cfgXimera}        
+    \from{src/image.dtx}{cfgXimera}
+    \from{src/outcomes.dtx}{cfgXimera}
+    \from{src/textcolor.dtx}{cfgXimera}
+    \from{src/verbatim.dtx}{cfgXimera}
+    \from{src/html.dtx}{cfgXimera}    
+    \from{src/ending.dtx}{cfgXimera}        
+  }
+}
+\generate{
+  \file{ximera.4ht}{
+    \from{ximeraLaTeX.dtx}{htXimera}
+    \from{src/pagesetup.dtx}{htXimera}    
+    \from{src/title.dtx}{htXimera}
+    \from{src/problem.dtx}{htXimera}
+    \from{src/macros.dtx}{htXimera}
+    \from{src/theorems.dtx}{htXimera}    
+    \from{src/image.dtx}{htXimera}               
+    \from{src/dialogue.dtx}{htXimera}
+    \from{src/foldable.dtx}{htXimera}
+    \from{src/interactives/video.dtx}{htXimera}
+    \from{src/xkcd.dtx}{htXimera}
+    \from{src/link.dtx}{htXimera}
+    \from{src/interactives/graph.dtx}{htXimera}
+    \from{src/answer.dtx}{htXimera}    
+    \from{src/choice.dtx}{htXimera}    
+    \from{src/freeresponse.dtx}{htXimera}
+    \from{src/interactives/javascript.dtx}{htXimera}    
+    \from{src/interactives/include.dtx}{htXimera}
+    \from{src/interactives/geogebra.dtx}{htXimera}
+    \from{src/interactives/desmos.dtx}{htXimera}
+    \from{src/interactives/google.dtx}{htXimera}            
+    \from{src/feedback.dtx}{htXimera}
+    \from{src/leash.dtx}{htXimera}
+    \from{src/labels.dtx}{htXimera}    
+    \from{src/interactives/sagemath.dtx}{htXimera}
+    \from{src/ending.dtx}{htXimera}    
+  }
+}
+\generate{
+  \file{xourse.4ht}{
+    \from{ximeraLaTeX.dtx}{htXourse}
+    \from{src/logo.dtx}{htXourse}
+    \from{src/metadata.dtx}{htXourse}
+    \from{src/activity.dtx}{htXourse}
+    \from{src/sectioning.dtx}{htXourse}    
+    \from{src/graded.dtx}{htXourse}                             
+    \from{src/interactives/video.dtx}{htXourse}             
+    \from{src/ending.dtx}{htXourse}         
+  }
 }
 %</install>
 %<install>\endbatchfile
@@ -151,36 +218,56 @@ Running "make install" installs the files in the local TeX tree.
 \DocInput{\jobname.dtx}
 \section{ximera.cls}
 \DocInput{src/options.dtx}
-\DocInput{src/tikzexport.dtx}
 \DocInput{src/packages.dtx}
-\DocInput{src/pagesize.dtx}
-\DocInput{src/metadata.dtx}
-\DocInput{src/outcomes.dtx}
+\DocInput{src/pagesetup.dtx}
+\subsection{Structure}
 \DocInput{src/macros.dtx}
-\DocInput{src/suppress.dtx}
-\DocInput{src/only.dtx}
+\DocInput{src/theorems.dtx}
+\DocInput{src/enumerate.dtx}
+\DocInput{src/proof.dtx}
 \DocInput{src/problem.dtx}
 \DocInput{src/hints.dtx}
-\DocInput{src/abstract.dtx}
-\DocInput{src/title.dtx}
-\DocInput{src/image.dtx}
-\DocInput{src/interactives.dtx}
-\DocInput{src/answer.dtx}
-\DocInput{src/choice.dtx}
 \DocInput{src/solution.dtx}
-\DocInput{src/feedback.dtx}
-\DocInput{src/freeresponse.dtx}
 \DocInput{src/verbatim.dtx}
 \DocInput{src/dialogue.dtx}
 \DocInput{src/instructornotes.dtx}
-\DocInput{src/xkcd.dtx}
+\DocInput{src/only.dtx}
 \DocInput{src/foldable.dtx}
 \DocInput{src/leash.dtx}
+\subsection{Document metadata}
+\DocInput{src/metadata.dtx}
+\DocInput{src/abstract.dtx}
+\DocInput{src/title.dtx}
+\DocInput{src/outcomes.dtx}
+\DocInput{src/labels.dtx}
+\subsection{Images}
+\DocInput{src/image.dtx}
+\DocInput{src/tikzexport.dtx}
+\DocInput{src/xkcd.dtx}
+\subsection{Interactives}
+\DocInput{src/interactives/include.dtx}
+\DocInput{src/interactives/google.dtx}
+\DocInput{src/interactives/geogebra.dtx}
+\DocInput{src/interactives/desmos.dtx}
+\DocInput{src/interactives/graph.dtx}
+\DocInput{src/interactives/video.dtx}
+\DocInput{src/interactives/javascript.dtx}
+\DocInput{src/interactives/sagemath.dtx}
+\subsection{Answerables}
+\DocInput{src/answer.dtx}
+\DocInput{src/choice.dtx}
+\DocInput{src/freeresponse.dtx}
+\DocInput{src/feedback.dtx}
+\subsection{Support for the web}
 \DocInput{src/jax.dtx}
+\DocInput{src/html.dtx}
+\subsection{Tools}
+\DocInput{src/suppress.dtx}
+\DocInput{src/ending.dtx}
 \section{xourse.cls}
 \DocInput{src/optionsxourse.dtx}
 \DocInput{src/activity.dtx}
-\DocInput{src/xoursetoc.dtx}
+\DocInput{src/sectioning.dtx}
 \DocInput{src/graded.dtx}
 \DocInput{src/logo.dtx}
 \end{document}
@@ -190,10 +277,10 @@ Running "make install" installs the files in the local TeX tree.
 % \GetFileInfo{\jobname.dtx}
 % \DoNotIndex{\newcommand,\newenvironment}
 % 
-%\title{\textsf{ximera\LaTeX} --- \LaTeX\ classes for simultaneously writing print and online interactive materials.\thanks{This file
+%\title{\textsf{ximera\LaTeX} --- Simultaneous write print and online interactive materials.\thanks{This file
 %   describes version \fileversion, last revised \filedate.}
 %}
-%\author{Jim Fowler and Jeramiah Hocutt and Oscar Levin and Jason Nowell and Hans Parshall and Bart Snapp}
+%\author{Jim Fowler \and Jeramiah Hocutt \and Oscar Levin \and Jason Nowell \and Hans Parshall \and Bart Snapp}
 %\date{Released \filedate}
 %
 %\maketitle
@@ -201,16 +288,18 @@ Running "make install" installs the files in the local TeX tree.
 %\changes{v1.00}{2018/10/17}{First public release}
 %
 % \begin{abstract}
-% The \textsf{ximera} class aids in the creation of handouts,
-% worksheets, exercises, and sections of textbooks to be used either
-% individually or ``glued'' together via a \textsf{xourse} file. All
-% \textsf{ximera} documents can be deployed in an online interactive
-% form via \texttt{xake} See: \href{https://ximera.osu.edu}{Ximera Project} and the source code on \href{https://github.com/XimeraProject}{GitHub}.
+%   ``\textsf{Ximera} begins where \TeX\ ends.''  The \textsf{ximera}
+%   class aids in the creation of handouts, worksheets, exercises, and
+%   sections of textbooks to be used either individually or ``glued''
+%   together via a \textsf{xourse} file. All \textsf{ximera} documents
+%   can be deployed in an online interactive form via \texttt{xake}
+%   See: \href{https://ximera.osu.edu}{Ximera Project} and the source
+%   code on \href{https://github.com/XimeraProject}{GitHub}.
 % \end{abstract}
 %
 % \section{Introduction}
-% \section{xourse.cls}
 %
+
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
