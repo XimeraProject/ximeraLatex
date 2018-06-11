@@ -1,7 +1,5 @@
 \ProvidesPackage{ConvertTemplate}
 % This package is designed to convert the "Template for Teachers" that uses the "\buildassess" command, to a real ximera document.
-\let\procedure\relax
-\let\endprocedure\relax
 
 %%%%%%%%%%%%%%%%%%%%%
 % Required Packages %
@@ -120,7 +118,6 @@
     %        Master Problem Answer
     %    }
     \FirstSteptrue
-%    \stepcounter{QNumb}
     \begin{problem}
     #1
     \ifHW
@@ -135,6 +132,7 @@
             }%
     \else% If we are making an assessment, then don't display anything but the original question.
         \vfill
+        \end{problem}
     \fi
 %    \end{Problem}
 }

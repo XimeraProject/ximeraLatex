@@ -1,3 +1,8 @@
+
+% First we will define a command that will *correctly* output a sage string without this text{textt{}} nonsense.
+\edef\sagestring#1{$\text{\noexpand\sagestr{#1}}$}
+
+
 \begin{sagesilent}
 #####Define default Sage variables.
 #Default function variables

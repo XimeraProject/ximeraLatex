@@ -24,6 +24,6 @@
 \RequirePackage{Filter}
 \RequirePackage{TagMasterList}
 \RequirePackage{ProblemSelection}
-\RequirePackage{Config}
+\IfFileExists{Config.sty}{\RequirePackage{Config}}{}
 \RequirePackage{shuffle}
 \RequirePackage{randomize}
