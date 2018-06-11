@@ -67,27 +67,17 @@
 %    \begin{macrocode}
 \newcounter{problem} %% for the main problem
 
-\newcommand{\problemNumber}{
-
-% First we determine if we have a counter for this question depth level.
-% -- Can probably replace this with Make@Counter at some point -- Jason
-
-% Check to see if counter exists
-\ifcsname c@depth\Roman{problem@Depth}Count\endcsname
-	%If so, do nothing.
-	\else
-	%If not, create it.
-	\expandafter\newcounter{depth\Roman{problem@Depth}Count}
-	\expandafter\setcounter{depth\Roman{problem@Depth}Count}{0}
-	\fi
-
-\expandafter\stepcounter{depth\Roman{problem@Depth}Count}
-% The first problem depth, what use to be "\theproblem".
-\arabic{depthICount}
-\forloop{Iteration@probCnt}{2}{\arabic{Iteration@probCnt} < \numexpr \value{problem@Depth} + 1 \relax}{%
-% Get the problem number of the next depth level and append it with a ".".
-.\expandafter\arabic{depth\Roman{Iteration@probCnt}Count}
-}
+\newcommand{\problemNumber}{% First we determine if we have a counter for this question depth level. Can probably replace this with Make@Counter at some point -- Jason
+\ifcsname c@depth\Roman{problem@Depth}Count\endcsname%% Check to see if counter exists. If so, do nothing.
+	\else%If not, create it.
+	\expandafter\newcounter{depth\Roman{problem@Depth}Count}%
+	\expandafter\setcounter{depth\Roman{problem@Depth}Count}{0}%
+	\fi%
+\expandafter\stepcounter{depth\Roman{problem@Depth}Count}% The first problem depth, what use to be "\theproblem".
+\arabic{depthICount}%
+\forloop{Iteration@probCnt}{2}{\arabic{Iteration@probCnt} < \numexpr \value{problem@Depth} + 1 \relax}{%% Get the problem number of the next depth level and append it with a ".".
+.\expandafter\arabic{depth\Roman{Iteration@probCnt}Count}%
+}%
 }
 
 
@@ -112,10 +102,9 @@
 \begin{trivlist}%
 \item%
   [%
-	\hskip\labelsep\sffamily\bfseries% 
-	#2%
-	\problemNumber% Determine the correct number of the problem, and the format of that number.
-	]
+    \hskip\labelsep\sffamily\bfseries
+    #2 \problemNumber% Determine the correct number of the problem, and the format of that number.
+	]%
 \slshape
 }
 
