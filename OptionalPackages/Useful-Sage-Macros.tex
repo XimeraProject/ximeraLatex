@@ -1,6 +1,6 @@
 
-% First we will define a command that will *correctly* output a sage string without this text{textt{}} nonsense.
-\edef\sagestring#1{$\text{\noexpand\sagestr{#1}}$}
+% First we will define a command that will *correctly* output a sage string without this text{textt{}} nonsense when in mathemode. When in non-mathmode, use \sagestr{} to call a proper string.
+\edef\sagestring#1{\text{\noexpand\sagestr{#1}}}
 
 
 \begin{sagesilent}
