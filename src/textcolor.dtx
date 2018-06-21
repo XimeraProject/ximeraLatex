@@ -1,8 +1,8 @@
 % Make \textcolor work using https://tex.stackexchange.com/questions/390127/textcolor-with-tex4ht
 %    \begin{macrocode}
 %<*cfgXimera>
+\makeatletter
 \Configure{textcolor}{\HCode{<span style="color:\#\tsf@color;">}}{\HCode{</span>}}
-
 % redefine \textcolor command
 \let\oldtextcolor\textcolor
 
@@ -15,5 +15,6 @@
   % call the original command
   \oldtextcolor{#1}{#2}%
 }%
+\makeatother
 %</cfgXimera>
 %    \end{macrocode}
