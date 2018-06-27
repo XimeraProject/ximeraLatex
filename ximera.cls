@@ -811,6 +811,32 @@ Interactive
 \fi
 
 
+%% solution environment
+\ifhandout % what follows is handout behavior
+\newenvironment{solution}%
+	       {%
+		 \setbox0\vbox\bgroup
+	       }
+               {%
+		 \egroup
+	       }
+\else
+\newenvironment{solution}%
+	       {%
+		 \begin{trivlist}
+		 \item[\hskip \labelsep\bfseries Solution:\hspace{2ex}]
+	       }
+	       % %% line at the bottom} 
+	       {
+			\end{trivlist}
+		 \par\addvspace{.5ex}\nobreak\noindent\hung
+	       }
+\fi
+
+
+
+
+
 \newboolean{given} %% required for freeResponse
 \setboolean{given}{true} %% could be replaced by a key=value pair later if needed
 
