@@ -110,6 +110,17 @@
 \xakefalse
 \DeclareOption{xake}{\xaketrue}
 
+\newif\iftikzexport
+\tikzexportfalse
+\DeclareOption{tikzexport}{%
+  \tikzexporttrue%
+  \handoutfalse%
+  \numbersfalse%
+  \newpagefalse%
+  \hintsfalse%
+  \nooutcomesfalse%
+}
+
 \DeclareOption*{%
   \PassOptionsToClass{\CurrentOption}{article}%
 }
@@ -149,9 +160,6 @@
 \RequirePackage[pdfpagelabels,colorlinks=true,allcolors=blue!30!black]{hyperref}
 \pdfstringdefDisableCommands{\def\hskip{}}%% quiets warning
 \fi
-\newif\iftikzexport
-\tikzexportfalse
-
 \ifdefined\HCode
   \tikzexporttrue
 \fi
@@ -981,9 +989,13 @@ Interactive
 %% 
 %% https://github.com/XimeraProject/ximeraLatex
 %% 
-%% This work consists of the file ximeraLatex.dtx source files and a Makefile.
+%% This work consists of the file ximeraLatex.dtx, the associated files
+%% under src/, and a Makefile.
+%% 
 %% Running "make" generates the derived files README, ximeraLaTeX.pdf, ximera.cls, xourse.cls.
+%% 
 %% Running "make inst" installs the files in the user's TeX tree.
+%% 
 %% Running "make install" installs the files in the local TeX tree.
 %% 
 %%
