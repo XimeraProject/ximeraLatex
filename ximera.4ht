@@ -49,7 +49,7 @@
 \DisableLigatures[f]{encoding=*}
 \RenewEnviron{html}{\HCode{\BODY}}
 \Configure{@HEAD}{\HCode{<meta name="author" content="}\@author\HCode{" />\Hnewline}}
-\def\and{ and }
+\def\and{and }
 
 \renewcommand{\maketitle}{}
 
@@ -195,8 +195,8 @@
 }{\HCode{</div>}\IgnoreIndent}
 \ConfigureEnv{multipleChoice}{}{}{}{}
 
-\renewenvironment{multipleChoice*}{\refstepcounter{problem}}{}%
-\ConfigureEnv{multipleChoice*}{\stepcounter{identification}\IgnorePar\HCode{<span class="word-choice" id="word-choice\arabic{identification}">}}{\HCode{</span>}\IgnoreIndent}{}{}
+\renewenvironment{multipleChoice@}{\refstepcounter{problem}}{}%
+\ConfigureEnv{multipleChoice@}{\stepcounter{identification}\IgnorePar\HCode{<span class="word-choice" id="word-choice\arabic{identification}">}}{\HCode{</span>}\IgnoreIndent}{}{}
 
 
 

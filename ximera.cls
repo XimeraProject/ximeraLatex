@@ -67,8 +67,8 @@
 \def\w{\m{::}}\def\t{\m{:::}}\def\s{\m{ }}\def\n{\m{^^J}}\def\u{::'}\def\d{'::}\def\v{:::::}
 \n
 \m{\d.}\s\m{.\u}\w\m{}\m{\v}\s\s\m{\v}\m{}\m{.\v\v\v::::.}\s\m{}\t\n
-\s\m{\d.\u}\s\w\t\t\s\t\t\m{:}\s\s\s\s\s\s\s\s\t\s\m{\u::}\n
-\s\s\t\s\s\w\t\m{}\t\t\m{}\t\m{\v\v}\m{.\v:\u}\m{}\m{\u}\m{\d}\n
+\s\m{\d.\u}\s\w\t\t\s\t\t\w\m{}\s\s\s\s\s\s\s\t\s\m{\u::}\n
+\s\s\t\s\s\w\t\m{}\t\t\m{}\t\m{ ::::\v}\m{.\v:\u}\m{}\m{\u}\m{\d}\n
 \s\m{.\u::.}\s\w\t\m{}\t\t\m{}\t\w\s\s\s\s\w\m{}\m{\d.}\s\m{\u}\s\m{\d}\n
 \m{.\u}\s\m{\d.}\w\t\s\m{':\u}\s\t\m{\d\v::}\w\s\m{}\m{\d.\u}\s\s\m{\d}\n
 \n
@@ -368,20 +368,17 @@
 }%
 \newcounter{problem} %% for the main problem
 
-\newcommand{\problemNumber}{
-
-
-\ifcsname c@depth\Roman{problem@Depth}Count\endcsname
-\else
-\expandafter\newcounter{depth\Roman{problem@Depth}Count}
-\expandafter\setcounter{depth\Roman{problem@Depth}Count}{0}
-\fi
-
-\expandafter\stepcounter{depth\Roman{problem@Depth}Count}
-\arabic{depthICount}
-\forloop{Iteration@probCnt}{2}{\arabic{Iteration@probCnt} < \numexpr \value{problem@Depth} + 1 \relax}{%
-.\expandafter\arabic{depth\Roman{Iteration@probCnt}Count}
-}
+\newcommand{\problemNumber}{% First we determine if we have a counter for this question depth level. Can probably replace this with Make@Counter at some point -- Jason
+\ifcsname c@depth\Roman{problem@Depth}Count\endcsname%% Check to see if counter exists. If so, do nothing.
+\else%If not, create it.
+\expandafter\newcounter{depth\Roman{problem@Depth}Count}%
+\expandafter\setcounter{depth\Roman{problem@Depth}Count}{0}%
+\fi%
+\expandafter\stepcounter{depth\Roman{problem@Depth}Count}% The first problem depth, what use to be "\theproblem".
+\arabic{depthICount}%
+\forloop{Iteration@probCnt}{2}{\arabic{Iteration@probCnt} < \numexpr \value{problem@Depth} + 1 \relax}{%% Get the problem number of the next depth level and append it with a ".".
+.\expandafter\arabic{depth\Roman{Iteration@probCnt}Count}%
+}%
 }
 
 %%%%%% Configure various problem environment commands
@@ -396,10 +393,9 @@
 \begin{trivlist}%
 \item%
   [%
-\hskip\labelsep\sffamily\bfseries%
-#2%
-\problemNumber% Determine the correct number of the problem, and the format of that number.
-]
+    \hskip\labelsep\sffamily\bfseries
+    #2 \problemNumber% Determine the correct number of the problem, and the format of that number.
+]%
 \slshape
 }
 
@@ -494,7 +490,7 @@
 \let\@emptyauthor\@author
 \def\author#1{\gdef\@author{#1}}
 \def\@author{\@latex@warning@no@line{No \noexpand\author given}}
-\def\and{ and }
+\def\and{and }
 
 \let\title\relax
 \newcommand{\title}[1][]{{\protected@xdef\@pretitle{#1}}\protected@xdef\@title}
@@ -697,7 +693,7 @@ Interactive
 \end{trivlist}
 }
 
-\newenvironment{multipleChoice*}[1][]
+\newenvironment{multipleChoice@}[1][]
 {% Environment Start Code
 \setkeys{multipleChoice}{#1}%
 \ifthenelse{\equal{\mc@id}{}}% Test if \mc@ID is empty. This is not a robust check, is this dangerous? -- Jason
@@ -711,20 +707,20 @@ Interactive
 \end{enumerate*}
 }
 
-\newenvironment{multipleChoice**}[1][]{}{}
+\newenvironment{multipleChoice@@}[1][]{}{}
 
 
 \newcommand{\wordChoice}[1]{%
 \let\choicetemp\choice% Assign a "choicetemp" command to duplicate choice.
 \ifwordchoicegiven
 \def\choice{\otherchoice}
-\begin{multipleChoice**}
+\begin{multipleChoice@@}
 #1
-\end{multipleChoice**}
+\end{multipleChoice@@}
 \else
-\begin{multipleChoice*}
+\begin{multipleChoice@}
 #1
-\end{multipleChoice*}
+\end{multipleChoice@}
 \fi
 \let\choice\choicetemp% Now that choicetmp has been manipulated to what we want, replace choice with it.
 }
@@ -735,8 +731,16 @@ Interactive
 
 
 
-%% instructorNotes environment
+%% solution environment
 \ifhandout % what follows is handout behavior
+\newenvironment{solution}%
+       {%
+ \setbox0\vbox\bgroup
+       }
+               {%
+ \egroup
+       }
+\else
 \newenvironment{solution}%
        {%
  \begin{trivlist}
@@ -747,15 +751,7 @@ Interactive
 \end{trivlist}
  \par\addvspace{.5ex}\nobreak\noindent\hung
        }
-       \else
-       \newenvironment{solution}%
-      {%
-        \setbox0\vbox\bgroup
-      }
-      {%
-  \egroup
-}
-                \fi
+\fi
 
 \newcommand{\PH@Command}{}
 \newenvironment{validator}[1][]{
@@ -774,7 +770,7 @@ Interactive
 (\texttt{\detokenize\expandafter{\PH@Command}}):% Format (and detokenize) the condition for feedback to trigger
 \hspace{2ex}]\small\slshape% Insert some space before the actual feedback given.
 }{
-\end{trivlist}
+\end{trivlist} 
 }
 
 \fi
