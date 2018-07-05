@@ -490,7 +490,7 @@
 \let\@emptyauthor\@author
 \def\author#1{\gdef\@author{#1}}
 \def\@author{\@latex@warning@no@line{No \noexpand\author given}}
-\def\and{ and }
+\def\and{and }
 
 \let\title\relax
 \newcommand{\title}[1][]{{\protected@xdef\@pretitle{#1}}\protected@xdef\@title}
@@ -770,7 +770,7 @@ Interactive
 (\texttt{\detokenize\expandafter{\PH@Command}}):% Format (and detokenize) the condition for feedback to trigger
 \hspace{2ex}]\small\slshape% Insert some space before the actual feedback given.
 }{
-\end{trivlist}
+\end{trivlist} 
 }
 
 \fi

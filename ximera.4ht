@@ -49,7 +49,7 @@
 \DisableLigatures[f]{encoding=*}
 \RenewEnviron{html}{\HCode{\BODY}}
 \Configure{@HEAD}{\HCode{<meta name="author" content="}\@author\HCode{" />\Hnewline}}
-\def\and{ and }
+\def\and{and }
 
 \renewcommand{\maketitle}{}
 
