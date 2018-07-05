@@ -59,7 +59,7 @@
 
 \newcommand{\ConfigureQuestionEnv}[2]{%
 \renewenvironment{#1}{\refstepcounter{problem}}{}%
-\ConfigureEnv{#1}{\stepcounter{identification}\ifvmode \IgnorePar\fi \EndP\HCode{<div role="article" class="problem-environment #2" id="problem\arabic{identification}">}}{\HCode{</div>}\IgnoreIndent}{}{}%
+\ConfigureEnv{#1}{\stepcounter{identification}\ifvmode \IgnorePar\fi \EndP\HCode{<div role="article" class="problem-environment #2" id="problem\arabic{identification}">}}{\ifvmode \IgnorePar\fi \EndP\HCode{</div>}\IgnoreIndent}{}{}%
 }
 
 \ConfigureQuestionEnv{problem}{problem}
@@ -195,8 +195,8 @@
 }{\HCode{</div>}\IgnoreIndent}
 \ConfigureEnv{multipleChoice}{}{}{}{}
 
-\renewenvironment{multipleChoice*}{\refstepcounter{problem}}{}%
-\ConfigureEnv{multipleChoice*}{\stepcounter{identification}\IgnorePar\HCode{<span class="word-choice" id="word-choice\arabic{identification}">}}{\HCode{</span>}\IgnoreIndent}{}{}
+\renewenvironment{multipleChoice@}{\refstepcounter{problem}}{}%
+\ConfigureEnv{multipleChoice@}{\stepcounter{identification}\IgnorePar\HCode{<span class="word-choice" id="word-choice\arabic{identification}">}}{\HCode{</span>}\IgnoreIndent}{}{}
 
 
 
