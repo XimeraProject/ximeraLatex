@@ -1,0 +1,115 @@
+% \subsubsection{MathJax support}
+% When using mathjax, dump all the |\newcommand|s to a |.jax| file.
+%
+% First, create the |.jax| file.
+%    \begin{macrocode}
+%<*classXimera>
+\ifdefined\HCode
+  \else
+    \newwrite\myfile
+    \immediate\openout\myfile=\jobname.jax
+\fi    
+%</classXimera>
+%    \end{macrocode}
+% From |only.dtx| we must also create |prompt| on the MathJax side.
+%    \begin{macrocode}
+%<*classXimera>
+\ifdefined\HCode
+  \else
+    \immediate\write\myfile{\unexpanded{\newenvironment}{prompt}{}{}}
+\fi
+%</classXimera>
+%    \end{macrocode}
+% Redefine newcommand appropriately.
+%    \begin{macrocode}
+%<*classXimera>
+\ifdefined\HCode
+  \else
+\let\@oldargdef\@argdef
+\long\def\@argdef#1[#2]#3{%
+\immediate\write\myfile{\unexpanded{\newcommand}{\unexpanded{#1}}[\unexpanded{#2}]{\unexpanded{#3}}}%
+\@oldargdef#1[#2]{#3}%
+}
+
+\let\@OldDeclareMathOperator\DeclareMathOperator
+\renewcommand{\DeclareMathOperator}[2]{\@OldDeclareMathOperator{#1}{#2}\immediate\write\myfile{\unexpanded{\DeclareMathOperator}{\unexpanded{#1}}{\unexpanded{#2}}}}
+    
+\fi
+%</classXimera>
+%    \end{macrocode}
+% Include the jax'ed newcommands
+%    \begin{macrocode}
+%<*cfgXimera>
+% Remove commands that use @
+\immediate\write18{sed -i "/@/d" \jobname.jax}
+% Replace ##1 with #1 and so forth
+\immediate\write18{sed -i "s/\string#\string#\string\\([0-9]\string\\)/\string#\string\\1/g" \jobname.jax}
+
+\Configure{BVerbatimInput}{}{}{}{}
+
+\Configure{verbatiminput}{}{}{}{}
+
+% Instead of a nonbreaking space, use a standard space
+\makeatletter
+\def\FV@Space{\space}
+\makeatother
+
+% Include the mathjax newcommands in a math/tex script right at the beginning of the body
+\Configure{BODY}{%
+\HCode{<body>\Hnewline}%
+\Tg<div class="preamble">%
+\Tg<script type="math/tex">%
+\BVerbatimInput{\jobname.jax}%
+\Tg</script>%
+\IfFileExists{\jobname.ids}{\HCode{<script type="text/javascript">\Hnewline}%
+\BVerbatimInput{\jobname.ids}%
+\HCode{</script>\Hnewline}%
+\Tg</div>%
+}{}
+}{%
+\HCode{</body>\Hnewline}%
+}
+%    \end{macrocode}
+% Now I just need to add a newcommand command which outputs the
+% appropriate newcommands to MathJax; then this should be "good
+% enough" for our purposes.
+%    \begin{macrocode}
+\newtoks\eqtoks
+\def\AltMath#1${\eqtoks{#1}%
+        \HCode{<script type="math/tex">\the\eqtoks</script>}$}
+\Configure{$}{}{}{\expandafter\AltMath}
+
+\def\AltlMathI#1\){\eqtoks{#1}%
+        \HCode{<script type="math/tex">\the\eqtoks</script>}\)}
+\Configure{()}{\AltlMathI}{}
+
+\def\AltlDisplay#1\]{\eqtoks{#1}%
+        \HCode{<script type="math/tex; mode=display">\the\eqtoks</script>}\]}
+\Configure{[]}{\AltlDisplay}{}
+
+\def\AltlDisplayI#1$${\eqtoks{#1}%
+       \HCode{<script type="math/tex; mode=display">\the\eqtoks</script>}$$}
+\Configure{$$}{}{}{\expandafter\AltlDisplayI}  
+%    \end{macrocode}
+% Need to turn off htmlpar too, as expained in http://tex.stackexchange.com/questions/204930/vertical-spaces-in-htlatex-scriptenv
+%    \begin{macrocode}
+\newcommand\VerbMath[1]{%
+\renewenvironment{#1}{\NoFonts}{\EndNoFonts}
+\ScriptEnv{#1}{\ifvmode \IgnorePar\fi \EndP\HCode{<script type="math/tex; mode=display"> \string\begin{#1}\Hnewline}\HtmlParOff}{\HtmlParOn\HCode{\string\end{#1}</script>}}
+}
+%    \end{macrocode}
+% This is a fix for the LAODE book, which uses matlabEquation as if it were an equation
+%    \begin{macrocode}
+\ScriptEnv{matlabEquation}{\ifvmode \IgnorePar\fi \EndP\HCode{<script type="math/tex; mode=display"> \string\begin{equation}\Hnewline}\HtmlParOff}{\HtmlParOn\HCode{\string\end{equation}</script>}}
+
+\VerbMath{equation}
+\VerbMath{equation*}
+\VerbMath{align}
+\VerbMath{align*}
+\VerbMath{alignat}
+\VerbMath{alignat*}
+\VerbMath{eqnarray}
+\VerbMath{eqnarray*}
+
+%</cfgXimera>
+%    \end{macrocode}

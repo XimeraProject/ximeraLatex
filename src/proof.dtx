@@ -1,0 +1,10 @@
+% \subsubsection{Proofs}
+% \DescribeEnv{proof}{A mathematical proof environment.}
+%    \begin{macrocode}
+%<*classXimera>
+\renewcommand{\qedsymbol}{$\blacksquare$}
+\renewenvironment{proof}[1][\proofname]
+  {\begin{trivlist}\item[\hskip \labelsep \itshape \bfseries #1{}\hspace{2ex}]}
+{\qed\end{trivlist}}
+%</classXimera>
+%    \end{macrocode}

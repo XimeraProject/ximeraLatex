@@ -1,0 +1,83 @@
+% \subsubsection{Answers}
+% \DescribeMacro{\answer}{A math answer}
+%    \begin{macrocode}
+%<*classXimera>
+
+\ifdefined\HCode
+\newcommand{\recordvariable}[1]{}
+\else
+\newwrite\idfile
+\immediate\openout\idfile=\jobname.ids
+\newcommand{\recordvariable}[1]{\ifthenelse{\equal{#1}{}}{}{\immediate\write\idfile{var #1;}}}
+\fi
+%    \end{macrocode}
+% Determines if answer is shown in handout mode.  when |given=true|,
+% show answer in handout mode, show answer in ``given box'' outside
+% handout mode.  When |given=false|, do not show answer in handout
+% mode, show answer outside handout mode
+%    \begin{macrocode}
+\define@key{answer}{given}[true]{\def\ans@given{#1}} 
+%    \end{macrocode}
+% Used for setting numeric answer tolerance for online student input.
+%    \begin{macrocode}
+\define@key{answer}{tolerance}{\def\ans@tol{#1}}
+%    \end{macrocode}
+% Used to run dynamic js code on student provided answers. Note:
+% currently pdf outputs the validator code itself.
+%    \begin{macrocode}
+\define@key{answer}{validator}{}
+%    \end{macrocode}
+% Used for assigning a js ID to answer for dynamic code (eg validators).
+%    \begin{macrocode}
+\define@key{answer}{id}{\def\ans@id{#1}}
+%    \end{macrocode}
+% Used to set anticipated input format; eg "string".
+%    \begin{macrocode}
+\define@key{answer}{format}{}
+%    \end{macrocode}
+% Set default values for |\answer| command |key=value| pairs.
+% Default values are |given = false|.
+%    \begin{macrocode}
+\setkeys{answer}{id=,given=false}
+%    \end{macrocode}
+% Basic code for |\answer|.
+%    \begin{macrocode}
+\newcommand{\answer}[2][]{%
+	\ifmmode%
+		\setkeys{answer}{#1}%
+		\recordvariable{\ans@id}
+		\ifthenelse{\boolean{\ans@given}}
+			{% Start then statement
+			\ifhandout 
+				#2
+			\else
+				\underset{\scriptstyle\mathrm{given}}{\fbox{\ensuremath{#2}}}
+			\fi
+			}% End then statement
+			{% Start else statement
+			\ifhandout
+				\fbox{\rm{?}}
+			\else% show answer in box outside handout mode
+				\fbox{\ensuremath{#2}}
+			\fi
+			}% End else statement
+	\else%
+		\GenericError{\space\space\space\space}% Throw an error based on... something? -- Jason
+		{Attempt to use \@backslashchar answer outside of math mode}
+		{See https://github.com/ximeraProject/ximeraLatex for explanation.}
+		{Need to use either inline or display math.}%
+	\fi
+}
+%</classXimera>
+%    \end{macrocode}
+% On the HTML side, |\answer| emits spans---but it is usually just
+% handled directly by MathJax.
+%    \begin{macrocode}
+%<*htXimera>
+\renewcommand{\answer}[2][false]{\HCode{<span class="answer respondable">}#2\HCode{</span>}}
+
+\def\validator[#1]{\stepcounter{identification}\HCode{<div class="validator" id="validator\arabic{identification}"><script type="text/javascript">function validator\arabic{identification}() }\{\HCode{ return \detokenize{#1}; }\}\HCode{</script>}}
+\def\endvalidator{\HCode{</div>}}
+
+%</htXimera>
+%    \end{macrocode}
