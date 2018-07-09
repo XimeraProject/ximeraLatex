@@ -105,6 +105,17 @@
 }
 \ProcessOptions\relax
 \LoadClass{article}
+
+\ifdefined\HCode
+  \xaketrue%
+  \tikzexporttrue%
+  \handoutfalse%
+  \numbersfalse%
+  \newpagefalse%
+  \hintsfalse%
+  \nooutcomesfalse%
+\fi
+
 %</classXimera>
 %    \end{macrocode}
 

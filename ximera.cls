@@ -130,6 +130,17 @@
 \ProcessOptions\relax
 \LoadClass{article}
 
+\ifdefined\HCode
+  \xaketrue%
+  \tikzexporttrue%
+  \handoutfalse%
+  \numbersfalse%
+  \newpagefalse%
+  \hintsfalse%
+  \nooutcomesfalse%
+\fi
+
+
 \RequirePackage[makeroom]{cancel}
 \RequirePackage[inline]{enumitem}
 \RequirePackage[pagestyles]{titlesec}
@@ -326,7 +337,7 @@
 {\qed\end{trivlist}}
 
 \ifxake
-\newenvironment{prompt}{}{}
+        \newenvironment{prompt}{}{}
 \else
 \ifhandout
 \NewEnviron{prompt}{}
