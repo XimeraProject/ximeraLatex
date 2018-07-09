@@ -520,20 +520,6 @@
 %	\theproblem 
 %\fi
 
-
-\newcommand{\problemNumber}{% First we determine if we have a counter for this question depth level. Can probably replace this with Make@Counter at some point -- Jason
-\ifcsname c@depth\Roman{problem@Depth}Count\endcsname%% Check to see if counter exists. If so, do nothing.
-\else%If not, create it.
-\expandafter\newcounter{depth\Roman{problem@Depth}Count}%
-\expandafter\setcounter{depth\Roman{problem@Depth}Count}{0}%
-\fi%
-\expandafter\stepcounter{depth\Roman{problem@Depth}Count}% The first problem depth, what use to be "\theproblem".
-\arabic{depthICount}%
-\forloop{Iteration@probCnt}{2}{\arabic{Iteration@probCnt} < \numexpr \value{problem@Depth} + 1 \relax}{%% Get the problem number of the next depth level and append it with a ".".
-.\expandafter\arabic{depth\Roman{Iteration@probCnt}Count}%
-}%
-}
-
 %%%%%% Configure various problem environment commands
 \MakeCounter{problem@Depth}
 

@@ -1,34 +1,10 @@
 % \subsubsection{Problem environments}
 
-% Improved version of |\newcounter| to check for existance before
-% creating a counter to minimize conflicts with packages.  Added by
-% Jason Nowell
-%    \begin{macrocode}
-%<*classXimera>
-
-\newcommand{\Make@Counter}[1]{
-  \@ifundefined{c@#1}% Check to see if counter exists
-	       {     % If not, create it and set it to 0.
-		\newcounter{#1}
-		\setcounter{#1}{0}
-		}
-		{%If so, reset to 0.
-		\setcounter{#1}{0}
-		}
-}
-%    \end{macrocode}
-% Added for those that want to use UF problems without using the
-% problem filter code. This command is renewed into something
-% meaningful in the 'ProblemSelector.sty'.
-%    \begin{macrocode}
-\newcommand{\latexProblemContent}[1]{#1}
-% Iterate count for problem counts.
-\Make@Counter{Iteration@probCnt}        
-%    \end{macrocode}
 % These are problem environment decorations (these should be user invoked, not default).
 % The decoration for these environments were inspired by
 % \url{http://tex.stackexchange.com/questions/11098/nice-formatting-for-theorems}
 %    \begin{macrocode}
+%<*classXimera>
 \newcommand{\hang}{% top theorem decoration
   \begingroup%
   \setlength{\unitlength}{.005\linewidth}% \linewidth/200
@@ -60,25 +36,34 @@
   \endgroup%
 }%
 %    \end{macrocode}
-% Now configure environment configuration commands.
+%
+%%%%%% Configure environment configuration commands %%%%%%%
 %
 % The command |\problemNumber| contains all the format code to determine the number (and the format of the number) for any of the problem environments.
 % 
 %    \begin{macrocode}
-\newcounter{problem} %% for the main problem
+\newcommand{\problemNumber}{
+% First we determine if we have a counter for this question depth level.
+\ifcsname c@depth\Roman{problem@Depth}Count\endcsname	% Check to see if counter exists
+	%If so, do nothing.
+	\else
+	%If not, create it.
+	\expandafter\newcounter{depth\Roman{problem@Depth}Count}
+	\expandafter\setcounter{depth\Roman{problem@Depth}Count}{0}
+	\fi
 
-\newcommand{\problemNumber}{% First we determine if we have a counter for this question depth level. Can probably replace this with Make@Counter at some point -- Jason
-\ifcsname c@depth\Roman{problem@Depth}Count\endcsname%% Check to see if counter exists. If so, do nothing.
-	\else%If not, create it.
-	\expandafter\newcounter{depth\Roman{problem@Depth}Count}%
-	\expandafter\setcounter{depth\Roman{problem@Depth}Count}{0}%
-	\fi%
-\expandafter\stepcounter{depth\Roman{problem@Depth}Count}% The first problem depth, what use to be "\theproblem".
-\arabic{depthICount}%
-\forloop{Iteration@probCnt}{2}{\arabic{Iteration@probCnt} < \numexpr \value{problem@Depth} + 1 \relax}{%% Get the problem number of the next depth level and append it with a ".".
-.\expandafter\arabic{depth\Roman{Iteration@probCnt}Count}%
-}%
+\expandafter\stepcounter{depth\Roman{problem@Depth}Count}
+\arabic{depthICount}% The first problem depth, what use to be |\theproblem|.
+
+\forloop{Iteration@probCnt}{2}
+    {\arabic{Iteration@probCnt} < \numexpr \value{problem@Depth} + 1 \relax}{%
+    .\expandafter\arabic{depth\Roman{Iteration@probCnt}Count}% Get the problem number of the next depth level and append it with a ".".
 }
+%\ifhandout % Currently handout mode doesn't allow hints. Putting this code in place in case that changes.
+%	\theproblem 
+%\else
+%	\theproblem 
+%\fi
 
 
 
