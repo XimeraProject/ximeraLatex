@@ -8,8 +8,8 @@
 %% src/optionsxourse.dtx  (with options: `classXourse')
 %% src/activity.dtx  (with options: `classXourse')
 %% src/sectioning.dtx  (with options: `classXourse')
-%% src/graded.dtx  (with options: `classXourse')
 %% src/logo.dtx  (with options: `classXourse')
+%% src/graded.dtx  (with options: `classXourse')
 %% ------------:| ------------------------------------------------------------
 %%       ximera:| Simultaneously writing print and online interactive materials
 %%       Author:| Jim Fowler and Jeramiah Hocutt and Oscar Levin and Jason Nowell and Hans Parshall and Bart Snapp
@@ -111,7 +111,6 @@
 
 \renewcommand*\l@section{\@dottedtocline{1}{1.5em}{4.2em}}
 \renewcommand*\l@subsection{\@dottedtocline{2}{3.8em}{4.2em}}
-\newenvironment{graded}[1]{}{}
 \newcommand*{\logo}[1]{%
   \ifx\@onlypreamble\@notprerr
     \ClassError{xourse}{logo can only be used in the preamble}
@@ -125,6 +124,7 @@
 }
 
 
+\newenvironment{graded}[1]{}{}
 %% 
 %% Copyright (C) 2018 by Bart Snapp <bart.snapp@gmail.com> and Jim Fowler <kisonecat@gmail.com>
 %% 
