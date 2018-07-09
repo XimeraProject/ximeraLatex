@@ -1,0 +1,20 @@
+% \subsubsection{Abstract}
+% \DescribeEnv{abstract}{Every activity should include a short abstract.}
+%    \begin{macrocode}
+%<*classXimera>
+\let\abstract\relax
+\let\endabstract\relax
+% Use of environ package, may want to find a better way.
+\NewEnviron{abstract}{\protected@xdef\theabstract{\BODY}}
+%</classXimera>
+%    \end{macrocode}
+% The abstract has been stored in |\theabstract| and should be emitted
+% as a div, but confusingly I guess |<div class="abstract">| is
+% defined somewhere deeper inside tex4ht, so the code below is
+% probably unnecessary.
+%    \begin{macrocode}
+%<*cfgXimera>
+\let\abstract\relax
+\let\endabstract\relax
+%</cfgXimera>
+%    \end{macrocode}

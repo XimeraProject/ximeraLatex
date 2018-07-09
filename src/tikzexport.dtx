@@ -1,0 +1,52 @@
+% \subsubsection{TikZ export}
+% We generate SVGs and PNGs for any TikZ images, via the
+% ``externalize'' feature of TikZ.
+%
+% We put hyperref after all other packages becuase that is better.
+%    \begin{macrocode}
+%<*classXimera>
+% Don't use hyperref when using Tex4ht
+\ifdefined\HCode
+\RequirePackage{hyperref}
+\else
+\RequirePackage[pdfpagelabels,colorlinks=true,allcolors=blue!30!black]{hyperref}
+\pdfstringdefDisableCommands{\def\hskip{}}%% quiets warning
+\fi
+%</classXimera>
+%    \end{macrocode}
+% Currently TikZ doesn't compile natively into the website because of
+% how the xake bake compilation works.  In order to make Tikz work,
+% you need to get the tool \verb|mutool| on the machine that is
+% performing \verb|xake bake|.
+%    \begin{macrocode}
+%<*classXimera>
+\ifdefined\HCode
+  \tikzexporttrue
+\fi
+
+\iftikzexport
+  \usetikzlibrary{external}
+
+  \ifdefined\HCode
+    % in htlatex, just include the svg files
+    \def\pgfsys@imagesuffixlist{.svg}
+    
+    \tikzexternalize[prefix=./,mode=graphics if exists]
+  \else
+    % in pdflatex, actually generate the svg files
+    \tikzset{
+      /tikz/external/system call={
+        pdflatex \tikzexternalcheckshellescape
+        -halt-on-error -interaction=batchmode
+        -jobname "\image" "\\PassOptionsToClass{tikzexport}{ximera}\texsource";
+        mutool draw -o \image.svg \image.pdf ;
+        mutool draw -r 150 -c rgbalpha -o \image.png \image.pdf ;
+      }
+    }
+    \tikzexternalize[optimize=false,prefix=./]
+  \fi
+
+  \fi
+
+%</classXimera>
+%    \end{macrocode}
