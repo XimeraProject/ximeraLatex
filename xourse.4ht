@@ -9,7 +9,7 @@
 %% src/metadata.dtx  (with options: `htXourse')
 %% src/activity.dtx  (with options: `htXourse')
 %% src/sectioning.dtx  (with options: `htXourse')
-%% src/ungraded.dtx  (with options: `htXourse')
+%% src/graded.dtx  (with options: `htXourse')
 %% src/interactives/video.dtx  (with options: `htXourse')
 %% src/ending.dtx  (with options: `htXourse')
 %% ------------:| ------------------------------------------------------------
@@ -57,6 +57,11 @@
 \ifvmode \IgnorePar\fi \EndP%
 \HCode{<h1 id="part\arabic{ximera@part}" class="card part">#1</h1>}%
 \IgnoreIndent%
+}
+\renewenvironment{graded}[1]{%
+\ifvmode \IgnorePar\fi \EndP\HCode{<div class="graded" data-weight="#1">}\IgnoreIndent%
+}{
+\ifvmode \IgnorePar\fi \EndP\HCode{</div>}}\IgnoreIndent%
 }
 \renewcommand\youtube[1]{%
 \ifvmode \IgnorePar\fi \EndP\HCode{<a class="youtube" href="https://www.youtube.com/watch?v=#1">#1</a>}\IgnoreIndent%
