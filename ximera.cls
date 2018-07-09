@@ -325,12 +325,16 @@
   {\begin{trivlist}\item[\hskip \labelsep \itshape \bfseries #1{}\hspace{2ex}]}
 {\qed\end{trivlist}}
 
+\ifxake
+\newenvironment{prompt}{}{}
+\else
 \ifhandout
 \NewEnviron{prompt}{}
 \else
 \newenvironment{prompt}
      {\bgroup\color{gray!50!black}}
         {\egroup}
+\fi
 \fi
 
 \ifhandout
