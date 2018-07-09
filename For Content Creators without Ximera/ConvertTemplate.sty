@@ -1,0 +1,143 @@
+\ProvidesPackage{ConvertTemplate}
+% This package is designed to convert the "Template for Teachers" that uses the "\buildassess" command, to a real ximera document.
+
+%%%%%%%%%%%%%%%%%%%%%
+% Required Packages %
+%%%%%%%%%%%%%%%%%%%%%
+
+\RequirePackage{amsmath}
+\RequirePackage{forloop}
+\RequirePackage{customLoops}
+\newif\ifFirstStep
+\FirstSteptrue
+\newif\ifHW
+\HWtrue
+
+%%%%%%%%%%%%%%%%
+% New Counters %
+%%%%%%%%%%%%%%%%
+
+\MakeCounter{QNumb}
+\MakeCounter{trackAns}
+\MakeCounter{IterationPH}
+\MakeCounter{ProbNum}
+\MakeCounter{assessmentDepth}
+
+%%%%%%%%%%%%%%%%
+% New Commands %
+%%%%%%%%%%%%%%%%
+
+
+\providecommand{\newstep}{}
+\renewcommand{\newstep}[3][problem]{%
+    % This identifies a new "step" in the assessment/build process:
+    %%%
+    %%%     HOW TO USE THIS COMMAND::
+    %%%
+    %   \newstep[ problemEnvName ]{ Question Code }{ Answer Code }
+    %
+    %   "problemEnvName" is optional, defaulting to "problem" and is the name 
+    %           displayed as the "Problem" environment.
+    %   "Question Code" This is the code for the question.
+    %   "Answer Code" This is the code for the answer and should contain some 
+    %           version of \answer{} or \multipleChoice type command.
+    
+    \stepcounter{assessmentDepth}%  Keep track of how many nested assessments you have.
+    
+    %   Now we need to save the "Problem Environment" name that was chosen (default of "Problem").
+    %   We need to keep this for the \end command later.   
+    \expandafter\edef\csname assessname\roman{assessmentDepth}\endcsname{#1}%
+
+    %   Begin another instance of an environment, 
+    %   But only if it's not the initial statement of the problem.
+    %   The name is given as an optional argument (defaults to the "Problem"):
+    \ifFirstStep\else%   Only include a "\begin" command if you are a substep.
+    \begin{#1}%
+    \fi% 
+    #2%     Display the Question Code
+    #3%     Display the Answer Code after the question; so it is displayed above followup answers.
+    \stepcounter{trackAns}%     Keep track of how many answers we have written.
+    \FirstStepfalse%            First step has been completed, so turn it false.
+}%
+
+
+
+%%%%% Old command %%%%
+%\newcommand{\newstep}[2]{% This identifies a new "step" in the assessment/build process.
+%% Syntax / Usage:
+%% \newstep{ Question Code }{ Answer Code }
+%
+%\ifFirstStep
+%\else
+%    \begin{problem}% Begin a new "problem", unless it's the first step.
+%    %This is really just a step in the real problem, but code is quirky currently so it has to be listed as a "problem" for now.
+%\fi
+%
+%#1% Display question code as you go.
+%
+%#2% Followup with the answer code; so that it stays above, and not below, followup questions.
+%
+%\stepcounter{trackAns}% keep track of which answer this is.
+%
+%\FirstStepfalse
+%}
+%%%%
+\providecommand{\assessmentEnd}{}
+\renewcommand\assessmentEnd{%
+  %
+  % We need to start at the last depth level and iterate backwards:
+  %
+      \expandafter\expandafter
+      \expandafter            \end
+      \expandafter\expandafter
+      \expandafter            {%
+      \csname assessname\roman{assessmentDepth}\endcsname}%
+      \addtocounter{assessmentDepth}{-1}%
+}%
+
+
+%%%% Old Command %%%
+%
+%    \newcommand{\assessmentEnd}{%
+%\forloop{IterationPH}
+%	{0}%
+%	{\value{IterationPH} < \arabic{trackAns}}% iterate through the assessment depth one step at a time.
+%	{
+%	\end{problem}
+%	}
+%}
+%%%%
+\providecommand{\buildAssess}{}
+\renewcommand{\buildAssess}[3]{%
+    % Context / template
+    %\buildAssess{
+    %        Master Question/Problem Code
+    %    }{
+    %        Steps to build to the answer
+    %    }{
+    %        Master Problem Answer
+    %    }
+    \FirstSteptrue
+    \begin{problem}
+    #1
+    \ifHW
+        #2
+        \begin{problem}
+        #3
+        \end{problem}
+            \xWhileInt{%
+            \arabic{assessmentDepth} > 0%
+            }{%
+            \assessmentEnd% \addtocounter{assessmentDepth}{-1}%
+            }%
+    \else% If we are making an assessment, then don't display anything but the original question.
+        \vfill
+        \end{problem}
+    \fi
+%    \end{Problem}
+}
+%%%
+
+
+
+

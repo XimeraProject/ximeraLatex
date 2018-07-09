@@ -9,6 +9,8 @@
 %% src/options.dtx  (with options: `classXimera')
 %% src/packages.dtx  (with options: `classXimera')
 %% src/tikzexport.dtx  (with options: `classXimera')
+%% src/suppress.dtx  (with options: `classXimera')
+%% src/MakeCounter.dtx  (with options: `classXimera')
 %% src/pagesetup.dtx  (with options: `classXimera')
 %% src/metadata.dtx  (with options: `classXimera')
 %% src/outcomes.dtx  (with options: `classXimera')
@@ -16,7 +18,6 @@
 %% src/theorems.dtx  (with options: `classXimera')
 %% src/enumerate.dtx  (with options: `classXimera')
 %% src/proof.dtx  (with options: `classXimera')
-%% src/suppress.dtx  (with options: `classXimera')
 %% src/only.dtx  (with options: `classXimera')
 %% src/problem.dtx  (with options: `classXimera')
 %% src/hints.dtx  (with options: `classXimera')
@@ -105,6 +106,8 @@
 \newif\ifwordchoicegiven
 \wordchoicegivenfalse
 \DeclareOption{wordchoicegiven}{\wordchoicegiventrue}
+\newif\iffirstinlinechoice% Support for other wordchoice command contents.
+\firstinlinechoicetrue
 
 \newif\ifxake
 \xakefalse
@@ -187,6 +190,51 @@
   \fi
 
   \fi
+
+\font\dummyft@=dummy \relax
+\def\suppress{%
+  \begingroup\par
+  \parskip\z@
+  \offinterlineskip
+  \baselineskip=\z@skip
+  \lineskip=\z@skip
+  \lineskiplimit=\maxdimen
+  \dummyft@
+  \count@\sixt@@n
+  \loop\ifnum\count@ >\z@
+    \advance\count@\m@ne
+    \textfont\count@\dummyft@
+    \scriptfont\count@\dummyft@
+    \scriptscriptfont\count@\dummyft@
+  \repeat
+  \let\selectfont\relax
+  \let\mathversion\@gobble
+  \let\getanddefine@fonts\@gobbletwo
+  \tracinglostchars\z@
+  \frenchspacing
+  \hbadness\@M}
+\def\endsuppress{\par\endgroup}
+\newcommand{\Make@Counter}[1]{% This is an internal macro that should probably be depreciated for the below universal macro.
+  \@ifundefined{c@#1}% Check to see if counter exists
+       {     % If not, create it and set it to 0.
+\newcounter{#1}
+\setcounter{#1}{0}
+}
+{%If so, reset to 0.
+\setcounter{#1}{0}
+}
+}
+
+\newcommand{\MakeCounter}[1]{%% Code located in "Utilitymacros.dtx"
+  \@ifundefined{c@#1}% Check to see if counter exists
+       {     % If not, create it and set it to 0.
+\newcounter{#1}
+\setcounter{#1}{0}
+}
+{%If so, reset to 0.
+\setcounter{#1}{0}
+}
+}
 
 \setlength{\parindent}{0pt}
 \setlength{\parskip}{5pt}
@@ -276,29 +324,6 @@
 \renewenvironment{proof}[1][\proofname]
   {\begin{trivlist}\item[\hskip \labelsep \itshape \bfseries #1{}\hspace{2ex}]}
 {\qed\end{trivlist}}
-\font\dummyft@=dummy \relax
-\def\suppress{%
-  \begingroup\par
-  \parskip\z@
-  \offinterlineskip
-  \baselineskip=\z@skip
-  \lineskip=\z@skip
-  \lineskiplimit=\maxdimen
-  \dummyft@
-  \count@\sixt@@n
-  \loop\ifnum\count@ >\z@
-    \advance\count@\m@ne
-    \textfont\count@\dummyft@
-    \scriptfont\count@\dummyft@
-    \scriptscriptfont\count@\dummyft@
-  \repeat
-  \let\selectfont\relax
-  \let\mathversion\@gobble
-  \let\getanddefine@fonts\@gobbletwo
-  \tracinglostchars\z@
-  \frenchspacing
-  \hbadness\@M}
-\def\endsuppress{\par\endgroup}
 
 \ifhandout
 \NewEnviron{prompt}{}
@@ -324,17 +349,7 @@
 \newcommand{\pdfOnly}[1]{\iftikzexport\else #1\fi}
 
 
-\newcommand{\Make@Counter}[1]{
-  \@ifundefined{c@#1}% Check to see if counter exists
-       {     % If not, create it and set it to 0.
-\newcounter{#1}
-\setcounter{#1}{0}
-}
-{%If so, reset to 0.
-\setcounter{#1}{0}
-}
-}
-\newcommand{\latexProblemContent}[1]{#1}
+\providecommand{\latexProblemContent}[1]{#1}
 \Make@Counter{Iteration@probCnt}
 \newcommand{\hang}{% top theorem decoration
   \begingroup%
@@ -366,19 +381,20 @@
     \end{picture}%
   \endgroup%
 }%
-\newcounter{problem} %% for the main problem
+\MakeCounter{problem}
+\newcommand{\problemNumber}{
+\ifcsname c@depth\Roman{problem@Depth}Count\endcsname% Check to see if counter exists
+\else
+\expandafter\newcounter{depth\Roman{problem@Depth}Count}
+\expandafter\setcounter{depth\Roman{problem@Depth}Count}{0}
+\fi
 
-\newcommand{\problemNumber}{% First we determine if we have a counter for this question depth level. Can probably replace this with Make@Counter at some point -- Jason
-\ifcsname c@depth\Roman{problem@Depth}Count\endcsname%% Check to see if counter exists. If so, do nothing.
-\else%If not, create it.
-\expandafter\newcounter{depth\Roman{problem@Depth}Count}%
-\expandafter\setcounter{depth\Roman{problem@Depth}Count}{0}%
-\fi%
-\expandafter\stepcounter{depth\Roman{problem@Depth}Count}% The first problem depth, what use to be "\theproblem".
-\arabic{depthICount}%
-\forloop{Iteration@probCnt}{2}{\arabic{Iteration@probCnt} < \numexpr \value{problem@Depth} + 1 \relax}{%% Get the problem number of the next depth level and append it with a ".".
-.\expandafter\arabic{depth\Roman{Iteration@probCnt}Count}%
-}%
+\expandafter\stepcounter{depth\Roman{problem@Depth}Count}
+\arabic{depthICount}% The first problem depth, what use to be |\theproblem|.
+
+\forloop{Iteration@probCnt}{2}{\arabic{Iteration@probCnt} < \numexpr \value{problem@Depth} + 1 \relax}{%
+    .\expandafter\arabic{depth\Roman{Iteration@probCnt}Count}% Get the problem number of the next depth level and append it with a ".".
+}
 }
 
 %%%%%% Configure various problem environment commands
@@ -647,13 +663,13 @@ Interactive
 \setkeys{choice}{#1}%
 \item{#2}
 \ifthenelse{\boolean{\choice@correct}}
-{% Begin then result
-\ifhandout% if it's a handout do nothing.
-\else% otherwise place a checkmark when you select the "correct choice"... maybe? -- Jason
-\,\checkmark\,\setkeys{choice}{correct=false}
-\fi
-}% End then result
-{}% Begin/End else result.
+    {% Begin then result
+    \ifhandout% if it's a handout do nothing.
+    \else% otherwise place a checkmark when you select the "correct choice"... maybe? -- Jason
+        \,\checkmark\,\setkeys{choice}{correct=false}
+    \fi
+    }% End then result
+    {}% Begin/End else result.
 }
 
 \newcommand{\choiceEXP}[2][]{%
@@ -670,15 +686,32 @@ Interactive
 } %% note all the {} are needed in case the choice has [] in it.
 
 \newcommand{\otherchoice}[2][]{%
-\ignorespaces
-\setkeys{otherchoice}{#1}
-\ifthenelse{\boolean{\otherchoice@correct}}
+\ignorespaces%
+\setkeys{otherchoice}{#1}%
+\ifthenelse{\boolean{\otherchoice@correct}}%
 {% Start then result
-#2\setkeys{otherchoice}{correct=false}
+#2\ignorespaces\setkeys{otherchoice}{correct=false}\ignorespaces%
 }% End then result
 {}% Start/End else result
-\ignorespaces
-      }
+\ignorespaces%
+}%
+\newcommand{\inlinechoice}[2][]{%
+\setkeys{choice}{#1}%
+\iffirstinlinechoice
+(\hspace{-.25em}
+\firstinlinechoicefalse
+\else
+/
+\fi
+#2
+\ifthenelse{\boolean{\choice@correct}}%
+{% Start then result
+\ifhandout\else\checkmark\ignorespaces\setkeys{choice}{correct=false}\ignorespaces\fi%
+}% End then result
+{}% Start/End else result
+\hspace{-.25em}\ignorespaces%
+}
+
 
 \newenvironment{multipleChoice}[1][]
 {% Environment Start Code
@@ -712,18 +745,20 @@ Interactive
 
 \newcommand{\wordChoice}[1]{%
 \let\choicetemp\choice% Assign a "choicetemp" command to duplicate choice.
-\ifwordchoicegiven
-\def\choice{\otherchoice}
-\begin{multipleChoice@@}
+\ifwordchoicegiven% If wordchoice option is on, we need to juggle around some definitions.
+\let\choice\otherchoice%
+\begin{multipleChoice@@}%
 #1
-\end{multipleChoice@@}
-\else
-\begin{multipleChoice@}
-#1
-\end{multipleChoice@}
-\fi
+\end{multipleChoice@@}%
+\else% If it isn't the regular "choice" command should work.
+\let\choice\inlinechoice%
+\begin{multipleChoice@@}%
+#1)%
+\end{multipleChoice@@}%
+\fi%
 \let\choice\choicetemp% Now that choicetmp has been manipulated to what we want, replace choice with it.
-}
+}%
+
 
 \newenvironment{selectAll}[1][]
 {\begin{trivlist}\item[\hskip \labelsep\small\bfseries Select All Correct Answers:]\hfil\begin{enumerate}}

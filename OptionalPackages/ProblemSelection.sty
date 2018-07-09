@@ -1,32 +1,32 @@
 \ProvidesPackage{ProblemSelection}
-\RequirePackage{Config}
+\IfFileExists{Config}{\RequirePackage{Config}}{}
 \RequirePackage{randomize}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%				Necessary Counters					%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\Make@Counter{Iteration@1}
-\Make@Counter{Iteration@2}
-\Make@Counter{Iteration@3}
-\Make@Counter{Iteration@4}
-\Make@Counter{Temp@1}
-\Make@Counter{Temp@2}
-\Make@Counter{Temp@3}
-\Make@Counter{Given@ProblemNumber}
-\Make@Counter{Problem@ToList}
-\Make@Counter{Problem@RemainToCheck}
-\Make@Counter{Last@Question}
-\Make@Counter{Question@CurNumber}
-\Make@Counter{Question@DisplayCounter}
-\Make@Counter{Problem@TotalToList}
-\Make@Counter{Problem@GroupingNumber}
+\MakeCounter{Iteration@1}
+\MakeCounter{Iteration@2}
+\MakeCounter{Iteration@3}
+\MakeCounter{Iteration@4}
+\MakeCounter{Temp@1}
+\MakeCounter{Temp@2}
+\MakeCounter{Temp@3}
+\MakeCounter{Given@ProblemNumber}
+\MakeCounter{Problem@ToList}
+\MakeCounter{Problem@RemainToCheck}
+\MakeCounter{Last@Question}
+\MakeCounter{Question@CurNumber}
+\MakeCounter{Question@DisplayCounter}
+\MakeCounter{Problem@TotalToList}
+\MakeCounter{Problem@GroupingNumber}
 \setcounter{Problem@GroupingNumber}{1}
-\Make@Counter{Problem@Range}
-\Make@Counter{Problem@EndRef}
+\MakeCounter{Problem@Range}
+\MakeCounter{Problem@EndRef}
 \setcounter{Problem@EndRef}{1}
-\Make@Counter{Problem@NextRef}
-\Make@Counter{file@GroupRef}
+\MakeCounter{Problem@NextRef}
+\MakeCounter{file@GroupRef}
 \setcounter{file@GroupRef}{1}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -76,7 +76,7 @@
 \Inner@OrderForwardfalse
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%				File-Writing shortcuts					%%%%%%%%%%%%%
+%%%%%%%%%%%%%%				File-Writing shortcuts					%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \newcommand{\file@Write}[2]{
@@ -90,7 +90,7 @@
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%				Necessary Key-Values					%%%%%%%%%%%%%
+%%%%%%%%%%%%%%				Necessary Key-Values					%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
@@ -513,12 +513,12 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%	Display Question Command	%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\Make@Counter{Problem@GroupNumberStart}
+\MakeCounter{Problem@GroupNumberStart}
 \setcounter{Problem@GroupNumberStart}{1}
-\Make@Counter{Problem@GroupNumberEnd}
+\MakeCounter{Problem@GroupNumberEnd}
 \setcounter{Problem@GroupNumberEnd}{1}
-\Make@Counter{Iteration@ListProb}
-\Make@Counter{TmpQuantCount}
+\MakeCounter{Iteration@ListProb}
+\MakeCounter{TmpQuantCount}
 
 \newcommand{\listQuestions}[1][GroupShuffle=false]{
 		%%%%% Now we display the problems. Currently this will *Not* shuffle the problems by default. I may deacitvate this once the "shuffle" environment is fully functional.
@@ -593,7 +593,7 @@
 
 
 \newcommand{\QuestionSelect}[4][Static=false, PerFile=false, Shuffle=false]{% This is the master user command to call questions
-		% #1 is optional and is the "Per File Flag"
+		% #1 is optional and is the "Per File" and other type Flags
 		% #2 is the Topic
 		% #3 is the secondary criteria, like sub@rational
 		% #4 is the number of questions we want to pull (either in total or per file)
@@ -607,7 +607,7 @@
 	
 	
 	\ifquestion@Static% Check to see if we want to reuse the old problems.
-		\expandafter\Make@Counter{Problem@GroupingNumber\roman{Problem@GroupingNumber}@Quant}% Make the Counter
+		\expandafter\MakeCounter{Problem@GroupingNumber\roman{Problem@GroupingNumber}@Quant}% Make the Counter
 		\expandafter\setcounter{Problem@GroupingNumber\roman{Problem@GroupingNumber}@Quant}{-100}% Define it to -100 to flag it as a static, ie already existing, file.
 	\else
 		\file@Initialize{\Roman{file@GroupRef}}
@@ -658,7 +658,7 @@
 		
 			\fi
 
-		\expandafter\Make@Counter{Problem@GroupingNumber\roman{Problem@GroupingNumber}@Quant}
+		\expandafter\MakeCounter{Problem@GroupingNumber\roman{Problem@GroupingNumber}@Quant}
 		\expandafter\setcounter{Problem@GroupingNumber\roman{Problem@GroupingNumber}@Quant}{\arabic{Problem@ToList}-1}
 		
 	\fi% End static/Non static conditional

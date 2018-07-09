@@ -48,13 +48,13 @@
 \shufflefalse
 
 %Necessary counters
-%\Make@Counter{shuffle@trackProblem}% Tracks which problem in shuffle we're on.
-\Make@Counter{shuffle@blockNumber}
+%\MakeCounter{shuffle@trackProblem}% Tracks which problem in shuffle we're on.
+\MakeCounter{shuffle@blockNumber}
 \setcounter{shuffle@blockNumber}{1}% Roman numerals don't like zero
-\Make@Counter{shuffle@groupingNumber}
+\MakeCounter{shuffle@groupingNumber}
 \setcounter{shuffle@groupingNumber}{1}% Roman numerals don't like zero.
-\Make@Counter{shuffle@Given}% Tracks how many questions are desired.
-\Make@Counter{problemType} %% for variations within shuffle
+\MakeCounter{shuffle@Given}% Tracks how many questions are desired.
+\MakeCounter{problemType} %% for variations within shuffle
 
 
 
@@ -136,24 +136,24 @@
 
 
 
-%%% Edits to Numbering; To add numbering to the shuffled problems to denote sub-problems.
+%%% Edits to Numbering; To add numbering to the shuffled problems to denote sub-problems. Not sure how to do this.
 
-\renewcommand{\problemNumber}{
-\ifnum\value{problem}<1
-	\setcounter{problem}{1}% If the problem counter is every 0 or negative, reset to one. This is a hack that should probably be more appropriately handled at some point but the problem counter is changed all over the place in this document so we need to rewrite this from scratch for consistency.
-\fi
-
-\ifhandout % Currently handout mode doesn't allow hints. Putting this code in place in case that changes.
-		\theproblem 
-\else
-	\ifshuffle
-		\theproblem.\theproblemType
-	\else
-		\theproblem 
-	\fi
-\fi
-}
-
+%\renewcommand{\problemNumber}{
+%\ifnum\value{problem}<1
+%	\setcounter{problem}{1}% If the problem counter is ever 0 or negative, reset to one. This is a hack that should probably be more appropriately handled at some point but the problem counter is changed all over the place in this document so we need to rewrite this from scratch for consistency.
+%\fi
+%
+%\ifhandout % Currently handout mode doesn't allow hints. Putting this code in place in case that changes.
+%		\theproblem 
+%\else
+%	\ifshuffle
+%		\theproblem.\theproblemType
+%	\else
+%		\theproblem 
+%	\fi
+%\fi
+%}
+%
 
 
 %% Edit to the problem environment start code to check if you are in a shuffle block, and to implement correct numbering (and correct global numbering) if you are.

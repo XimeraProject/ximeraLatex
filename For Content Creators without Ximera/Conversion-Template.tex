@@ -1,0 +1,47 @@
+\documentclass{ximera}
+\usepackage{PackageLoader}
+\usepackage{ConvertTemplate}
+
+\begin{document}
+\buildAssess{% First Entry is the question
+    Calculate the following Trigonometric Integral:
+    \[
+    \int \sin^4(x)\cos^3(x) \mathop{dx}.
+    \]
+}% End of \buildassess first argument
+{% Second Argument are the steps. Each step should be entered using \newstep{ Question Code }{ Answer Code }
+    \newstep{To begin with, we investigate the power of the trigonomentric functions in the integrand:
+    }
+    {
+       The powers of $\sin(x)$ and $\cos(x)$ in the integrand are $\answer{4}$ and $\answer{3}$ respectively. 
+    }
+    
+    \newstep{Since the power for $\sin(x)$ is even and the power for $\cos(x)$ is odd, the best course of action is:}
+    {
+        \begin{multipleChoice}
+        \choice[correct]{We should save a $\cos(x)$ and convert the remaining cosines to sines via the Pythagorean identity, then follow up with a $u$-substitution}
+        \choice{We should save a $\sin(x)$ and convert the remaining sines to cosines via the Pythagorean identity, then follow up with a $u$-substitution }
+        \choice{We should proceed straight into a $u$-substitution using $u=\cos(x)$.}
+        \choice{We should use Integration by parts, using $u = \cos^3(x)$ and $dv = \sin^4(x)$}
+        \end{multipleChoice}
+    }
+
+    \newstep{
+        Now that we have saved a $\cos(x)$ and converted the remaining cosines to sines via the Pythagorean identity, the appropriate $u$-substitution will turn our integral into the following one
+    }
+    {
+        \[
+			\int \answer{u^4-u^6} \mathop{du}
+        \]
+    }
+}% End of \buildassess second argument
+{% Start of \buildassess Third Argument; the End result Question/Answer Code
+        After applying the power rule and back-substituting to the variable $x$, our final answer is: 
+        \[
+        \int \sin^4(x)\cos^3(x) \mathop{dx}= \answer{   \frac{\sin^5(x)}{5} - \frac{\sin^7(x)}{7}   +C     } 
+        \]
+}% End of \buildassess third argument
+
+
+\end{document}
+
