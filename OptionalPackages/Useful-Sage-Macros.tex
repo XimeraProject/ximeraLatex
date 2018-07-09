@@ -1,9 +1,16 @@
-
-% First we will define a command that will *correctly* output a sage string without this text{textt{}} nonsense when in mathemode. When in non-mathmode, use \sagestr{} to call a proper string.
-\edef\sagestrmm#1{\text{\noexpand\sagestr{#1}}}
-
-
 \begin{sagesilent}
+
+######  Define a function to convert a sage number into a saved counter number.
+
+def setCounter(counterName, counterValue, fileName = 'counters.tex'):
+    file1 = open(fileName, 'w')
+    counterString = str(r'\setcounter{' + str(counterName) + '}{'+ str(counterValue) +'}')
+    commandString = str('\\newcommand{\\' + str(counterName) + '}{'+ str(counterValue) +'}')
+    file1.write(counterString + "\n" + commandString + "\n")
+    # more "string# =" and "file#.write()" as desired.
+
+
+
 #####Define default Sage variables.
 #Default function variables
 var('x,y,z,X,Y,Z')
@@ -69,7 +76,8 @@ def HyperSimp(f):
 def RandInt(a,b):
     """ Returns a random integer in [`a`,`b`]. Note that `a` and `b` should be integers themselves to avoid unexpected behavior.
     """
-    return choice(range(a,b+1))
+    return QQ(randint(int(a),int(b)))
+    # return choice(range(a,b+1))
 
 def NonZeroInt(b,c, avoid = [0]):
     """ Returns a random integer in [`b`,`c`] which is not in `av`. 
@@ -90,7 +98,7 @@ def RandAng(s,t):
         if s <= angle <= t:
             return simplify(angle)
 
-def RandPoly(d, zeroes=[], avoid=[], monic = False, expanded = False):
+def RandPoly(degree, zeroes=[], avoid=[], monic = False, expanded = False):
     """ Returns a random polynomial of degree `d` with all the zeroes from
         `zeroes` and none of them from `avoid`.
 
@@ -99,32 +107,32 @@ def RandPoly(d, zeroes=[], avoid=[], monic = False, expanded = False):
         >>> RandPoly(4, zeroes = [3,3], avoid = [3])
         (x-3)^2*(x+1)*(x-5)
     """
-    missingDegree = d - len(zeroes)
-    assert missingDegree >= 0, "Can't have degree {} with all those zeroes! {}".format(d,zeroes)
+    RP_missingDegree = degree - len(zeroes)
+    assert RP_missingDegree >= 0, "Can't have degree {} with all those zeroes! {}".format(degree,zeroes)
 
     # First, compute the part that has the specified zeroes.
     if monic:
-        P = prod((x-a) for a in zeroes)
+        RP_myRandomPoly = prod((x-RP_zero) for RP_zero in zeroes)
     else:
-        P = prod((a.denominator()*x - a.numerator()) for a in zeroes)
+        RP_myRandomPoly = prod((RP_zero.denominator()*x - RP_zero.numerator()) for RP_zero in zeroes)
 
     # Second, compute the missing factor.
     if avoid:
-        missingZeroes =[NonZeroInt(-10,10,avoid) for _ in range(missingDegree)]
-        missingFactor = prod((x-a) for a in missingZeroes)
+        RP_missingZeroes =[NonZeroInt(-10,10,avoid) for RP_ in range(RP_missingDegree)]
+        RP_missingFactor = prod((x-RP_missingZero) for RP_missingZero in RP_missingZeroes)
     else:
         if monic:
-            missingFactor = x**missingDegree
+            RP_missingFactor = x**RP_missingDegree
         else:
-            missingFactor = NonZeroInt(-10,10)*x**missingDegree
+            RP_missingFactor = NonZeroInt(-10,10)*x**RP_missingDegree
 
-        for i in range(0,missingDegree):
-            missingFactor += RandInt(-10,10)*x**i
+        for RP_i in range(0,RP_missingDegree):
+            RP_missingFactor += RandInt(-10,10)*x**RP_i
         
-    P *= missingFactor
+    RP_myRandomPoly *= RP_missingFactor
     if expanded:
-        P = expand(P)
-    return P
+        RP_myRandomPoly = expand(RP_myRandomPoly)
+    return RP_myRandomPoly
 
 def RandRational(c,d):
     """ Returns a random rational function with numerator and denominator of degrees `c` and `d` resp.
