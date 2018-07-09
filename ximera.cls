@@ -9,7 +9,8 @@
 %% src/options.dtx  (with options: `classXimera')
 %% src/packages.dtx  (with options: `classXimera')
 %% src/tikzexport.dtx  (with options: `classXimera')
-%% src/utilitymacros.dtx  (with options: `classXimera')
+%% src/suppress.dtx  (with options: `classXimera')
+%% src/MakeCounter.dtx  (with options: `classXimera')
 %% src/pagesetup.dtx  (with options: `classXimera')
 %% src/metadata.dtx  (with options: `classXimera')
 %% src/outcomes.dtx  (with options: `classXimera')
@@ -189,6 +190,29 @@
 
   \fi
 
+\font\dummyft@=dummy \relax
+\def\suppress{%
+  \begingroup\par
+  \parskip\z@
+  \offinterlineskip
+  \baselineskip=\z@skip
+  \lineskip=\z@skip
+  \lineskiplimit=\maxdimen
+  \dummyft@
+  \count@\sixt@@n
+  \loop\ifnum\count@ >\z@
+    \advance\count@\m@ne
+    \textfont\count@\dummyft@
+    \scriptfont\count@\dummyft@
+    \scriptscriptfont\count@\dummyft@
+  \repeat
+  \let\selectfont\relax
+  \let\mathversion\@gobble
+  \let\getanddefine@fonts\@gobbletwo
+  \tracinglostchars\z@
+  \frenchspacing
+  \hbadness\@M}
+\def\endsuppress{\par\endgroup}
 \newcommand{\Make@Counter}[1]{% This is an internal macro that should probably be depreciated for the below universal macro.
   \@ifundefined{c@#1}% Check to see if counter exists
        {     % If not, create it and set it to 0.
@@ -211,32 +235,6 @@
 }
 }
 
-\providecommand{\latexProblemContent}[1]{#1}
-\Make@Counter{Iteration@probCnt}
-
-\font\dummyft@=dummy \relax
-\def\suppress{%% Code located in "Utilitymacros.dtx"
-  \begingroup\par
-  \parskip\z@
-  \offinterlineskip
-  \baselineskip=\z@skip
-  \lineskip=\z@skip
-  \lineskiplimit=\maxdimen
-  \dummyft@
-  \count@\sixt@@n
-  \loop\ifnum\count@ >\z@
-    \advance\count@\m@ne
-    \textfont\count@\dummyft@
-    \scriptfont\count@\dummyft@
-    \scriptscriptfont\count@\dummyft@
-  \repeat
-  \let\selectfont\relax
-  \let\mathversion\@gobble
-  \let\getanddefine@fonts\@gobbletwo
-  \tracinglostchars\z@
-  \frenchspacing
-  \hbadness\@M}
-\def\endsuppress{\par\endgroup}
 \setlength{\parindent}{0pt}
 \setlength{\parskip}{5pt}
 \oddsidemargin 62pt
@@ -349,6 +347,9 @@
 
 \newcommand{\pdfOnly}[1]{\iftikzexport\else #1\fi}
 
+
+\providecommand{\latexProblemContent}[1]{#1}
+\Make@Counter{Iteration@probCnt}
 \newcommand{\hang}{% top theorem decoration
   \begingroup%
   \setlength{\unitlength}{.005\linewidth}% \linewidth/200
