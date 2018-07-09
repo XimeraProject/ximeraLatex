@@ -1,4 +1,4 @@
-NAME    = ximeraLaTeX
+NAME    = ximera
 SHELL   = bash
 PWD     = $(shell pwd)
 VERS    = $(shell ltxfileinfo -v $(NAME).dtx|sed -e 's/^v//')
@@ -28,7 +28,7 @@ clean:
 	rm -f $(NAME).{aux,fls,glo,gls,hd,idx,ilg,ind,ins,log,out}
 
 distclean: clean
-	rm -f ximeraLaTeX.pdf README $(OUTPUTS)
+	rm -f ximera.pdf README $(OUTPUTS)
 
 # BADBAD: The code below still needs to be fixed
 
