@@ -1,0 +1,9 @@
+
+ \begin{theglossary} 
+
+    \makeatletter\scan@allowedfalse
+
+  \item v1.0.0\efill 
+ \subitem General:\ First public release\pfill \hdpindex{}{1}
+
+ \end{theglossary}

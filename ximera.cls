@@ -9,6 +9,7 @@
 %% src/options.dtx  (with options: `classXimera')
 %% src/packages.dtx  (with options: `classXimera')
 %% src/tikzexport.dtx  (with options: `classXimera')
+%% src/utilitymacros.dtx  (with options: `classXimera')
 %% src/pagesetup.dtx  (with options: `classXimera')
 %% src/metadata.dtx  (with options: `classXimera')
 %% src/outcomes.dtx  (with options: `classXimera')
@@ -16,7 +17,6 @@
 %% src/theorems.dtx  (with options: `classXimera')
 %% src/enumerate.dtx  (with options: `classXimera')
 %% src/proof.dtx  (with options: `classXimera')
-%% src/suppress.dtx  (with options: `classXimera')
 %% src/only.dtx  (with options: `classXimera')
 %% src/problem.dtx  (with options: `classXimera')
 %% src/hints.dtx  (with options: `classXimera')
@@ -151,134 +151,15 @@
 \RequirePackage{xkeyval}
 
 \RequirePackage{comment}
-
-%% DEPRECIATED IN THE NEW DTX VERSION
-%%<<<<<<< HEAD 
-%%
-%%\RequirePackage{cancel}% Temporarily added to make mooculus compile cleanly.
-%%\RequirePackage{multicol}% Temporarily added to make mooculus compile cleanly.
-%%
-%%\oddsidemargin 62pt %% so we don't get weird margins in 2-sided mode
-%%\evensidemargin 62pt %% so we don't get weird margins in 2-sided mode
-%%\textwidth 345pt %% so we don't get weird margins in 2-sided mode
-%%\headheight 14pt %% so we don't get weird margins in 2-sided mode
-%%
-%%
-%%
-%%\makeatletter
-%%% Don't use hyperref when using Tex4ht
-%%=======
-
-
 \RequirePackage{gettitlestring}
 \RequirePackage{nameref}
 \RequirePackage{epstopdf}
-
 \ifdefined\HCode
-    \RequirePackage{hyperref}
+\RequirePackage{hyperref}
 \else
-    \RequirePackage[pdfpagelabels,colorlinks=true,allcolors=blue!30!black]{hyperref}
-    \pdfstringdefDisableCommands{\def\hskip{}}%% quiets warning
+\RequirePackage[pdfpagelabels,colorlinks=true,allcolors=blue!30!black]{hyperref}
+\pdfstringdefDisableCommands{\def\hskip{}}%% quiets warning
 \fi
-
-% We put hyperref after all other packages becuase that is better.
-
-% the article document class is made to have lines of text that are
-% not too long. 
-
-% http://tex.stackexchange.com/questions/71172/why-are-default-latex-margins-so-big
-
-
-% ---------------------------------------------------------------------
-% ---------------------------------------------------------------------
-% 				Custom Intrapackage Commands
-% ---------------------------------------------------------------------
-% ---------------------------------------------------------------------
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%  		Suppress Command  		%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%  
-% The suppress command is a good way to suppress output without commenting it.
-% This prints/executes code that is being suppressed by printing with "invisible" font.
-% This allows commands to execute while suppressing any output.
-%
-% This way we can avoid many of the places we use environ package and this should also
-% avoid most of the verbatim conflicts. This is only useful for the pdf since the html
-% conversion eats all the formating.
-%
-% Jason Nowell -- Code adapted from syntonly.sty
-
-
-\font\dummyft@=dummy \relax
-\def\suppress{%
-  \begingroup\par
-  \parskip\z@
-  \offinterlineskip
-  \baselineskip=\z@skip
-  \lineskip=\z@skip
-  \lineskiplimit=\maxdimen
-  \dummyft@
-  \count@\sixt@@n
-  \loop\ifnum\count@ >\z@
-    \advance\count@\m@ne
-    \textfont\count@\dummyft@
-    \scriptfont\count@\dummyft@
-    \scriptscriptfont\count@\dummyft@
-  \repeat
-  \let\selectfont\relax
-  \let\mathversion\@gobble
-  \let\getanddefine@fonts\@gobbletwo
-  \tracinglostchars\z@
-  \frenchspacing
-  \hbadness\@M}
-\def\endsuppress{\par\endgroup}
-
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%  	Make Counter Command  		%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-%Improved version of \newcounter to check for existance before creating a counter to minimize conflicts with packages.
-%
-% Added by Jason Nowell
-
-\newcommand{\MakeCounter}[1]{
-	\@ifundefined{c@#1}	% Check to see if counter exists
-		{									%If not, create it and set it to 0.
-		\message{The counter #1 didn't exist, so I created it and set it to 0.}
-		\newcounter{#1}
-		\setcounter{#1}{0}
-		}
-		{									%If so, reset to 0.
-		\expandafter\ifnum \arabic{#1}>0 
-    		\@latex@warning{I just overwrote the counter #1, it was set to \arabic{#1} and I forced it to 0.}
-    	\fi
-		\message{Hopefully it wasn't needed anymore.}
-		\setcounter{#1}{0}
-		}
-}
-
-% The below is an internal version of this above command that should be depreciated eventually.
-\newcommand{\Make@Counter}[1]{
-  \@ifundefined{c@#1}% Check to see if counter exists
-       {     % If not, create it and set it to 0.
-\newcounter{#1}
-\setcounter{#1}{0}
-}
-
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%						Tikz Fix.
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-% Currently Tikz doesn't compile natively into the website because of how the xake bake compilation works.
-% ::IMPORTANT NOTE FOR TIKZ::
-% In order to make Tikz work, you need to get the tool "mutool" on the machine that is performing xake bake.
-
-\PassOptionsToPackage{table}{xcolor}
-\RequirePackage{tikz}
-
 \ifdefined\HCode
   \tikzexporttrue
 \fi
@@ -307,6 +188,43 @@
 
   \fi
 
+\newcommand{\Make@Counter}[1]{
+  \@ifundefined{c@#1}% Check to see if counter exists
+       {     % If not, create it and set it to 0.
+\newcounter{#1}
+\setcounter{#1}{0}
+}
+{%If so, reset to 0.
+\setcounter{#1}{0}
+}
+}
+
+\providecommand{\latexProblemContent}[1]{#1}
+\Make@Counter{Iteration@probCnt}
+
+\font\dummyft@=dummy \relax
+\def\suppress{%% Code located in "Utilitymacros.dtx"
+  \begingroup\par
+  \parskip\z@
+  \offinterlineskip
+  \baselineskip=\z@skip
+  \lineskip=\z@skip
+  \lineskiplimit=\maxdimen
+  \dummyft@
+  \count@\sixt@@n
+  \loop\ifnum\count@ >\z@
+    \advance\count@\m@ne
+    \textfont\count@\dummyft@
+    \scriptfont\count@\dummyft@
+    \scriptscriptfont\count@\dummyft@
+  \repeat
+  \let\selectfont\relax
+  \let\mathversion\@gobble
+  \let\getanddefine@fonts\@gobbletwo
+  \tracinglostchars\z@
+  \frenchspacing
+  \hbadness\@M}
+\def\endsuppress{\par\endgroup}
 \setlength{\parindent}{0pt}
 \setlength{\parskip}{5pt}
 \oddsidemargin 62pt
@@ -395,29 +313,6 @@
 \renewenvironment{proof}[1][\proofname]
   {\begin{trivlist}\item[\hskip \labelsep \itshape \bfseries #1{}\hspace{2ex}]}
 {\qed\end{trivlist}}
-\font\dummyft@=dummy \relax
-\def\suppress{%
-  \begingroup\par
-  \parskip\z@
-  \offinterlineskip
-  \baselineskip=\z@skip
-  \lineskip=\z@skip
-  \lineskiplimit=\maxdimen
-  \dummyft@
-  \count@\sixt@@n
-  \loop\ifnum\count@ >\z@
-    \advance\count@\m@ne
-    \textfont\count@\dummyft@
-    \scriptfont\count@\dummyft@
-    \scriptscriptfont\count@\dummyft@
-  \repeat
-  \let\selectfont\relax
-  \let\mathversion\@gobble
-  \let\getanddefine@fonts\@gobbletwo
-  \tracinglostchars\z@
-  \frenchspacing
-  \hbadness\@M}
-\def\endsuppress{\par\endgroup}
 
 \ifhandout
 \NewEnviron{prompt}{}
@@ -442,13 +337,6 @@
 
 \newcommand{\pdfOnly}[1]{\iftikzexport\else #1\fi}
 
-
-{%If so, reset to 0.
-\setcounter{#1}{0}
-}
-}
-\newcommand{\latexProblemContent}[1]{#1}
-\Make@Counter{Iteration@probCnt}
 \newcommand{\hang}{% top theorem decoration
   \begingroup%
   \setlength{\unitlength}{.005\linewidth}% \linewidth/200
@@ -479,49 +367,24 @@
     \end{picture}%
   \endgroup%
 }%
-\newcounter{problem} %% for the main problem
-
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%  		Problem Environments		%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-%% Most of the below added by Jason Nowell
-
-\providecommand{\latexProblemContent}[1]{#1}%% Added for those that want to use UF problems without using the problem filter code. This command is renewed into something meaningful in the 'ProblemSelector.sty'.
-\MakeCounter{Iteration@probCnt}% Iterate count for problem counts.
-
-
-
-%%%%%% Configure environment configuration commands
-
-% The command \problemNumber contains all the format code to determine the number (and the format of the number) for any of the problem environments.
+%%%%%% Configure environment configuration commands %%%%%%%
 \newcommand{\problemNumber}{
-
-% First we determine if we have a counter for this question depth level.
-% -- Can probably replace this with MakeCounter at some point -- Jason
-
-\ifcsname c@depth\Roman{problem@Depth}Count\endcsname	% Check to see if counter exists
-	%If so, do nothing.
-	\else
-	%If not, create it.
-	\expandafter\newcounter{depth\Roman{problem@Depth}Count}
-	\expandafter\setcounter{depth\Roman{problem@Depth}Count}{0}
-	\fi
+\ifcsname c@depth\Roman{problem@Depth}Count\endcsname % Check to see if counter exists
+\else
+\expandafter\newcounter{depth\Roman{problem@Depth}Count}
+\expandafter\setcounter{depth\Roman{problem@Depth}Count}{0}
+\fi
 
 \expandafter\stepcounter{depth\Roman{problem@Depth}Count}
-\arabic{depthICount}% The first problem depth, what use to be "\theproblem".
-\forloop{Iteration@probCnt}{2}{\arabic{Iteration@probCnt} < \numexpr \value{problem@Depth} + 1 \relax}{%
-.\expandafter\arabic{depth\Roman{Iteration@probCnt}Count}% Get the problem number of the next depth level and append it with a ".".
+\arabic{depthICount}% The first problem depth, what use to be |\theproblem|.
+
+\forloop{Iteration@probCnt}{2}
+    {\arabic{Iteration@probCnt} < \numexpr \value{problem@Depth} + 1 \relax}{%
+    .\expandafter\arabic{depth\Roman{Iteration@probCnt}Count}% Get the problem number of the next depth level and append it with a ".".
 }
-%\ifhandout % Currently handout mode doesn't allow hints. Putting this code in place in case that changes.
-%	\theproblem 
-%\else
-%	\theproblem 
-%\fi
 
 %%%%%% Configure various problem environment commands
-\MakeCounter{problem@Depth}
+\Make@Counter{problem@Depth}
 
 %%%% Configure environments start content
 

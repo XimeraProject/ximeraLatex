@@ -1,13 +1,13 @@
-% \subsubsection{Utility macros}
-
-% Improved version of |\newcounter| to check for existance before
-% creating a counter to minimize conflicts with packages.  
-% Code located in "Utilitymacros.dtx"
-% Added by Jason Nowell
+% \subsection{Utility macros}
+%    These are a list of new utility macros that are generally useful and are loaded after packages and the Tikz Fix.
 %    \begin{macrocode}
 %<*classXimera>
-
+%    \end{macrocode}
+% \begin{macro}{NewCounter}
+%   Improved version of |\newcounter| to check for existance before creating a counter to minimize conflicts with packages.  Added by Jason Nowell
+%    \begin{macrocode}
 \newcommand{\Make@Counter}[1]{
+% Code located in "Utilitymacros.dtx"
   \@ifundefined{c@#1}% Check to see if counter exists
 	       {     % If not, create it and set it to 0.
 		\newcounter{#1}
@@ -18,16 +18,16 @@
 		}
 }
 %    \end{macrocode}
+% \end{macro}
 
-% Added for those that want to use UF problems without using the
-% problem filter code. This command is renewed into something
-% meaningful in the 'ProblemSelector.sty'.
+% \begin{macro}{latexProblemContent}
+%    Added for those that want to use UF problems without using the problem filter code. This command is renewed into something meaningful in the 'ProblemSelector.sty'.
 %    \begin{macrocode}
 \providecommand{\latexProblemContent}[1]{#1}
 % Iterate count for problem counts.
 \Make@Counter{Iteration@probCnt}        
 %    \end{macrocode}
-
+% \end{macro}
 
 
 % \DescribeEnv{suppress}{
@@ -39,11 +39,10 @@
 % avoid most of the verbatim conflicts. This is only useful for the pdf since the html
 % conversion eats all the formating.
 %
-% Code located in "Utilitymacros.dtx"
 % Jason Nowell -- Code adapted from syntonly.sty
 %    \begin{macrocode}
 \font\dummyft@=dummy \relax
-\def\suppress{%
+\def\suppress{%% Code located in "Utilitymacros.dtx"
   \begingroup\par
   \parskip\z@
   \offinterlineskip
