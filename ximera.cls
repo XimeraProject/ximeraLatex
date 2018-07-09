@@ -105,6 +105,8 @@
 \newif\ifwordchoicegiven
 \wordchoicegivenfalse
 \DeclareOption{wordchoicegiven}{\wordchoicegiventrue}
+\newif\iffirstinlinechoice% Support for other wordchoice command contents.
+\firstinlinechoicetrue
 
 \newif\ifxake
 \xakefalse
@@ -199,7 +201,7 @@
 }
 }
 
-\newcommand{\MakeCounter}[1]{
+\newcommand{\MakeCounter}[1]{%% Code located in "Utilitymacros.dtx"
   \@ifundefined{c@#1}% Check to see if counter exists
        {     % If not, create it and set it to 0.
 \newcounter{#1}
@@ -660,13 +662,13 @@ Interactive
 \setkeys{choice}{#1}%
 \item{#2}
 \ifthenelse{\boolean{\choice@correct}}
-{% Begin then result
-\ifhandout% if it's a handout do nothing.
-\else% otherwise place a checkmark when you select the "correct choice"... maybe? -- Jason
-\,\checkmark\,\setkeys{choice}{correct=false}
-\fi
-}% End then result
-{}% Begin/End else result.
+    {% Begin then result
+    \ifhandout% if it's a handout do nothing.
+    \else% otherwise place a checkmark when you select the "correct choice"... maybe? -- Jason
+        \,\checkmark\,\setkeys{choice}{correct=false}
+    \fi
+    }% End then result
+    {}% Begin/End else result.
 }
 
 \newcommand{\choiceEXP}[2][]{%
@@ -683,15 +685,32 @@ Interactive
 } %% note all the {} are needed in case the choice has [] in it.
 
 \newcommand{\otherchoice}[2][]{%
-\ignorespaces
-\setkeys{otherchoice}{#1}
-\ifthenelse{\boolean{\otherchoice@correct}}
+\ignorespaces%
+\setkeys{otherchoice}{#1}%
+\ifthenelse{\boolean{\otherchoice@correct}}%
 {% Start then result
-#2\setkeys{otherchoice}{correct=false}
+#2\ignorespaces\setkeys{otherchoice}{correct=false}\ignorespaces%
 }% End then result
 {}% Start/End else result
-\ignorespaces
-      }
+\ignorespaces%
+}%
+\newcommand{\inlinechoice}[2][]{%
+\setkeys{choice}{#1}%
+\iffirstinlinechoice
+(\hspace{-.25em}
+\firstinlinechoicefalse
+\else
+/
+\fi
+#2
+\ifthenelse{\boolean{\choice@correct}}%
+{% Start then result
+\ifhandout\else\checkmark\ignorespaces\setkeys{choice}{correct=false}\ignorespaces\fi%
+}% End then result
+{}% Start/End else result
+\hspace{-.25em}\ignorespaces%
+}
+
 
 \newenvironment{multipleChoice}[1][]
 {% Environment Start Code
@@ -725,18 +744,20 @@ Interactive
 
 \newcommand{\wordChoice}[1]{%
 \let\choicetemp\choice% Assign a "choicetemp" command to duplicate choice.
-\ifwordchoicegiven
-\def\choice{\otherchoice}
-\begin{multipleChoice@@}
+\ifwordchoicegiven% If wordchoice option is on, we need to juggle around some definitions.
+\let\choice\otherchoice%
+\begin{multipleChoice@@}%
 #1
-\end{multipleChoice@@}
-\else
-\begin{multipleChoice@}
-#1
-\end{multipleChoice@}
-\fi
+\end{multipleChoice@@}%
+\else% If it isn't the regular "choice" command should work.
+\let\choice\inlinechoice%
+\begin{multipleChoice@@}%
+#1)%
+\end{multipleChoice@@}%
+\fi%
 \let\choice\choicetemp% Now that choicetmp has been manipulated to what we want, replace choice with it.
-}
+}%
+
 
 \newenvironment{selectAll}[1][]
 {\begin{trivlist}\item[\hskip \labelsep\small\bfseries Select All Correct Answers:]\hfil\begin{enumerate}}
