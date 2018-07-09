@@ -29,7 +29,7 @@
 %% src/leash.dtx  (with options: `htXimera')
 %% src/labels.dtx  (with options: `htXimera')
 %% src/interactives/sagemath.dtx  (with options: `htXimera')
-%% src/graded.dtx  (with options: `htXimera')
+%% src/ungraded.dtx  (with options: `htXimera')
 %% src/ending.dtx  (with options: `htXimera')
 %% ------------:| ------------------------------------------------------------
 %%       ximera:| Simultaneously writing print and online interactive materials
@@ -264,7 +264,7 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \renewenvironment{sagesilent}{\NoFonts}{\EndNoFonts}
 \ScriptEnv{sagesilent}{\ifvmode \IgnorePar\fi \EndP\HCode{<script type="text/sagemath">}\HtmlParOff}{\HtmlParOn\HCode{</script></div>}}
-\renewenvironment{ungraded}[1]{%
+\renewenvironment{ungraded}{%
 \ifvmode \IgnorePar\fi \EndP\HCode{<div class="ungraded">}\IgnoreIndent%
 }{
 \ifvmode \IgnorePar\fi \EndP\HCode{</div>}}\IgnoreIndent%
