@@ -188,7 +188,18 @@
 
   \fi
 
-\newcommand{\Make@Counter}[1]{
+\newcommand{\Make@Counter}[1]{% This is an internal macro that should probably be depreciated for the below universal macro.
+  \@ifundefined{c@#1}% Check to see if counter exists
+       {     % If not, create it and set it to 0.
+\newcounter{#1}
+\setcounter{#1}{0}
+}
+{%If so, reset to 0.
+\setcounter{#1}{0}
+}
+}
+
+\newcommand{\MakeCounter}[1]{
   \@ifundefined{c@#1}% Check to see if counter exists
        {     % If not, create it and set it to 0.
 \newcounter{#1}
@@ -367,9 +378,9 @@
     \end{picture}%
   \endgroup%
 }%
-%%%%%% Configure environment configuration commands %%%%%%%
+\MakeCounter{problem}
 \newcommand{\problemNumber}{
-\ifcsname c@depth\Roman{problem@Depth}Count\endcsname % Check to see if counter exists
+\ifcsname c@depth\Roman{problem@Depth}Count\endcsname% Check to see if counter exists
 \else
 \expandafter\newcounter{depth\Roman{problem@Depth}Count}
 \expandafter\setcounter{depth\Roman{problem@Depth}Count}{0}
@@ -378,9 +389,9 @@
 \expandafter\stepcounter{depth\Roman{problem@Depth}Count}
 \arabic{depthICount}% The first problem depth, what use to be |\theproblem|.
 
-\forloop{Iteration@probCnt}{2}
-    {\arabic{Iteration@probCnt} < \numexpr \value{problem@Depth} + 1 \relax}{%
+\forloop{Iteration@probCnt}{2}{\arabic{Iteration@probCnt} < \numexpr \value{problem@Depth} + 1 \relax}{%
     .\expandafter\arabic{depth\Roman{Iteration@probCnt}Count}% Get the problem number of the next depth level and append it with a ".".
+}
 }
 
 %%%%%% Configure various problem environment commands

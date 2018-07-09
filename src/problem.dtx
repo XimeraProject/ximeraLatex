@@ -5,6 +5,8 @@
 % \url{http://tex.stackexchange.com/questions/11098/nice-formatting-for-theorems}
 %    \begin{macrocode}
 %<*classXimera>
+%    \end{macrocode}
+%    \begin{macrocode}
 \newcommand{\hang}{% top theorem decoration
   \begingroup%
   \setlength{\unitlength}{.005\linewidth}% \linewidth/200
@@ -37,14 +39,15 @@
 }%
 %    \end{macrocode}
 %
-%%%%%% Configure environment configuration commands %%%%%%%
+% Configure environment configuration commands
 %
 % The command |\problemNumber| contains all the format code to determine the number (and the format of the number) for any of the problem environments.
 % 
 %    \begin{macrocode}
+\MakeCounter{problem}
 \newcommand{\problemNumber}{
 % First we determine if we have a counter for this question depth level.
-\ifcsname c@depth\Roman{problem@Depth}Count\endcsname	% Check to see if counter exists
+\ifcsname c@depth\Roman{problem@Depth}Count\endcsname% Check to see if counter exists
 	%If so, do nothing.
 	\else
 	%If not, create it.
@@ -55,16 +58,16 @@
 \expandafter\stepcounter{depth\Roman{problem@Depth}Count}
 \arabic{depthICount}% The first problem depth, what use to be |\theproblem|.
 
-\forloop{Iteration@probCnt}{2}
-    {\arabic{Iteration@probCnt} < \numexpr \value{problem@Depth} + 1 \relax}{%
+\forloop{Iteration@probCnt}{2}{\arabic{Iteration@probCnt} < \numexpr \value{problem@Depth} + 1 \relax}{%
     .\expandafter\arabic{depth\Roman{Iteration@probCnt}Count}% Get the problem number of the next depth level and append it with a ".".
 }
+%\@ifpackageloaded{shuffle}{<true>}{<false>}% Check if Shuffle has been added. If so, add special numbering to the shuffled "groups". Currently commented out while we decide what that should look like (compared to the normal nested problems).
 %\ifhandout % Currently handout mode doesn't allow hints. Putting this code in place in case that changes.
 %	\theproblem 
 %\else
 %	\theproblem 
 %\fi
-
+}
 
 
 %%%%%% Configure various problem environment commands
