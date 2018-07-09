@@ -4,16 +4,15 @@
 %%
 %% The original source files were:
 %%
-%% ximeraLaTeX.dtx  (with options: `classXourse')
+%% ximera.dtx  (with options: `classXourse')
 %% src/optionsxourse.dtx  (with options: `classXourse')
 %% src/activity.dtx  (with options: `classXourse')
 %% src/sectioning.dtx  (with options: `classXourse')
 %% src/graded.dtx  (with options: `classXourse')
 %% src/logo.dtx  (with options: `classXourse')
 %% ------------:| ------------------------------------------------------------
-%%  ximeraLaTeX:| LaTeX classes for simultaneously writing print and online interactive materials.
-%%       Author:| Jim Fowler and Jeramiah Hocutt and Oscar Levin and Jason Nowell and Hans Parshall
-%% and Bart Snapp
+%%       ximera:| Simultaneously writing print and online interactive materials
+%%       Author:| Jim Fowler and Jeramiah Hocutt and Oscar Levin and Jason Nowell and Hans Parshall and Bart Snapp
 %%       E-mail:| bart.snapp@gmail.com
 %%      License:| Released under the LaTeX Project Public License v1.3c or later
 %%          See:| http://www.latex-project.org/lppl.txt
@@ -21,7 +20,7 @@
 \NeedsTeXFormat{LaTeX2e}[1999/12/01]
 \ProvidesClass{xourse}
  [2018/10/17 v1.00
- A LaTeX class for combining Ximera activities.]
+ Combining Ximera activities into Xourses]
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -141,10 +140,10 @@
 %% 
 %% https://github.com/XimeraProject/ximeraLatex
 %% 
-%% This work consists of the file ximeraLatex.dtx, the associated files
+%% This work consists of the file ximera.dtx, the associated files
 %% under src/, and a Makefile.
 %% 
-%% Running "make" generates the derived files README, ximeraLaTeX.pdf, ximera.cls, xourse.cls.
+%% Running "make" generates the derived files README, ximera.pdf, ximera.cls, xourse.cls.
 %% 
 %% Running "make inst" installs the files in the user's TeX tree.
 %% 

@@ -6,13 +6,11 @@
 %<*readme>
 |
 ------------:| ------------------------------------------------------------
- ximeraLaTeX:| LaTeX classes for simultaneously writing print and online interactive materials.
-      Author:| Jim Fowler and Jeramiah Hocutt and Oscar Levin and Jason Nowell and Hans Parshall
-and Bart Snapp
+      ximera:| Simultaneously write print and online interactive materials
+      Author:| Jim Fowler and Jeramiah Hocutt and Oscar Levin and Jason Nowell and Hans Parshall and Bart Snapp
       E-mail:| bart.snapp@gmail.com
      License:| Released under the LaTeX Project Public License v1.3c or later
          See:| http://www.latex-project.org/lppl.txt
-
 
 Short description:
 Some text about the class: probably the same as the abstract.
@@ -30,9 +28,8 @@ Some text about the class: probably the same as the abstract.
 \askforoverwritefalse
 \preamble
 ------------:| ------------------------------------------------------------
- ximeraLaTeX:| LaTeX classes for simultaneously writing print and online interactive materials.
-      Author:| Jim Fowler and Jeramiah Hocutt and Oscar Levin and Jason Nowell and Hans Parshall
-and Bart Snapp
+      ximera:| Simultaneously writing print and online interactive materials
+      Author:| Jim Fowler and Jeramiah Hocutt and Oscar Levin and Jason Nowell and Hans Parshall and Bart Snapp
       E-mail:| bart.snapp@gmail.com
      License:| Released under the LaTeX Project Public License v1.3c or later
          See:| http://www.latex-project.org/lppl.txt
@@ -54,10 +51,10 @@ Bart Snapp. The source code can be found at:
 
 https://github.com/XimeraProject/ximeraLatex
 
-This work consists of the file ximeraLatex.dtx, the associated files
+This work consists of the file ximera.dtx, the associated files
 under src/, and a Makefile.
 
-Running "make" generates the derived files README, ximeraLaTeX.pdf, ximera.cls, xourse.cls.
+Running "make" generates the derived files README, ximera.pdf, ximera.cls, xourse.cls.
 
 Running "make inst" installs the files in the user's TeX tree.
 
@@ -65,13 +62,13 @@ Running "make install" installs the files in the local TeX tree.
 
 \endpostamble
 
-\usedir{tex/latex/ximeraLaTeX}
+\usedir{tex/latex/ximera}
 \input docstrip
 \askforoverwritefalse
 \generate{
   \file{ximera.cls}{
-    \from{ximeraLaTeX.dtx}{classXimera}
-    \from{src/banner.dtx}{classXimera} 
+    \from{ximera.dtx}{classXimera}
+    \from{src/banner.dtx}{classXimera}    
     \from{src/options.dtx}{classXimera}
     \from{src/packages.dtx}{classXimera}
     \from{src/tikzexport.dtx}{classXimera}
@@ -112,7 +109,7 @@ Running "make install" installs the files in the local TeX tree.
     \from{src/jax.dtx}{classXimera}
   }
   \file{xourse.cls}{
-    \from{ximeraLaTeX.dtx}{classXourse}
+    \from{ximera.dtx}{classXourse}
     \from{src/optionsxourse.dtx}{classXourse}
     \from{src/activity.dtx}{classXourse}
     \from{src/sectioning.dtx}{classXourse}
@@ -122,7 +119,7 @@ Running "make install" installs the files in the local TeX tree.
 }
 \generate{
   \file{ximera.cfg}{
-    \from{ximeraLaTeX.dtx}{cfgXimera}
+    \from{ximera.dtx}{cfgXimera}
     \from{src/pagesetup.dtx}{cfgXimera}
     \from{src/packages.dtx}{cfgXimera}
     \from{src/jax.dtx}{cfgXimera}
@@ -139,7 +136,7 @@ Running "make install" installs the files in the local TeX tree.
 }
 \generate{
   \file{ximera.4ht}{
-    \from{ximeraLaTeX.dtx}{htXimera}
+    \from{ximera.dtx}{htXimera}
     \from{src/pagesetup.dtx}{htXimera}    
     \from{src/title.dtx}{htXimera}
     \from{src/problem.dtx}{htXimera}
@@ -169,7 +166,7 @@ Running "make install" installs the files in the local TeX tree.
 }
 \generate{
   \file{xourse.4ht}{
-    \from{ximeraLaTeX.dtx}{htXourse}
+    \from{ximera.dtx}{htXourse}
     \from{src/logo.dtx}{htXourse}
     \from{src/metadata.dtx}{htXourse}
     \from{src/activity.dtx}{htXourse}
@@ -182,12 +179,12 @@ Running "make install" installs the files in the local TeX tree.
 %</install>
 %<install>\endbatchfile
 %<*internal>
-\usedir{source/latex/ximeraLaTeX}
+\usedir{source/latex/ximera}
 \generate{
-  \file{ximeraLaTeX.ins}{\from{\jobname.dtx}{install}}
+  \file{ximera.ins}{\from{\jobname.dtx}{install}}
 }
 \nopreamble\nopostamble
-\usedir{doc/latex/ximeraLaTeX}
+\usedir{doc/latex/ximera}
 \generate{
   \file{README.txt}{\from{\jobname.dtx}{readme}}
 }
@@ -201,14 +198,14 @@ Running "make install" installs the files in the local TeX tree.
 %
 % \iffalse
 %<*driver>
-\ProvidesFile{ximeraLaTeX.dtx}
+\ProvidesFile{ximera.dtx}
 %</driver>
 %<classXimera|classXourse>\NeedsTeXFormat{LaTeX2e}[1999/12/01]
 %<classXimera>\ProvidesClass{ximera}
 %<classXourse>\ProvidesClass{xourse}
 %<classXimera|classXourse> [2018/10/17 v1.00
-%<classXimera> A LaTeX class for simultaneously writing print and online interactive materials.]
-%<classXourse> A LaTeX class for combining Ximera activities.]
+%<classXimera> Simultaneously write print and online interactive materials]
+%<classXourse> Combining Ximera activities into Xourses]
 %<*driver>
 \documentclass{ltxdoc}
 \usepackage[a4paper,margin=25mm,left=50mm,nohead]{geometry}
@@ -281,7 +278,7 @@ Running "make install" installs the files in the local TeX tree.
 % \GetFileInfo{\jobname.dtx}
 % \DoNotIndex{\newcommand,\newenvironment}
 % 
-%\title{\textsf{ximera\LaTeX} --- Simultaneously write print and online interactive materials.\thanks{This file
+%\title{\textsf{ximera} --- Simultaneously write print and online interactive materials.\thanks{This file
 %   describes version \fileversion, last revised \filedate.}
 %}
 %\author{Jim Fowler \and Jeramiah Hocutt \and Oscar Levin \and Jason Nowell \and Hans Parshall \and Bart Snapp}
