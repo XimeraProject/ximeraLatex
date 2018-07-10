@@ -820,7 +820,7 @@ Interactive
 (\texttt{\detokenize\expandafter{\PH@Command}}):% Format (and detokenize) the condition for feedback to trigger
 \hspace{2ex}]\small\slshape% Insert some space before the actual feedback given.
 }{
-\end{trivlist}
+\end{trivlist} 
 }
 
 \fi
