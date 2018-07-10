@@ -11,7 +11,7 @@ INPUT src/options.dtx
 INPUT src/packages.dtx
 INPUT src/tikzexport.dtx
 INPUT src/suppress.dtx
-INPUT src/MakeCounter.dtx
+INPUT src/makeCounter.dtx
 INPUT src/pagesetup.dtx
 INPUT src/metadata.dtx
 INPUT src/outcomes.dtx

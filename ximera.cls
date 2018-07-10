@@ -10,7 +10,7 @@
 %% src/packages.dtx  (with options: `classXimera')
 %% src/tikzexport.dtx  (with options: `classXimera')
 %% src/suppress.dtx  (with options: `classXimera')
-%% src/MakeCounter.dtx  (with options: `classXimera')
+%% src/makeCounter.dtx  (with options: `classXimera')
 %% src/pagesetup.dtx  (with options: `classXimera')
 %% src/metadata.dtx  (with options: `classXimera')
 %% src/outcomes.dtx  (with options: `classXimera')
