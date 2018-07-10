@@ -741,35 +741,21 @@ Interactive
 \end{trivlist}
 }
 
-\newenvironment{multipleChoice@}[1][]
-{% Environment Start Code
-\setkeys{multipleChoice}{#1}%
-\ifthenelse{\equal{\mc@id}{}}% Test if \mc@ID is empty. This is not a robust check, is this dangerous? -- Jason
-{}% Begin/End then result.
-{% Begin else result
-\immediate\write\idfile{var \mc@id;}
-}% End else result
-\begin{enumerate*}[before={\upshape{(\hspace{-.25em}}}, itemjoin={/\hspace{-.25em}}, after={\upshape{)}}, label={}]% Weird formatting choices, as stated displays "/" between items.
-}
-{% Environment End Code
-\end{enumerate*}
-}
-
-\newenvironment{multipleChoice@@}[1][]{}{}
+\newenvironment{multipleChoice@}[1][]{}{)}
 
 
 \newcommand{\wordChoice}[1]{%
 \let\choicetemp\choice% Assign a "choicetemp" command to duplicate choice.
 \ifwordchoicegiven% If wordchoice option is on, we need to juggle around some definitions.
 \let\choice\otherchoice%
-\begin{multipleChoice@@}%
+\begin{multipleChoice@}%
 #1
-\end{multipleChoice@@}%
+\end{multipleChoice@}%
 \else% If it isn't the regular "choice" command should work.
 \let\choice\inlinechoice%
-\begin{multipleChoice@@}%
-#1)%
-\end{multipleChoice@@}%
+\begin{multipleChoice@}%
+#1%
+\end{multipleChoice@}%
 \fi%
 \let\choice\choicetemp% Now that choicetmp has been manipulated to what we want, replace choice with it.
 }%

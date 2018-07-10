@@ -185,6 +185,7 @@
 \ifthenelse{\equal{\choice@value}{}}{}{\HCode{data-value="\choice@value" }}
 \HCode{id="choice\arabic{choiceId}">}%
 #2\HCode{</span>}}
+\let\inlinechoice\choice
 
 
 \renewenvironment{multipleChoice}[1][]
