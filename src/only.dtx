@@ -3,6 +3,9 @@
 % \DescribeEnv{prompt}{The prompt part for mathmode}
 %    \begin{macrocode}
 %<*classXimera>
+\ifxake
+        \newenvironment{prompt}{}{}
+\else
 \ifhandout
 	\NewEnviron{prompt}{}
 % Currently breaks when put in mathmode!
@@ -11,6 +14,7 @@
 	\newenvironment{prompt}
     	{\bgroup\color{gray!50!black}}
         {\egroup}
+\fi
 \fi
 %    \end{macrocode}
 

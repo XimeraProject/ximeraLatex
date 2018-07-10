@@ -45,6 +45,7 @@
 %% src/leash.dtx  (with options: `classXimera')
 %% src/interactives/sagemath.dtx  (with options: `classXimera')
 %% src/jax.dtx  (with options: `classXimera')
+%% src/ungraded.dtx  (with options: `classXimera')
 %% ------------:| ------------------------------------------------------------
 %%       ximera:| Simultaneously writing print and online interactive materials
 %%       Author:| Jim Fowler and Jeramiah Hocutt and Oscar Levin and Jason Nowell and Hans Parshall and Bart Snapp
@@ -128,6 +129,17 @@
 }
 \ProcessOptions\relax
 \LoadClass{article}
+
+\ifdefined\HCode
+  \xaketrue%
+  \tikzexporttrue%
+  \handoutfalse%
+  \numbersfalse%
+  \newpagefalse%
+  \hintsfalse%
+  \nooutcomesfalse%
+\fi
+
 
 \RequirePackage[makeroom]{cancel}
 \RequirePackage[inline]{enumitem}
@@ -324,12 +336,16 @@
   {\begin{trivlist}\item[\hskip \labelsep \itshape \bfseries #1{}\hspace{2ex}]}
 {\qed\end{trivlist}}
 
+\ifxake
+        \newenvironment{prompt}{}{}
+\else
 \ifhandout
 \NewEnviron{prompt}{}
 \else
 \newenvironment{prompt}
      {\bgroup\color{gray!50!black}}
         {\egroup}
+\fi
 \fi
 
 \ifhandout
@@ -725,35 +741,21 @@ Interactive
 \end{trivlist}
 }
 
-\newenvironment{multipleChoice@}[1][]
-{% Environment Start Code
-\setkeys{multipleChoice}{#1}%
-\ifthenelse{\equal{\mc@id}{}}% Test if \mc@ID is empty. This is not a robust check, is this dangerous? -- Jason
-{}% Begin/End then result.
-{% Begin else result
-\immediate\write\idfile{var \mc@id;}
-}% End else result
-\begin{enumerate*}[before={\upshape{(\hspace{-.25em}}}, itemjoin={/\hspace{-.25em}}, after={\upshape{)}}, label={}]% Weird formatting choices, as stated displays "/" between items.
-}
-{% Environment End Code
-\end{enumerate*}
-}
-
-\newenvironment{multipleChoice@@}[1][]{}{}
+\newenvironment{multipleChoice@}[1][]{}{)}
 
 
 \newcommand{\wordChoice}[1]{%
 \let\choicetemp\choice% Assign a "choicetemp" command to duplicate choice.
 \ifwordchoicegiven% If wordchoice option is on, we need to juggle around some definitions.
 \let\choice\otherchoice%
-\begin{multipleChoice@@}%
+\begin{multipleChoice@}%
 #1
-\end{multipleChoice@@}%
+\end{multipleChoice@}%
 \else% If it isn't the regular "choice" command should work.
 \let\choice\inlinechoice%
-\begin{multipleChoice@@}%
-#1)%
-\end{multipleChoice@@}%
+\begin{multipleChoice@}%
+#1%
+\end{multipleChoice@}%
 \fi%
 \let\choice\choicetemp% Now that choicetmp has been manipulated to what we want, replace choice with it.
 }%
@@ -804,7 +806,7 @@ Interactive
 (\texttt{\detokenize\expandafter{\PH@Command}}):% Format (and detokenize) the condition for feedback to trigger
 \hspace{2ex}]\small\slshape% Insert some space before the actual feedback given.
 }{
-\end{trivlist}
+\end{trivlist} 
 }
 
 \fi
@@ -1004,6 +1006,7 @@ Interactive
 \renewcommand{\DeclareMathOperator}[2]{\@OldDeclareMathOperator{#1}{#2}\immediate\write\myfile{\unexpanded{\DeclareMathOperator}{\unexpanded{#1}}{\unexpanded{#2}}}}
 
 \fi
+\newenvironment{ungraded}{}{}
 %% 
 %% Copyright (C) 2018 by Bart Snapp <bart.snapp@gmail.com> and Jim Fowler <kisonecat@gmail.com>
 %% 

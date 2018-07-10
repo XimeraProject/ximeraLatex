@@ -119,11 +119,12 @@
 \ifthenelse{\equal{\choice@value}{}}{}{\HCode{data-value="\choice@value" }}
 \HCode{id="choice\arabic{choiceId}">}%
 #2\HCode{</span>}}
+\let\inlinechoice\choice
 %</htXimera>
 %    \end{macrocode}
 
 % \subsubsection{Environment(s)}
-% multipleChoice@ and multipleChoice@@ are for internal use only. 
+% The environment |multipleChoice@| is for internal use only. 
 % \DescribeEnv{multipleChoice}{Wrap |\choice|s in a |multipleChoice| environment to make a multiple choice question.}
 %    \begin{macrocode}
 %<*classXimera>
@@ -141,25 +142,8 @@
 	}
 
 %multipleChoice@ is for internal use only! (used in wordChoice)
-%It displays all choices in a list separated by /
-\newenvironment{multipleChoice@}[1][]
-	{% Environment Start Code
-	\setkeys{multipleChoice}{#1}%
-	\ifthenelse{\equal{\mc@id}{}}% Test if \mc@ID is empty. This is not a robust check, is this dangerous? -- Jason
-		{}% Begin/End then result.
-		{% Begin else result
-		\immediate\write\idfile{var \mc@id;}
-		}% End else result
-	\begin{enumerate*}[before={\upshape{(\hspace{-.25em}}}, itemjoin={/\hspace{-.25em}}, after={\upshape{)}}, label={}]% Weird formatting choices, as stated displays "/" between items.
-	}
-	{% Environment End Code
-	\end{enumerate*}
-	}
-
-
-%multipleChoice@@ is for internal use only! (used in wordChoice)
 %this is simply a wrapper for the sole showing (other)choice.
-\newenvironment{multipleChoice@@}[1][]{}{}
+\newenvironment{multipleChoice@}[1][]{}{)}
 %</classXimera>
 %    \end{macrocode}
 
@@ -191,14 +175,14 @@
 \let\choicetemp\choice% Assign a "choicetemp" command to duplicate choice.
 \ifwordchoicegiven% If wordchoice option is on, we need to juggle around some definitions.
 \let\choice\otherchoice%
-\begin{multipleChoice@@}%
+\begin{multipleChoice@}%
 #1
-\end{multipleChoice@@}%
+\end{multipleChoice@}%
 \else% If it isn't the regular "choice" command should work.
 \let\choice\inlinechoice%
-\begin{multipleChoice@@}%
-#1)%
-\end{multipleChoice@@}%
+\begin{multipleChoice@}%
+#1%
+\end{multipleChoice@}%
 \fi%
 \let\choice\choicetemp% Now that choicetmp has been manipulated to what we want, replace choice with it.
 }%
