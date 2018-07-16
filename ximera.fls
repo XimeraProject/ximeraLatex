@@ -10,6 +10,7 @@ INPUT src/banner.dtx
 INPUT src/options.dtx
 INPUT src/packages.dtx
 INPUT src/tikzexport.dtx
+INPUT src/hyperref.dtx
 INPUT src/suppress.dtx
 INPUT src/makeCounter.dtx
 INPUT src/pagesetup.dtx
@@ -267,6 +268,8 @@ INPUT src/tikzexport.dtx
 INPUT src/tikzexport.dtx
 INPUT src/xkcd.dtx
 INPUT src/xkcd.dtx
+INPUT src/hyperref.dtx
+INPUT src/hyperref.dtx
 INPUT src/interactives/include.dtx
 INPUT src/interactives/include.dtx
 INPUT src/interactives/google.dtx

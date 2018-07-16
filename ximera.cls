@@ -9,6 +9,7 @@
 %% src/options.dtx  (with options: `classXimera')
 %% src/packages.dtx  (with options: `classXimera')
 %% src/tikzexport.dtx  (with options: `classXimera')
+%% src/hyperref.dtx  (with options: `classXimera')
 %% src/suppress.dtx  (with options: `classXimera')
 %% src/makeCounter.dtx  (with options: `classXimera')
 %% src/pagesetup.dtx  (with options: `classXimera')
@@ -169,12 +170,6 @@
 \RequirePackage{nameref}
 \RequirePackage{epstopdf}
 \ifdefined\HCode
-\RequirePackage{hyperref}
-\else
-\RequirePackage[pdfpagelabels,colorlinks=true,allcolors=blue!30!black]{hyperref}
-\pdfstringdefDisableCommands{\def\hskip{}}%% quiets warning
-\fi
-\ifdefined\HCode
   \tikzexporttrue
 \fi
 
@@ -202,6 +197,12 @@
 
   \fi
 
+\ifdefined\HCode
+\RequirePackage{hyperref}
+\else
+\RequirePackage[pdfpagelabels,colorlinks=true,allcolors=blue!30!black]{hyperref}
+\pdfstringdefDisableCommands{\def\hskip{}}%% quiets warning
+\fi
 \font\dummyft@=dummy \relax
 \def\suppress{%
   \begingroup\par
