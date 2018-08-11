@@ -29,24 +29,15 @@ Contents of the repository
 
 * The GNU license.
 
-* Documentation directory containing the documentation on how to write
-  a Ximera activity. You will need to typeset the file
-  ximeraInPractice.tex
-
-* The directory inTheClassRoom, containing ideas on how to use Ximera
-  activities in the classroom. This is surely incomplete at the
-  moment, but it is our hope that over time these materials will grow.
-
 * The Ximera document class, ximera.cls
 
-* A file named exampleActivityCollection.tex, a file for testing
-  purposes.
+* The Xourse document class, xourse.cls
 
-* Two test directories firstExample and secondExample that contain
-  firstExample.tex, secondExample.tex. These are example files.
+* Documentation for the document classes above, ximeraLaTeX.pdf
 
-* A generic preamble file for each of the .tex files containing
-  user-defined macros. Warning: Environments cannot be defined here.
+* The Ximera documented LaTeX file type, ximera.dtx. This file
+  generates ximera.cls, xourse.cls, and ximeraLaTeX.pdf, as well as a
+  few other files.
 
 
 Directions for download
@@ -167,23 +158,6 @@ in ximeraLatex. When building activities, each activity should be in
 its own directory.
 
 
-### Check the ximeraLatex directory
-
-Now you should have a directory called ximeraLatex. If you are running
-windows (MiKTeX), you will need to copy (or move) the files listed
-below to a directory that MiKTeX expects to find *.tex files in, for
-example, a subdirectory of "Documents."
-
-* Compile ximeraLatex/documentation/ximeraInPractice.tex
-
-* Compile ximeraLatex/exampleActivityCollection.tex
-
-* Compile ximeraLatex/firstExample/firstExample.tex
-
-* Compile ximeraLatex/secondActivity/secondExample.tex
-
-All of these documents should compile at this point. If they do not,
-something is probably wrong.
 
 
 Creating your GitHub repository
