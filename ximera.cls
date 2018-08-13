@@ -749,9 +749,7 @@ Interactive
 \let\choicetemp\choice% Assign a "choicetemp" command to duplicate choice.
 \ifwordchoicegiven% If wordchoice option is on, we need to juggle around some definitions.
 \let\choice\otherchoice%
-\begin{multipleChoice@}%
 #1
-\end{multipleChoice@}%
 \else% If it isn't the regular "choice" command should work.
 \let\choice\inlinechoice%
 \begin{multipleChoice@}%
