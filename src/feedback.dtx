@@ -21,10 +21,16 @@
 	}{}
 %    \end{macrocode}
 % First, if it's a handout, we want feedback to eat everything and
-% then disappear entirely. So we use |\suppress|.
+% then disappear entirely. So we do this:
 %    \begin{macrocode}
 \ifhandout%
-\newenvironment{feedback}{\suppress}{\endsuppress} 
+\newenvironment{feedback}
+               {%
+		 \setbox0\vbox\bgroup
+	       }
+               {%
+		 \egroup
+	       }               
 %    \end{macrocode}
 % If this isn't a handout, then we want to display the Feedback by
 % using a label, positioned and formated as a |\item| in a

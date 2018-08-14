@@ -794,7 +794,13 @@ Interactive
 \mbox{\texttt{\detokenize\expandafter{\PH@Command}}}% Now expand PH@Command once and then detokenize.
 }{}
 \ifhandout%
-\newenvironment{feedback}{\suppress}{\endsuppress}
+\newenvironment{feedback}
+               {%
+ \setbox0\vbox\bgroup
+       }
+               {%
+ \egroup
+       }
 \else
 \newenvironment{feedback}[1][attempt]{
 
