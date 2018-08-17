@@ -710,7 +710,6 @@
 
 \ifthenelse{\isempty{#1}}
 	{
-	\expandafter\addTo@RelaxActiveTags\TagList@MasterCatOne
 	}
 	{
 	\addTo@RelaxActiveTags{#1}
@@ -718,7 +717,6 @@
 
 \ifthenelse{\isempty{#2}}
 	{
-	\expandafter\addTo@RelaxActiveTags\TagList@MasterCatTwo
 	}
 	{
 	\addTo@RelaxActiveTags{#2}
@@ -726,7 +724,6 @@
 
 \ifthenelse{\isempty{#3}}
 	{
-	\expandafter\addTo@RelaxActiveTags\TagList@MasterCatThree
 	}
 	{
 	\addTo@RelaxActiveTags{#3}
@@ -734,13 +731,12 @@
 
 \ifthenelse{\isempty{#4}}
 	{
-	\expandafter\addTo@RelaxActiveTags\TagList@MasterCatFour
 	}
 	{
 	\addTo@StrictActiveTags{#4}
 	}
 \Master@Input@Test
-
+\arabic{Total@Question}
 \findingQuestionfalse
 }
 
