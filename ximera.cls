@@ -9,8 +9,9 @@
 %% src/options.dtx  (with options: `classXimera')
 %% src/packages.dtx  (with options: `classXimera')
 %% src/tikzexport.dtx  (with options: `classXimera')
+%% src/hyperref.dtx  (with options: `classXimera')
 %% src/suppress.dtx  (with options: `classXimera')
-%% src/MakeCounter.dtx  (with options: `classXimera')
+%% src/makeCounter.dtx  (with options: `classXimera')
 %% src/pagesetup.dtx  (with options: `classXimera')
 %% src/metadata.dtx  (with options: `classXimera')
 %% src/outcomes.dtx  (with options: `classXimera')
@@ -169,12 +170,6 @@
 \RequirePackage{nameref}
 \RequirePackage{epstopdf}
 \ifdefined\HCode
-\RequirePackage{hyperref}
-\else
-\RequirePackage[pdfpagelabels,colorlinks=true,allcolors=blue!30!black]{hyperref}
-\pdfstringdefDisableCommands{\def\hskip{}}%% quiets warning
-\fi
-\ifdefined\HCode
   \tikzexporttrue
 \fi
 
@@ -202,6 +197,12 @@
 
   \fi
 
+\ifdefined\HCode
+\RequirePackage{hyperref}
+\else
+\RequirePackage[pdfpagelabels,colorlinks=true,allcolors=blue!30!black]{hyperref}
+\pdfstringdefDisableCommands{\def\hskip{}}%% quiets warning
+\fi
 \font\dummyft@=dummy \relax
 \def\suppress{%
   \begingroup\par
@@ -533,8 +534,8 @@
 \setcounter{titlenumber}{0}
 
 \newpagestyle{main}{
-\sethead[\textsl{\ifnumbers\thetitlenumber\quad\fi\@title}][][] % even
-{}{}{\textsl{\ifnumbers\thetitlenumber\quad\fi\@title}} % odd
+\sethead[\textsl{\ifnumbers\thetitlenumber\hspace{1em}\fi\@title}][][] % even
+{}{}{\textsl{\ifnumbers\thetitlenumber\hspace{1em}\fi\@title}} % odd
 \setfoot[\thepage][][] % even
 {}{}{\thepage} % odd
 }
@@ -566,10 +567,10 @@
   \def\maketitle{%
     \addtocounter{titlenumber}{1}%
                     {\flushleft\small\sffamily\bfseries\@pretitle\par\vspace{-1.5em}}%
-                    {\flushleft\LARGE\sffamily\bfseries\thetitlenumber\quad\@title \par }%
+                    {\flushleft\LARGE\sffamily\bfseries\thetitlenumber\hspace{1em}\@title \par }%
                     {\vskip .6em\noindent\textit\theabstract\setcounter{problem}{0}\setcounter{sectiontitlenumber}{0}}%
                     \par\vspace{2em}
-                    \phantomsection\addcontentsline{toc}{section}{\textbf{\thetitlenumber\quad\@title}}%
+                    \phantomsection\addcontentsline{toc}{section}{\textbf{\thetitlenumber\hspace{1em}\@title}}%
                   }}
 
 \newcommand\sectionstyle{%
@@ -577,10 +578,10 @@
   \def\maketitle{%
     \addtocounter{sectiontitlenumber}{1}
     {\flushleft\small\sffamily\bfseries\@pretitle\par\vspace{-1.5em}}%
-    {\flushleft\Large\sffamily\bfseries\thetitlenumber.\thesectiontitlenumber\quad\@title \par}%
+    {\flushleft\Large\sffamily\bfseries\thetitlenumber.\thesectiontitlenumber\hspace{1em}\@title \par}%
     {\vskip .6em\noindent\textit\theabstract}%
     \par\vspace{2em}
-    \phantomsection\addcontentsline{toc}{subsection}{\thetitlenumber.\thesectiontitlenumber\quad\@title}%
+    \phantomsection\addcontentsline{toc}{subsection}{\thetitlenumber.\thesectiontitlenumber\hspace{1em}\@title}%
   }}
 
 \iftikzexport%% allows xake to handle \chapterstyle and \sectionstye
@@ -748,9 +749,7 @@ Interactive
 \let\choicetemp\choice% Assign a "choicetemp" command to duplicate choice.
 \ifwordchoicegiven% If wordchoice option is on, we need to juggle around some definitions.
 \let\choice\otherchoice%
-\begin{multipleChoice@}%
 #1
-\end{multipleChoice@}%
 \else% If it isn't the regular "choice" command should work.
 \let\choice\inlinechoice%
 \begin{multipleChoice@}%
@@ -795,7 +794,13 @@ Interactive
 \mbox{\texttt{\detokenize\expandafter{\PH@Command}}}% Now expand PH@Command once and then detokenize.
 }{}
 \ifhandout%
-\newenvironment{feedback}{\suppress}{\endsuppress}
+\newenvironment{feedback}
+               {%
+ \setbox0\vbox\bgroup
+       }
+               {%
+ \egroup
+       }
 \else
 \newenvironment{feedback}[1][attempt]{
 
