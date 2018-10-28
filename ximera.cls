@@ -56,7 +56,7 @@
 %% 
 \NeedsTeXFormat{LaTeX2e}[1999/12/01]
 \ProvidesClass{ximera}
- [2018/10/17 v1.00
+ [2018/10/28 v1.00
  Simultaneously write print and online interactive materials]
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
