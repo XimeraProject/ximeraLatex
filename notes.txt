@@ -1,0 +1,6 @@
+- answer frame box sized by content (rule) like a redacted box
+- Thms need to spaced but not boxed
+- title (pretty ish)
+- every thing unfolded/uncovered
+- multipleChoice needs care / placeholder checkwork
+- wordchoice need to be done by direct overlay \phantom neg space (No line break!)
