@@ -248,6 +248,9 @@
 }
 }
 
+
+\MakeCounter{footnoteNum}
+
 \setlength{\parindent}{0pt}
 \setlength{\parskip}{5pt}
 \oddsidemargin 62pt
@@ -621,9 +624,9 @@ Interactive
 
 
 \newcommand*{\link}[2][]{#1%
-\ifthenelse{\equal{#1}{}}%
-{\footnote{Link: \url{#2}}}%
-{\footnote{See #1 at \url{#2}}}
+    \ifthenelse{\equal{#1}{}}%
+    {\footnote{Link: \url{#2}}}%
+    {\footnote{See #1 at \url{#2}}}
 }
 
 \newcommand{\youtube}[1]{YouTube link: \url{https://www.youtube.com/watch?v=#1}}

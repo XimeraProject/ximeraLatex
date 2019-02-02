@@ -46,6 +46,7 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \usepackage{microtype}
+%\usepackage{xcolor}
 \DisableLigatures[f]{encoding=*}
 \RenewEnviron{html}{\HCode{\BODY}}
 \Configure{@HEAD}{\HCode{<meta name="author" content="}\@author\HCode{" />\Hnewline}}
@@ -261,6 +262,102 @@
 
 \renewenvironment{sageOutput}{\NoFonts}{\EndNoFonts}
 \ScriptEnv{sageOutput}{\ifvmode \IgnorePar\fi \EndP\HCode{<div class="sageOutput"><script type="text/x-sage">}}{\HCode{\Hnewline</script></div>}}
+
+
+%\Css{
+%    .footnoteref {
+%        position: relative;
+%        vertical-align: baseline;
+%       }
+%    
+%    .footnoterefnum {
+%        position: relative;
+%        left: 2px;
+%        bottom: 1ex;
+%        font-family: Verdana, sans-serif;
+%        color: #005994;
+%        font-size: .7em;
+%        font-weight: bold;
+%        text-decoration: underline;
+%        cursor: pointer;
+%    }
+%    
+%    .footnoterefbody {
+%        font-family: Verdana, sans-serif;
+%        font-size: .7em;
+%        line-height: 1.1;
+%        display: block;
+%        min-width: 20em;
+%        position: absolute;
+%        left: 25px;
+%        bottom: 5px ;
+%        border: 1px solid;
+%        padding: 5px;
+%        background-color: #fff;
+%        word-wrap: break-word;
+%        z-index: 9999;
+%        overflow: auto;
+%    }
+%    }
+
+\colorlet{fncolor}{red!30!blue}
+\renewcommand{\footnote}[1]{\ifvmode\ShowPar\fi
+    \stepcounter{footnoteNum}
+    \HCode{
+    <script type="text/javascript">
+            function footnotefunction(ID) {
+              var x = document.getElementById(ID);
+              if (x.style.display === "none") {
+                x.style.color = "#002db3";
+                x.style.display = "inline";
+              } else {
+                x.style.display = "none";
+              }
+            }
+    </script>
+    }
+    \expandafter\HCode{
+    <span style=
+            "position=relative;
+            vertical-align=baseline;"
+            >
+            <button onclick="footnotefunction('footnote\roman{footnoteNum}')"
+                style=
+                "background:none!important;
+                 color:inherit;
+                 border:none; 
+                 padding:0!important;
+                 font: inherit;
+                 cursor: pointer;"
+                >
+            	<sup>}[\arabic{footnoteNum}]\HCode{</sup>
+            </button>
+        }
+    \expandafter\HCode{
+            <span id="footnote\roman{footnoteNum}"
+                style=
+                "display:none;
+                font-family=Verdana, sans-serif;
+                font-size=0.7em;
+                line-height=1.1;
+                display=inline;
+                min-width=20em;
+                position=absolute;
+                left=25px;
+                bottom=5px ;
+                border=1px solid;
+                padding=5px;
+                color:#002db3;
+                word-wrap=break-word;
+                z-index=9999;
+                overflow=auto;"
+                >
+            }
+            \textcolor{fncolor}{(#1)}
+            %(#1)
+        \HCode{</span></span>}}
+
+
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \renewenvironment{sagesilent}{\NoFonts}{\EndNoFonts}
