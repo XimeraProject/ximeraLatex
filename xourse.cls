@@ -19,7 +19,7 @@
 %% 
 \NeedsTeXFormat{LaTeX2e}[1999/12/01]
 \ProvidesClass{xourse}
- [2018/10/17 v1.00
+ [2018/10/28 v1.00
  Combining Ximera activities into Xourses]
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
