@@ -62,18 +62,18 @@
   %%% Design Question: 
   % Would it make more sense to have author/outcomes in the header and reserve footer for footnotes? 
   % Or some other method to distinguish between the two now that footnotes are viable?
-  \ifnooutcomes\else
-      \bgroup% Use bgroup to start a local scope so we don't kill footnotes everywhere in the document
-          \let\thefootnote\relax% Kills off the symbol of the footnote so we just see "Learning Outcomes: (outcomes)"
-          \footnote{Learning outcomes: \theoutcomes}% Print the actual outcomes
-          \setcounter{footnote}{0}% Reset the footnote to zero to fix numberings.
+  \ifoutcomes%                                          If we have learning outcomes, we should display them.
+      \bgroup
+          \let\thefootnote\relax%                       Kills off the symbol of the footnote
+          \footnote{Learning outcomes: \theoutcomes}
+          \setcounter{footnote}{0}%                     Reset the footnote to zero to fix numberings.
       \egroup
       \fi
-  \ifnoauthor\else
-      \bgroup% Use bgroup to start a local scope so we don't kill footnotes everywhere in the document
-          \let\thefootnote\relax% Kills off the symbol of the footnote so we just see "Author: (name)"
-          \footnote{Author(s):~\@author}% Print the actual Author
-          \setcounter{footnote}{0}% Reset the footnote to zero to fix numberings.
+  \ifauthor%                                            If we have an author, we should display it.
+      \bgroup
+          \let\thefootnote\relax%                       Kills off the symbol of the footnote
+          \footnote{Author(s):~\@author}
+          \setcounter{footnote}{0}%                     Reset the footnote to zero to fix numberings.
       \egroup
       \fi
   \aftergroup\@afterindentfalse
