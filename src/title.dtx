@@ -1,11 +1,16 @@
 % \subsubsection{Titles and authors}
 %
+%</classXimera>
+%    \end{macrocode}
 % \subsubsection{Authors}
 % \DescribeMacro{\author}{Activities have authors.  Warn the user if no author is provided.}
 %    \begin{macrocode}
 %<*classXimera>
 \let\@emptyauthor\@author
-\def\author#1{\gdef\@author{#1}}
+\def\author#1{
+    \gdef\@author{#1}% Defines activity author
+    \ifauthortrue% Flags author as given.
+    }
 \def\@author{\@latex@warning@no@line{No \noexpand\author given}}
 %</classXimera>
 %    \end{macrocode}
@@ -54,8 +59,23 @@
   \phantomsection%
   \ifnumbers\addcontentsline{toc}{section}{\thetitlenumber~\@title}\else\addcontentsline{toc}{section}{\@title}\fi
   \vskip .6em\noindent\textit\theabstract\setcounter{problem}{0}\setcounter{section}{0}\setcounter{subsection}{0}\par\vspace{2em}
-  \ifnooutcomes\else\let\thefootnote\relax\footnote{Learning outcomes: \theoutcomes}\fi
-  \ifnoauthor\else\let\thefootnote\relax\footnote{Author(s):~\@author}\fi
+  %%% Design Question: 
+  % Would it make more sense to have author/outcomes in the header and reserve footer for footnotes? 
+  % Or some other method to distinguish between the two now that footnotes are viable?
+  \ifnooutcomes\else
+      \bgroup% Use bgroup to start a local scope so we don't kill footnotes everywhere in the document
+          \let\thefootnote\relax% Kills off the symbol of the footnote so we just see "Learning Outcomes: (outcomes)"
+          \footnote{Learning outcomes: \theoutcomes}% Print the actual outcomes
+          \setcounter{footnote}{0}% Reset the footnote to zero to fix numberings.
+      \egroup
+      \fi
+  \ifnoauthor\else
+      \bgroup% Use bgroup to start a local scope so we don't kill footnotes everywhere in the document
+          \let\thefootnote\relax% Kills off the symbol of the footnote so we just see "Author: (name)"
+          \footnote{Author(s):~\@author}% Print the actual Author
+          \setcounter{footnote}{0}% Reset the footnote to zero to fix numberings.
+      \egroup
+      \fi
   \aftergroup\@afterindentfalse
   \aftergroup\@afterheading}
 

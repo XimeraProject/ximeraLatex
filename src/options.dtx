@@ -16,18 +16,22 @@
 % \begin{macro}{noauthor}
 %    By default, authors are listed at the bottom of the first page of a document. This option will supress the listing of the authors.
 %    \begin{macrocode}
-\newif\ifnoauthor
-\noauthorfalse
-\DeclareOption{noauthor}{\noauthortrue}
+\newif\ifauthor%                                        Flag for whether or not any author is given
+    \authorfalse%                                       Defaults to false.
+\newif\ifsuppressAuthorDisplay%                         A flag for deliberately suppressing author even if it is given.
+    \suppressAuthorDisplayfalse%                        Default to not suppressing the display of the author.
+\DeclareOption{noauthor}{\suppressAuthorDisplaytrue}
 %    \end{macrocode}
 % \end{macro}
 %
 % \begin{macro}{nooutcomes}
 %    By default, learning outcomes are listed at the bottom of the first page of a document. This option will supress the listing of the learning outcomes.
 %    \begin{macrocode}
-\newif\ifnooutcomes
-\nooutcomesfalse
-\DeclareOption{nooutcomes}{\nooutcomestrue}
+\newif\ifoutcomes%                                      Flag for whether or not outcomes are given.
+    \outcomesfalse%                                     Default to false.
+\newif\ifsuppressOutcomesDisplay%                       Flag for if outcome displays should be suppressed, even if given.
+    \suppressOutcomesDisplayfalse%                      Default to not supressing the display of outcomes
+\DeclareOption{nooutcomes}{\suppressOutcomesDisplaytrue}
 %    \end{macrocode}
 % \end{macro}
 %

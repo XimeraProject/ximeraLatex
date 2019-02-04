@@ -264,44 +264,8 @@
 \ScriptEnv{sageOutput}{\ifvmode \IgnorePar\fi \EndP\HCode{<div class="sageOutput"><script type="text/x-sage">}}{\HCode{\Hnewline</script></div>}}
 
 
-%\Css{
-%    .footnoteref {
-%        position: relative;
-%        vertical-align: baseline;
-%       }
-%    
-%    .footnoterefnum {
-%        position: relative;
-%        left: 2px;
-%        bottom: 1ex;
-%        font-family: Verdana, sans-serif;
-%        color: #005994;
-%        font-size: .7em;
-%        font-weight: bold;
-%        text-decoration: underline;
-%        cursor: pointer;
-%    }
-%    
-%    .footnoterefbody {
-%        font-family: Verdana, sans-serif;
-%        font-size: .7em;
-%        line-height: 1.1;
-%        display: block;
-%        min-width: 20em;
-%        position: absolute;
-%        left: 25px;
-%        bottom: 5px ;
-%        border: 1px solid;
-%        padding: 5px;
-%        background-color: #fff;
-%        word-wrap: break-word;
-%        z-index: 9999;
-%        overflow: auto;
-%    }
-%    }
-
 \colorlet{fncolor}{red!30!blue}
-\renewcommand{\footnote}[1]{\ifvmode\ShowPar\fi
+\renewcommand{\footnote}[1]{\ifvmode \IgnorePar\fi \EndP
     \stepcounter{footnoteNum}
     \HCode{
     <script type="text/javascript">
@@ -356,8 +320,7 @@
             \textcolor{fncolor}{(#1)}
             %(#1)
         \HCode{</span></span>}}
-
-
+    
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \renewenvironment{sagesilent}{\NoFonts}{\EndNoFonts}
