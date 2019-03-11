@@ -1,0 +1,13 @@
+sudo:       required
+language:   generic
+services:   docker
+
+tex-config:
+- tex-scheme=small
+- push-type=none
+- build-pattern=tests/*/main.tex
+- packages=lipsum, blindtext
+
+script:
+- docker pull strauman/travis-latexbuild:small # select small texlive scheme
+- docker run --mount src=$TRAVIS_BUILD_DIR/,target=/repo,type=bind strauman/travis-latexbuild:small # also it here
