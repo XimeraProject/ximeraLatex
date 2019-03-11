@@ -1,7 +1,3 @@
-% \subsubsection{Titles and authors}
-%
-%</classXimera>
-%    \end{macrocode}
 % \subsubsection{Authors}
 % \DescribeMacro{\author}{Activities have authors.  Warn the user if no author is provided.}
 %    \begin{macrocode}
@@ -110,14 +106,6 @@
     \par\vspace{2em}
     \phantomsection\addcontentsline{toc}{subsection}{\thetitlenumber.\thesectiontitlenumber\hspace{1em}\@title}%
   }}
-
-
-\iftikzexport%% allows xake to handle \chapterstyle and \sectionstye
-\renewcommand\chapterstyle{\def\activitystyle{chapter}}
-\renewcommand\sectionstyle{\def\activitystyle{section}}
-\else
-\fi
-
 %</classXimera>
 %    \end{macrocode}
 % Eliminate some formatting that we'll handle later with CSS

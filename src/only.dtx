@@ -3,9 +3,6 @@
 % \DescribeEnv{prompt}{The prompt part for mathmode}
 %    \begin{macrocode}
 %<*classXimera>
-\ifxake
-        \newenvironment{prompt}{}{}
-\else
 \ifhandout
 	\NewEnviron{prompt}{}
 % Currently breaks when put in mathmode!
@@ -14,7 +11,6 @@
 	\newenvironment{prompt}
     	{\bgroup\color{gray!50!black}}
         {\egroup}
-\fi
 \fi
 %    \end{macrocode}
 
@@ -33,6 +29,6 @@
 		{\egroup}
 \fi
                
-\newcommand{\pdfOnly}[1]{\iftikzexport\else #1\fi}
+\newcommand{\pdfOnly}[1]{\ifweb\else #1\fi}
 %</classXimera>
 %    \end{macrocode}

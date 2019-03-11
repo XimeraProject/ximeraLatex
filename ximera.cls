@@ -8,7 +8,6 @@
 %% src/banner.dtx  (with options: `classXimera')
 %% src/options.dtx  (with options: `classXimera')
 %% src/packages.dtx  (with options: `classXimera')
-%% src/tikzexport.dtx  (with options: `classXimera')
 %% src/hyperref.dtx  (with options: `classXimera')
 %% src/suppress.dtx  (with options: `classXimera')
 %% src/makeCounter.dtx  (with options: `classXimera')
@@ -49,14 +48,14 @@
 %% src/ungraded.dtx  (with options: `classXimera')
 %% ------------:| ------------------------------------------------------------
 %%       ximera:| Simultaneously writing print and online interactive materials
-%%       Author:| Jim Fowler and Jeramiah Hocutt and Oscar Levin and Jason Nowell and Hans Parshall and Bart Snapp
+%%       Author:| Jim Fowler and Oscar Levin and Jason Nowell and Hans Parshall and Bart Snapp
 %%       E-mail:| bart.snapp@gmail.com
 %%      License:| Released under the LaTeX Project Public License v1.3c or later
 %%          See:| http://www.latex-project.org/lppl.txt
 %% 
 \NeedsTeXFormat{LaTeX2e}[1999/12/01]
 \ProvidesClass{ximera}
- [2018/10/28 v1.00
+ [2019/03/14 v2.00
  Simultaneously write print and online interactive materials]
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -118,21 +117,6 @@
 \DeclareOption{web}{\webtrue}
 
 
-\newif\ifxake
-\xakefalse
-\DeclareOption{xake}{\xaketrue}
-
-\newif\iftikzexport
-\tikzexportfalse
-\DeclareOption{tikzexport}{%
-  \tikzexporttrue%
-  \handoutfalse%
-  \numbersfalse%
-  \newpagefalse%
-  \hintsfalse%
-  \outcomestrue%
-}
-
 \DeclareOption*{%
   \PassOptionsToClass{\CurrentOption}{article}%
 }
@@ -140,8 +124,6 @@
 \LoadClass{article}
 
 \ifdefined\HCode
-  \xaketrue%
-  \tikzexporttrue%
   \handoutfalse%
   \numbersfalse%
   \newpagefalse%
@@ -162,6 +144,11 @@
 \usepgfplotslibrary{groupplots}
 \usetikzlibrary{calc}
 \RequirePackage{fancyvrb}
+\RequirePackage{ifpdf}
+\ifpdf
+\else
+  \webtrue
+\fi
 \RequirePackage{forloop}
 \RequirePackage{environ}% Included to allow saving of environment contents. This does *not* play well with various verbatem environments however and would be great to find a way around utilizing this package. One option is the "Suppress" command included below.
 \RequirePackage{amssymb}% Included to have access to math typeset.
@@ -177,34 +164,6 @@
 \RequirePackage{gettitlestring}
 \RequirePackage{nameref}
 \RequirePackage{epstopdf}
-\ifdefined\HCode
-  \tikzexporttrue
-\fi
-
-\iftikzexport
-  \usetikzlibrary{external}
-
-  \ifdefined\HCode
-    % in htlatex, just include the svg files
-    \def\pgfsys@imagesuffixlist{.svg}
-
-    \tikzexternalize[prefix=./,mode=graphics if exists]
-  \else
-    % in pdflatex, actually generate the svg files
-    \tikzset{
-      /tikz/external/system call={
-        pdflatex \tikzexternalcheckshellescape
-        -halt-on-error -interaction=batchmode
-        -jobname "\image" "\\PassOptionsToClass{tikzexport}{ximera}\texsource";
-        mutool draw -o \image.svg \image.pdf ;
-        mutool draw -r 150 -c rgbalpha -o \image.png \image.pdf ;
-      }
-    }
-    \tikzexternalize[optimize=false,prefix=./]
-  \fi
-
-  \fi
-
 \ifdefined\HCode
 \RequirePackage{hyperref}
 \else
@@ -256,9 +215,6 @@
 }
 }
 
-
-\MakeCounter{footnoteNum}
-
 \setlength{\parindent}{0pt}
 \setlength{\parskip}{5pt}
 \oddsidemargin 62pt
@@ -271,7 +227,6 @@
 \newcommand{\acknowledgement}{\excludecomment}
 
 \renewcommand{\tag}{\excludecomment}
-
 \def\theoutcomes{}
 
 \ifdefined\HCode%
@@ -281,15 +236,11 @@
   \immediate\openout\outcomefile=\jobname.oc
 
   \newcommand{\outcome}[1]{
-      \ifsuppressOutcomesDisplay% If we are suppressing outcomes, we should suppress the entire chain?
-      \else% If we aren't suppressing them, it should work as before regardless.
-          \outcomestrue% If we invoke |\outcome|, then we should have outcomes and thus we will flag it as true.
-          \edef\theoutcomes{\theoutcomes #1~}%
-          \immediate\write\outcomefile{\unexpanded{\outcome}{#1}}
-      \fi
+      \ifoutcomestrue% If we invoke |\outcome|, then we should have outcomes and thus we will flag it as true.
+      \edef\theoutcomes{\theoutcomes #1~}%
+      \immediate\write\outcomefile{\unexpanded{\outcome}{#1}}
       }
   \fi%
-  
 \everymath{\displaystyle}
 \let\prelim\lim
 \renewcommand{\lim}{\displaystyle\prelim}
@@ -356,16 +307,12 @@
   {\begin{trivlist}\item[\hskip \labelsep \itshape \bfseries #1{}\hspace{2ex}]}
 {\qed\end{trivlist}}
 
-\ifxake
-        \newenvironment{prompt}{}{}
-\else
 \ifhandout
 \NewEnviron{prompt}{}
 \else
 \newenvironment{prompt}
      {\bgroup\color{gray!50!black}}
         {\egroup}
-\fi
 \fi
 
 \ifhandout
@@ -381,7 +328,7 @@
 {\egroup}
 \fi
 
-\newcommand{\pdfOnly}[1]{\iftikzexport\else #1\fi}
+\newcommand{\pdfOnly}[1]{\ifweb\else #1\fi}
 
 
 \providecommand{\latexProblemContent}[1]{#1}
@@ -538,17 +485,12 @@
 \let\abstract\relax
 \let\endabstract\relax
 \NewEnviron{abstract}{\protected@xdef\theabstract{\BODY}}
-\newif\ifauthor% Flag for whether or not author is given
-    \authorfalse% Defaults to false.
 \let\@emptyauthor\@author
 \def\author#1{
-    \ifsuppressAuthorDisplay\else% If the author is not being suppressed we will allow it to be defined and flagged as true.
-        \gdef\@author{#1}% Defines activity author
-        \authortrue% Flags author as given.
-    \fi
+    \gdef\@author{#1}% Defines activity author
+    \ifauthortrue% Flags author as given.
     }
 \def\@author{\@latex@warning@no@line{No \noexpand\author given}}
-
 \def\and{and }
 
 \let\title\relax
@@ -574,18 +516,21 @@
   \phantomsection%
   \ifnumbers\addcontentsline{toc}{section}{\thetitlenumber~\@title}\else\addcontentsline{toc}{section}{\@title}\fi
   \vskip .6em\noindent\textit\theabstract\setcounter{problem}{0}\setcounter{section}{0}\setcounter{subsection}{0}\par\vspace{2em}
-  \ifoutcomes% If we have learning outcomes, we should display them.
+  %%% Design Question:
+  % Would it make more sense to have author/outcomes in the header and reserve footer for footnotes?
+  % Or some other method to distinguish between the two now that footnotes are viable?
+  \ifoutcomes%                                          If we have learning outcomes, we should display them.
       \bgroup
-          \let\thefootnote\relax% Kills off the symbol of the footnote
+          \let\thefootnote\relax%                       Kills off the symbol of the footnote
           \footnote{Learning outcomes: \theoutcomes}
-          \setcounter{footnote}{0}% Reset the footnote to zero to fix numberings.
+          \setcounter{footnote}{0}%                     Reset the footnote to zero to fix numberings.
       \egroup
       \fi
-  \ifauthor% If we have an author, we should display it.
+  \ifauthor%                                            If we have an author, we should display it.
       \bgroup
-          \let\thefootnote\relax% Kills off the symbol of the footnote
+          \let\thefootnote\relax%                       Kills off the symbol of the footnote
           \footnote{Author(s):~\@author}
-          \setcounter{footnote}{0}% Reset the footnote to zero to fix numberings.
+          \setcounter{footnote}{0}%                     Reset the footnote to zero to fix numberings.
       \egroup
       \fi
   \aftergroup\@afterindentfalse
@@ -622,13 +567,6 @@
     \par\vspace{2em}
     \phantomsection\addcontentsline{toc}{subsection}{\thetitlenumber.\thesectiontitlenumber\hspace{1em}\@title}%
   }}
-
-\iftikzexport%% allows xake to handle \chapterstyle and \sectionstye
-\renewcommand\chapterstyle{\def\activitystyle{chapter}}
-\renewcommand\sectionstyle{\def\activitystyle{section}}
-\else
-\fi
-
 \NewEnviron{image}[1][3in]{%
   \begin{center}\resizebox{#1}{!}{\BODY}\end{center}% resize and center
 }
@@ -660,9 +598,9 @@ Interactive
 
 
 \newcommand*{\link}[2][]{#1%
-    \ifthenelse{\equal{#1}{}}%
-    {\footnote{Link: \url{#2}}}%
-    {\footnote{See #1 at \url{#2}}}
+\ifthenelse{\equal{#1}{}}%
+{\footnote{Link: \url{#2}}}%
+{\footnote{See #1 at \url{#2}}}
 }
 
 \newcommand{\youtube}[1]{YouTube link: \url{https://www.youtube.com/watch?v=#1}}
@@ -750,6 +688,7 @@ Interactive
 {}% Start/End else result
 \ignorespaces%
 }%
+
 \newcommand{\inlinechoice}[2][]{%
 \setkeys{choice}{#1}%
 \iffirstinlinechoice
@@ -1051,18 +990,13 @@ Interactive
 
 \fi
 \newenvironment{ungraded}{}{}
-
-\newcommand{\inputGif}[1]{%
-    The gif ``#1" would be inserted here when publishing online.
-    }
-
 %% 
-%% Copyright (C) 2018 by Bart Snapp <bart.snapp@gmail.com> and Jim Fowler <kisonecat@gmail.com>
+%% Copyright (C) 2018-2019 by Bart Snapp <bart.snapp@gmail.com> and Jim Fowler <kisonecat@gmail.com>
 %% 
-%% This work may be distributed and/or modified under the
-%% conditions of the LaTeX Project Public License (LPPL), either
-%% version 1.3c of this license or (at your option) any later
-%% version.  The latest version of this license is in the file:
+%% This work may be distributed and/or modified under the conditions of
+%% the LaTeX Project Public License (LPPL), either version 1.3c of this
+%% license or (at your option) any later version.  The latest version of
+%% this license is in the file:
 %% 
 %% http://www.latex-project.org/lppl.txt
 %% 

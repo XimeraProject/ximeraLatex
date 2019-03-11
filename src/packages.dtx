@@ -23,8 +23,17 @@
 \usetikzlibrary{calc}
 \RequirePackage{fancyvrb}
 %    \end{macrocode}
-% Load |forloop| for the problem environment dynamic naming and
-% building.
+% Load |ifpdf| in order to determine if we should automatically switch
+% into web mode.  (Arguably we don't need this going forward, but it
+% makes development a bit easier.)
+%    \begin{macrocode}
+\RequirePackage{ifpdf}
+\ifpdf
+\else
+  \webtrue
+\fi
+%    \end{macrocode}
+% Load |forloop| for the problem environment dynamic naming and building.
 %    \begin{macrocode}
 \RequirePackage{forloop}
 %    \end{macrocode}

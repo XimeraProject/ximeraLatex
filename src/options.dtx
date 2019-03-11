@@ -88,7 +88,7 @@
 %    \end{macrocode}
 % \end{macro}
 % \begin{macro}{web}
-%    This option will render the \LaTeX\ source as it is shown on a webpage.
+%    This option will render the \LaTeX\ source as it is shown on a webpage.  In practice, authors should \textbf{not} use this option, beacause it is automatically activated as needed when run in \texttt{DVI} mode.
 %    \begin{macrocode}
 \newif\ifweb
 \webfalse
@@ -98,21 +98,6 @@
 
 %    \begin{macrocode}
 
-\newif\ifxake
-\xakefalse
-\DeclareOption{xake}{\xaketrue}
-
-\newif\iftikzexport
-\tikzexportfalse
-\DeclareOption{tikzexport}{%
-  \tikzexporttrue%
-  \handoutfalse%
-  \numbersfalse%
-  \newpagefalse%
-  \hintsfalse%
-  \outcomestrue%
-}
-
 \DeclareOption*{%
   \PassOptionsToClass{\CurrentOption}{article}%
 }
@@ -120,8 +105,6 @@
 \LoadClass{article}
 
 \ifdefined\HCode
-  \xaketrue%
-  \tikzexporttrue%
   \handoutfalse%
   \numbersfalse%
   \newpagefalse%
