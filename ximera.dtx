@@ -37,12 +37,12 @@ Some text about the class: probably the same as the abstract.
 \endpreamble
 \postamble
 
-Copyright (C) 2018 by Bart Snapp <bart.snapp@gmail.com> and Jim Fowler <kisonecat@gmail.com>
+Copyright (C) 2018-2019 by Bart Snapp <bart.snapp@gmail.com> and Jim Fowler <kisonecat@gmail.com>
 
-This work may be distributed and/or modified under the
-conditions of the LaTeX Project Public License (LPPL), either
-version 1.3c of this license or (at your option) any later
-version.  The latest version of this license is in the file:
+This work may be distributed and/or modified under the conditions of
+the LaTeX Project Public License (LPPL), either version 1.3c of this
+license or (at your option) any later version.  The latest version of
+this license is in the file:
 
 http://www.latex-project.org/lppl.txt
 
@@ -122,67 +122,6 @@ Running "make install" installs the files in the local TeX tree.
     \from{src/graded.dtx}{classXourse}        
   }
 }
-\generate{
-  \file{ximera.cfg}{
-    \from{ximera.dtx}{cfgXimera}
-    \from{src/pagesetup.dtx}{cfgXimera}
-    \from{src/packages.dtx}{cfgXimera}
-    \from{src/jax.dtx}{cfgXimera}
-    \from{src/sectioning.dtx}{cfgXimera}        
-    \from{src/title.dtx}{cfgXimera}
-    \from{src/abstract.dtx}{cfgXimera}        
-    \from{src/image.dtx}{cfgXimera}
-    \from{src/outcomes.dtx}{cfgXimera}
-    \from{src/textcolor.dtx}{cfgXimera}
-    \from{src/verbatim.dtx}{cfgXimera}
-    \from{src/html.dtx}{cfgXimera}    
-    \from{src/ending.dtx}{cfgXimera}        
-  }
-}
-\generate{
-  \file{ximera.4ht}{
-    \from{ximera.dtx}{htXimera}
-    \from{src/pagesetup.dtx}{htXimera}    
-    \from{src/title.dtx}{htXimera}
-    \from{src/problem.dtx}{htXimera}
-    \from{src/macros.dtx}{htXimera}
-    \from{src/theorems.dtx}{htXimera}    
-    \from{src/image.dtx}{htXimera}               
-    \from{src/dialogue.dtx}{htXimera}
-    \from{src/foldable.dtx}{htXimera}
-    \from{src/interactives/video.dtx}{htXimera}
-    \from{src/xkcd.dtx}{htXimera}
-    \from{src/link.dtx}{htXimera}
-    \from{src/interactives/graph.dtx}{htXimera}
-    \from{src/answer.dtx}{htXimera}    
-    \from{src/choice.dtx}{htXimera}    
-    \from{src/freeresponse.dtx}{htXimera}
-    \from{src/interactives/javascript.dtx}{htXimera}    
-    \from{src/interactives/include.dtx}{htXimera}
-    \from{src/interactives/geogebra.dtx}{htXimera}
-    \from{src/interactives/desmos.dtx}{htXimera}
-    \from{src/interactives/google.dtx}{htXimera}            
-    \from{src/feedback.dtx}{htXimera}
-    \from{src/leash.dtx}{htXimera}
-    \from{src/labels.dtx}{htXimera}    
-    \from{src/interactives/sagemath.dtx}{htXimera}
-    \from{src/ungraded.dtx}{htXimera}            
-    \from{src/footnotes.dtx}{htXimera} 
-    \from{src/ending.dtx}{htXimera}
-  }
-}
-\generate{
-  \file{xourse.4ht}{
-    \from{ximera.dtx}{htXourse}
-    \from{src/logo.dtx}{htXourse}
-    \from{src/metadata.dtx}{htXourse}
-    \from{src/activity.dtx}{htXourse}
-    \from{src/sectioning.dtx}{htXourse}    
-    \from{src/graded.dtx}{htXourse}                             
-    \from{src/interactives/video.dtx}{htXourse}             
-    \from{src/ending.dtx}{htXourse}         
-  }
-}
 %</install>
 %<install>\endbatchfile
 %<*internal>
@@ -210,7 +149,7 @@ Running "make install" installs the files in the local TeX tree.
 %<classXimera|classXourse>\NeedsTeXFormat{LaTeX2e}[1999/12/01]
 %<classXimera>\ProvidesClass{ximera}
 %<classXourse>\ProvidesClass{xourse}
-%<classXimera|classXourse> [2018/10/28 v1.00
+%<classXimera|classXourse> [2019/03/14 v2.00
 %<classXimera> Simultaneously write print and online interactive materials]
 %<classXourse> Combining Ximera activities into Xourses]
 %<*driver>
