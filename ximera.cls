@@ -273,11 +273,12 @@
   \immediate\openout\outcomefile=\jobname.oc
 
   \newcommand{\outcome}[1]{
-      \ifoutcomestrue% If we invoke |\outcome|, then we should have outcomes and thus we will flag it as true.
+      \ifoutcomes% If we invoke |\outcome|, then we should have outcomes and thus we will flag it as true.
       \edef\theoutcomes{\theoutcomes #1~}%
       \immediate\write\outcomefile{\unexpanded{\outcome}{#1}}
+      \fi
       }
-  \fi%
+\fi%
 \everymath{\displaystyle}
 \let\prelim\lim
 \renewcommand{\lim}{\displaystyle\prelim}
