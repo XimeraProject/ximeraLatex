@@ -14,7 +14,7 @@
 \RequirePackage[inline]{enumitem}
 \RequirePackage[pagestyles]{titlesec} 
 \RequirePackage{titletoc} 
-\RequirePackage{titling}  
+\RequirePackage{titling}
 \RequirePackage{url}
 \RequirePackage[table]{xcolor}
 \RequirePackage{tikz}
@@ -24,12 +24,12 @@
 \RequirePackage{fancyvrb}
 %    \end{macrocode}
 % Load |ifpdf| in order to determine if we should automatically switch
-% into web mode.  (Arguably we don't need this going forward, but it
-% makes development a bit easier.)
+% into web mode, and load the appropriate |PGF| driver.
 %    \begin{macrocode}
 \RequirePackage{ifpdf}
 \ifpdf
 \else
+  \def\pgfsysdriver{pgfsys-ximera.def}
   \webtrue
 \fi
 %    \end{macrocode}
@@ -45,7 +45,7 @@
 \RequirePackage{amsthm}%  Included to have access to math typeset.
 \RequirePackage{xifthen}% http://ctan.org/pkg/xifthen
 \RequirePackage{multido}% http://ctan.org/pkg/multido
-\RequirePackage{listings} %% is this required???
+\RequirePackage{listings} %% is this required???z
 
 \RequirePackage{xkeyval}
 
@@ -58,6 +58,8 @@
 %<*classXimera>
 \RequirePackage{gettitlestring}
 \RequirePackage{nameref}
-\RequirePackage{epstopdf}
+\ifpdf
+  \RequirePackage{epstopdf}
+\fi
 %</classXimera>
 %    \end{macrocode}
