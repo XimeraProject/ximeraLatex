@@ -147,6 +147,7 @@
 \RequirePackage{ifpdf}
 \ifpdf
 \else
+  \def\pgfsysdriver{pgfsys-ximera.def}
   \webtrue
 \fi
 \RequirePackage{forloop}
@@ -156,14 +157,16 @@
 \RequirePackage{amsthm}%  Included to have access to math typeset.
 \RequirePackage{xifthen}% http://ctan.org/pkg/xifthen
 \RequirePackage{multido}% http://ctan.org/pkg/multido
-\RequirePackage{listings} %% is this required???
+\RequirePackage{listings} %% is this required???z
 
 \RequirePackage{xkeyval}
 
 \RequirePackage{comment}
 \RequirePackage{gettitlestring}
 \RequirePackage{nameref}
-\RequirePackage{epstopdf}
+\ifpdf
+  \RequirePackage{epstopdf}
+\fi
 \ifdefined\HCode
 \RequirePackage{hyperref}
 \else
@@ -317,7 +320,7 @@
 
 \ifhandout
 \NewEnviron{onlineOnly}{
-\iftikzexport
+\ifweb
 \BODY
 \else
 \fi

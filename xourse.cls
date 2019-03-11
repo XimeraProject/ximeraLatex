@@ -85,10 +85,6 @@
 \relax
 
 
-\ifxake
-\renewcommand\activity[2][]{}
-\fi
-
 \ifhandout
 \newcommand{\practice}[2][]{
 \setkeys{practice}{#1}%!!!!!
@@ -103,10 +99,6 @@
   \let\input\otherinput}
 \fi
 \relax
-
-\ifxake
-\renewcommand\practice[2][]{}
-\fi
 
 
 \renewcommand*\l@section{\@dottedtocline{1}{1.5em}{4.2em}}

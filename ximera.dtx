@@ -121,7 +121,13 @@ Running "make install" installs the files in the local TeX tree.
     \from{src/graded.dtx}{classXourse}        
   }
 }
-%</install>
+\generate{
+  \file{pgfsys-ximera.def}{
+    \from{ximera.dtx}{pgfsys}
+    \from{src/pgfsys.dtx}{pgfsys}
+  }
+}
+%</install> 
 %<install>\endbatchfile
 %<*internal>
 \usedir{source/latex/ximera}
@@ -218,6 +224,8 @@ Running "make install" installs the files in the local TeX tree.
 \DocInput{src/sectioning.dtx}
 \DocInput{src/graded.dtx}
 \DocInput{src/logo.dtx}
+\section{pgfsys-ximera.def}
+\DocInput{src/pgfsys.dtx}
 \end{document}
 %</driver>
 % \fi
