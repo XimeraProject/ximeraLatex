@@ -5,7 +5,7 @@ services:   docker
 tex-config:
 - tex-scheme=small
 - push-type=none
-- build-pattern=tests/*/main.tex
+- build-pattern=ximera.dtx
 - packages=lipsum, blindtext
 
 script:
