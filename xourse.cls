@@ -12,14 +12,14 @@
 %% src/graded.dtx  (with options: `classXourse')
 %% ------------:| ------------------------------------------------------------
 %%       ximera:| Simultaneously writing print and online interactive materials
-%%       Author:| Jim Fowler and Jeramiah Hocutt and Oscar Levin and Jason Nowell and Hans Parshall and Bart Snapp
+%%       Author:| Jim Fowler and Oscar Levin and Jason Nowell and Hans Parshall and Bart Snapp
 %%       E-mail:| bart.snapp@gmail.com
 %%      License:| Released under the LaTeX Project Public License v1.3c or later
 %%          See:| http://www.latex-project.org/lppl.txt
 %% 
 \NeedsTeXFormat{LaTeX2e}[1999/12/01]
 \ProvidesClass{xourse}
- [2018/10/17 v1.00
+ [2018/10/28 v1.00
  Combining Ximera activities into Xourses]
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

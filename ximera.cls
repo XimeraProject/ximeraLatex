@@ -49,14 +49,14 @@
 %% src/ungraded.dtx  (with options: `classXimera')
 %% ------------:| ------------------------------------------------------------
 %%       ximera:| Simultaneously writing print and online interactive materials
-%%       Author:| Jim Fowler and Jeramiah Hocutt and Oscar Levin and Jason Nowell and Hans Parshall and Bart Snapp
+%%       Author:| Jim Fowler and Oscar Levin and Jason Nowell and Hans Parshall and Bart Snapp
 %%       E-mail:| bart.snapp@gmail.com
 %%      License:| Released under the LaTeX Project Public License v1.3c or later
 %%          See:| http://www.latex-project.org/lppl.txt
 %% 
 \NeedsTeXFormat{LaTeX2e}[1999/12/01]
 \ProvidesClass{ximera}
- [2018/10/17 v1.00
+ [2018/10/28 v1.00
  Simultaneously write print and online interactive materials]
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -85,12 +85,16 @@
 \newif\ifhandout
 \handoutfalse
 \DeclareOption{handout}{\handouttrue}
-\newif\ifnoauthor
-\noauthorfalse
-\DeclareOption{noauthor}{\noauthortrue}
-\newif\ifnooutcomes
-\nooutcomesfalse
-\DeclareOption{nooutcomes}{\nooutcomestrue}
+\newif\ifauthor%                                        Flag for whether or not any author is given
+    \authorfalse%                                       Defaults to false.
+\newif\ifsuppressAuthorDisplay%                         A flag for deliberately suppressing author even if it is given.
+    \suppressAuthorDisplayfalse%                        Default to not suppressing the display of the author.
+\DeclareOption{noauthor}{\suppressAuthorDisplaytrue}
+\newif\ifoutcomes%                                      Flag for whether or not outcomes are given.
+    \outcomesfalse%                                     Default to false.
+\newif\ifsuppressOutcomesDisplay%                       Flag for if outcome displays should be suppressed, even if given.
+    \suppressOutcomesDisplayfalse%                      Default to not supressing the display of outcomes
+\DeclareOption{nooutcomes}{\suppressOutcomesDisplaytrue}
 \newif\ifinstructornotes
 \instructornotesfalse
 \DeclareOption{instructornotes}{\instructornotestrue}
@@ -122,7 +126,7 @@
   \numbersfalse%
   \newpagefalse%
   \hintsfalse%
-  \nooutcomesfalse%
+  \outcomestrue%
 }
 
 \DeclareOption*{%
@@ -138,7 +142,7 @@
   \numbersfalse%
   \newpagefalse%
   \hintsfalse%
-  \nooutcomesfalse%
+  \outcomestrue%
 \fi
 
 
@@ -268,8 +272,11 @@
   \newwrite\outcomefile
   \immediate\openout\outcomefile=\jobname.oc
 
-  \newcommand{\outcome}[1]{\edef\theoutcomes{\theoutcomes #1~}%
-  \immediate\write\outcomefile{\unexpanded{\outcome}{#1}}}
+  \newcommand{\outcome}[1]{
+      \ifoutcomestrue% If we invoke |\outcome|, then we should have outcomes and thus we will flag it as true.
+      \edef\theoutcomes{\theoutcomes #1~}%
+      \immediate\write\outcomefile{\unexpanded{\outcome}{#1}}
+      }
   \fi%
 \everymath{\displaystyle}
 \let\prelim\lim
@@ -520,7 +527,10 @@
 \let\endabstract\relax
 \NewEnviron{abstract}{\protected@xdef\theabstract{\BODY}}
 \let\@emptyauthor\@author
-\def\author#1{\gdef\@author{#1}}
+\def\author#1{
+    \gdef\@author{#1}% Defines activity author
+    \ifauthortrue% Flags author as given.
+    }
 \def\@author{\@latex@warning@no@line{No \noexpand\author given}}
 \def\and{and }
 
@@ -547,8 +557,23 @@
   \phantomsection%
   \ifnumbers\addcontentsline{toc}{section}{\thetitlenumber~\@title}\else\addcontentsline{toc}{section}{\@title}\fi
   \vskip .6em\noindent\textit\theabstract\setcounter{problem}{0}\setcounter{section}{0}\setcounter{subsection}{0}\par\vspace{2em}
-  \ifnooutcomes\else\let\thefootnote\relax\footnote{Learning outcomes: \theoutcomes}\fi
-  \ifnoauthor\else\let\thefootnote\relax\footnote{Author(s):~\@author}\fi
+  %%% Design Question:
+  % Would it make more sense to have author/outcomes in the header and reserve footer for footnotes?
+  % Or some other method to distinguish between the two now that footnotes are viable?
+  \ifoutcomes%                                          If we have learning outcomes, we should display them.
+      \bgroup
+          \let\thefootnote\relax%                       Kills off the symbol of the footnote
+          \footnote{Learning outcomes: \theoutcomes}
+          \setcounter{footnote}{0}%                     Reset the footnote to zero to fix numberings.
+      \egroup
+      \fi
+  \ifauthor%                                            If we have an author, we should display it.
+      \bgroup
+          \let\thefootnote\relax%                       Kills off the symbol of the footnote
+          \footnote{Author(s):~\@author}
+          \setcounter{footnote}{0}%                     Reset the footnote to zero to fix numberings.
+      \egroup
+      \fi
   \aftergroup\@afterindentfalse
   \aftergroup\@afterheading}
 
@@ -711,6 +736,7 @@ Interactive
 {}% Start/End else result
 \ignorespaces%
 }%
+
 \newcommand{\inlinechoice}[2][]{%
 \setkeys{choice}{#1}%
 \iffirstinlinechoice
