@@ -4,5 +4,4 @@ services:   docker
 
 script:
 - docker pull strauman/travis-latexbuild:small # select small texlive scheme
-- docker run -it --mount src=/home/jim/texmf/tex/latex/ximeraLatex/,target=/repo,type=bind strauman/tex:tl-small /repo/.travis/build.sh
-
+- docker run -it --mount src=$TRAVIS_BUILD_DIR/,target=/repo,type=bind strauman/tex:tl-small /repo/.travis/build.sh
