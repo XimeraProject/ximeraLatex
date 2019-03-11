@@ -102,15 +102,6 @@
 %</htXourse>
 %    \end{macrocode}
 
-% When running xake, we can just ignore activities
-%    \begin{macrocode}
-%<*classXourse>
-\ifxake
-\renewcommand\activity[2][]{}
-\fi
-%</classXourse>
-%    \end{macrocode}
-
 
 % \subsubsection{Practice activities}
 % \DescribeMacro{\practice}{Like |\activity| but not expecting a title.}
@@ -130,16 +121,6 @@
   \let\input\otherinput}
 \fi
 \relax
-%</classXourse>
-%    \end{macrocode}
-
-% The practice environment does nothing, but will eventually produce
-% exercises at the end of an activity
-%    \begin{macrocode}
-%<*classXourse>
-\ifxake
-\renewcommand\practice[2][]{}
-\fi
 %</classXourse>
 %    \end{macrocode}
 
