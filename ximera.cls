@@ -113,6 +113,10 @@
 \DeclareOption{wordchoicegiven}{\wordchoicegiventrue}
 \newif\iffirstinlinechoice% Support for other wordchoice command contents.
 \firstinlinechoicetrue
+\newif\ifweb
+\webfalse
+\DeclareOption{web}{\webtrue}
+
 
 \newif\ifxake
 \xakefalse

@@ -87,6 +87,15 @@
 \firstinlinechoicetrue
 %    \end{macrocode}
 % \end{macro}
+% \begin{macro}{web}
+%    This option will render the \LaTeX\ source as it is shown on a webpage.
+%    \begin{macrocode}
+\newif\ifweb
+\webfalse
+\DeclareOption{web}{\webtrue}
+%    \end{macrocode}
+% \end{macro}
+
 %    \begin{macrocode}
 
 \newif\ifxake
