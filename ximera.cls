@@ -491,7 +491,6 @@
 \let\@emptyauthor\@author
 \def\author#1{
     \gdef\@author{#1}% Defines activity author
-    \ifauthortrue% Flags author as given.
     }
 \def\@author{\@latex@warning@no@line{No \noexpand\author given}}
 \def\and{and }
