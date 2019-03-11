@@ -54,6 +54,7 @@
 %%      License:| Released under the LaTeX Project Public License v1.3c or later
 %%          See:| http://www.latex-project.org/lppl.txt
 %% 
+aSDFKJSDF
 \NeedsTeXFormat{LaTeX2e}[1999/12/01]
 \ProvidesClass{ximera}
  [2018/10/28 v1.00
