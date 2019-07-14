@@ -1,4 +1,4 @@
-Greetings!
+Greetings! [![Build Status](https://travis-ci.org/XimeraProject/ximeraLatex.svg?branch=master)](https://travis-ci.org/XimeraProject/ximeraLatex)
 ==========
 
 In this repository, we hope to supply potential authors of Ximera

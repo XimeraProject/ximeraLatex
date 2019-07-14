@@ -1,0 +1,1921 @@
+This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015/Debian) (preloaded format=pdflatex 2017.11.26)  9 JUL 2018 16:08
+entering extended mode
+ restricted \write18 enabled.
+ %&-line parsing enabled.
+**ximera.dtx
+(./ximera.dtx
+LaTeX2e <2016/02/01>
+Babel <3.9q> and hyphenation patterns for 81 language(s) loaded.
+(/usr/share/texlive/texmf-dist/tex/latex/base/docstrip.tex
+\blockLevel=\count79
+\emptyLines=\count80
+\processedLines=\count81
+\commentsRemoved=\count82
+\commentsPassed=\count83
+\codeLinesPassed=\count84
+\TotalprocessedLines=\count85
+\TotalcommentsRemoved=\count86
+\TotalcommentsPassed=\count87
+\TotalcodeLinesPassed=\count88
+\NumberOfFiles=\count89
+\inFile=\read1
+\inputcheck=\read2
+\off@0=\count90
+\off@1=\count91
+\off@2=\count92
+\off@3=\count93
+\off@4=\count94
+\off@5=\count95
+\off@6=\count96
+\off@7=\count97
+\off@8=\count98
+\off@9=\count99
+\off@10=\count100
+\off@11=\count101
+\off@12=\count102
+\off@13=\count103
+\off@14=\count104
+\off@15=\count105
+\@maxfiles=\count106
+\@maxoutfiles=\count107
+
+Utility: `docstrip' 2.5e <2014/09/29>
+English documentation    <2014/09/29>
+
+**********************************************************
+* This program converts documented macro-files into fast *
+* loadable files by stripping off (nearly) all comments! *
+**********************************************************
+
+********************************************************
+* No Configuration file found, using default settings. *
+********************************************************
+
+)
+
+Generating file(s) ./ximera.cls ./xourse.cls 
+\openout0 = `./ximera.cls'.
+
+\openout1 = `./xourse.cls'.
+
+
+Processing file ximera.dtx (classXimera) -> ximera.cls
+                           (classXourse) -> xourse.cls
+Lines  processed: 311
+Comments removed: 33
+Comments  passed: 5
+Codelines passed: 252
+
+
+Processing file src/banner.dtx (classXimera) -> ximera.cls
+Lines  processed: 21
+Comments removed: 2
+Comments  passed: 0
+Codelines passed: 17
+
+
+Processing file src/options.dtx (classXimera) -> ximera.cls
+Lines  processed: 110
+Comments removed: 59
+Comments  passed: 0
+Codelines passed: 49
+
+
+Processing file src/packages.dtx (classXimera) -> ximera.cls
+Lines  processed: 54
+Comments removed: 23
+Comments  passed: 0
+Codelines passed: 27
+
+
+Processing file src/tikzexport.dtx (classXimera) -> ximera.cls
+Lines  processed: 52
+Comments removed: 14
+Comments  passed: 0
+Codelines passed: 34
+
+
+Processing file src/suppress.dtx (classXimera) -> ximera.cls
+Lines  processed: 33
+Comments removed: 8
+Comments  passed: 0
+Codelines passed: 23
+
+
+Processing file src/MakeCounter.dtx (classXimera) -> ximera.cls
+Lines  processed: 35
+Comments removed: 11
+Comments  passed: 0
+Codelines passed: 22
+
+
+Processing file src/pagesetup.dtx (classXimera) -> ximera.cls
+Lines  processed: 55
+Comments removed: 22
+Comments  passed: 0
+Codelines passed: 23
+
+
+Processing file src/metadata.dtx (classXimera) -> ximera.cls
+Lines  processed: 32
+Comments removed: 17
+Comments  passed: 0
+Codelines passed: 7
+
+
+Processing file src/outcomes.dtx (classXimera) -> ximera.cls
+Lines  processed: 34
+Comments removed: 11
+Comments  passed: 0
+Codelines passed: 19
+
+
+Processing file src/macros.dtx (classXimera) -> ximera.cls
+Lines  processed: 14
+Comments removed: 7
+Comments  passed: 0
+Codelines passed: 3
+
+
+Processing file src/theorems.dtx (classXimera) -> ximera.cls
+Lines  processed: 173
+Comments removed: 84
+Comments  passed: 0
+Codelines passed: 35
+
+
+Processing file src/enumerate.dtx (classXimera) -> ximera.cls
+Lines  processed: 10
+Comments removed: 4
+Comments  passed: 0
+Codelines passed: 4
+
+
+Processing file src/proof.dtx (classXimera) -> ximera.cls
+Lines  processed: 10
+Comments removed: 4
+Comments  passed: 0
+Codelines passed: 4
+
+
+Processing file src/only.dtx (classXimera) -> ximera.cls
+Lines  processed: 34
+Comments removed: 9
+Comments  passed: 0
+Codelines passed: 23
+
+
+Processing file src/problem.dtx (classXimera) -> ximera.cls
+Lines  processed: 189
+Comments removed: 46
+Comments  passed: 4
+Codelines passed: 135
+
+
+Processing file src/hints.dtx (classXimera) -> ximera.cls
+Lines  processed: 53
+Comments removed: 22
+Comments  passed: 0
+Codelines passed: 29
+
+
+Processing file src/abstract.dtx (classXimera) -> ximera.cls
+Lines  processed: 20
+Comments removed: 11
+Comments  passed: 0
+Codelines passed: 5
+
+
+Processing file src/title.dtx (classXimera) -> ximera.cls
+Lines  processed: 107
+Comments removed: 26
+Comments  passed: 0
+Codelines passed: 72
+
+
+Processing file src/image.dtx (classXimera) -> ximera.cls
+Lines  processed: 61
+Comments removed: 26
+Comments  passed: 0
+Codelines passed: 23
+
+
+Processing file src/interactives/javascript.dtx (classXimera) -> ximera.cls
+Lines  processed: 31
+Comments removed: 12
+Comments  passed: 0
+Codelines passed: 11
+
+
+Processing file src/interactives/include.dtx (classXimera) -> ximera.cls
+Lines  processed: 21
+Comments removed: 8
+Comments  passed: 0
+Codelines passed: 9
+
+
+Processing file src/interactives/geogebra.dtx (classXimera) -> ximera.cls
+Lines  processed: 27
+Comments removed: 11
+Comments  passed: 0
+Codelines passed: 12
+
+
+Processing file src/interactives/desmos.dtx (classXimera) -> ximera.cls
+Lines  processed: 12
+Comments removed: 6
+Comments  passed: 0
+Codelines passed: 2
+
+
+Processing file src/interactives/google.dtx (classXimera) -> ximera.cls
+Lines  processed: 26
+Comments removed: 9
+Comments  passed: 0
+Codelines passed: 13
+
+
+Processing file src/interactives/graph.dtx (classXimera) -> ximera.cls
+Lines  processed: 14
+Comments removed: 6
+Comments  passed: 0
+Codelines passed: 4
+
+
+Processing file src/link.dtx (classXimera) -> ximera.cls
+Lines  processed: 29
+Comments removed: 12
+Comments  passed: 0
+Codelines passed: 13
+
+
+Processing file src/interactives/video.dtx (classXimera) -> ximera.cls
+Lines  processed: 21
+Comments removed: 10
+Comments  passed: 0
+Codelines passed: 5
+
+
+Processing file src/answer.dtx (classXimera) -> ximera.cls
+Lines  processed: 83
+Comments removed: 34
+Comments  passed: 0
+Codelines passed: 45
+
+
+Processing file src/choice.dtx (classXimera) -> ximera.cls
+Lines  processed: 237
+Comments removed: 82
+Comments  passed: 0
+Codelines passed: 137
+
+
+Processing file src/solution.dtx (classXimera) -> ximera.cls
+Lines  processed: 28
+Comments removed: 4
+Comments  passed: 1
+Codelines passed: 21
+
+
+Processing file src/feedback.dtx (classXimera) -> ximera.cls
+Lines  processed: 66
+Comments removed: 33
+Comments  passed: 0
+Codelines passed: 29
+
+
+Processing file src/freeresponse.dtx (classXimera) -> ximera.cls
+Lines  processed: 60
+Comments removed: 8
+Comments  passed: 0
+Codelines passed: 48
+
+
+Processing file src/verbatim.dtx (classXimera) -> ximera.cls
+Lines  processed: 36
+Comments removed: 19
+Comments  passed: 0
+Codelines passed: 7
+
+
+Processing file src/dialogue.dtx (classXimera) -> ximera.cls
+Lines  processed: 28
+Comments removed: 7
+Comments  passed: 0
+Codelines passed: 17
+
+
+Processing file src/instructornotes.dtx (classXimera) -> ximera.cls
+Lines  processed: 98
+Comments removed: 4
+Comments  passed: 3
+Codelines passed: 89
+
+
+Processing file src/xkcd.dtx (classXimera) -> ximera.cls
+Lines  processed: 13
+Comments removed: 7
+Comments  passed: 0
+Codelines passed: 2
+
+
+Processing file src/foldable.dtx (classXimera) -> ximera.cls
+Lines  processed: 76
+Comments removed: 49
+Comments  passed: 2
+Codelines passed: 21
+
+
+Processing file src/leash.dtx (classXimera) -> ximera.cls
+Lines  processed: 17
+Comments removed: 6
+Comments  passed: 0
+Codelines passed: 7
+
+
+Processing file src/interactives/sagemath.dtx (classXimera) -> ximera.cls
+Lines  processed: 43
+Comments removed: 17
+Comments  passed: 1
+Codelines passed: 13
+
+
+Processing file src/jax.dtx (classXimera) -> ximera.cls
+Lines  processed: 115
+Comments removed: 30
+Comments  passed: 0
+Codelines passed: 77
+
+
+Processing file src/optionsxourse.dtx (classXourse) -> xourse.cls
+Lines  processed: 27
+Comments removed: 15
+Comments  passed: 0
+Codelines passed: 10
+
+
+Processing file src/activity.dtx (classXourse) -> xourse.cls
+Lines  processed: 155
+Comments removed: 62
+Comments  passed: 0
+Codelines passed: 79
+
+
+Processing file src/sectioning.dtx (classXourse) -> xourse.cls
+Lines  processed: 48
+Comments removed: 20
+Comments  passed: 0
+Codelines passed: 18
+
+
+Processing file src/graded.dtx (classXourse) -> xourse.cls
+Lines  processed: 42
+Comments removed: 22
+Comments  passed: 0
+Codelines passed: 12
+
+
+Processing file src/logo.dtx (classXourse) -> xourse.cls
+Lines  processed: 28
+Comments removed: 7
+Comments  passed: 0
+Codelines passed: 17
+
+
+Generating file(s) ./ximera.cfg 
+\openout0 = `./ximera.cfg'.
+
+
+Processing file ximera.dtx (cfgXimera) -> ximera.cfg
+Lines  processed: 311
+Comments removed: 33
+Comments  passed: 5
+Codelines passed: 252
+
+
+Processing file src/pagesetup.dtx (cfgXimera) -> ximera.cfg
+Lines  processed: 55
+Comments removed: 22
+Comments  passed: 0
+Codelines passed: 23
+
+
+Processing file src/packages.dtx (cfgXimera) -> ximera.cfg
+Lines  processed: 54
+Comments removed: 23
+Comments  passed: 0
+Codelines passed: 27
+
+
+Processing file src/jax.dtx (cfgXimera) -> ximera.cfg
+Lines  processed: 115
+Comments removed: 30
+Comments  passed: 0
+Codelines passed: 77
+
+
+Processing file src/sectioning.dtx (cfgXimera) -> ximera.cfg
+Lines  processed: 48
+Comments removed: 20
+Comments  passed: 0
+Codelines passed: 18
+
+
+Processing file src/title.dtx (cfgXimera) -> ximera.cfg
+Lines  processed: 107
+Comments removed: 26
+Comments  passed: 0
+Codelines passed: 72
+
+
+Processing file src/abstract.dtx (cfgXimera) -> ximera.cfg
+Lines  processed: 20
+Comments removed: 11
+Comments  passed: 0
+Codelines passed: 5
+
+
+Processing file src/image.dtx (cfgXimera) -> ximera.cfg
+Lines  processed: 61
+Comments removed: 26
+Comments  passed: 0
+Codelines passed: 23
+
+
+Processing file src/outcomes.dtx (cfgXimera) -> ximera.cfg
+Lines  processed: 34
+Comments removed: 11
+Comments  passed: 0
+Codelines passed: 19
+
+
+Processing file src/textcolor.dtx (cfgXimera) -> ximera.cfg
+Lines  processed: 20
+Comments removed: 4
+Comments  passed: 0
+Codelines passed: 14
+
+
+Processing file src/verbatim.dtx (cfgXimera) -> ximera.cfg
+Lines  processed: 36
+Comments removed: 19
+Comments  passed: 0
+Codelines passed: 7
+
+
+Processing file src/html.dtx (cfgXimera) -> ximera.cfg
+Lines  processed: 20
+Comments removed: 10
+Comments  passed: 0
+Codelines passed: 4
+
+
+Processing file src/ending.dtx (cfgXimera) -> ximera.cfg
+Lines  processed: 20
+Comments removed: 8
+Comments  passed: 0
+Codelines passed: 6
+
+
+Generating file(s) ./ximera.4ht 
+\openout0 = `./ximera.4ht'.
+
+
+Processing file ximera.dtx (htXimera) -> ximera.4ht
+Lines  processed: 311
+Comments removed: 33
+Comments  passed: 5
+Codelines passed: 252
+
+
+Processing file src/pagesetup.dtx (htXimera) -> ximera.4ht
+Lines  processed: 55
+Comments removed: 22
+Comments  passed: 0
+Codelines passed: 23
+
+
+Processing file src/title.dtx (htXimera) -> ximera.4ht
+Lines  processed: 107
+Comments removed: 26
+Comments  passed: 0
+Codelines passed: 72
+
+
+Processing file src/problem.dtx (htXimera) -> ximera.4ht
+Lines  processed: 189
+Comments removed: 46
+Comments  passed: 4
+Codelines passed: 135
+
+
+Processing file src/macros.dtx (htXimera) -> ximera.4ht
+Lines  processed: 14
+Comments removed: 7
+Comments  passed: 0
+Codelines passed: 3
+
+
+Processing file src/theorems.dtx (htXimera) -> ximera.4ht
+Lines  processed: 173
+Comments removed: 84
+Comments  passed: 0
+Codelines passed: 35
+
+
+Processing file src/image.dtx (htXimera) -> ximera.4ht
+Lines  processed: 61
+Comments removed: 26
+Comments  passed: 0
+Codelines passed: 23
+
+
+Processing file src/dialogue.dtx (htXimera) -> ximera.4ht
+Lines  processed: 28
+Comments removed: 7
+Comments  passed: 0
+Codelines passed: 17
+
+
+Processing file src/foldable.dtx (htXimera) -> ximera.4ht
+Lines  processed: 76
+Comments removed: 49
+Comments  passed: 2
+Codelines passed: 21
+
+
+Processing file src/interactives/video.dtx (htXimera) -> ximera.4ht
+Lines  processed: 21
+Comments removed: 10
+Comments  passed: 0
+Codelines passed: 5
+
+
+Processing file src/xkcd.dtx (htXimera) -> ximera.4ht
+Lines  processed: 13
+Comments removed: 7
+Comments  passed: 0
+Codelines passed: 2
+
+
+Processing file src/link.dtx (htXimera) -> ximera.4ht
+Lines  processed: 29
+Comments removed: 12
+Comments  passed: 0
+Codelines passed: 13
+
+
+Processing file src/interactives/graph.dtx (htXimera) -> ximera.4ht
+Lines  processed: 14
+Comments removed: 6
+Comments  passed: 0
+Codelines passed: 4
+
+
+Processing file src/answer.dtx (htXimera) -> ximera.4ht
+Lines  processed: 83
+Comments removed: 34
+Comments  passed: 0
+Codelines passed: 45
+
+
+Processing file src/choice.dtx (htXimera) -> ximera.4ht
+Lines  processed: 237
+Comments removed: 82
+Comments  passed: 0
+Codelines passed: 137
+
+
+Processing file src/freeresponse.dtx (htXimera) -> ximera.4ht
+Lines  processed: 60
+Comments removed: 8
+Comments  passed: 0
+Codelines passed: 48
+
+
+Processing file src/interactives/javascript.dtx (htXimera) -> ximera.4ht
+Lines  processed: 31
+Comments removed: 12
+Comments  passed: 0
+Codelines passed: 11
+
+
+Processing file src/interactives/include.dtx (htXimera) -> ximera.4ht
+Lines  processed: 21
+Comments removed: 8
+Comments  passed: 0
+Codelines passed: 9
+
+
+Processing file src/interactives/geogebra.dtx (htXimera) -> ximera.4ht
+Lines  processed: 27
+Comments removed: 11
+Comments  passed: 0
+Codelines passed: 12
+
+
+Processing file src/interactives/desmos.dtx (htXimera) -> ximera.4ht
+Lines  processed: 12
+Comments removed: 6
+Comments  passed: 0
+Codelines passed: 2
+
+
+Processing file src/interactives/google.dtx (htXimera) -> ximera.4ht
+Lines  processed: 26
+Comments removed: 9
+Comments  passed: 0
+Codelines passed: 13
+
+
+Processing file src/feedback.dtx (htXimera) -> ximera.4ht
+Lines  processed: 66
+Comments removed: 33
+Comments  passed: 0
+Codelines passed: 29
+
+
+Processing file src/leash.dtx (htXimera) -> ximera.4ht
+Lines  processed: 17
+Comments removed: 6
+Comments  passed: 0
+Codelines passed: 7
+
+
+Processing file src/labels.dtx (htXimera) -> ximera.4ht
+Lines  processed: 14
+Comments removed: 8
+Comments  passed: 0
+Codelines passed: 2
+
+
+Processing file src/interactives/sagemath.dtx (htXimera) -> ximera.4ht
+Lines  processed: 43
+Comments removed: 17
+Comments  passed: 1
+Codelines passed: 13
+
+
+Processing file src/ending.dtx (htXimera) -> ximera.4ht
+Lines  processed: 20
+Comments removed: 8
+Comments  passed: 0
+Codelines passed: 6
+
+
+Generating file(s) ./xourse.4ht 
+\openout0 = `./xourse.4ht'.
+
+
+Processing file ximera.dtx (htXourse) -> xourse.4ht
+Lines  processed: 311
+Comments removed: 33
+Comments  passed: 5
+Codelines passed: 252
+
+
+Processing file src/logo.dtx (htXourse) -> xourse.4ht
+Lines  processed: 28
+Comments removed: 7
+Comments  passed: 0
+Codelines passed: 17
+
+
+Processing file src/metadata.dtx (htXourse) -> xourse.4ht
+Lines  processed: 32
+Comments removed: 17
+Comments  passed: 0
+Codelines passed: 7
+
+
+Processing file src/activity.dtx (htXourse) -> xourse.4ht
+Lines  processed: 155
+Comments removed: 62
+Comments  passed: 0
+Codelines passed: 79
+
+
+Processing file src/sectioning.dtx (htXourse) -> xourse.4ht
+Lines  processed: 48
+Comments removed: 20
+Comments  passed: 0
+Codelines passed: 18
+
+
+Processing file src/graded.dtx (htXourse) -> xourse.4ht
+Lines  processed: 42
+Comments removed: 22
+Comments  passed: 0
+Codelines passed: 12
+
+
+Processing file src/interactives/video.dtx (htXourse) -> xourse.4ht
+Lines  processed: 21
+Comments removed: 10
+Comments  passed: 0
+Codelines passed: 5
+
+
+Processing file src/ending.dtx (htXourse) -> xourse.4ht
+Lines  processed: 20
+Comments removed: 8
+Comments  passed: 0
+Codelines passed: 6
+
+
+Generating file(s) ./ximera.ins 
+\openout0 = `./ximera.ins'.
+
+
+Processing file ximera.dtx (install) -> ximera.ins
+Lines  processed: 311
+Comments removed: 33
+Comments  passed: 5
+Codelines passed: 252
+
+
+Generating file(s) ./README.txt 
+\openout0 = `./README.txt'.
+
+
+Processing file ximera.dtx (readme) -> README.txt
+Lines  processed: 311
+Comments removed: 33
+Comments  passed: 5
+Codelines passed: 252
+
+File: ximera.dtx 
+(/usr/share/texlive/texmf-dist/tex/latex/base/ltxdoc.cls
+Document Class: ltxdoc 2015/03/26 v2.0w Standard LaTeX documentation class
+(/usr/share/texlive/texmf-dist/tex/latex/base/article.cls
+Document Class: article 2014/09/29 v1.4h Standard LaTeX document class
+(/usr/share/texlive/texmf-dist/tex/latex/base/size10.clo
+File: size10.clo 2014/09/29 v1.4h Standard LaTeX file (size option)
+)
+\c@part=\count108
+\c@section=\count109
+\c@subsection=\count110
+\c@subsubsection=\count111
+\c@paragraph=\count112
+\c@subparagraph=\count113
+\c@figure=\count114
+\c@table=\count115
+\abovecaptionskip=\skip41
+\belowcaptionskip=\skip42
+\bibindent=\dimen102
+)
+(/usr/share/texlive/texmf-dist/tex/latex/base/doc.sty
+Package: doc 2014/09/29 v2.1e Standard LaTeX documentation package (FMi)
+\c@StandardModuleDepth=\count116
+\guard@level=\count117
+\MacrocodeTopsep=\skip43
+\MacroIndent=\dimen103
+\macro@cnt=\count118
+\MacroTopsep=\skip44
+\index@excludelist=\toks14
+
+(/usr/share/texlive/texmf-dist/tex/latex/tools/multicol.sty
+Package: multicol 2015/08/19 v1.8n multicolumn formatting (FMi)
+\c@tracingmulticols=\count119
+\mult@box=\box26
+\multicol@leftmargin=\dimen104
+\c@unbalance=\count120
+\c@collectmore=\count121
+\doublecol@number=\count122
+\multicoltolerance=\count123
+\multicolpretolerance=\count124
+\full@width=\dimen105
+\page@free=\dimen106
+\premulticols=\dimen107
+\postmulticols=\dimen108
+\multicolsep=\skip45
+\multicolbaselineskip=\skip46
+\partial@page=\box27
+\last@line=\box28
+\maxbalancingoverflow=\dimen109
+\mult@rightbox=\box29
+\mult@grightbox=\box30
+\mult@gfirstbox=\box31
+\mult@firstbox=\box32
+\@tempa=\box33
+\@tempa=\box34
+\@tempa=\box35
+\@tempa=\box36
+\@tempa=\box37
+\@tempa=\box38
+\@tempa=\box39
+\@tempa=\box40
+\@tempa=\box41
+\@tempa=\box42
+\@tempa=\box43
+\@tempa=\box44
+\@tempa=\box45
+\@tempa=\box46
+\@tempa=\box47
+\@tempa=\box48
+\@tempa=\box49
+\c@columnbadness=\count125
+\c@finalcolumnbadness=\count126
+\last@try=\dimen110
+\multicolovershoot=\dimen111
+\multicolundershoot=\dimen112
+\mult@nat@firstbox=\box50
+\colbreak@box=\box51
+\mc@col@check@num=\count127
+)
+\IndexMin=\dimen113
+\c@IndexColumns=\count128
+\GlossaryMin=\dimen114
+\c@GlossaryColumns=\count129
+\check@sum=\count130
+\bslash@cnt=\count131
+\wrong@table=\toks15
+\c@CodelineNo=\count132
+))
+(/usr/share/texlive/texmf-dist/tex/latex/geometry/geometry.sty
+Package: geometry 2010/09/12 v5.6 Page Geometry
+
+(/usr/share/texlive/texmf-dist/tex/latex/graphics/keyval.sty
+Package: keyval 2014/10/28 v1.15 key=value parser (DPC)
+\KV@toks@=\toks16
+)
+(/usr/share/texlive/texmf-dist/tex/generic/oberdiek/ifpdf.sty
+Package: ifpdf 2011/01/30 v2.3 Provides the ifpdf switch (HO)
+Package ifpdf Info: pdfTeX in PDF mode is detected.
+)
+(/usr/share/texlive/texmf-dist/tex/generic/oberdiek/ifvtex.sty
+Package: ifvtex 2010/03/01 v1.5 Detect VTeX and its facilities (HO)
+Package ifvtex Info: VTeX not detected.
+)
+(/usr/share/texlive/texmf-dist/tex/generic/ifxetex/ifxetex.sty
+Package: ifxetex 2010/09/12 v0.6 Provides ifxetex conditional
+)
+\Gm@cnth=\count133
+\Gm@cntv=\count134
+\c@Gm@tempcnt=\count135
+\Gm@bindingoffset=\dimen115
+\Gm@wd@mp=\dimen116
+\Gm@odd@mp=\dimen117
+\Gm@even@mp=\dimen118
+\Gm@layoutwidth=\dimen119
+\Gm@layoutheight=\dimen120
+\Gm@layouthoffset=\dimen121
+\Gm@layoutvoffset=\dimen122
+\Gm@dimlist=\toks17
+)
+(/usr/share/texlive/texmf-dist/tex/latex/oberdiek/hypdoc.sty
+Package: hypdoc 2011/08/19 v1.11 Hyper extensions for doc.sty (HO)
+
+(/usr/share/texlive/texmf-dist/tex/latex/oberdiek/atveryend.sty
+Package: atveryend 2011/06/30 v1.8 Hooks at the very end of document (HO)
+Package atveryend Info: \enddocument detected (standard20110627).
+)
+(/usr/share/texlive/texmf-dist/tex/latex/hyperref/hyperref.sty
+Package: hyperref 2012/11/06 v6.83m Hypertext links for LaTeX
+
+(/usr/share/texlive/texmf-dist/tex/generic/oberdiek/hobsub-hyperref.sty
+Package: hobsub-hyperref 2012/05/28 v1.13 Bundle oberdiek, subset hyperref (HO)
+
+
+(/usr/share/texlive/texmf-dist/tex/generic/oberdiek/hobsub-generic.sty
+Package: hobsub-generic 2012/05/28 v1.13 Bundle oberdiek, subset generic (HO)
+Package: hobsub 2012/05/28 v1.13 Construct package bundles (HO)
+Package: infwarerr 2010/04/08 v1.3 Providing info/warning/error messages (HO)
+Package: ltxcmds 2011/11/09 v1.22 LaTeX kernel commands for general use (HO)
+Package: ifluatex 2010/03/01 v1.3 Provides the ifluatex switch (HO)
+Package ifluatex Info: LuaTeX not detected.
+Package hobsub Info: Skipping package `ifvtex' (already loaded).
+Package: intcalc 2007/09/27 v1.1 Expandable calculations with integers (HO)
+Package hobsub Info: Skipping package `ifpdf' (already loaded).
+Package: etexcmds 2011/02/16 v1.5 Avoid name clashes with e-TeX commands (HO)
+Package etexcmds Info: Could not find \expanded.
+(etexcmds)             That can mean that you are not using pdfTeX 1.50 or
+(etexcmds)             that some package has redefined \expanded.
+(etexcmds)             In the latter case, load this package earlier.
+Package: kvsetkeys 2012/04/25 v1.16 Key value parser (HO)
+Package: kvdefinekeys 2011/04/07 v1.3 Define keys (HO)
+Package: pdftexcmds 2011/11/29 v0.20 Utility functions of pdfTeX for LuaTeX (HO
+)
+Package pdftexcmds Info: LuaTeX not detected.
+Package pdftexcmds Info: \pdf@primitive is available.
+Package pdftexcmds Info: \pdf@ifprimitive is available.
+Package pdftexcmds Info: \pdfdraftmode found.
+Package: pdfescape 2011/11/25 v1.13 Implements pdfTeX's escape features (HO)
+Package: bigintcalc 2012/04/08 v1.3 Expandable calculations on big integers (HO
+)
+Package: bitset 2011/01/30 v1.1 Handle bit-vector datatype (HO)
+Package: uniquecounter 2011/01/30 v1.2 Provide unlimited unique counter (HO)
+)
+Package hobsub Info: Skipping package `hobsub' (already loaded).
+Package: letltxmacro 2010/09/02 v1.4 Let assignment for LaTeX macros (HO)
+Package: hopatch 2012/05/28 v1.2 Wrapper for package hooks (HO)
+Package: xcolor-patch 2011/01/30 xcolor patch
+Package hobsub Info: Skipping package `atveryend' (already loaded).
+Package: atbegshi 2011/10/05 v1.16 At begin shipout hook (HO)
+Package: refcount 2011/10/16 v3.4 Data extraction from label references (HO)
+Package: hycolor 2011/01/30 v1.7 Color options for hyperref/bookmark (HO)
+)
+(/usr/share/texlive/texmf-dist/tex/latex/oberdiek/auxhook.sty
+Package: auxhook 2011/03/04 v1.3 Hooks for auxiliary files (HO)
+)
+(/usr/share/texlive/texmf-dist/tex/latex/oberdiek/kvoptions.sty
+Package: kvoptions 2011/06/30 v3.11 Key value format for package options (HO)
+)
+\@linkdim=\dimen123
+\Hy@linkcounter=\count136
+\Hy@pagecounter=\count137
+
+(/usr/share/texlive/texmf-dist/tex/latex/hyperref/pd1enc.def
+File: pd1enc.def 2012/11/06 v6.83m Hyperref: PDFDocEncoding definition (HO)
+)
+\Hy@SavedSpaceFactor=\count138
+
+(/usr/share/texlive/texmf-dist/tex/latex/latexconfig/hyperref.cfg
+File: hyperref.cfg 2002/06/06 v1.2 hyperref configuration of TeXLive
+)
+Package hyperref Info: Option `hyperindex' set `false' on input line 4319.
+Package hyperref Info: Option `pdfusetitle' set `true' on input line 4319.
+Package hyperref Info: Option `colorlinks' set `true' on input line 4319.
+Package hyperref Info: Option `pdfpagelabels' set `true' on input line 4319.
+Package hyperref Info: Hyper figures OFF on input line 4443.
+Package hyperref Info: Link nesting OFF on input line 4448.
+Package hyperref Info: Hyper index OFF on input line 4453.
+Package hyperref Info: Plain pages OFF on input line 4458.
+Package hyperref Info: Backreferencing OFF on input line 4463.
+Package hyperref Info: Implicit mode ON; LaTeX internals redefined.
+Package hyperref Info: Bookmarks ON on input line 4688.
+\c@Hy@tempcnt=\count139
+
+(/usr/share/texlive/texmf-dist/tex/latex/url/url.sty
+\Urlmuskip=\muskip10
+Package: url 2013/09/16  ver 3.4  Verb mode for urls, etc.
+)
+LaTeX Info: Redefining \url on input line 5041.
+\XeTeXLinkMargin=\dimen124
+\Fld@menulength=\count140
+\Field@Width=\dimen125
+\Fld@charsize=\dimen126
+Package hyperref Info: Hyper figures OFF on input line 6295.
+Package hyperref Info: Link nesting OFF on input line 6300.
+Package hyperref Info: Hyper index OFF on input line 6305.
+Package hyperref Info: backreferencing OFF on input line 6310.
+Package hyperref Info: Link coloring ON on input line 6313.
+Package hyperref Info: Link coloring with OCG OFF on input line 6320.
+Package hyperref Info: PDF/A mode OFF on input line 6325.
+LaTeX Info: Redefining \ref on input line 6365.
+LaTeX Info: Redefining \pageref on input line 6369.
+\Hy@abspage=\count141
+\c@Item=\count142
+\c@Hfootnote=\count143
+)
+
+Package hyperref Message: Driver (autodetected): hpdftex.
+
+(/usr/share/texlive/texmf-dist/tex/latex/hyperref/hpdftex.def
+File: hpdftex.def 2012/11/06 v6.83m Hyperref driver for pdfTeX
+\Fld@listcount=\count144
+\c@bookmark@seq@number=\count145
+
+(/usr/share/texlive/texmf-dist/tex/latex/oberdiek/rerunfilecheck.sty
+Package: rerunfilecheck 2011/04/15 v1.7 Rerun checks for auxiliary files (HO)
+Package uniquecounter Info: New unique counter `rerunfilecheck' on input line 2
+82.
+)
+\Hy@SectionHShift=\skip47
+)
+Package hyperref Info: Option `plainpages' set `false' on input line 60.
+Package hyperref Info: Option `bookmarksopen' set `true' on input line 60.
+Package hyperref Info: Option `bookmarksnumbered' set `true' on input line 60.
+
+(/usr/share/texlive/texmf-dist/tex/generic/thumbpdf/thumbpdf.sty
+Package: thumbpdf 2014/07/15 v3.16 Inclusion of thumbnails (HO)
+
+
+Package thumbpdf Warning: Compressed PDF objects of PDF 1.5 are not supported.
+
+
+Package thumbpdf Warning: Thumbnail data file `ximera.tpt' not found.
+
+)
+\c@HD@unique=\count146
+\c@HD@hypercount=\count147
+\HD@helplength=\skip48
+)
+\@indexfile=\write3
+\openout3 = `ximera.idx'.
+
+
+Writing index file ximera.idx
+\@glossaryfile=\write4
+\openout4 = `ximera.glo'.
+
+Writing glossary file ximera.glo 
+(./ximera.aux)
+\openout1 = `ximera.aux'.
+
+LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 219.
+LaTeX Font Info:    ... okay on input line 219.
+LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 219.
+LaTeX Font Info:    ... okay on input line 219.
+LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 219.
+LaTeX Font Info:    ... okay on input line 219.
+LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 219.
+LaTeX Font Info:    ... okay on input line 219.
+LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 219.
+LaTeX Font Info:    ... okay on input line 219.
+LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 219.
+LaTeX Font Info:    ... okay on input line 219.
+LaTeX Font Info:    Checking defaults for PD1/pdf/m/n on input line 219.
+LaTeX Font Info:    ... okay on input line 219.
+Package doc Info: Made | a short reference for \verb on input line 219.
+
+*geometry* driver: auto-detecting
+*geometry* detected driver: pdftex
+*geometry* verbose mode - [ preamble ] result:
+* driver: pdftex
+* paper: a4paper
+* layout: <same size as paper>
+* layoutoffset:(h,v)=(0.0pt,0.0pt)
+* modes: 
+* h-part:(L,W,R)=(142.26378pt, 384.11221pt, 71.13188pt)
+* v-part:(T,H,B)=(71.13188pt, 702.78308pt, 71.13188pt)
+* \paperwidth=597.50787pt
+* \paperheight=845.04684pt
+* \textwidth=384.11221pt
+* \textheight=702.78308pt
+* \oddsidemargin=69.99379pt
+* \evensidemargin=69.99379pt
+* \topmargin=-1.1381pt
+* \headheight=0.0pt
+* \headsep=0.0pt
+* \topskip=10.0pt
+* \footskip=30.0pt
+* \marginparwidth=126.0pt
+* \marginparsep=11.0pt
+* \columnsep=10.0pt
+* \skip\footins=9.0pt plus 4.0pt minus 2.0pt
+* \hoffset=0.0pt
+* \voffset=0.0pt
+* \mag=1000
+* \@twocolumnfalse
+* \@twosidefalse
+* \@mparswitchfalse
+* \@reversemargintrue
+* (1in=72.27pt=25.4mm, 1cm=28.453pt)
+
+\AtBeginShipoutBox=\box52
+(/usr/share/texlive/texmf-dist/tex/latex/graphics/color.sty
+Package: color 2016/01/03 v1.1b Standard LaTeX Color (DPC)
+
+(/usr/share/texlive/texmf-dist/tex/latex/latexconfig/color.cfg
+File: color.cfg 2007/01/18 v1.5 color configuration of teTeX/TeXLive
+)
+Package color Info: Driver file: pdftex.def on input line 143.
+
+(/usr/share/texlive/texmf-dist/tex/latex/pdftex-def/pdftex.def
+File: pdftex.def 2011/05/27 v0.06d Graphics/color for pdfTeX
+\Gread@gobject=\count148
+
+(/usr/share/texlive/texmf-dist/tex/context/base/supp-pdf.mkii
+[Loading MPS to PDF converter (version 2006.09.02).]
+\scratchcounter=\count149
+\scratchdimen=\dimen127
+\scratchbox=\box53
+\nofMPsegments=\count150
+\nofMParguments=\count151
+\everyMPshowfont=\toks18
+\MPscratchCnt=\count152
+\MPscratchDim=\dimen128
+\MPnumerator=\count153
+\makeMPintoPDFobject=\count154
+\everyMPtoPDFconversion=\toks19
+)))
+Package hyperref Info: Link coloring ON on input line 219.
+ (/usr/share/texlive/texmf-dist/tex/latex/hyperref/nameref.sty
+Package: nameref 2012/10/27 v2.43 Cross-referencing by name of section
+
+(/usr/share/texlive/texmf-dist/tex/generic/oberdiek/gettitlestring.sty
+Package: gettitlestring 2010/12/03 v1.4 Cleanup title references (HO)
+)
+\c@section@level=\count155
+)
+LaTeX Info: Redefining \ref on input line 219.
+LaTeX Info: Redefining \pageref on input line 219.
+LaTeX Info: Redefining \nameref on input line 219.
+
+(./ximera.out) (./ximera.out)
+\@outlinefile=\write5
+\openout5 = `ximera.out'.
+
+ (./ximera.hd)
+\HD@savedest@out=\write6
+\openout6 = `ximera.hd'.
+
+ (./ximera.dtx
+LaTeX Font Info:    External font `cmex10' loaded for size
+(Font)              <17.28> on input line 289.
+LaTeX Font Info:    External font `cmex10' loaded for size
+(Font)              <12> on input line 289.
+LaTeX Font Info:    External font `cmex10' loaded for size
+(Font)              <8> on input line 289.
+LaTeX Font Info:    External font `cmex10' loaded for size
+(Font)              <6> on input line 289.
+LaTeX Font Info:    External font `cmex10' loaded for size
+(Font)              <5> on input line 289.
+) (./src/options.dtx
+LaTeX Font Info:    External font `cmex10' loaded for size
+(Font)              <9> on input line 6.
+
+[1
+
+{/var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map}]) (./src/packages.dtx
+[2]
+Overfull \hbox (867.73743pt too wide) in paragraph at lines 45--45
+ [][]\OT1/cmtt/m/n/9 \RequirePackage{environ}% Included to allow saving of envi
+ronment contents. This does *not* play well with various verbatem environments 
+however and would be great to find a way around utilizing this package. One opt
+ion is the "Suppress" command included below. 
+ []
+
+) (./src/pagesetup.dtx [3]
+Overfull \hbox (31.42215pt too wide) in paragraph at lines 42--42
+ [][]\OT1/cmtt/m/n/9 % Reset <head>, aka delete all default boilerplate; altern
+atively set up new content 
+ []
+
+
+Overfull \hbox (262.94446pt too wide) in paragraph at lines 42--42
+ [][]\OT1/cmtt/m/n/9 \Configure{@HEAD}{\HCode{<meta name="generator" content="T
+eX4ht (http://www.cse.ohio-state.edu/\string~gurari/TeX4ht/)" />\Hnewline}} 
+ []
+
+
+Overfull \hbox (21.97226pt too wide) in paragraph at lines 42--42
+ [][]\OT1/cmtt/m/n/9 \Configure{@HEAD}{\HCode{<meta name="ximera" content="vers
+ion 0.0.1" />\Hnewline}} 
+ []
+
+
+Overfull \hbox (291.29413pt too wide) in paragraph at lines 42--42
+ [][]\OT1/cmtt/m/n/9 \Configure{@HEAD}{\HCode{<link href="https://ximera.osu.ed
+u/public/stylesheets/standalone.css" rel="stylesheet" media="screen"/>\Hnewline
+}} 
+ []
+
+
+Overfull \hbox (333.81863pt too wide) in paragraph at lines 42--42
+ [][]\OT1/cmtt/m/n/9 \Configure{@HEAD}{\HCode{<script type="text/javascript" as
+ync src="https://ximera.osu.edu/public/javascripts/standalone.min.js"></script>
+\Hnewline}} 
+ []
+
+) (./src/macros.dtx) (./src/theorems.dtx
+Overfull \hbox (588.96567pt too wide) in paragraph at lines 13--13
+ [][]\OT1/cmtt/m/n/9 \ConfigureEnv{#1}{\stepcounter{identification}\ifvmode \Ig
+norePar\fi \EndP\HCode{<div class="theorem-like problem-environment #1" id="pro
+blem\arabic{identification}">}}{\HCode{</div>}\IgnoreIndent}{}{}% 
+ []
+
+[4] [5]) (./src/enumerate.dtx) (./src/proof.dtx
+Overfull \hbox (7.79742pt too wide) in paragraph at lines 10--10
+ [][]  \OT1/cmtt/m/n/9 {\begin{trivlist}\item[\hskip \labelsep \itshape \bfseri
+es #1{}\hspace{2ex}]} 
+ []
+
+) (./src/problem.dtx
+LaTeX Font Info:    External font `cmex10' loaded for size
+(Font)              <7> on input line 5.
+ [6]
+Overfull \hbox (36.1471pt too wide) in paragraph at lines 175--175
+ [][]\OT1/cmtt/m/n/9 \ifcsname c@depth\Roman{problem@Depth}Count\endcsname% Che
+ck to see if counter exists 
+ []
+
+
+Overfull \hbox (125.92105pt too wide) in paragraph at lines 175--175
+ [][]\OT1/cmtt/m/n/9 \forloop{Iteration@probCnt}{2}{\arabic{Iteration@probCnt} 
+< \numexpr \value{problem@Depth} + 1 \relax}{% 
+ []
+
+
+Overfull \hbox (272.39435pt too wide) in paragraph at lines 175--175
+ [][]    \OT1/cmtt/m/n/9 .\expandafter\arabic{depth\Roman{Iteration@probCnt}Cou
+nt}% Get the problem number of the next depth level and append it with a ".". 
+ []
+
+
+Overfull \hbox (777.96347pt too wide) in paragraph at lines 175--175
+ [][]\OT1/cmtt/m/n/9 %\@ifpackageloaded{shuffle}{<true>}{<false>}% Check if Shu
+ffle has been added. If so, add special numbering to the shuffled "groups". Cur
+rently commented out while we decide what that should look like (compared to th
+e normal nested problems). 
+ []
+
+
+Overfull \hbox (135.37094pt too wide) in paragraph at lines 175--175
+ [][]\OT1/cmtt/m/n/9 %\ifhandout % Currently handout mode doesn't allow hints. 
+Putting this code in place in case that changes. 
+ []
+
+
+Overfull \hbox (31.42215pt too wide) in paragraph at lines 175--175
+ [][]\OT1/cmtt/m/n/9 % The first is optional and is the old optional argument f
+rom existing environments. 
+ []
+
+
+Overfull \hbox (92.84644pt too wide) in paragraph at lines 175--175
+ [][]\OT1/cmtt/m/n/9 % This is passed down to the associated problem environmen
+t name in case you want a global value. 
+ []
+
+
+Overfull \hbox (12.52237pt too wide) in paragraph at lines 175--175
+ [][]\OT1/cmtt/m/n/9 % The second argument is mandatory and is the name of the 
+'problem' environment, 
+ []
+
+
+Overfull \hbox (31.42215pt too wide) in paragraph at lines 175--175
+ [][]\OT1/cmtt/m/n/9 \stepcounter{problem@Depth}% Started a problem, so we've s
+unk another problem layer. 
+ []
+
+[7]
+Overfull \hbox (97.57138pt too wide) in paragraph at lines 175--175
+ [][]    \OT1/cmtt/m/n/9 #2 \problemNumber% Determine the correct number of the
+ problem, and the format of that number. 
+ []
+
+
+Overfull \hbox (45.59698pt too wide) in paragraph at lines 175--175
+ [][]\OT1/cmtt/m/n/9 \newcommand{\problemEnvironmentEnd}{%This configures all t
+he end content for a problem. 
+ []
+
+
+Overfull \hbox (50.32193pt too wide) in paragraph at lines 175--175
+ [][]\OT1/cmtt/m/n/9 % so we can reset that counter back to zero for the next t
+ime we enter that depth level. 
+ []
+
+
+Overfull \hbox (470.84204pt too wide) in paragraph at lines 175--175
+ [][]\OT1/cmtt/m/n/9 \addtocounter{problem@Depth}{-2}% Exited a problem so we'v
+e exited a problem layer. Need -2 because we steppped once at the start to chec
+k for needing a depth-level count reset. 
+ []
+
+
+Overfull \hbox (102.29633pt too wide) in paragraph at lines 175--175
+ [][]\OT1/cmtt/m/n/9 % Note that you can add content to the start/end code on t
+op of these base code pieces if you want. 
+ []
+
+[8]
+Overfull \hbox (730.71402pt too wide) in paragraph at lines 198--198
+ [][]\OT1/cmtt/m/n/9 \ConfigureEnv{#1}{\stepcounter{identification}\ifvmode \Ig
+norePar\fi \EndP\HCode{<div role="article" class="problem-environment #2" id="p
+roblem\arabic{identification}">}}{\ifvmode \IgnorePar\fi \EndP\HCode{</div>}\Ig
+noreIndent}{}{}% 
+ []
+
+) (./src/hints.dtx
+Overfull \hbox (12.52237pt too wide) in paragraph at lines 28--28
+ [][]\OT1/cmtt/m/n/9 \begin{trivlist}\item[\hskip \labelsep\small\slshape\bfser
+ies Hint:\hspace{2ex}] 
+ []
+
+[9]
+Overfull \hbox (12.52237pt too wide) in paragraph at lines 53--53
+ [][]\OT1/cmtt/m/n/9 \begin{trivlist}\item[\hskip \labelsep\small\slshape\bfser
+ies Hint:\hspace{2ex}] 
+ []
+
+) (./src/solution.dtx) (./src/verbatim.dtx
+Overfull \hbox (111.74622pt too wide) in paragraph at lines 9--9
+ [][]\OT1/cmtt/m/n/9 \DefineVerbatimEnvironment{code}{Verbatim}{numbers=left,fr
+ame=lines,label=Code,labelposition=topline} 
+ []
+
+
+Overfull \hbox (130.646pt too wide) in paragraph at lines 17--17
+ [][]\OT1/cmtt/m/n/9 \DefineVerbatimEnvironment{python}{Verbatim}{numbers=left,
+frame=lines,label=Python,labelposition=topline} 
+ []
+
+
+Overfull \hbox (187.34534pt too wide) in paragraph at lines 28--28
+ [][]\OT1/cmtt/m/n/9 \DefineVerbatimEnvironment{javascriptCode}{Verbatim}{numbe
+rs=left,frame=lines,label=JavaScript,labelposition=topline} 
+ []
+
+[10]
+Overfull \hbox (768.51358pt too wide) in paragraph at lines 28--28
+ [][]\OT1/cmtt/m/n/9 \ScriptEnv{javascriptCode}{\stepcounter{identification}\if
+vmode \IgnorePar\fi \EndP\HCode{<div class="javascript-code" id="javascript\ara
+bic{identification}"><script type="text/text">}\HtmlParOff}{\HtmlParOn\HCode{\H
+newline</script></div>}} 
+ []
+
+) (./src/dialogue.dtx) (./src/instructornotes.dtx [11] [12]) (./src/only.dtx)
+(./src/foldable.dtx [13]
+Overfull \hbox (489.74182pt too wide) in paragraph at lines 76--76
+ [][]\OT1/cmtt/m/n/9 \renewenvironment{foldable}{\stepcounter{identification}\i
+fvmode \IgnorePar\fi \EndP\HCode{<div id="foldable\arabic{identification}" clas
+s="foldable">}}{\HCode{</div>}\IgnoreIndent} 
+ []
+
+
+Overfull \hbox (485.01688pt too wide) in paragraph at lines 76--76
+ [][]\OT1/cmtt/m/n/9 \renewenvironment{expandable}{\stepcounter{identification}
+\ifvmode \IgnorePar\fi \EndP\HCode{<div data-original="expandable" id="foldable
+\arabic{identification}" class="foldable">} 
+ []
+
+
+Overfull \hbox (17.24731pt too wide) in paragraph at lines 76--76
+ [][]\OT1/cmtt/m/n/9 \renewcommand{\unfoldable}[1]{\HCode{<span class="unfoldab
+le">}#1\HCode{</span>}} 
+ []
+
+) (./src/leash.dtx [14]
+Overfull \hbox (277.1193pt too wide) in paragraph at lines 18--18
+ [][]\OT1/cmtt/m/n/9 \renewenvironment{leash}[1]{\ifvmode \IgnorePar\fi \EndP\H
+Code{<div style="overflow: auto; height: #1px">}}{\HCode{</div>}\IgnoreIndent} 
+
+ []
+
+) (./src/metadata.dtx
+Overfull \hbox (12.52237pt too wide) in paragraph at lines 32--32
+ [][]\OT1/cmtt/m/n/9 \Configure{@HEAD}{\HCode{<meta name="description" content=
+"xourse" />\Hnewline}} 
+ []
+
+) (./src/abstract.dtx) (./src/title.dtx
+Overfull \hbox (36.1471pt too wide) in paragraph at lines 17--17
+ [][]\OT1/cmtt/m/n/9 \Configure{@HEAD}{\HCode{<meta name="author" content="}\@a
+uthor\HCode{" />\Hnewline}} 
+ []
+
+[15]
+Overfull \hbox (7.79742pt too wide) in paragraph at lines 45--45
+ [][]\OT1/cmtt/m/n/9 \newcommand{\title}[1][]{{\protected@xdef\@pretitle{#1}}\p
+rotected@xdef\@title} 
+ []
+
+
+Overfull \hbox (7.79742pt too wide) in paragraph at lines 45--45
+ [][]\OT1/cmtt/m/n/9 %\renewcommand{\thesection}{\arabic{titlenumber}} %% Makes
+ section numbers work 
+ []
+
+
+Overfull \hbox (187.34534pt too wide) in paragraph at lines 102--102
+ [][]  \OT1/cmtt/m/n/9 {\flushleft\LARGE\bfseries {\ifnumbers\thetitlenumber\fi
+}{\ifnumbers\hspace{1em}\else\hspace{0em}\fi}\@title \par } 
+ []
+
+
+Overfull \hbox (173.1705pt too wide) in paragraph at lines 102--102
+ [][]  \OT1/cmtt/m/n/9 \ifnumbers\addcontentsline{toc}{section}{\thetitlenumber
+~\@title}\else\addcontentsline{toc}{section}{\@title}\fi 
+ []
+
+
+Overfull \hbox (244.04468pt too wide) in paragraph at lines 102--102
+ [][]  \OT1/cmtt/m/n/9 \vskip .6em\noindent\textit\theabstract\setcounter{probl
+em}{0}\setcounter{section}{0}\setcounter{subsection}{0}\par\vspace{2em} 
+ []
+
+
+Overfull \hbox (45.59698pt too wide) in paragraph at lines 102--102
+ [][]  \OT1/cmtt/m/n/9 \ifnooutcomes\else\let\thefootnote\relax\footnote{Learni
+ng outcomes: \theoutcomes}\fi 
+ []
+
+
+Overfull \hbox (40.87204pt too wide) in paragraph at lines 102--102
+ [][]                    \OT1/cmtt/m/n/9 {\flushleft\small\sffamily\bfseries\@p
+retitle\par\vspace{-1.5em}}% 
+ []
+
+
+Overfull \hbox (59.77182pt too wide) in paragraph at lines 102--102
+ [][]                    \OT1/cmtt/m/n/9 {\flushleft\LARGE\sffamily\bfseries\th
+etitlenumber\quad\@title \par }% 
+ []
+
+
+Overfull \hbox (196.79523pt too wide) in paragraph at lines 102--102
+ [][]                    \OT1/cmtt/m/n/9 {\vskip .6em\noindent\textit\theabstra
+ct\setcounter{problem}{0}\setcounter{sectiontitlenumber}{0}}% 
+ []
+
+
+Overfull \hbox (125.92105pt too wide) in paragraph at lines 102--102
+ [][]                    \OT1/cmtt/m/n/9 \phantomsection\addcontentsline{toc}{s
+ection}{\textbf{\thetitlenumber\quad\@title}}% 
+ []
+
+[16]
+Overfull \hbox (88.12149pt too wide) in paragraph at lines 102--102
+ [][]    \OT1/cmtt/m/n/9 {\flushleft\Large\sffamily\bfseries\thetitlenumber.\th
+esectiontitlenumber\quad\@title \par}% 
+ []
+
+
+Overfull \hbox (130.646pt too wide) in paragraph at lines 102--102
+ [][]    \OT1/cmtt/m/n/9 \phantomsection\addcontentsline{toc}{subsection}{\thet
+itlenumber.\thesectiontitlenumber\quad\@title}% 
+ []
+
+) (./src/outcomes.dtx
+Overfull \hbox (21.97226pt too wide) in paragraph at lines 34--34
+ [][]  \OT1/cmtt/m/n/9 \Configure{@HEAD}{\HCode{<meta name="learning-outcome" c
+ontent="#1"/>\Hnewline}} 
+ []
+
+) (./src/labels.dtx [17]) (./src/image.dtx
+Overfull \hbox (102.29633pt too wide) in paragraph at lines 31--31
+ [][]  \OT1/cmtt/m/n/9 \HCode{<div class="image-environment" role="img" aria-la
+belledby="image-alt-\arabic{imagealt}">}% 
+ []
+
+
+Overfull \hbox (149.54578pt too wide) in paragraph at lines 31--31
+ [][]\OT1/cmtt/m/n/9 \renewcommand{\alt}[1]{\HCode{<div style="display: none;" 
+id="image-alt-\arabic{imagealt}">}#1\HCode{</div>}} 
+ []
+
+[18]) (./src/tikzexport.dtx
+Overfull \hbox (12.52237pt too wide) in paragraph at lines 16--16
+ [][]\OT1/cmtt/m/n/9 \RequirePackage[pdfpagelabels,colorlinks=true,allcolors=bl
+ue!30!black]{hyperref} 
+ []
+
+
+Overfull \hbox (7.79742pt too wide) in paragraph at lines 52--52
+ [][]        \OT1/cmtt/m/n/9 -jobname "\image" "\\PassOptionsToClass{tikzexport
+}{ximera}\texsource"; 
+ []
+
+) (./src/xkcd.dtx
+Overfull \hbox (144.82083pt too wide) in paragraph at lines 13--13
+ [][]\OT1/cmtt/m/n/9 \renewcommand{\xkcd}[1]{\ifvmode \IgnorePar\fi \EndP\HCode
+{<img src="https://imgs.xkcd.com/comics/#1.png">}} 
+ []
+
+) (./src/interactives/include.dtx [19]
+Overfull \hbox (1018.93567pt too wide) in paragraph at lines 20--20
+ [][]\OT1/cmtt/m/n/9 \renewcommand{\includeinteractive}[2][]{\stepcounter{ident
+ification}\ifvmode \IgnorePar\fi \EndP\HCode{<div id="interactive\arabic{identi
+fication}" class="interactive"> </div>}\HCode{<script src="#2" data-argument="#
+1" data-target="interactive\arabic{identification}"> </script>}\IgnoreIndent} 
+ []
+
+) (./src/interactives/google.dtx
+Overfull \hbox (470.84204pt too wide) in paragraph at lines 25--25
+ [][]    \OT1/cmtt/m/n/9 {\HCode{<iframe width="#2px" height="#3px" src="https:
+//docs.google.com/spreadsheets/d/#1/htmlembed?widget=true">This browser does no
+t support embedded elements.</iframe>}}% 
+ []
+
+
+Overfull \hbox (617.31534pt too wide) in paragraph at lines 25--25
+ [][]       \OT1/cmtt/m/n/9 {\HCode{<iframe width="#2px" height="#3px" src="htt
+ps://docs.google.com/spreadsheets/d/#1/htmlembed?single=true&amp;gid=#4&amp;wid
+get=false">This browser does not support embedded elements.</iframe>}}% 
+ []
+
+
+Overfull \hbox (678.73962pt too wide) in paragraph at lines 25--25
+ [][]       \OT1/cmtt/m/n/9 {\HCode{<iframe width="#2px" height="#3px" src="htt
+ps://docs.google.com/spreadsheets/d/#1/htmlembed?single=true&amp;gid=#4&amp;ran
+ge=#5&amp;widget=false">This browser does not support embedded elements.</ifram
+e>}}% 
+ []
+
+) (./src/interactives/geogebra.dtx
+Overfull \hbox (3.07248pt too wide) in paragraph at lines 9--9
+ [][]\OT1/cmtt/m/n/9 \newcommand{\geogebra}[3]{Geogebra link: \url{https://tube
+.geogebra.org/m/#1}} 
+ []
+
+
+Overfull \hbox (50.32193pt too wide) in paragraph at lines 27--27
+ [][]\OT1/cmtt/m/n/9 \setkeys{geogebra}{rc=false,sdz=false,smb=false,stb=false,
+stbh=false,ld=false,sri=false} 
+ []
+
+
+Overfull \hbox (976.41116pt too wide) in paragraph at lines 27--27
+ [][]  \OT1/cmtt/m/n/9 \HCode{<iframe scrolling="no" src="https://tube.geogebra
+.org/material/iframe/id/#2/width/#3/height/#4/border/888888/rc/\geo@rc/ai/false
+/sdz/\geo@sdz/smb/\geo@smb/stb/\geo@stb/stbh/\geo@stbh/ld/\geo@ld/sri/\geo@sri/
+at/auto" width="#3px" height="#4px" style="border:0px;"> </iframe>}} 
+ []
+
+[20]) (./src/interactives/desmos.dtx
+Overfull \hbox (12.52237pt too wide) in paragraph at lines 7--7
+ [][]\OT1/cmtt/m/n/9 \newcommand{\desmos}[3]{Desmos link: \url{https://www.desm
+os.com/calculator/#1}} 
+ []
+
+
+Overfull \hbox (655.1149pt too wide) in paragraph at lines 12--12
+ [][]\OT1/cmtt/m/n/9 \renewcommand{\desmos}[3]{\HCode{<iframe src="https://www.
+desmos.com/calculator/#1" width="100\%" height="#3px" style="border: 1px solid 
+#ccc" frameborder=0>This browser does not support embedded elements.</iframe>}}
+ 
+ []
+
+) (./src/interactives/graph.dtx
+Overfull \hbox (55.04688pt too wide) in paragraph at lines 13--13
+ [][]\OT1/cmtt/m/n/9 \renewcommand{\graph}[2][]{\HCode{<div class="graph" data-
+options="#1">}#2\HCode{</div>}} 
+ []
+
+) (./src/interactives/video.dtx
+Overfull \hbox (12.52237pt too wide) in paragraph at lines 7--7
+ [][]\OT1/cmtt/m/n/9 \newcommand{\youtube}[1]{YouTube link: \url{https://www.yo
+utube.com/watch?v=#1}} 
+ []
+
+
+Overfull \hbox (215.695pt too wide) in paragraph at lines 12--12
+ [][]\OT1/cmtt/m/n/9 \renewcommand{\youtube}[1]{\ifvmode \IgnorePar\fi \EndP\HC
+ode{<div class="video youtube-player" data-youtube="#1">_</div>}} 
+ []
+
+
+Overfull \hbox (187.34534pt too wide) in paragraph at lines 21--21
+ [][]\OT1/cmtt/m/n/9 \ifvmode \IgnorePar\fi \EndP\HCode{<a class="youtube" href
+="https://www.youtube.com/watch?v=#1">#1</a>}\IgnoreIndent% 
+ []
+
+) (./src/interactives/javascript.dtx
+Overfull \hbox (168.44556pt too wide) in paragraph at lines 9--9
+ [][]\OT1/cmtt/m/n/9 \DefineVerbatimEnvironment{javascript}{Verbatim}{numbers=l
+eft,frame=lines,label=JavaScript,labelposition=topline} 
+ []
+
+
+Overfull \hbox (711.81424pt too wide) in paragraph at lines 17--17
+ [][]\OT1/cmtt/m/n/9 \ScriptEnv{javascript}{\stepcounter{identification}\ifvmod
+e \IgnorePar\fi \EndP\HCode{<div class="javascript" id="javascript\arabic{ident
+ification}"><script type="text/javascript">}\HtmlParOff}{\HtmlParOn\HCode{</scr
+ipt></div>}} 
+ []
+
+
+Overfull \hbox (844.1127pt too wide) in paragraph at lines 30--30
+ [][]\OT1/cmtt/m/n/9 \def\js#1{\stepcounter{identification}\HCode{<span class="
+inline-javascript" id="javascript\arabic{identification}"><script type="text/ja
+vascript"> function javascript\arabic{identification}() }\{\HCode{ return \deto
+kenize{#1}; }\}\HCode{</script></span>}} 
+ []
+
+) (./src/interactives/sagemath.dtx [21]
+Overfull \hbox (130.646pt too wide) in paragraph at lines 14--14
+ [][]\OT1/cmtt/m/n/9 \DefineVerbatimEnvironment{sageCell}{Verbatim}{numbers=lef
+t,frame=lines,label=SAGE,labelposition=topline} 
+ []
+
+
+Overfull \hbox (381.06808pt too wide) in paragraph at lines 20--20
+ [][]\OT1/cmtt/m/n/9 \ScriptEnv{sageCell}{\ifvmode \IgnorePar\fi \EndP\HCode{<d
+iv class="sage"><script type="text/x-sage">}\HtmlParOff}{\HtmlParOn\HCode{\Hnew
+line</script></div>}} 
+ []
+
+
+Overfull \hbox (173.1705pt too wide) in paragraph at lines 27--27
+ [][]\OT1/cmtt/m/n/9 \DefineVerbatimEnvironment{sageOutput}{Verbatim}{numbers=l
+eft,frame=lines,label=SAGE-Output,labelposition=topline} 
+ []
+
+
+Overfull \hbox (319.6438pt too wide) in paragraph at lines 34--34
+ [][]\OT1/cmtt/m/n/9 \ScriptEnv{sageOutput}{\ifvmode \IgnorePar\fi \EndP\HCode{
+<div class="sageOutput"><script type="text/x-sage">}}{\HCode{\Hnewline</script>
+</div>}} 
+ []
+
+
+Overfull \hbox (272.39435pt too wide) in paragraph at lines 43--43
+ [][]\OT1/cmtt/m/n/9 \ScriptEnv{sagesilent}{\ifvmode \IgnorePar\fi \EndP\HCode{
+<script type="text/sagemath">}\HtmlParOff}{\HtmlParOn\HCode{</script></div>}} 
+ []
+
+) (./src/answer.dtx
+Overfull \hbox (78.6716pt too wide) in paragraph at lines 13--13
+ [][]\OT1/cmtt/m/n/9 \newcommand{\recordvariable}[1]{\ifthenelse{\equal{#1}{}}{
+}{\immediate\write\idfile{var #1;}}} 
+ []
+
+
+Overfull \hbox (18.15544pt too wide) in paragraph at lines 38--40
+\OT1/cmr/m/n/10 Set de-fault val-ues for []\OT1/cmtt/m/n/10 \answer \OT1/cmr/m/
+n/10 com-mand []\OT1/cmtt/m/n/10 key=value \OT1/cmr/m/n/10 pairs. De-fault val-
+ues are []\OT1/cmtt/m/n/10 given = false\OT1/cmr/m/n/10 . 
+ []
+
+[22]
+Overfull \hbox (45.59698pt too wide) in paragraph at lines 72--72
+ [][]\OT1/cmtt/m/n/9 \GenericError{\space\space\space\space}% Throw an error ba
+sed on... something? -- Jason 
+ []
+
+
+Overfull \hbox (69.22171pt too wide) in paragraph at lines 83--83
+ [][]\OT1/cmtt/m/n/9 \renewcommand{\answer}[2][false]{\HCode{<span class="answe
+r respondable">}#2\HCode{</span>}} 
+ []
+
+
+Overfull \hbox (796.86325pt too wide) in paragraph at lines 83--83
+ [][]\OT1/cmtt/m/n/9 \def\validator[#1]{\stepcounter{identification}\HCode{<div
+ class="validator" id="validator\arabic{identification}"><script type="text/jav
+ascript">function validator\arabic{identification}() }\{\HCode{ return \detoken
+ize{#1}; }\}\HCode{</script>}} 
+ []
+
+) (./src/choice.dtx
+Overfull \hbox (3.07248pt too wide) in paragraph at lines 8--8
+ [][]\OT1/cmtt/m/n/9 % Jim: Originally this was \renewcommand{\theenumi}{$(\mat
+hrm{\alph{enumi}})$} 
+ []
+
+[23]
+Overfull \hbox (78.6716pt too wide) in paragraph at lines 106--106
+ [][]    \OT1/cmtt/m/n/9 \else% otherwise place a checkmark when you select the
+ "correct choice"... maybe? -- Jason 
+ []
+
+
+Overfull \hbox (149.54578pt too wide) in paragraph at lines 106--106
+ [][]\OT1/cmtt/m/n/9 %Define an expandable version of choice Not really meant t
+o be used outside this package (used in wordChoice) 
+ []
+
+
+Overfull \hbox (40.87204pt too wide) in paragraph at lines 106--106
+ [][]\OT1/cmtt/m/n/9 \ifhandout\else\checkmark\ignorespaces\setkeys{choice}{cor
+rect=false}\ignorespaces\fi% 
+ []
+
+[24]
+Overfull \hbox (31.42215pt too wide) in paragraph at lines 163--163
+ [][]\OT1/cmtt/m/n/9 }% Note this means that \item has to be the first line aft
+er \begin{multipleChoice}. 
+ []
+
+
+Overfull \hbox (158.99567pt too wide) in paragraph at lines 163--163
+ [][]\OT1/cmtt/m/n/9 \ifthenelse{\equal{\mc@id}{}}% Test if \mc@ID is empty. Th
+is is not a robust check, is this dangerous? -- Jason 
+ []
+
+
+Overfull \hbox (485.01688pt too wide) in paragraph at lines 163--163
+ [][]\OT1/cmtt/m/n/9 \begin{enumerate*}[before={\upshape{(\hspace{-.25em}}}, it
+emjoin={/\hspace{-.25em}}, after={\upshape{)}}, label={}]% Weird formatting cho
+ices, as stated displays "/" between items. 
+ []
+
+[25]
+Overfull \hbox (78.6716pt too wide) in paragraph at lines 181--181
+ [][]\OT1/cmtt/m/n/9 \stepcounter{identification}\ifvmode \IgnorePar\fi \EndP\H
+Code{<div class="multiple-choice" }% 
+ []
+
+
+Overfull \hbox (59.77182pt too wide) in paragraph at lines 207--207
+ [][]\OT1/cmtt/m/n/9 \ifwordchoicegiven% If wordchoice option is on, we need to
+ juggle around some definitions. 
+ []
+
+
+Overfull \hbox (125.92105pt too wide) in paragraph at lines 207--207
+ [][]\OT1/cmtt/m/n/9 \let\choice\choicetemp% Now that choicetmp has been manipu
+lated to what we want, replace choice with it. 
+ []
+
+
+Overfull \hbox (475.56699pt too wide) in paragraph at lines 214--214
+ [][]\OT1/cmtt/m/n/9 \ConfigureEnv{multipleChoice@}{\stepcounter{identification
+}\IgnorePar\HCode{<span class="word-choice" id="word-choice\arabic{identificati
+on}">}}{\HCode{</span>}\IgnoreIndent}{}{} 
+ []
+
+
+Overfull \hbox (135.37094pt too wide) in paragraph at lines 224--224
+ [][]\OT1/cmtt/m/n/9 {\begin{trivlist}\item[\hskip \labelsep\small\bfseries Sel
+ect All Correct Answers:]\hfil\begin{enumerate}} 
+ []
+
+
+Overfull \hbox (499.19171pt too wide) in paragraph at lines 240--240
+ [][]\OT1/cmtt/m/n/9 \ConfigureEnv{selectAll}{\stepcounter{identification}\ifvm
+ode \IgnorePar\fi \EndP\HCode{<div class="select-all" id="problem\arabic{identi
+fication}">}}{\HCode{</div>}\IgnoreIndent}{}{} 
+ []
+
+) (./src/freeresponse.dtx [26]
+Overfull \hbox (17.24731pt too wide) in paragraph at lines 51--51
+ [][]\OT1/cmtt/m/n/9 \setboolean{given}{true} %% could be replaced by a key=val
+ue pair later if needed 
+ []
+
+
+Overfull \hbox (154.27072pt too wide) in paragraph at lines 51--51
+ [][]  \OT1/cmtt/m/n/9 \ifthenelse{\boolean{#1}}%% Could probably change this w
+ith just putting the (given) in the boolean?-- Jason 
+ []
+
+
+Overfull \hbox (532.26633pt too wide) in paragraph at lines 60--60
+ [][]\OT1/cmtt/m/n/9 \ConfigureEnv{freeResponse}{\stepcounter{identification}\i
+fvmode \IgnorePar\fi \EndP\HCode{<div class="free-response" id="problem\arabic{
+identification}">}}{\HCode{</div>}\IgnoreIndent}{}{}% 
+ []
+
+) (./src/feedback.dtx [27]
+Overfull \hbox (135.37094pt too wide) in paragraph at lines 22--22
+ [][]\OT1/cmtt/m/n/9 \def\PH@Command{#1}% Use PH@Command to hold the content an
+d be a target for "\expandafter" to expand once. 
+ []
+
+
+Overfull \hbox (111.74622pt too wide) in paragraph at lines 22--22
+ [][]\OT1/cmtt/m/n/9 \mbox{\texttt{\detokenize\expandafter{\PH@Command}}}% Now 
+expand PH@Command once and then detokenize. 
+ []
+
+
+Overfull \hbox (135.37094pt too wide) in paragraph at lines 52--52
+ [][]\OT1/cmtt/m/n/9 \def\PH@Command{#1}% Use PH@Command to hold the content an
+d be a target for "\expandafter" to expand once. 
+ []
+
+
+Overfull \hbox (3.07248pt too wide) in paragraph at lines 52--52
+ [][]\OT1/cmtt/m/n/9 \begin{trivlist}% Begin the trivlist to use formating of t
+he "Feedback" label. 
+ []
+
+
+Overfull \hbox (144.82083pt too wide) in paragraph at lines 52--52
+ [][]\OT1/cmtt/m/n/9 \item[\hskip \labelsep\small\slshape\bfseries Feedback% Fo
+rmat the "Feedback" label. Don't forget the space. 
+ []
+
+
+Overfull \hbox (158.99567pt too wide) in paragraph at lines 52--52
+ [][]\OT1/cmtt/m/n/9 (\texttt{\detokenize\expandafter{\PH@Command}}):% Format (
+and detokenize) the condition for feedback to trigger 
+ []
+
+
+Overfull \hbox (12.52237pt too wide) in paragraph at lines 52--52
+ [][]\OT1/cmtt/m/n/9 \hspace{2ex}]\small\slshape% Insert some space before the 
+actual feedback given. 
+ []
+
+
+Overfull \hbox (229.86984pt too wide) in paragraph at lines 66--66
+ [][]\OT1/cmtt/m/n/9 \ifthenelse{\equal{#1}{attempt}}{\HCode{<div class="feedba
+ck" data-feedback="attempt" id="feedback\arabic{identification}">}}% 
+ []
+
+
+Overfull \hbox (234.59479pt too wide) in paragraph at lines 66--66
+ [][]\OT1/cmtt/m/n/9 {\ifthenelse{\equal{#1}{correct}}{\HCode{<div class="feedb
+ack" data-feedback="correct" id="feedback\arabic{identification}">}}% 
+ []
+
+
+Overfull \hbox (683.46457pt too wide) in paragraph at lines 66--66
+ [][]\OT1/cmtt/m/n/9 {\HCode{<div class="feedback" data-feedback="script" id="f
+eedback\arabic{identification}"><script type="text/javascript">function feedbac
+k\arabic{identification}() }\{\HCode{ return \detokenize{#1}; }\}\HCode{</scrip
+t>}}}} 
+ []
+
+) (./src/jax.dtx [28]
+Overfull \hbox (111.74622pt too wide) in paragraph at lines 39--39
+ [][]\OT1/cmtt/m/n/9 \immediate\write\myfile{\unexpanded{\newcommand}{\unexpand
+ed{#1}}[\unexpanded{#2}]{\unexpanded{#3}}}% 
+ []
+
+
+Overfull \hbox (409.41776pt too wide) in paragraph at lines 39--39
+ [][]\OT1/cmtt/m/n/9 \renewcommand{\DeclareMathOperator}[2]{\@OldDeclareMathOpe
+rator{#1}{#2}\immediate\write\myfile{\unexpanded{\DeclareMathOperator}{\unexpan
+ded{#1}}{\unexpanded{#2}}}} 
+ []
+
+
+Overfull \hbox (135.37094pt too wide) in paragraph at lines 72--72
+ [][]\OT1/cmtt/m/n/9 \immediate\write18{sed -i "s/\string#\string#\string\\([0-
+9]\string\\)/\string#\string\\1/g" \jobname.jax} 
+ []
+
+
+Overfull \hbox (55.04688pt too wide) in paragraph at lines 72--72
+ [][]\OT1/cmtt/m/n/9 % Include the mathjax newcommands in a math/tex script rig
+ht at the beginning of the body 
+ []
+
+[29]
+Overfull \hbox (55.02759pt too wide) in paragraph at lines 94--95
+\OT1/cmr/m/n/10 Need to turn off html-par too, as ex-pained in http://tex.stack
+exchange.com/questions/204930/vertical-
+ []
+
+
+Overfull \hbox (447.21732pt too wide) in paragraph at lines 100--100
+ [][]\OT1/cmtt/m/n/9 \ScriptEnv{#1}{\ifvmode \IgnorePar\fi \EndP\HCode{<script 
+type="math/tex; mode=display"> \string\begin{#1}\Hnewline}\HtmlParOff}{\HtmlPar
+On\HCode{\string\end{#1}</script>}} 
+ []
+
+
+Overfull \hbox (560.616pt too wide) in paragraph at lines 115--115
+ [][]\OT1/cmtt/m/n/9 \ScriptEnv{matlabEquation}{\ifvmode \IgnorePar\fi \EndP\HC
+ode{<script type="math/tex; mode=display"> \string\begin{equation}\Hnewline}\Ht
+mlParOff}{\HtmlParOn\HCode{\string\end{equation}</script>}} 
+ []
+
+) (./src/html.dtx) (./src/suppress.dtx [30]) (./src/ending.dtx)
+(./src/optionsxourse.dtx) (./src/activity.dtx [31] [32]
+Overfull \hbox (220.41995pt too wide) in paragraph at lines 103--103
+ [][]\OT1/cmtt/m/n/9 \ifvmode \IgnorePar\fi \EndP\HCode{<a class="activity card
+ \activitystyle" href="#2" data-options="#1">#2</a>}\IgnoreIndent% 
+ []
+
+
+Overfull \hbox (26.6972pt too wide) in paragraph at lines 134--134
+ [][]\OT1/cmtt/m/n/9 \newcommand{\practice}[2][]{\texttt{\detokenize{#2}}%% giv
+es file name for practice 
+ []
+
+
+Overfull \hbox (7.79742pt too wide) in paragraph at lines 155--155
+ [][]  \OT1/cmtt/m/n/9 \HCode{<a class="activity card practice" href="#2" data-
+options="#1">#2</a>}% 
+ []
+
+) (./src/sectioning.dtx [33]) (./src/graded.dtx
+Overfull \hbox (45.59698pt too wide) in paragraph at lines 20--20
+ [][]\OT1/cmtt/m/n/9 \ifvmode \IgnorePar\fi \EndP\HCode{<div class="graded" dat
+a-weight="#1">}\IgnoreIndent% 
+ []
+
+[34]) (./src/logo.dtx)
+Package atveryend Info: Empty hook `BeforeClearDocument' on input line 275.
+ [35]
+Package atveryend Info: Executing hook `AfterLastShipout' on input line 275.
+ (./ximera.aux)
+Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 275.
+Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 275.
+Package rerunfilecheck Info: File `ximera.out' has not changed.
+(rerunfilecheck)             Checksum: FF37A3ECCD504FDDCB20A15FCD13C2F0;4706.
+Package rerunfilecheck Info: File `ximera.hd' has not changed.
+(rerunfilecheck)             Checksum: D41D8CD98F00B204E9800998ECF8427E;0.
+Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 275.
+ ) 
+Here is how much of TeX's memory you used:
+ 8275 strings out of 493029
+ 106721 string characters out of 6136233
+ 191453 words of memory out of 5000000
+ 11528 multiletter control sequences out of 15000+600000
+ 12228 words of font info for 43 fonts, out of 8000000 for 9000
+ 1141 hyphenation exceptions out of 8191
+ 35i,6n,32p,439b,558s stack positions out of 5000i,500n,10000p,200000b,80000s
+</usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx10.pfb></us
+r/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx12.pfb></usr/shar
+e/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx9.pfb></usr/share/texli
+ve/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi9.pfb></usr/share/texlive/texm
+f-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb></usr/share/texlive/texmf-dist/
+fonts/type1/public/amsfonts/cm/cmr12.pfb></usr/share/texlive/texmf-dist/fonts/t
+ype1/public/amsfonts/cm/cmr17.pfb></usr/share/texlive/texmf-dist/fonts/type1/pu
+blic/amsfonts/cm/cmr7.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/ams
+fonts/cm/cmr8.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm
+/cmr9.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmss10.
+pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmss17.pfb></
+usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmss9.pfb></usr/sha
+re/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb></usr/share/tex
+live/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy6.pfb></usr/share/texlive/te
+xmf-dist/fonts/type1/public/amsfonts/cm/cmsy9.pfb></usr/share/texlive/texmf-dis
+t/fonts/type1/public/amsfonts/cm/cmti10.pfb></usr/share/texlive/texmf-dist/font
+s/type1/public/amsfonts/cm/cmtt10.pfb></usr/share/texlive/texmf-dist/fonts/type
+1/public/amsfonts/cm/cmtt9.pfb>
+Output written on ximera.pdf (35 pages, 299273 bytes).
+PDF statistics:
+ 516 PDF objects out of 1000 (max. 8388607)
+ 455 compressed objects within 5 object streams
+ 100 named destinations out of 1000 (max. 500000)
+ 513 words of extra memory for PDF output out of 10000 (max. 10000000)
+

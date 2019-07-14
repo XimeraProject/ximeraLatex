@@ -1,0 +1,7 @@
+sudo:       required
+language:   generic
+services:   docker
+
+script:
+- docker pull strauman/tex:tl-small
+- docker run -it --mount src=$TRAVIS_BUILD_DIR/,target=/repo,type=bind strauman/tex:tl-small /repo/.travis/build.sh
