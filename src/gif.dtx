@@ -1,0 +1,23 @@
+% \subsubsection{Gifs}
+% \DescribeMacro{gif}{Currently LaTeX does not handle gifs well.
+% This macro loads the gif on the web and currently merely prints a line
+% that says what the gif would be when building the pdf. Eventually we can
+% try to use a package like animate or a conversion tool to either give a
+% thumbnail or a `slideshow' version of the gif in the pdf version.
+% Unsurprisingly there are a number of technical problems with building pdfs
+% with animations.}
+%    \begin{macrocode}
+%<*classXimera>
+\newcommand{\inputGif}[1]{%
+    The gif "#1" would be inserted here when publishing online.
+    }
+%</classXimera>
+%    \end{macrocode}
+% 
+% When we publish to the internet we will use HCode to insert the gif directly as a file,
+% since pdflatex doesn't behave well with gifs.
+%    \begin{macrocode}
+%<*htXimera>
+\renewcommand{\inputGif}[1]{\HCode{<div> <IMG SRC=}#1.gif\HCode{> </div>}}
+%</htXimera>
+%    \end{macrocode}

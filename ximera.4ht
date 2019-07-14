@@ -322,6 +322,10 @@
         \HCode{</span></span>}}
     
 
+
+%% Make gifs work.
+\renewcommand{\inputGif}[1]{\HCode{<div> <IMG SRC=}#1.gif\HCode{> </div>}}
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \renewenvironment{sagesilent}{\NoFonts}{\EndNoFonts}
 \ScriptEnv{sagesilent}{\ifvmode \IgnorePar\fi \EndP\HCode{<script type="text/sagemath">}\HtmlParOff}{\HtmlParOn\HCode{</script></div>}}

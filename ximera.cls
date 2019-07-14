@@ -1047,10 +1047,10 @@ Interactive
 
 \fi
 \newenvironment{ungraded}{}{}
-
-\newcommand{\inputGif}[1]{%
-    The gif ``#1" would be inserted here when publishing online.
-    }
+%
+%\newcommand{\inputGif}[1]{%
+%    The gif ``#1" would be inserted here when publishing online.
+%    }
 
 %% 
 %% Copyright (C) 2018 by Bart Snapp <bart.snapp@gmail.com> and Jim Fowler <kisonecat@gmail.com>
