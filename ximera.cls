@@ -38,6 +38,7 @@
 %% src/feedback.dtx  (with options: `classXimera')
 %% src/freeresponse.dtx  (with options: `classXimera')
 %% src/verbatim.dtx  (with options: `classXimera')
+%% src/footnote.dtx  (with options: `classXimera')
 %% src/dialogue.dtx  (with options: `classXimera')
 %% src/instructornotes.dtx  (with options: `classXimera')
 %% src/xkcd.dtx  (with options: `classXimera')
@@ -139,10 +140,6 @@
 \RequirePackage{titling}
 \RequirePackage{url}
 \RequirePackage[table]{xcolor}
-\RequirePackage{tikz}
-\RequirePackage{pgfplots}
-\usepgfplotslibrary{groupplots}
-\usetikzlibrary{calc}
 \RequirePackage{fancyvrb}
 \RequirePackage{ifpdf}
 \ifpdf
@@ -150,6 +147,10 @@
   \def\pgfsysdriver{pgfsys-ximera.def}
   \webtrue
 \fi
+\RequirePackage{tikz}
+\RequirePackage{pgfplots}
+\usepgfplotslibrary{groupplots}
+\usetikzlibrary{calc}
 \RequirePackage{forloop}
 \RequirePackage{environ}% Included to allow saving of environment contents. This does *not* play well with various verbatem environments however and would be great to find a way around utilizing this package. One option is the "Suppress" command included below.
 \RequirePackage{amssymb}% Included to have access to math typeset.
@@ -224,6 +225,7 @@
 \evensidemargin 62pt
 \textwidth 345pt
 \headheight 14pt
+\RequirePackage{geometry}
 
 \newcommand{\license}{\excludecomment}
 
@@ -504,12 +506,21 @@
 \renewcommand{\thetitlenumber}{\arabic{titlenumber}}
 \setcounter{titlenumber}{0}
 
-\newpagestyle{main}{
-\sethead[\textsl{\ifnumbers\thetitlenumber\hspace{1em}\fi\@title}][][] % even
-{}{}{\textsl{\ifnumbers\thetitlenumber\hspace{1em}\fi\@title}} % odd
-\setfoot[\thepage][][] % even
-{}{}{\thepage} % odd
-}
+\ifweb % webpages don't need headers and footers
+  \newpagestyle{main}{
+    \sethead[][][] % even
+    {}{}{} % odd
+    \setfoot[][][] % even
+    {}{}{} % odd
+  }
+\else
+  \newpagestyle{main}{
+    \sethead[\textsl{\ifnumbers\thetitlenumber\hspace{1em}\fi\@title}][][] % even
+    {}{}{\textsl{\ifnumbers\thetitlenumber\hspace{1em}\fi\@title}} % odd
+    \setfoot[\thepage][][] % even
+    {}{}{\thepage} % odd
+  }
+\fi
 \pagestyle{main}
 \renewcommand\maketitle{%
   \addtocounter{titlenumber}{1}%
@@ -842,6 +853,10 @@ Interactive
 \DefineVerbatimEnvironment{code}{Verbatim}{numbers=left,frame=lines,label=Code,labelposition=topline}
 \DefineVerbatimEnvironment{python}{Verbatim}{numbers=left,frame=lines,label=Python,labelposition=topline}
 \DefineVerbatimEnvironment{javascriptCode}{Verbatim}{numbers=left,frame=lines,label=JavaScript,labelposition=topline}
+\ifweb
+  \renewcommand{\footnote}[2][]{\relax}
+\else
+\fi
 \newenvironment{dialogue}{%
    \renewcommand\descriptionlabel[1]{\hspace{\labelsep}\textbf{##1:}}
    \begin{description}%

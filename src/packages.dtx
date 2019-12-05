@@ -17,10 +17,6 @@
 \RequirePackage{titling}
 \RequirePackage{url}
 \RequirePackage[table]{xcolor}
-\RequirePackage{tikz}
-\RequirePackage{pgfplots}
-\usepgfplotslibrary{groupplots}
-\usetikzlibrary{calc}
 \RequirePackage{fancyvrb}
 %    \end{macrocode}
 % Load |ifpdf| in order to determine if we should automatically switch
@@ -32,6 +28,10 @@
   \def\pgfsysdriver{pgfsys-ximera.def}
   \webtrue
 \fi
+\RequirePackage{tikz}
+\RequirePackage{pgfplots}
+\usepgfplotslibrary{groupplots}
+\usetikzlibrary{calc}
 %    \end{macrocode}
 % Load |forloop| for the problem environment dynamic naming and building.
 %    \begin{macrocode}

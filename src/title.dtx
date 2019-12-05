@@ -35,12 +35,21 @@
 %\renewcommand{\thesection}{\arabic{titlenumber}} %% Makes section numbers work
 \setcounter{titlenumber}{0}
 
-\newpagestyle{main}{
-\sethead[\textsl{\ifnumbers\thetitlenumber\hspace{1em}\fi\@title}][][] % even
-{}{}{\textsl{\ifnumbers\thetitlenumber\hspace{1em}\fi\@title}} % odd
-\setfoot[\thepage][][] % even
-{}{}{\thepage} % odd
-}
+\ifweb % webpages don't need headers and footers
+  \newpagestyle{main}{
+    \sethead[][][] % even
+    {}{}{} % odd
+    \setfoot[][][] % even
+    {}{}{} % odd
+  }
+\else
+  \newpagestyle{main}{
+    \sethead[\textsl{\ifnumbers\thetitlenumber\hspace{1em}\fi\@title}][][] % even
+    {}{}{\textsl{\ifnumbers\thetitlenumber\hspace{1em}\fi\@title}} % odd
+    \setfoot[\thepage][][] % even
+    {}{}{\thepage} % odd
+  }
+\fi
 \pagestyle{main}
 %    \end{macrocode}
 % \DescribeMacro{\maketitle}{In a \textsf{ximera} document, redefine
