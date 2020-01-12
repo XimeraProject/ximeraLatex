@@ -11,8 +11,9 @@
 % should include a comment as to where they are being utilized. This
 % will help keep this list from being redundant and/or outdated.
 %    \begin{macrocode}
-\RequirePackage[inline]{enumitem}
-\RequirePackage[pagestyles]{titlesec} 
+\RequirePackage{everyhook}
+\RequirePackage{enumitem}
+\RequirePackage{titlesec} 
 \RequirePackage{titletoc} 
 \RequirePackage{titling}
 \RequirePackage{url}
@@ -60,6 +61,14 @@
 \RequirePackage{nameref}
 \ifpdf
   \RequirePackage{epstopdf}
+\fi
+%</classXimera>
+%    \end{macrocode}
+% On the web we are using Bakoma fonts, so we want to encode correctly.
+%    \begin{macrocode}
+%<*classXimera>
+\ifweb
+  \usepackage[OT1]{fontenc}
 \fi
 %</classXimera>
 %    \end{macrocode}

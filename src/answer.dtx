@@ -1,16 +1,6 @@
 % \subsubsection{Answers}
-% \DescribeMacro{\answer}{A math answer}
-%    \begin{macrocode}
 %<*classXimera>
-
-\ifdefined\HCode
-\newcommand{\recordvariable}[1]{}
-\else
-\newwrite\idfile
-\immediate\openout\idfile=\jobname.ids
-\newcommand{\recordvariable}[1]{\ifthenelse{\equal{#1}{}}{}{\immediate\write\idfile{var #1;}}}
-\fi
-%    \end{macrocode}
+% \DescribeMacro{\answer}{A math answer}
 % Determines if answer is shown in handout mode.  when |given=true|,
 % show answer in handout mode, show answer in ``given box'' outside
 % handout mode.  When |given=false|, do not show answer in handout
@@ -42,6 +32,72 @@
 %    \end{macrocode}
 % Basic code for |\answer|.
 %    \begin{macrocode}
+\ifweb
+\def\answer{%
+  \begingroup
+  \catcode`^=12
+  \catcode`_=12\relax
+  \answerbox
+}
+\newcommand{\answerbox}[2][]{%
+  \renewcommand{\sqrt}[1]{\string \sqrt\{##1\}}
+  \renewcommand{\frac}[2]{((##1)/(##2))}
+  \renewcommand{\log}{\string\log}
+  \renewcommand{\ln}{\string\ln}
+  \renewcommand{\sin}{\string\sin}
+  \renewcommand{\cos}{\string\cos}
+  \renewcommand{\tan}{\string\tan}
+  \renewcommand{\arcsin}{\string\arcsin}
+  \renewcommand{\arccos}{\string\arccos}
+  \renewcommand{\arctan}{\string\arctan}
+  \renewcommand{\infty}{\string\infty}
+  \renewcommand{\Gamma}{\string\Gamma}
+  \renewcommand{\Delta}{\string\Delta}
+  \renewcommand{\Lambda}{\string\Lambda}
+  \renewcommand{\Phi}{\string\Phi}
+  \renewcommand{\Pi}{\string\Pi}
+  \renewcommand{\Psi}{\string\Psi}
+  \renewcommand{\Sigma}{\string\Sigma}
+  \renewcommand{\Theta}{\string\Theta}
+  \renewcommand{\Upsilon}{\string\Upsilon}
+  \renewcommand{\Xi}{\string\Xi}
+  \renewcommand{\Omega}{\string\Omega}
+  \renewcommand{\alpha}{\string\alpha}
+  \renewcommand{\beta}{\string\beta}
+  \renewcommand{\gamma}{\string\gamma}
+  \renewcommand{\delta}{\string\delta}
+  \renewcommand{\epsilon}{\string\epsilon}
+  \renewcommand{\zeta}{\string\zeta}
+  \renewcommand{\eta}{\string\eta}
+  \renewcommand{\theta}{\string\theta}
+  \renewcommand{\iota}{\string\iota}
+  \renewcommand{\kappa}{\string\kappa}
+  \renewcommand{\lambda}{\string\lambda}
+  \renewcommand{\mu}{\string\mu}
+  \renewcommand{\nu}{\string\nu}
+  \renewcommand{\xi}{\string\xi}
+  \renewcommand{\pi}{\string\pi}
+  \renewcommand{\rho}{\string\rho}
+  \renewcommand{\sigma}{\string\sigma}
+  \renewcommand{\tau}{\string\tau}
+  \renewcommand{\upsilon}{\string\upsilon}
+  \renewcommand{\phi}{\string\phi}
+  \renewcommand{\chi}{\string\chi}
+  \renewcommand{\psi}{\string\psi}
+  \renewcommand{\omega}{\string\omega}
+  \renewcommand{\digamma}{\string\digamma}
+  \renewcommand{\varepsilon}{\string\epsilon}
+  \renewcommand{\varkappa}{\string\kappa}
+  \renewcommand{\varphi}{\string\phi}
+  \renewcommand{\varpi}{\string\pi}
+  \renewcommand{\varrho}{\string\rho}
+  \renewcommand{\varsigma}{\string\sigma}
+  \renewcommand{\vartheta}{\string\theta}
+  %[#2]
+  \rule[-0.5em]{\widthof{#2}}{2.5em}
+  \endgroup
+}
+\else
 \newcommand{\answer}[2][]{%
 	\ifmmode%
 		\setkeys{answer}{#1}%
@@ -67,17 +123,7 @@
 		{See https://github.com/ximeraProject/ximeraLatex for explanation.}
 		{Need to use either inline or display math.}%
 	\fi
-}
+      }
+\fi
 %</classXimera>
-%    \end{macrocode}
-% On the HTML side, |\answer| emits spans---but it is usually just
-% handled directly by MathJax.
-%    \begin{macrocode}
-%<*htXimera>
-\renewcommand{\answer}[2][false]{\HCode{<span class="answer respondable">}#2\HCode{</span>}}
-
-\def\validator[#1]{\stepcounter{identification}\HCode{<div class="validator" id="validator\arabic{identification}"><script type="text/javascript">function validator\arabic{identification}() }\{\HCode{ return \detokenize{#1}; }\}\HCode{</script>}}
-\def\endvalidator{\HCode{</div>}}
-
-%</htXimera>
 %    \end{macrocode}

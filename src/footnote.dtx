@@ -1,0 +1,11 @@
+% \subsubsection{Footnotes}
+% \DescribeMacro{\footnote}{Typeset a footnote.}
+% Footnotes don't make much sense on webpages, so for now we simply suppress them on the web.
+%    \begin{macrocode}
+%<*classXimera>
+\ifweb
+  \renewcommand{\footnote}[2][]{\relax}
+\else
+\fi
+%</classXimera>
+%    \end{macrocode}

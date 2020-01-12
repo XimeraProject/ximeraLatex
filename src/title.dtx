@@ -51,17 +51,22 @@
   }
 \fi
 \pagestyle{main}
+%</classXimera>
 %    \end{macrocode}
 % \DescribeMacro{\maketitle}{In a \textsf{ximera} document, redefine
 % |\maketitle| and put them in a table of contents.  The
 % |\phantomsection| is to fix the hrefs.}
 %    \begin{macrocode}
+%<*classXimera>
 \renewcommand\maketitle{%
   \addtocounter{titlenumber}{1}%
+  \ifweb\special{title \@title}\fi%  
+  \ifweb\special{html <h1>}\fi%
   {\flushleft\large\bfseries \@pretitle\par\vspace{-1em}}
   {\flushleft\LARGE\bfseries {\ifnumbers\thetitlenumber\fi}{\ifnumbers\hspace{1em}\else\hspace{0em}\fi}\@title \par }
   \phantomsection%
   \ifnumbers\addcontentsline{toc}{section}{\thetitlenumber~\@title}\else\addcontentsline{toc}{section}{\@title}\fi
+  \ifweb\special{html </h1>}\fi%
   \vskip .6em\noindent\textit\theabstract\setcounter{problem}{0}\setcounter{section}{0}\setcounter{subsection}{0}\par\vspace{2em}
   %%% Design Question: 
   % Would it make more sense to have author/outcomes in the header and reserve footer for footnotes? 
@@ -115,10 +120,4 @@
     \phantomsection\addcontentsline{toc}{subsection}{\thetitlenumber.\thesectiontitlenumber\hspace{1em}\@title}%
   }}
 %</classXimera>
-%    \end{macrocode}
-% Eliminate some formatting that we'll handle later with CSS
-%    \begin{macrocode}
-%<*htXimera>
-\renewcommand{\maketitle}{}
-%</htXimera>
 %    \end{macrocode}

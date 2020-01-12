@@ -95,16 +95,23 @@
 \DeclareOption{web}{\webtrue}
 %    \end{macrocode}
 % \end{macro}
+% \begin{macro}{xake}
+%    Older versions of Ximera used |\ifxake| as a synonym for |\ifweb|.
+%    \begin{macrocode}
+\newif\ifxake
+\xakefalse
+\ifweb\xaketrue\fi
+%    \end{macrocode}
+% \end{macro}
 
 %    \begin{macrocode}
-
 \DeclareOption*{%
   \PassOptionsToClass{\CurrentOption}{article}%
 }
 \ProcessOptions\relax
 \LoadClass{article}
 
-\ifdefined\HCode
+\ifweb
   \handoutfalse%
   \numbersfalse%
   \newpagefalse%

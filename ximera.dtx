@@ -37,7 +37,7 @@ Some text about the class: probably the same as the abstract.
 \endpreamble
 \postamble
 
-Copyright (C) 2018-2019 by Bart Snapp <bart.snapp@gmail.com> and Jim Fowler <kisonecat@gmail.com>
+Copyright (C) 2018-2020 by Bart Snapp <bart.snapp@gmail.com> and Jim Fowler <kisonecat@gmail.com>
 
 This work may be distributed and/or modified under the conditions of
 the LaTeX Project Public License (LPPL), either version 1.3c of this
@@ -72,6 +72,7 @@ Running "make install" installs the files in the local TeX tree.
     \from{src/options.dtx}{classXimera}
     \from{src/packages.dtx}{classXimera}
     \from{src/hyperref.dtx}{classXimera}
+    \from{src/paragraphs.dtx}{classXimera}
     \from{src/suppress.dtx}{classXimera}
     \from{src/makeCounter.dtx}{classXimera}
     \from{src/pagesetup.dtx}{classXimera}
@@ -109,7 +110,8 @@ Running "make install" installs the files in the local TeX tree.
     \from{src/leash.dtx}{classXimera}
     \from{src/interactives/sagemath.dtx}{classXimera}        
     \from{src/jax.dtx}{classXimera}
-    \from{src/ungraded.dtx}{classXimera}    
+    \from{src/ungraded.dtx}{classXimera}
+    \from{src/sectioning.dtx}{classXimera}    
   }
 }
 \generate{
@@ -155,7 +157,7 @@ Running "make install" installs the files in the local TeX tree.
 %<classXimera|classXourse>\NeedsTeXFormat{LaTeX2e}[1999/12/01]
 %<classXimera>\ProvidesClass{ximera}
 %<classXourse>\ProvidesClass{xourse}
-%<classXimera|classXourse> [2019/03/14 v2.00
+%<classXimera|classXourse> [2020/01/15 v2.00
 %<classXimera> Simultaneously write print and online interactive materials]
 %<classXourse> Combining Ximera activities into Xourses]
 %<*driver>
@@ -174,6 +176,7 @@ Running "make install" installs the files in the local TeX tree.
 \DocInput{src/packages.dtx}
 \DocInput{src/pagesetup.dtx}
 \subsection{Structure}
+\DocInput{src/paragraphs.dtx}
 \DocInput{src/macros.dtx}
 \DocInput{src/theorems.dtx}
 \DocInput{src/enumerate.dtx}
@@ -232,8 +235,8 @@ Running "make install" installs the files in the local TeX tree.
 %</driver>
 % \fi
 %
-%\def\fileversion{v1.0}
-%\def\filedate{2018/10/28}
+%\def\fileversion{v2.0}
+%\def\filedate{2020/01/04}
 % \DoNotIndex{\newcommand,\newenvironment}
 % 
 %\title{\textsf{ximera} --- Simultaneously write print and online interactive materials.\thanks{This file
@@ -245,6 +248,7 @@ Running "make install" installs the files in the local TeX tree.
 %\maketitle
 %
 %\changes{v1.0.0}{2018/05/25}{First public release}
+%\changes{v2.0.0}{2020/01/04}{Second public release}
 %
 % \begin{abstract}
 %   ``\textsf{Ximera} begins where \TeX\ ends.''  The \textsf{ximera}

@@ -6,12 +6,22 @@
 %<*classXourse>
 \renewcommand*\l@section{\@dottedtocline{1}{1.5em}{4.2em}}
 %</classXourse>
+%<*classXimera>
+\ifweb
+\titleformat{\section}{\normalfont\Large\bfseries}{\thesection}{1em}{\special{html <h2>}}[\special{html </h2>}]
+\fi
+%</classXimera>
 %    \end{macrocode}
 % \DescribeMacro{\subsection}{The name of a subsection inside an activity.}
 %    \begin{macrocode}
 %<*classXourse>
 \renewcommand*\l@subsection{\@dottedtocline{2}{3.8em}{4.2em}}
 %</classXourse>
+%<*classXimera>
+\ifweb
+\titleformat{\subsection}{\normalfont\large\bfseries}{\thesubsection}{1em}{\special{html <h3>}}[\special{html </h3>}]
+\fi
+%</classXimera>
 %    \end{macrocode}
 % Xourse files can have parts.
 % \DescribeMacro{\part}{The name of a large part of a xourse.}
@@ -27,22 +37,16 @@
 }
 %</htXourse>
 %    \end{macrocode}
-% Paragraph commands emit spans.
+% Subsubsections and paragraphs also emit appropriate heading tags.
+% \DescribeMacro{\subsubsection}{A subsubsection heading.}
 % \DescribeMacro{\paragraph}{A small heading.}
-%    \begin{macrocode}
-%<*cfgXimera>
-\renewcommand{\paragraph}[1]{%
-  \HCode{<span class="paragraphHead">}%
-  #1%
-  \HCode{</span>}\par\IgnorePar}
-%</cfgXimera>
-%    \end{macrocode}
 % \DescribeMacro{\subparagraph}{An even smaller heading.}
 %    \begin{macrocode}
-%<*cfgXimera>
-\renewcommand{\subparagraph}[1]{%
-  \HCode{<span class="subparagraphHead">}%
-  #1%
-  \HCode{</span>}\par\IgnorePar}
-%</cfgXimera>
+%<*classXimera>
+\ifweb
+\titleformat{\subsubsection}{\normalfont\normalsize\bfseries}{\thesubsubsection}{1em}{\special{html <h4>}}[\special{html </h4>}]
+\titleformat{\paragraph}[runin]{\normalfont\normalsize\bfseries}{\theparagraph}{1em}{\special{html <h5>}}[\special{html </h5>}]
+\titleformat{\subparagraph}[runin]{\normalfont\normalsize\bfseries}{\thesubparagraph}{1em}{\special{html <h6>}}[\special{html </h6>}]
+\fi
+%</classXimera>
 %    \end{macrocode}

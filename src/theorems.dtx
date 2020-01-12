@@ -1,15 +1,16 @@
 % \subsubsection{Theorem and theorem-like environments}
 % On the web, a theorem is emitted as a special |<div>|.
 %    \begin{macrocode}
-%<*htXimera>
-\newcommand{\ConfigureTheoremEnv}[1]{%
-\renewenvironment{#1}[1][]{\refstepcounter{problem}%
-\ifthenelse{\equal{##1}{}}{}{%
-  \HCode{<span class="theorem-like-title">}##1\HCode{</span>}%
-}}{}
-\ConfigureEnv{#1}{\stepcounter{identification}\ifvmode \IgnorePar\fi \EndP\HCode{<div class="theorem-like problem-environment #1" id="problem\arabic{identification}">}}{\HCode{</div>}\IgnoreIndent}{}{}%
-}
-%</htXimera>
+%<*classXimera>
+\ifweb%
+\newcommand{\ximerizedEnvironment}[1]{%
+  \BeforeBeginEnvironment{#1}{\vspace{1ex}\special{ximera:save}\special{ximera:begin #1}\clearpage}%
+  \AfterEndEnvironment{#1}{\special{ximera:save}\clearpage\special{ximera:end #1}}%
+}%
+\else%
+\newcommand{\ximerizedEnvironment}[1]{}%
+\fi%
+%</classXimera>
 %    \end{macrocode}
 
 % The key is to make sure that the theorem environments are defined in
@@ -18,156 +19,156 @@
 % \DescribeEnv{theorem}{Theorem}
 %    \begin{macrocode}
 %<classXimera>      \newtheorem{theorem}{Theorem}
-%<htXimera>      \ConfigureTheoremEnv{theorem}
+%<classXimera>      \ximerizedEnvironment{theorem}
 %    \end{macrocode}
 
 % \DescribeEnv{algorithm}{Algorithm}
 %    \begin{macrocode}
 %<classXimera>      \newtheorem{algorithm}{Algorithm}
-%<htXimera>      \ConfigureTheoremEnv{algorithm}
+%<classXimera>      \ximerizedEnvironment{algorithm}
 %    \end{macrocode}
 
 % \DescribeEnv{axiom}{Axiom}
 %    \begin{macrocode}
 %<classXimera>      \newtheorem{axiom}{Axiom}
-%<htXimera>      \ConfigureTheoremEnv{axiom}
+%<classXimera>      \ximerizedEnvironment{axiom}
 %    \end{macrocode}
 
 % \DescribeEnv{claim}{Claim}
 %    \begin{macrocode}
 %<classXimera>      \newtheorem{claim}{Claim}
-%<htXimera>      \ConfigureTheoremEnv{claim}
+%<classXimera>      \ximerizedEnvironment{claim}
 %    \end{macrocode}
 
 % \DescribeEnv{conclusion}{Conclusion}
 %    \begin{macrocode}
 %<classXimera>      \newtheorem{conclusion}{Conclusion}
-%<htXimera>      \ConfigureTheoremEnv{conclusion}
+%<classXimera>      \ximerizedEnvironment{conclusion}
 %    \end{macrocode}
 
 % \DescribeEnv{condition}{Condition}
 %    \begin{macrocode}
 %<classXimera>      \newtheorem{condition}{Condition}
-%<htXimera>      \ConfigureTheoremEnv{condition}
+%<classXimera>      \ximerizedEnvironment{condition}
 %    \end{macrocode}
 
 % \DescribeEnv{conjecture}{Conjecture}
 %    \begin{macrocode}
 %<classXimera>      \newtheorem{conjecture}{Conjecture}
-%<htXimera>      \ConfigureTheoremEnv{conjecture}
+%<classXimera>      \ximerizedEnvironment{conjecture}
 %    \end{macrocode}
 
 % \DescribeEnv{corollary}{Corollary}
 %    \begin{macrocode}
 %<classXimera>      \newtheorem{corollary}{Corollary}
-%<htXimera>      \ConfigureTheoremEnv{corollary}
+%<classXimera>      \ximerizedEnvironment{corollary}
 %    \end{macrocode}
 
 % \DescribeEnv{criterion}{Criterion}
 %    \begin{macrocode}
 %<classXimera>      \newtheorem{criterion}{Criterion}
-%<htXimera>      \ConfigureTheoremEnv{criterion}
+%<classXimera>      \ximerizedEnvironment{criterion}
 %    \end{macrocode}
 
 % \DescribeEnv{definition}{Definition}
 %    \begin{macrocode}
 %<classXimera>      \newtheorem{definition}{Definition}
-%<htXimera>      \ConfigureTheoremEnv{definition}
+%<classXimera>      \ximerizedEnvironment{definition}
 %    \end{macrocode}
 
 % \DescribeEnv{example}{Example}
 %    \begin{macrocode}
 %<classXimera>      \newtheorem{example}{Example}
-%<htXimera>      \ConfigureTheoremEnv{example}
+%<classXimera>      \ximerizedEnvironment{example}
 %    \end{macrocode}
 
 % \DescribeEnv{explanation}{Explanation}
 %    \begin{macrocode}
 %<classXimera>      \newtheorem*{explanation}{Explanation}
-%<htXimera>      \ConfigureTheoremEnv{explanation}
+%<classXimera>      \ximerizedEnvironment{explanation}
 %    \end{macrocode}
 
 % \DescribeEnv{fact}{Fact}
 %    \begin{macrocode}
 %<classXimera>      \newtheorem{fact}{Fact}
-%<htXimera>      \ConfigureTheoremEnv{fact}
+%<classXimera>      \ximerizedEnvironment{fact}
 %    \end{macrocode}
 
 % \DescribeEnv{lemma}{Lemma}
 %    \begin{macrocode}
 %<classXimera>      \newtheorem{lemma}{Lemma}
-%<htXimera>      \ConfigureTheoremEnv{lemma}
+%<classXimera>      \ximerizedEnvironment{lemma}
 %    \end{macrocode}
 
 % \DescribeEnv{formula}{Formula}
 %    \begin{macrocode}
 %<classXimera>      \newtheorem{formula}{Formula}
-%<htXimera>      \ConfigureTheoremEnv{formula}
+%<classXimera>      \ximerizedEnvironment{formula}
 %    \end{macrocode}
 
 % \DescribeEnv{idea}{Idea}
 %    \begin{macrocode}
 %<classXimera>      \newtheorem{idea}{Idea}
-%<htXimera>      \ConfigureTheoremEnv{idea}
+%<classXimera>      \ximerizedEnvironment{idea}
 %    \end{macrocode}
 
 % \DescribeEnv{notation}{Notation}
 %    \begin{macrocode}
 %<classXimera>      \newtheorem{notation}{Notation}
-%<htXimera>      \ConfigureTheoremEnv{notation}
+%<classXimera>      \ximerizedEnvironment{notation}
 %    \end{macrocode}
 
 % \DescribeEnv{model}{Model}
 %    \begin{macrocode}
 %<classXimera>      \newtheorem{model}{Model}
-%<htXimera>      \ConfigureTheoremEnv{model}
+%<classXimera>      \ximerizedEnvironment{model}
 %    \end{macrocode}
 
 % \DescribeEnv{observation}{Observation}
 %    \begin{macrocode}
 %<classXimera>      \newtheorem{observation}{Observation}
-%<htXimera>      \ConfigureTheoremEnv{observation}
+%<classXimera>      \ximerizedEnvironment{observation}
 %    \end{macrocode}
 
 % \DescribeEnv{proposition}{Proposition}
 %    \begin{macrocode}
 %<classXimera>      \newtheorem{proposition}{Proposition}
-%<htXimera>      \ConfigureTheoremEnv{proposition}
+%<classXimera>      \ximerizedEnvironment{proposition}
 %    \end{macrocode}
 
 % \DescribeEnv{paradox}{Paradox}
 %    \begin{macrocode}
 %<classXimera>      \newtheorem{paradox}{Paradox}
-%<htXimera>      \ConfigureTheoremEnv{paradox}
+%<classXimera>      \ximerizedEnvironment{paradox}
 %    \end{macrocode}
 
 % \DescribeEnv{procedure}{Procedure}
 %    \begin{macrocode}
 %<classXimera>      \newtheorem{procedure}{Procedure}
-%<htXimera>      \ConfigureTheoremEnv{procedure}
+%<classXimera>      \ximerizedEnvironment{procedure}
 %    \end{macrocode}
 
 % \DescribeEnv{remark}{Remark}
 %    \begin{macrocode}
 %<classXimera>      \newtheorem{remark}{Remark}
-%<htXimera>      \ConfigureTheoremEnv{remark}
+%<classXimera>      \ximerizedEnvironment{remark}
 %    \end{macrocode}
 
 % \DescribeEnv{summary}{Summary}
 %    \begin{macrocode}
 %<classXimera>      \newtheorem{summary}{Summary}
-%<htXimera>      \ConfigureTheoremEnv{summary}
+%<classXimera>      \ximerizedEnvironment{summary}
 %    \end{macrocode}
 
 % \DescribeEnv{template}{Template}
 %    \begin{macrocode}
 %<classXimera>      \newtheorem{template}{Template}
-%<htXimera>      \ConfigureTheoremEnv{template}
+%<classXimera>      \ximerizedEnvironment{template}
 %    \end{macrocode}
 
 % \DescribeEnv{warning}{Warning}
 %    \begin{macrocode}
 %<classXimera>      \newtheorem{warning}{Warning}
-%<htXimera>      \ConfigureTheoremEnv{warning}
+%<classXimera>      \ximerizedEnvironment{warning}
 %    \end{macrocode}
 

@@ -19,7 +19,7 @@
 %% 
 \NeedsTeXFormat{LaTeX2e}[1999/12/01]
 \ProvidesClass{xourse}
- [2019/03/14 v2.00
+ [2020/01/15 v2.00
  Combining Ximera activities into Xourses]
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -118,7 +118,7 @@
 
 \newenvironment{graded}[1]{}{}
 %% 
-%% Copyright (C) 2018-2019 by Bart Snapp <bart.snapp@gmail.com> and Jim Fowler <kisonecat@gmail.com>
+%% Copyright (C) 2018-2020 by Bart Snapp <bart.snapp@gmail.com> and Jim Fowler <kisonecat@gmail.com>
 %% 
 %% This work may be distributed and/or modified under the conditions of
 %% the LaTeX Project Public License (LPPL), either version 1.3c of this

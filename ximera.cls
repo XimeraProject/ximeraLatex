@@ -9,6 +9,7 @@
 %% src/options.dtx  (with options: `classXimera')
 %% src/packages.dtx  (with options: `classXimera')
 %% src/hyperref.dtx  (with options: `classXimera')
+%% src/paragraphs.dtx  (with options: `classXimera')
 %% src/suppress.dtx  (with options: `classXimera')
 %% src/makeCounter.dtx  (with options: `classXimera')
 %% src/pagesetup.dtx  (with options: `classXimera')
@@ -47,6 +48,7 @@
 %% src/interactives/sagemath.dtx  (with options: `classXimera')
 %% src/jax.dtx  (with options: `classXimera')
 %% src/ungraded.dtx  (with options: `classXimera')
+%% src/sectioning.dtx  (with options: `classXimera')
 %% ------------:| ------------------------------------------------------------
 %%       ximera:| Simultaneously writing print and online interactive materials
 %%       Author:| Jim Fowler and Oscar Levin and Jason Nowell and Hans Parshall and Bart Snapp
@@ -56,7 +58,7 @@
 %% 
 \NeedsTeXFormat{LaTeX2e}[1999/12/01]
 \ProvidesClass{ximera}
- [2019/03/14 v2.00
+ [2020/01/15 v2.00
  Simultaneously write print and online interactive materials]
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -116,7 +118,9 @@
 \newif\ifweb
 \webfalse
 \DeclareOption{web}{\webtrue}
-
+\newif\ifxake
+\xakefalse
+\ifweb\xaketrue\fi
 
 \DeclareOption*{%
   \PassOptionsToClass{\CurrentOption}{article}%
@@ -124,7 +128,7 @@
 \ProcessOptions\relax
 \LoadClass{article}
 
-\ifdefined\HCode
+\ifweb
   \handoutfalse%
   \numbersfalse%
   \newpagefalse%
@@ -134,8 +138,9 @@
 
 
 \RequirePackage[makeroom]{cancel}
-\RequirePackage[inline]{enumitem}
-\RequirePackage[pagestyles]{titlesec}
+\RequirePackage{everyhook}
+\RequirePackage{enumitem}
+\RequirePackage{titlesec}
 \RequirePackage{titletoc}
 \RequirePackage{titling}
 \RequirePackage{url}
@@ -168,11 +173,17 @@
 \ifpdf
   \RequirePackage{epstopdf}
 \fi
+\ifweb
+  \usepackage[OT1]{fontenc}
+\fi
 \ifdefined\HCode
 \RequirePackage{hyperref}
 \else
 \RequirePackage[pdfpagelabels,colorlinks=true,allcolors=blue!30!black]{hyperref}
 \pdfstringdefDisableCommands{\def\hskip{}}%% quiets warning
+\fi
+\ifweb
+\PushPreHook{par}{\special{html <p>}}
 \fi
 \font\dummyft@=dummy \relax
 \def\suppress{%
@@ -225,6 +236,7 @@
 \evensidemargin 62pt
 \textwidth 345pt
 \headheight 14pt
+\ifweb\paperheight 100in\fi
 \RequirePackage{geometry}
 
 \newcommand{\license}{\excludecomment}
@@ -234,7 +246,7 @@
 \renewcommand{\tag}{\excludecomment}
 \def\theoutcomes{}
 
-\ifdefined\HCode%
+\ifweb%
   \newcommand{\outcome}[1]{}
 \else%
   \newwrite\outcomefile
@@ -245,63 +257,97 @@
       \edef\theoutcomes{\theoutcomes #1~}%
       \immediate\write\outcomefile{\unexpanded{\outcome}{#1}}
       }
-  \fi%
+\fi%
 \everymath{\displaystyle}
 \let\prelim\lim
 \renewcommand{\lim}{\displaystyle\prelim}
+\ifweb%
+\newcommand{\ximerizedEnvironment}[1]{%
+  \BeforeBeginEnvironment{#1}{\vspace{1ex}\special{ximera:save}\special{ximera:begin #1}\clearpage}%
+  \AfterEndEnvironment{#1}{\special{ximera:save}\clearpage\special{ximera:end #1}}%
+}%
+\else%
+\newcommand{\ximerizedEnvironment}[1]{}%
+\fi%
 
 
       \newtheorem{theorem}{Theorem}
+      \ximerizedEnvironment{theorem}
 
       \newtheorem{algorithm}{Algorithm}
+      \ximerizedEnvironment{algorithm}
 
       \newtheorem{axiom}{Axiom}
+      \ximerizedEnvironment{axiom}
 
       \newtheorem{claim}{Claim}
+      \ximerizedEnvironment{claim}
 
       \newtheorem{conclusion}{Conclusion}
+      \ximerizedEnvironment{conclusion}
 
       \newtheorem{condition}{Condition}
+      \ximerizedEnvironment{condition}
 
       \newtheorem{conjecture}{Conjecture}
+      \ximerizedEnvironment{conjecture}
 
       \newtheorem{corollary}{Corollary}
+      \ximerizedEnvironment{corollary}
 
       \newtheorem{criterion}{Criterion}
+      \ximerizedEnvironment{criterion}
 
       \newtheorem{definition}{Definition}
+      \ximerizedEnvironment{definition}
 
       \newtheorem{example}{Example}
+      \ximerizedEnvironment{example}
 
       \newtheorem*{explanation}{Explanation}
+      \ximerizedEnvironment{explanation}
 
       \newtheorem{fact}{Fact}
+      \ximerizedEnvironment{fact}
 
       \newtheorem{lemma}{Lemma}
+      \ximerizedEnvironment{lemma}
 
       \newtheorem{formula}{Formula}
+      \ximerizedEnvironment{formula}
 
       \newtheorem{idea}{Idea}
+      \ximerizedEnvironment{idea}
 
       \newtheorem{notation}{Notation}
+      \ximerizedEnvironment{notation}
 
       \newtheorem{model}{Model}
+      \ximerizedEnvironment{model}
 
       \newtheorem{observation}{Observation}
+      \ximerizedEnvironment{observation}
 
       \newtheorem{proposition}{Proposition}
+      \ximerizedEnvironment{proposition}
 
       \newtheorem{paradox}{Paradox}
+      \ximerizedEnvironment{paradox}
 
       \newtheorem{procedure}{Procedure}
+      \ximerizedEnvironment{procedure}
 
       \newtheorem{remark}{Remark}
+      \ximerizedEnvironment{remark}
 
       \newtheorem{summary}{Summary}
+      \ximerizedEnvironment{summary}
 
       \newtheorem{template}{Template}
+      \ximerizedEnvironment{template}
 
       \newtheorem{warning}{Warning}
+      \ximerizedEnvironment{warning}
 
 \renewcommand{\theenumi}{\textup{(\alph{enumi})}}
 \renewcommand{\labelenumi}{\theenumi}
@@ -524,10 +570,13 @@
 \pagestyle{main}
 \renewcommand\maketitle{%
   \addtocounter{titlenumber}{1}%
+  \ifweb\special{title \@title}\fi%
+  \ifweb\special{html <h1>}\fi%
   {\flushleft\large\bfseries \@pretitle\par\vspace{-1em}}
   {\flushleft\LARGE\bfseries {\ifnumbers\thetitlenumber\fi}{\ifnumbers\hspace{1em}\else\hspace{0em}\fi}\@title \par }
   \phantomsection%
   \ifnumbers\addcontentsline{toc}{section}{\thetitlenumber~\@title}\else\addcontentsline{toc}{section}{\@title}\fi
+  \ifweb\special{html </h1>}\fi%
   \vskip .6em\noindent\textit\theabstract\setcounter{problem}{0}\setcounter{section}{0}\setcounter{subsection}{0}\par\vspace{2em}
   %%% Design Question:
   % Would it make more sense to have author/outcomes in the header and reserve footer for footnotes?
@@ -617,20 +666,78 @@ Interactive
 }
 
 \newcommand{\youtube}[1]{YouTube link: \url{https://www.youtube.com/watch?v=#1}}
-
-\ifdefined\HCode
-\newcommand{\recordvariable}[1]{}
-\else
-\newwrite\idfile
-\immediate\openout\idfile=\jobname.ids
-\newcommand{\recordvariable}[1]{\ifthenelse{\equal{#1}{}}{}{\immediate\write\idfile{var #1;}}}
-\fi
 \define@key{answer}{given}[true]{\def\ans@given{#1}}
 \define@key{answer}{tolerance}{\def\ans@tol{#1}}
 \define@key{answer}{validator}{}
 \define@key{answer}{id}{\def\ans@id{#1}}
 \define@key{answer}{format}{}
 \setkeys{answer}{id=,given=false}
+\ifweb
+\def\answer{%
+  \begingroup
+  \catcode`^=12
+  \catcode`_=12\relax
+  \answerbox
+}
+\newcommand{\answerbox}[2][]{%
+  \renewcommand{\sqrt}[1]{\string \sqrt\{##1\}}
+  \renewcommand{\frac}[2]{((##1)/(##2))}
+  \renewcommand{\log}{\string\log}
+  \renewcommand{\ln}{\string\ln}
+  \renewcommand{\sin}{\string\sin}
+  \renewcommand{\cos}{\string\cos}
+  \renewcommand{\tan}{\string\tan}
+  \renewcommand{\arcsin}{\string\arcsin}
+  \renewcommand{\arccos}{\string\arccos}
+  \renewcommand{\arctan}{\string\arctan}
+  \renewcommand{\infty}{\string\infty}
+  \renewcommand{\Gamma}{\string\Gamma}
+  \renewcommand{\Delta}{\string\Delta}
+  \renewcommand{\Lambda}{\string\Lambda}
+  \renewcommand{\Phi}{\string\Phi}
+  \renewcommand{\Pi}{\string\Pi}
+  \renewcommand{\Psi}{\string\Psi}
+  \renewcommand{\Sigma}{\string\Sigma}
+  \renewcommand{\Theta}{\string\Theta}
+  \renewcommand{\Upsilon}{\string\Upsilon}
+  \renewcommand{\Xi}{\string\Xi}
+  \renewcommand{\Omega}{\string\Omega}
+  \renewcommand{\alpha}{\string\alpha}
+  \renewcommand{\beta}{\string\beta}
+  \renewcommand{\gamma}{\string\gamma}
+  \renewcommand{\delta}{\string\delta}
+  \renewcommand{\epsilon}{\string\epsilon}
+  \renewcommand{\zeta}{\string\zeta}
+  \renewcommand{\eta}{\string\eta}
+  \renewcommand{\theta}{\string\theta}
+  \renewcommand{\iota}{\string\iota}
+  \renewcommand{\kappa}{\string\kappa}
+  \renewcommand{\lambda}{\string\lambda}
+  \renewcommand{\mu}{\string\mu}
+  \renewcommand{\nu}{\string\nu}
+  \renewcommand{\xi}{\string\xi}
+  \renewcommand{\pi}{\string\pi}
+  \renewcommand{\rho}{\string\rho}
+  \renewcommand{\sigma}{\string\sigma}
+  \renewcommand{\tau}{\string\tau}
+  \renewcommand{\upsilon}{\string\upsilon}
+  \renewcommand{\phi}{\string\phi}
+  \renewcommand{\chi}{\string\chi}
+  \renewcommand{\psi}{\string\psi}
+  \renewcommand{\omega}{\string\omega}
+  \renewcommand{\digamma}{\string\digamma}
+  \renewcommand{\varepsilon}{\string\epsilon}
+  \renewcommand{\varkappa}{\string\kappa}
+  \renewcommand{\varphi}{\string\phi}
+  \renewcommand{\varpi}{\string\pi}
+  \renewcommand{\varrho}{\string\rho}
+  \renewcommand{\varsigma}{\string\sigma}
+  \renewcommand{\vartheta}{\string\theta}
+  %[#2]
+  \rule[-0.5em]{\widthof{#2}}{2.5em}
+  \endgroup
+}
+\else
 \newcommand{\answer}[2][]{%
 \ifmmode%
 \setkeys{answer}{#1}%
@@ -656,7 +763,8 @@ Interactive
 {See https://github.com/ximeraProject/ximeraLatex for explanation.}
 {Need to use either inline or display math.}%
 \fi
-}
+      }
+\fi
 \define@key{choice}{value}[]{\def\choice@value{#1}}
 \define@boolkey{choice}{correct}[true]{\def\choice@correct{#1}}
 \define@key{multipleChoice}{id}{\def\mc@id{#1}}
@@ -723,7 +831,6 @@ Interactive
 \newenvironment{multipleChoice}[1][]
 {% Environment Start Code
 \setkeys{multipleChoice}{#1}%
-\recordvariable{\mc@id}%
 \begin{trivlist}
 \item[\hskip \labelsep\small\bfseries Multiple Choice:]\hfil
 \begin{enumerate}
@@ -1007,8 +1114,19 @@ Interactive
 
 \fi
 \newenvironment{ungraded}{}{}
+\ifweb
+\titleformat{\section}{\normalfont\Large\bfseries}{\thesection}{1em}{\special{html <h2>}}[\special{html </h2>}]
+\fi
+\ifweb
+\titleformat{\subsection}{\normalfont\large\bfseries}{\thesubsection}{1em}{\special{html <h3>}}[\special{html </h3>}]
+\fi
+\ifweb
+\titleformat{\subsubsection}{\normalfont\normalsize\bfseries}{\thesubsubsection}{1em}{\special{html <h4>}}[\special{html </h4>}]
+\titleformat{\paragraph}[runin]{\normalfont\normalsize\bfseries}{\theparagraph}{1em}{\special{html <h5>}}[\special{html </h5>}]
+\titleformat{\subparagraph}[runin]{\normalfont\normalsize\bfseries}{\thesubparagraph}{1em}{\special{html <h6>}}[\special{html </h6>}]
+\fi
 %% 
-%% Copyright (C) 2018-2019 by Bart Snapp <bart.snapp@gmail.com> and Jim Fowler <kisonecat@gmail.com>
+%% Copyright (C) 2018-2020 by Bart Snapp <bart.snapp@gmail.com> and Jim Fowler <kisonecat@gmail.com>
 %% 
 %% This work may be distributed and/or modified under the conditions of
 %% the LaTeX Project Public License (LPPL), either version 1.3c of this

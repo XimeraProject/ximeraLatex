@@ -1,0 +1,9 @@
+% \subsection{Paragraphs}
+% On the web, paragraphs should be marked as such.
+%    \begin{macrocode}
+%<*classXimera>
+\ifweb
+\PushPreHook{par}{\special{html <p>}}
+\fi
+%</classXimera>
+%    \end{macrocode}

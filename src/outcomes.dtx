@@ -4,7 +4,7 @@
 %<*classXimera>
 \def\theoutcomes{}
 
-\ifdefined\HCode%
+\ifweb%
   \newcommand{\outcome}[1]{}
 \else%
   \newwrite\outcomefile
@@ -15,7 +15,7 @@
       \edef\theoutcomes{\theoutcomes #1~}%
       \immediate\write\outcomefile{\unexpanded{\outcome}{#1}}
       }
-  \fi%
+\fi%
 %</classXimera>
 %    \end{macrocode}
 % These can appear in either the preamble or in problem environments.
