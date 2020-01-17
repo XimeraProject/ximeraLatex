@@ -18,7 +18,10 @@
 \RequirePackage{titling}
 \RequirePackage{url}
 \RequirePackage[table]{xcolor}
-\RequirePackage[TikZ]{mdframed}% Use mdframed to provide extensive styling for environments in pdf form.
+\ifweb
+\else% Current mdframed doesn't load in the web version for some reason. So only loading this for pdf until determines if it works.
+    \RequirePackage[TikZ]{mdframed}% Use mdframed to provide extensive styling for environments in pdf form.
+\fi
 \RequirePackage{fancyvrb}
 %    \end{macrocode}
 % Load |ifpdf| in order to determine if we should automatically switch
