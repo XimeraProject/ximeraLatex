@@ -101,7 +101,7 @@
 \newcommand{\answer}[2][]{%
 	\ifmmode%
 		\setkeys{answer}{#1}%
-		\recordvariable{\ans@id}
+%		\recordvariable{\ans@id}% This shouldn't exist according to Jim. Commenting out for now in case we find why it's even here.
 		\ifthenelse{\boolean{\ans@given}}
 			{% Start then statement
 			\ifhandout 
