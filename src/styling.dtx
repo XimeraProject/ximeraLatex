@@ -29,44 +29,44 @@
 %%% Color Definitions. Find this code in styling.dtx.
 
 % Color definitions for Problem Environments.
-\definecolor{problemBackgroundColor}{RGB}{255, 230, 179}% A light tan color
-\definecolor{problemBorderColor}{RGB}{77, 77, 77}% Darker Grey color
+\definecolor{problemBackgroundColor}{RGB}{255, 230, 179}%           A light tan color
+\definecolor{problemBorderColor}{RGB}{77, 77, 77}%                  Darker Grey color
 
 % Color definitions for Exercise Environments.
-\definecolor{exerciseBackgroundColor}{RGB}{255, 230, 179}% A light tan color
-\definecolor{exerciseBorderColor}{RGB}{77, 77, 77}% Darker Grey color
+\definecolor{exerciseBackgroundColor}{RGB}{255, 230, 179}%          A light tan color
+\definecolor{exerciseBorderColor}{RGB}{77, 77, 77}%                 Darker Grey color
 
 % Color definitions for Exploration Environments.
-\definecolor{explorationBackgroundColor}{RGB}{255, 230, 179}% A light tan color
-\definecolor{explorationBorderColor}{RGB}{77, 77, 77}% Darker Grey color
+\definecolor{explorationBackgroundColor}{RGB}{255, 230, 179}%       A light tan color
+\definecolor{explorationBorderColor}{RGB}{77, 77, 77}%              Darker Grey color
 
 % Color definitions for Question Environments.
-\definecolor{questionBackgroundColor}{RGB}{255, 230, 179}% A light tan color
-\definecolor{questionBorderColor}{RGB}{77, 77, 77}% Darker Grey color
+\definecolor{questionBackgroundColor}{RGB}{255, 230, 179}%          A light tan color
+\definecolor{questionBorderColor}{RGB}{77, 77, 77}%                 Darker Grey color
 
 % Color definitions for Multiple Choice Environment.
-\definecolor{multipleChoiceBackgroundColor}{RGB}{204, 204, 255}% A light tan color for problem environment backgrounds
-\definecolor{multipleChoiceBorderColor}{RGB}{77, 77, 77}% Darker Grey color for border of problem environments.
+\definecolor{multipleChoiceBackgroundColor}{RGB}{204, 204, 255}%    A light tan color for problem environment backgrounds
+\definecolor{multipleChoiceBorderColor}{RGB}{77, 77, 77}%           Darker Grey color for border of problem environments.
 
 % Color definitions for Select All Environment.
-\definecolor{selectAllBackgroundColor}{RGB}{229, 229, 204}% A light tan color for problem environment backgrounds
-\definecolor{selectAllBorderColor}{RGB}{77, 77, 77}% Darker Grey color for border of problem environments.
+\definecolor{selectAllBackgroundColor}{RGB}{229, 229, 204}%         A light tan color for problem environment backgrounds
+\definecolor{selectAllBorderColor}{RGB}{77, 77, 77}%                Darker Grey color for border of problem environments.
 
 % Color definitions for feedback Environment.
-\definecolor{feedbackBackgroundColor}{RGB}{204, 255, 204}% A light green color for feedback environment backgrounds
-\definecolor{feedbackBorderColor}{RGB}{77, 77, 77}% Darker Grey color for border of feedback environments.
+\definecolor{feedbackBackgroundColor}{RGB}{204, 255, 204}%          A light green color for feedback environment backgrounds
+\definecolor{feedbackBorderColor}{RGB}{77, 77, 77}%                 Darker Grey color for border of feedback environments.
 
 % Color definitions for Free Response Environment.
-\definecolor{freeResponseBackgroundColor}{RGB}{255, 255, 255}% A light green color for free response environment backgrounds
-\definecolor{freeResponseBorderColor}{RGB}{77, 77, 77}% Darker Grey color for border of free response environments.
+\definecolor{freeResponseBackgroundColor}{RGB}{255, 255, 255}%      A light green color for free response environment backgrounds
+\definecolor{freeResponseBorderColor}{RGB}{77, 77, 77}%             Darker Grey color for border of free response environments.
 
 % Color definitions for hint Environment.
-\definecolor{hintBackgroundColor}{RGB}{194, 194, 214}% A light purple color for free response environment backgrounds
-\definecolor{hintBorderColor}{RGB}{77, 77, 77}% Darker Grey color for border of hint environments.
+\definecolor{hintBackgroundColor}{RGB}{194, 194, 214}%              A light purple color for free response environment backgrounds
+\definecolor{hintBorderColor}{RGB}{77, 77, 77}%                     Darker Grey color for border of hint environments.
 
 % Color definitions for solution Environment.
-\definecolor{solutionBackgroundColor}{RGB}{255, 179, 179}% A light olive color for free response environment backgrounds
-\definecolor{solutionBorderColor}{RGB}{77, 77, 77}% Darker Grey color for border of hint environments.
+\definecolor{solutionBackgroundColor}{RGB}{255, 179, 179}%          A light olive color for free response environment backgrounds
+\definecolor{solutionBorderColor}{RGB}{77, 77, 77}%                 Darker Grey color for border of hint environments.
 
 
 %</classXimera>
@@ -82,9 +82,9 @@
     \mdfdefinestyle{problem-env}{% This is the (default) style for problem environments.
     %%%         Line information for borders.
             linewidth=          1pt,%
-            roundcorner=        8pt,%   This rounds the corner a bit to improve aesthetic.
-    %    outerlinewidth=     1pt,%  Suggest only using linewidth for universal borders.
-    %    innerlinewidth=     1pt,%  Suggest only using linewidth for universal borders.
+            roundcorner=        8pt,%                       This rounds the corner a bit to improve aesthetic.
+    %       outerlinewidth=     1pt,%                       Suggest only using linewidth for universal borders.
+    %       innerlinewidth=     1pt,%                       Suggest only using linewidth for universal borders.
     %%%         Spacing Information
             skipabove=          10pt,%                      Space above the background coloring and the previous text line.
             skipbelow=          10pt,%                      Space below the background coloring and the next text line.
@@ -100,16 +100,16 @@
     %%%         Box Breaking Behavior
             nobreak=everyline,%                             Allow the box to break if it needs to, but still gives a full frame after breaking.
     %                                                           Thus if a problem is broken mid-frame it will give both halves a full frame.
-            needspace=30pt,%                                If there isn't at least a 30pt space before the bottom of the
-    %                                                           page when TeX tries to draw a problem environment, it will go to the next page.
+            needspace=30pt,%                                If there isn't at least a 30pt space before the bottom of the page 
+    %                                                           when TeX tries to draw a problem environment, it will go to the next page.
         }% End problem environment styling.
     
     \mdfdefinestyle{exercise-env}{% This is the (default) style for exercise environments.
     %%%         Line information for borders.
             linewidth=          1pt,%
-            roundcorner=        8pt,%   This rounds the corner a bit to improve aesthetic.
-    %    outerlinewidth=     1pt,%  Suggest only using linewidth for universal borders.
-    %    innerlinewidth=     1pt,%  Suggest only using linewidth for universal borders.
+            roundcorner=        8pt,%                       This rounds the corner a bit to improve aesthetic.
+    %       outerlinewidth=     1pt,%                       Suggest only using linewidth for universal borders.
+    %       innerlinewidth=     1pt,%                       Suggest only using linewidth for universal borders.
     %%%         Spacing Information
             skipabove=          10pt,%                      Space above the background coloring and the previous text line.
             skipbelow=          10pt,%                      Space below the background coloring and the next text line.
@@ -125,16 +125,16 @@
     %%%         Box Breaking Behavior
             nobreak=everyline,%                             Allow the box to break if it needs to, but still gives a full frame after breaking.
     %                                                           Thus if a exercise is broken mid-frame it will give both halves a full frame.
-            needspace=30pt,%                                If there isn't at least a 30pt space before the bottom of the
-    %                                                           page when TeX tries to draw a exercise environment, it will go to the next page.
+            needspace=30pt,%                                If there isn't at least a 30pt space before the bottom of the page 
+    %                                                           when TeX tries to draw a problem environment, it will go to the next page.
         }% End exercise environment styling.
     
     \mdfdefinestyle{exploration-env}{% This is the (default) style for exploration environments.
     %%%         Line information for borders.
             linewidth=          1pt,%
-            roundcorner=        8pt,%   This rounds the corner a bit to improve aesthetic.
-    %    outerlinewidth=     1pt,%  Suggest only using linewidth for universal borders.
-    %    innerlinewidth=     1pt,%  Suggest only using linewidth for universal borders.
+            roundcorner=        8pt,%                       This rounds the corner a bit to improve aesthetic.
+    %       outerlinewidth=     1pt,%                       Suggest only using linewidth for universal borders.
+    %       innerlinewidth=     1pt,%                       Suggest only using linewidth for universal borders.
     %%%         Spacing Information
             skipabove=          10pt,%                      Space above the background coloring and the previous text line.
             skipbelow=          10pt,%                      Space below the background coloring and the next text line.
@@ -150,16 +150,16 @@
     %%%         Box Breaking Behavior
             nobreak=everyline,%                             Allow the box to break if it needs to, but still gives a full frame after breaking.
     %                                                           Thus if a exploration is broken mid-frame it will give both halves a full frame.
-            needspace=30pt,%                                If there isn't at least a 30pt space before the bottom of the
-    %                                                           page when TeX tries to draw a exploration environment, it will go to the next page.
+            needspace=30pt,%                                If there isn't at least a 30pt space before the bottom of the page 
+    %                                                           when TeX tries to draw a problem environment, it will go to the next page.
         }% End exploration environment styling.
     
     \mdfdefinestyle{question-env}{% This is the (default) style for question environments.
     %%%         Line information for borders.
             linewidth=          1pt,%
-            roundcorner=        8pt,%   This rounds the corner a bit to improve aesthetic.
-    %    outerlinewidth=     1pt,%  Suggest only using linewidth for universal borders.
-    %    innerlinewidth=     1pt,%  Suggest only using linewidth for universal borders.
+            roundcorner=        8pt,%                       This rounds the corner a bit to improve aesthetic.
+    %       outerlinewidth=     1pt,%                       Suggest only using linewidth for universal borders.
+    %       innerlinewidth=     1pt,%                       Suggest only using linewidth for universal borders.
     %%%         Spacing Information
             skipabove=          10pt,%                      Space above the background coloring and the previous text line.
             skipbelow=          10pt,%                      Space below the background coloring and the next text line.
@@ -175,16 +175,16 @@
     %%%         Box Breaking Behavior
             nobreak=everyline,%                             Allow the box to break if it needs to, but still gives a full frame after breaking.
     %                                                           Thus if a question is broken mid-frame it will give both halves a full frame.
-            needspace=30pt,%                                If there isn't at least a 30pt space before the bottom of the
-    %                                                           page when TeX tries to draw a question environment, it will go to the next page.
+            needspace=30pt,%                                If there isn't at least a 30pt space before the bottom of the page 
+    %                                                           when TeX tries to draw a problem environment, it will go to the next page.
         }% End question environment styling.
     
     \mdfdefinestyle{multipleChoice-env}{% This is the (default) style for multiple choice environments.
     %%%         Line information for borders.
             linewidth=          1pt,%
-            roundcorner=        8pt,%   This rounds the corner a bit to improve aesthetic.
-    %    outerlinewidth=     1pt,%  Suggest only using linewidth for universal borders.
-    %    innerlinewidth=     1pt,%  Suggest only using linewidth for universal borders.
+            roundcorner=        8pt,%                       This rounds the corner a bit to improve aesthetic.
+    %       outerlinewidth=     1pt,%                       Suggest only using linewidth for universal borders.
+    %       innerlinewidth=     1pt,%                       Suggest only using linewidth for universal borders.
     %%%         Spacing Information
             skipabove=          10pt,%                      Space above the background coloring and the previous text line.
             skipbelow=          10pt,%                      Space below the background coloring and the next text line.
@@ -200,16 +200,16 @@
     %%%         Box Breaking Behavior
             nobreak=everyline,%                             Allow the box to break if it needs to, but still gives a full frame after breaking.
     %                                                           Thus if a problem is broken mid-frame it will give both halves a full frame.
-            needspace=30pt,%                                If there isn't at least a 30pt space before the bottom of the
-    %                                                           page when TeX tries to draw a problem environment, it will go to the next page.
+            needspace=30pt,%                                If there isn't at least a 30pt space before the bottom of the page 
+    %                                                           when TeX tries to draw a problem environment, it will go to the next page.
         }% End multiple choice environment styling.
     
     \mdfdefinestyle{selectAll-env}{% This is the (default) style for selectAll environments.
     %%%         Line information for borders.
             linewidth=          1pt,%
-            roundcorner=        8pt,%   This rounds the corner a bit to improve aesthetic.
-    %    outerlinewidth=     1pt,%  Suggest only using linewidth for universal borders.
-    %    innerlinewidth=     1pt,%  Suggest only using linewidth for universal borders.
+            roundcorner=        8pt,%                       This rounds the corner a bit to improve aesthetic.
+    %       outerlinewidth=     1pt,%                       Suggest only using linewidth for universal borders.
+    %       innerlinewidth=     1pt,%                       Suggest only using linewidth for universal borders.
     %%%         Spacing Information
             skipabove=          10pt,%                      Space above the background coloring and the previous text line.
             skipbelow=          10pt,%                      Space below the background coloring and the next text line.
@@ -225,16 +225,16 @@
     %%%         Box Breaking Behavior
             nobreak=everyline,%                             Allow the box to break if it needs to, but still gives a full frame after breaking.
     %                                                           Thus if a problem is broken mid-frame it will give both halves a full frame.
-            needspace=30pt,%                                If there isn't at least a 30pt space before the bottom of the
-    %                                                           page when TeX tries to draw a problem environment, it will go to the next page.
+            needspace=30pt,%                                If there isn't at least a 30pt space before the bottom of the page 
+    %                                                           when TeX tries to draw a problem environment, it will go to the next page.
         }% End selectAll environment styling.
     
     \mdfdefinestyle{feedback-env}{% This is the (default) style for feedback environments.
     %%%         Line information for borders.
             linewidth=          1pt,%
-            roundcorner=        8pt,%   This rounds the corner a bit to improve aesthetic.
-    %    outerlinewidth=     1pt,%  Suggest only using linewidth for universal borders.
-    %    innerlinewidth=     1pt,%  Suggest only using linewidth for universal borders.
+            roundcorner=        8pt,%                       This rounds the corner a bit to improve aesthetic.
+    %       outerlinewidth=     1pt,%                       Suggest only using linewidth for universal borders.
+    %       innerlinewidth=     1pt,%                       Suggest only using linewidth for universal borders.
     %%%         Spacing Information
             skipabove=          10pt,%                      Space above the background coloring and the previous text line.
             skipbelow=          10pt,%                      Space below the background coloring and the next text line.
@@ -250,16 +250,16 @@
     %%%         Box Breaking Behavior
             nobreak=everyline,%                             Allow the box to break if it needs to, but still gives a full frame after breaking.
     %                                                           Thus if a problem is broken mid-frame it will give both halves a full frame.
-            needspace=30pt,%                                If there isn't at least a 30pt space before the bottom of the
-    %                                                           page when TeX tries to draw a problem environment, it will go to the next page.
+            needspace=30pt,%                                If there isn't at least a 30pt space before the bottom of the page 
+    %                                                           when TeX tries to draw a problem environment, it will go to the next page.
         }% End feedback environment styling.
     
     \mdfdefinestyle{freeResponse-env}{% This is the (default) style for free response environments.
     %%%         Line information for borders.
             linewidth=          1pt,%
-            roundcorner=        8pt,%   This rounds the corner a bit to improve aesthetic.
-    %    outerlinewidth=     1pt,%  Suggest only using linewidth for universal borders.
-    %    innerlinewidth=     1pt,%  Suggest only using linewidth for universal borders.
+            roundcorner=        8pt,%                       This rounds the corner a bit to improve aesthetic.
+    %       outerlinewidth=     1pt,%                       Suggest only using linewidth for universal borders.
+    %       innerlinewidth=     1pt,%                       Suggest only using linewidth for universal borders.
     %%%         Spacing Information
             skipabove=          10pt,%                      Space above the background coloring and the previous text line.
             skipbelow=          10pt,%                      Space below the background coloring and the next text line.
@@ -275,16 +275,16 @@
     %%%         Box Breaking Behavior
             nobreak=everyline,%                             Allow the box to break if it needs to, but still gives a full frame after breaking.
     %                                                           Thus if a problem is broken mid-frame it will give both halves a full frame.
-            needspace=30pt,%                                If there isn't at least a 30pt space before the bottom of the
-    %                                                           page when TeX tries to draw a problem environment, it will go to the next page.
+            needspace=30pt,%                                If there isn't at least a 30pt space before the bottom of the page 
+    %                                                           when TeX tries to draw a problem environment, it will go to the next page.
         }% End free response environment styling.
     
     \mdfdefinestyle{hint-env}{% This is the (default) style for hint environments.
     %%%         Line information for borders.
             linewidth=          1pt,%
-            roundcorner=        8pt,%   This rounds the corner a bit to improve aesthetic.
-    %    outerlinewidth=     1pt,%  Suggest only using linewidth for universal borders.
-    %    innerlinewidth=     1pt,%  Suggest only using linewidth for universal borders.
+            roundcorner=        8pt,%                       This rounds the corner a bit to improve aesthetic.
+    %       outerlinewidth=     1pt,%                       Suggest only using linewidth for universal borders.
+    %       innerlinewidth=     1pt,%                       Suggest only using linewidth for universal borders.
     %%%         Spacing Information
             skipabove=          10pt,%                      Space above the background coloring and the previous text line.
             skipbelow=          10pt,%                      Space below the background coloring and the next text line.
@@ -300,16 +300,16 @@
     %%%         Box Breaking Behavior
             nobreak=everyline,%                             Allow the box to break if it needs to, but still gives a full frame after breaking.
     %                                                           Thus if a problem is broken mid-frame it will give both halves a full frame.
-            needspace=30pt,%                                If there isn't at least a 30pt space before the bottom of the
-    %                                                           page when TeX tries to draw a problem environment, it will go to the next page.
+            needspace=30pt,%                                If there isn't at least a 30pt space before the bottom of the page 
+    %                                                           when TeX tries to draw a problem environment, it will go to the next page.
         }% End hint environment styling.
     
     \mdfdefinestyle{solution-env}{% This is the (default) style for solution environments.
     %%%         Line information for borders.
             linewidth=          1pt,%
-            roundcorner=        8pt,%   This rounds the corner a bit to improve aesthetic.
-    %    outerlinewidth=     1pt,%  Suggest only using linewidth for universal borders.
-    %    innerlinewidth=     1pt,%  Suggest only using linewidth for universal borders.
+            roundcorner=        8pt,%                       This rounds the corner a bit to improve aesthetic.
+    %       outerlinewidth=     1pt,%                       Suggest only using linewidth for universal borders.
+    %       innerlinewidth=     1pt,%                       Suggest only using linewidth for universal borders.
     %%%         Spacing Information
             skipabove=          10pt,%                      Space above the background coloring and the previous text line.
             skipbelow=          10pt,%                      Space below the background coloring and the next text line.
@@ -325,8 +325,8 @@
     %%%         Box Breaking Behavior
             nobreak=everyline,%                             Allow the box to break if it needs to, but still gives a full frame after breaking.
     %                                                           Thus if a problem is broken mid-frame it will give both halves a full frame.
-            needspace=30pt,%                                If there isn't at least a 30pt space before the bottom of the
-    %                                                           page when TeX tries to draw a problem environment, it will go to the next page.
+            needspace=30pt,%                                If there isn't at least a 30pt space before the bottom of the page 
+    %                                                           when TeX tries to draw a problem environment, it will go to the next page.
         }% End solution environment styling.
 
 \fi

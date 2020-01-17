@@ -5,6 +5,7 @@
 % Since we want |\cancel| to work, we load it here to avoid polluting the |.jax| output.
 %    \begin{macrocode}
 \RequirePackage[makeroom]{cancel}
+
 %    \end{macrocode}
 % Quite a few packages are required by the document class. This is a
 % list of required packages. As packages are added to this list, we
@@ -18,10 +19,13 @@
 \RequirePackage{titling}
 \RequirePackage{url}
 \RequirePackage[table]{xcolor}
+
 \ifweb
-\else% Current mdframed doesn't load in the web version for some reason. So only loading this for pdf until determines if it works.
+\else
+    % Current mdframed doesn't load in the web version for some reason. So only loading this for pdf until determines if it works.
     \RequirePackage[TikZ]{mdframed}% Use mdframed to provide extensive styling for environments in pdf form.
 \fi
+
 \RequirePackage{fancyvrb}
 %    \end{macrocode}
 % Load |ifpdf| in order to determine if we should automatically switch
@@ -44,12 +48,17 @@
 %    \end{macrocode}
 % Now we load even more packages.
 %    \begin{macrocode}
-\RequirePackage{environ}% Included to allow saving of environment contents. This does *not* play well with various verbatem environments however and would be great to find a way around utilizing this package. One option is the "Suppress" command included below.
+\RequirePackage{environ}% Included to allow saving of environment contents. 
+%   Note that the environ package does *not* play well with various verbatem environments. 
+%       It would be great to find a way around utilizing this package.
+
 \RequirePackage{amssymb}% Included to have access to math typeset.
 \RequirePackage{amsmath}% Included to have access to math typeset.
 \RequirePackage{amsthm}%  Included to have access to math typeset.
+
 \RequirePackage{xifthen}% http://ctan.org/pkg/xifthen
 \RequirePackage{multido}% http://ctan.org/pkg/multido
+
 \RequirePackage{listings} %% is this required???z
 
 \RequirePackage{xkeyval}
@@ -66,6 +75,7 @@
 \ifpdf
   \RequirePackage{epstopdf}
 \fi
+
 %</classXimera>
 %    \end{macrocode}
 % On the web we are using Bakoma fonts, so we want to encode correctly.
@@ -74,5 +84,6 @@
 \ifweb
   \usepackage[OT1]{fontenc}
 \fi
+
 %</classXimera>
 %    \end{macrocode}
