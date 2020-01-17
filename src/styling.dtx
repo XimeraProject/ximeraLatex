@@ -6,11 +6,43 @@
 % Currently we will assign styles for non-web settings, because we will need to use CSS for expansion/resizing issues online.
 %    \begin{macrocode}
 %<*classXimera>
+%%% Commands for content authors to change style options.
+\providecommand{\setBorderColor}[4]{% Command to change border line color on environments.
+%                               SYNTAX:
+%                                    #1 is the environment name that you want to change the color of.
+%                                    #2 Red value (1-255) that you want for the new color.
+%                                    #3 Green value (1-255) that you want for the new color.
+%                                    #4 Blue value (1-255) that you want for the new color.
+    \definecolor{#1BorderColor}{RGB}{#2, #3, #4}
+    }
+
+\providecommand{\setBackgroundColor}[4]{% Command to change border line color on environments.
+%                               SYNTAX:
+%                                    #1 is the environment name that you want to change the color of.
+%                                    #2 Red value (1-255) that you want for the new color.
+%                                    #3 Green value (1-255) that you want for the new color.
+%                                    #4 Blue value (1-255) that you want for the new color.
+    \definecolor{#1BackgroundColor}{RGB}{#2, #3, #4}
+    }
+
+
 %%% Color Definitions. Find this code in styling.dtx.
 
 % Color definitions for Problem Environments.
 \definecolor{problemBackgroundColor}{RGB}{255, 230, 179}% A light tan color
 \definecolor{problemBorderColor}{RGB}{77, 77, 77}% Darker Grey color
+
+% Color definitions for Exercise Environments.
+\definecolor{exerciseBackgroundColor}{RGB}{255, 230, 179}% A light tan color
+\definecolor{exerciseBorderColor}{RGB}{77, 77, 77}% Darker Grey color
+
+% Color definitions for Exploration Environments.
+\definecolor{explorationBackgroundColor}{RGB}{255, 230, 179}% A light tan color
+\definecolor{explorationBorderColor}{RGB}{77, 77, 77}% Darker Grey color
+
+% Color definitions for Question Environments.
+\definecolor{questionBackgroundColor}{RGB}{255, 230, 179}% A light tan color
+\definecolor{questionBorderColor}{RGB}{77, 77, 77}% Darker Grey color
 
 % Color definitions for Multiple Choice Environment.
 \definecolor{multipleChoiceBackgroundColor}{RGB}{204, 204, 255}% A light tan color for problem environment backgrounds
@@ -69,6 +101,81 @@
         needspace=30pt,%                                If there isn't at least a 30pt space before the bottom of the
 %                                                           page when TeX tries to draw a problem environment, it will go to the next page.
     }% End problem environment styling.
+
+\mdfdefinestyle{exercise-env}{% This is the (default) style for exercise environments.
+%%%         Line information for borders.
+        linewidth=          1pt,%
+        roundcorner=        8pt,%   This rounds the corner a bit to improve aesthetic.
+%    outerlinewidth=     1pt,%  Suggest only using linewidth for universal borders.
+%    innerlinewidth=     1pt,%  Suggest only using linewidth for universal borders.
+%%%         Spacing Information
+        skipabove=          10pt,%                      Space above the background coloring and the previous text line.
+        skipbelow=          10pt,%                      Space below the background coloring and the next text line.
+        innertopmargin=     6pt,%                       Space between the first text line within a colored box and the top of the color box.
+        innerbottommargin=  6pt,%                       Space between the bottom text line within a colored box and the bottom of the color box.
+        leftmargin =        10pt,%                      Space between the colored box and the left margin of the page.
+        rightmargin =       10pt,%                      Space between the colored box and the right margin of the page.
+        innerleftmargin=    6pt,%                       Space between the colored box and the text within the color box on the left.
+        innerrightmargin=   6pt,%                       Space between the colored box and the text within the color box on the right.
+%%%         Coloring Information
+        linecolor=          exerciseBorderColor,%       Set the border line coloring to a defined color, so users can change it as desired.
+        backgroundcolor=exerciseBackgroundColor,%       Set the background coloring to a user definable color.
+%%%         Box Breaking Behavior
+        nobreak=everyline,%                             Allow the box to break if it needs to, but still gives a full frame after breaking.
+%                                                           Thus if a exercise is broken mid-frame it will give both halves a full frame.
+        needspace=30pt,%                                If there isn't at least a 30pt space before the bottom of the
+%                                                           page when TeX tries to draw a exercise environment, it will go to the next page.
+    }% End exercise environment styling.
+
+\mdfdefinestyle{exploration-env}{% This is the (default) style for exploration environments.
+%%%         Line information for borders.
+        linewidth=          1pt,%
+        roundcorner=        8pt,%   This rounds the corner a bit to improve aesthetic.
+%    outerlinewidth=     1pt,%  Suggest only using linewidth for universal borders.
+%    innerlinewidth=     1pt,%  Suggest only using linewidth for universal borders.
+%%%         Spacing Information
+        skipabove=          10pt,%                      Space above the background coloring and the previous text line.
+        skipbelow=          10pt,%                      Space below the background coloring and the next text line.
+        innertopmargin=     6pt,%                       Space between the first text line within a colored box and the top of the color box.
+        innerbottommargin=  6pt,%                       Space between the bottom text line within a colored box and the bottom of the color box.
+        leftmargin =        10pt,%                      Space between the colored box and the left margin of the page.
+        rightmargin =       10pt,%                      Space between the colored box and the right margin of the page.
+        innerleftmargin=    6pt,%                       Space between the colored box and the text within the color box on the left.
+        innerrightmargin=   6pt,%                       Space between the colored box and the text within the color box on the right.
+%%%         Coloring Information
+        linecolor=          explorationBorderColor,%    Set the border line coloring to a defined color, so users can change it as desired.
+        backgroundcolor=explorationBackgroundColor,%    Set the background coloring to a user definable color.
+%%%         Box Breaking Behavior
+        nobreak=everyline,%                             Allow the box to break if it needs to, but still gives a full frame after breaking.
+%                                                           Thus if a exploration is broken mid-frame it will give both halves a full frame.
+        needspace=30pt,%                                If there isn't at least a 30pt space before the bottom of the
+%                                                           page when TeX tries to draw a exploration environment, it will go to the next page.
+    }% End exploration environment styling.
+
+\mdfdefinestyle{question-env}{% This is the (default) style for question environments.
+%%%         Line information for borders.
+        linewidth=          1pt,%
+        roundcorner=        8pt,%   This rounds the corner a bit to improve aesthetic.
+%    outerlinewidth=     1pt,%  Suggest only using linewidth for universal borders.
+%    innerlinewidth=     1pt,%  Suggest only using linewidth for universal borders.
+%%%         Spacing Information
+        skipabove=          10pt,%                      Space above the background coloring and the previous text line.
+        skipbelow=          10pt,%                      Space below the background coloring and the next text line.
+        innertopmargin=     6pt,%                       Space between the first text line within a colored box and the top of the color box.
+        innerbottommargin=  6pt,%                       Space between the bottom text line within a colored box and the bottom of the color box.
+        leftmargin =        10pt,%                      Space between the colored box and the left margin of the page.
+        rightmargin =       10pt,%                      Space between the colored box and the right margin of the page.
+        innerleftmargin=    6pt,%                       Space between the colored box and the text within the color box on the left.
+        innerrightmargin=   6pt,%                       Space between the colored box and the text within the color box on the right.
+%%%         Coloring Information
+        linecolor=          questionBorderColor,%       Set the border line coloring to a defined color, so users can change it as desired.
+        backgroundcolor=questionBackgroundColor,%       Set the background coloring to a user definable color.
+%%%         Box Breaking Behavior
+        nobreak=everyline,%                             Allow the box to break if it needs to, but still gives a full frame after breaking.
+%                                                           Thus if a question is broken mid-frame it will give both halves a full frame.
+        needspace=30pt,%                                If there isn't at least a 30pt space before the bottom of the
+%                                                           page when TeX tries to draw a question environment, it will go to the next page.
+    }% End question environment styling.
 
 \mdfdefinestyle{multipleChoice-env}{% This is the (default) style for multiple choice environments.
 %%%         Line information for borders.
@@ -233,9 +340,9 @@
 \ifweb% Web styling info
 \else% pdf Styling info
     \surroundwithmdframed[style=problem-env]{problem}% Problem Environment assignment
-    \surroundwithmdframed[style=problem-env]{exercise}% Exercise Environment assignment
-    \surroundwithmdframed[style=problem-env]{exploration}% Exploration Environment assignment
-    \surroundwithmdframed[style=problem-env]{question}% Question Environment assignment
+    \surroundwithmdframed[style=exercise-env]{exercise}% Exercise Environment assignment
+    \surroundwithmdframed[style=exploration-env]{exploration}% Exploration Environment assignment
+    \surroundwithmdframed[style=question-env]{question}% Question Environment assignment
     \surroundwithmdframed[style=multipleChoice-env]{multipleChoice}% multipleChoice Environment assignment
     \surroundwithmdframed[style=selectAll-env]{selectAll}% selectAll Environment assignment
     \surroundwithmdframed[style=feedback-env]{feedback}% feedback Environment assignment
