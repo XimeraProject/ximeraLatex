@@ -49,6 +49,7 @@
 %% src/jax.dtx  (with options: `classXimera')
 %% src/ungraded.dtx  (with options: `classXimera')
 %% src/sectioning.dtx  (with options: `classXimera')
+%% src/styling.dtx  (with options: `classXimera')
 %% ------------:| ------------------------------------------------------------
 %%       ximera:| Simultaneously writing print and online interactive materials
 %%       Author:| Jim Fowler and Oscar Levin and Jason Nowell and Hans Parshall and Bart Snapp
@@ -145,6 +146,7 @@
 \RequirePackage{titling}
 \RequirePackage{url}
 \RequirePackage[table]{xcolor}
+\RequirePackage[TikZ]{mdframed}% Use mdframed to provide extensive styling for environments in pdf form.
 \RequirePackage{fancyvrb}
 \RequirePackage{ifpdf}
 \ifpdf
@@ -460,7 +462,6 @@
 
 \addtocounter{problem@Depth}{-2}% Exited a problem so we've exited a problem layer. Need -2 because we steppped once at the start to check for needing a depth-level count reset.
 
-\par\addvspace{.5ex}\nobreak\noindent\hung %% line at the bottom
 
 \ifhandout
 \ifnewpage
@@ -645,7 +646,9 @@
 \setkeys{interactive}{id=}
 \newcommand{\includeinteractive}[2][]{
 \setkeys*{interactive}{#1}%
-\ifthenelse{\equal{\interactive@id}{}}{}{\recordvariable{\interactive@id}}
+\ifthenelse{\equal{\interactive@id}{}}{}{
+    %\recordvariable{\interactive@id}% This shouldn't exist according to Jim. Commenting out for now in case we find why it's even here.
+    }
 Interactive
 }
 
@@ -741,7 +744,6 @@ Interactive
 \newcommand{\answer}[2][]{%
 \ifmmode%
 \setkeys{answer}{#1}%
-\recordvariable{\ans@id}
 \ifthenelse{\boolean{\ans@given}}
 {% Start then statement
 \ifhandout
@@ -882,7 +884,6 @@ Interactive
        % %% line at the bottom}
        {
 \end{trivlist}
- \par\addvspace{.5ex}\nobreak\noindent\hung
        }
 \fi
 
@@ -1125,6 +1126,191 @@ Interactive
 \titleformat{\paragraph}[runin]{\normalfont\normalsize\bfseries}{\theparagraph}{1em}{\special{html <h5>}}[\special{html </h5>}]
 \titleformat{\subparagraph}[runin]{\normalfont\normalsize\bfseries}{\thesubparagraph}{1em}{\special{html <h6>}}[\special{html </h6>}]
 \fi
+%%% Color Definitions. Find this code in styling.dtx.
+
+\definecolor{problemBackgroundColor}{RGB}{255, 230, 179}% A light tan color
+\definecolor{problemBorderColor}{RGB}{77, 77, 77}% Darker Grey color
+
+\definecolor{multipleChoiceBackgroundColor}{RGB}{204, 204, 255}% A light tan color for problem environment backgrounds
+\definecolor{multipleChoiceBorderColor}{RGB}{77, 77, 77}% Darker Grey color for border of problem environments.
+
+\definecolor{selectAllBackgroundColor}{RGB}{229, 229, 204}% A light tan color for problem environment backgrounds
+\definecolor{selectAllBorderColor}{RGB}{77, 77, 77}% Darker Grey color for border of problem environments.
+
+\definecolor{feedbackBackgroundColor}{RGB}{204, 255, 204}% A light green color for feedback environment backgrounds
+\definecolor{feedbackBorderColor}{RGB}{77, 77, 77}% Darker Grey color for border of feedback environments.
+
+\definecolor{freeResponseBackgroundColor}{RGB}{255, 255, 255}% A light green color for free response environment backgrounds
+\definecolor{freeResponseBorderColor}{RGB}{77, 77, 77}% Darker Grey color for border of free response environments.
+
+\definecolor{hintBackgroundColor}{RGB}{194, 194, 214}% A light purple color for free response environment backgrounds
+\definecolor{hintBorderColor}{RGB}{77, 77, 77}% Darker Grey color for border of hint environments.
+
+\definecolor{solutionBackgroundColor}{RGB}{255, 179, 179}% A light olive color for free response environment backgrounds
+\definecolor{solutionBorderColor}{RGB}{77, 77, 77}% Darker Grey color for border of hint environments.
+
+\mdfdefinestyle{problem-env}{% This is the (default) style for problem environments.
+%%%         Line information for borders.
+        linewidth=          1pt,%
+        roundcorner=        8pt,%   This rounds the corner a bit to improve aesthetic.
+%%%         Spacing Information
+        skipabove=          10pt,%                      Space above the background coloring and the previous text line.
+        skipbelow=          10pt,%                      Space below the background coloring and the next text line.
+        innertopmargin=     6pt,%                       Space between the first text line within a colored box and the top of the color box.
+        innerbottommargin=  6pt,%                       Space between the bottom text line within a colored box and the bottom of the color box.
+        leftmargin =        10pt,%                      Space between the colored box and the left margin of the page.
+        rightmargin =       10pt,%                      Space between the colored box and the right margin of the page.
+        innerleftmargin=    6pt,%                       Space between the colored box and the text within the color box on the left.
+        innerrightmargin=   6pt,%                       Space between the colored box and the text within the color box on the right.
+%%%         Coloring Information
+        linecolor=          problemBorderColor,%        Set the border line coloring to a defined color, so users can change it as desired.
+        backgroundcolor=problemBackgroundColor,%        Set the background coloring to a user definable color.
+%%%         Box Breaking Behavior
+        nobreak=everyline,%                             Allow the box to break if it needs to, but still gives a full frame after breaking.
+        needspace=30pt,%                                If there isn't at least a 30pt space before the bottom of the
+    }% End problem environment styling.
+
+\mdfdefinestyle{multipleChoice-env}{% This is the (default) style for multiple choice environments.
+%%%         Line information for borders.
+        linewidth=          1pt,%
+        roundcorner=        8pt,%   This rounds the corner a bit to improve aesthetic.
+%%%         Spacing Information
+        skipabove=          10pt,%                      Space above the background coloring and the previous text line.
+        skipbelow=          10pt,%                      Space below the background coloring and the next text line.
+        innertopmargin=     6pt,%                       Space between the first text line within a colored box and the top of the color box.
+        innerbottommargin=  6pt,%                       Space between the bottom text line within a colored box and the bottom of the color box.
+        leftmargin =        10pt,%                      Space between the colored box and the left margin of the page.
+        rightmargin =       10pt,%                      Space between the colored box and the right margin of the page.
+        innerleftmargin=    6pt,%                       Space between the colored box and the text within the color box on the left.
+        innerrightmargin=   6pt,%                       Space between the colored box and the text within the color box on the right.
+%%%         Coloring Information
+        linecolor=          multipleChoiceBorderColor,% Set the border line coloring to a defined color, so users can change it as desired.
+        backgroundcolor=multipleChoiceBackgroundColor,% Set the background coloring to a user definable color.
+%%%         Box Breaking Behavior
+        nobreak=everyline,%                             Allow the box to break if it needs to, but still gives a full frame after breaking.
+        needspace=30pt,%                                If there isn't at least a 30pt space before the bottom of the
+    }% End multiple choice environment styling.
+
+\mdfdefinestyle{selectAll-env}{% This is the (default) style for selectAll environments.
+%%%         Line information for borders.
+        linewidth=          1pt,%
+        roundcorner=        8pt,%   This rounds the corner a bit to improve aesthetic.
+%%%         Spacing Information
+        skipabove=          10pt,%                      Space above the background coloring and the previous text line.
+        skipbelow=          10pt,%                      Space below the background coloring and the next text line.
+        innertopmargin=     6pt,%                       Space between the first text line within a colored box and the top of the color box.
+        innerbottommargin=  6pt,%                       Space between the bottom text line within a colored box and the bottom of the color box.
+        leftmargin =        10pt,%                      Space between the colored box and the left margin of the page.
+        rightmargin =       10pt,%                      Space between the colored box and the right margin of the page.
+        innerleftmargin=    6pt,%                       Space between the colored box and the text within the color box on the left.
+        innerrightmargin=   6pt,%                       Space between the colored box and the text within the color box on the right.
+%%%         Coloring Information
+        linecolor=          selectAllBorderColor,%      Set the border line coloring to a defined color, so users can change it as desired.
+        backgroundcolor=selectAllBackgroundColor,%      Set the background coloring to a user definable color.
+%%%         Box Breaking Behavior
+        nobreak=everyline,%                             Allow the box to break if it needs to, but still gives a full frame after breaking.
+        needspace=30pt,%                                If there isn't at least a 30pt space before the bottom of the
+    }% End selectAll environment styling.
+
+\mdfdefinestyle{feedback-env}{% This is the (default) style for feedback environments.
+%%%         Line information for borders.
+        linewidth=          1pt,%
+        roundcorner=        8pt,%   This rounds the corner a bit to improve aesthetic.
+%%%         Spacing Information
+        skipabove=          10pt,%                      Space above the background coloring and the previous text line.
+        skipbelow=          10pt,%                      Space below the background coloring and the next text line.
+        innertopmargin=     6pt,%                       Space between the first text line within a colored box and the top of the color box.
+        innerbottommargin=  6pt,%                       Space between the bottom text line within a colored box and the bottom of the color box.
+        leftmargin =        10pt,%                      Space between the colored box and the left margin of the page.
+        rightmargin =       10pt,%                      Space between the colored box and the right margin of the page.
+        innerleftmargin=    6pt,%                       Space between the colored box and the text within the color box on the left.
+        innerrightmargin=   6pt,%                       Space between the colored box and the text within the color box on the right.
+%%%         Coloring Information
+        linecolor=          feedbackBorderColor,%       Set the border line coloring to a defined color, so users can change it as desired.
+        backgroundcolor=feedbackBackgroundColor,%       Set the background coloring to a user definable color.
+%%%         Box Breaking Behavior
+        nobreak=everyline,%                             Allow the box to break if it needs to, but still gives a full frame after breaking.
+        needspace=30pt,%                                If there isn't at least a 30pt space before the bottom of the
+    }% End feedback environment styling.
+
+\mdfdefinestyle{freeResponse-env}{% This is the (default) style for free response environments.
+%%%         Line information for borders.
+        linewidth=          1pt,%
+        roundcorner=        8pt,%   This rounds the corner a bit to improve aesthetic.
+%%%         Spacing Information
+        skipabove=          10pt,%                      Space above the background coloring and the previous text line.
+        skipbelow=          10pt,%                      Space below the background coloring and the next text line.
+        innertopmargin=     6pt,%                       Space between the first text line within a colored box and the top of the color box.
+        innerbottommargin=  6pt,%                       Space between the bottom text line within a colored box and the bottom of the color box.
+        leftmargin =        10pt,%                      Space between the colored box and the left margin of the page.
+        rightmargin =       10pt,%                      Space between the colored box and the right margin of the page.
+        innerleftmargin=    6pt,%                       Space between the colored box and the text within the color box on the left.
+        innerrightmargin=   6pt,%                       Space between the colored box and the text within the color box on the right.
+%%%         Coloring Information
+        linecolor=          freeResponseBorderColor,%   Set the border line coloring to a defined color, so users can change it as desired.
+        backgroundcolor=freeResponseBackgroundColor,%   Set the background coloring to a user definable color.
+%%%         Box Breaking Behavior
+        nobreak=everyline,%                             Allow the box to break if it needs to, but still gives a full frame after breaking.
+        needspace=30pt,%                                If there isn't at least a 30pt space before the bottom of the
+    }% End free response environment styling.
+
+\mdfdefinestyle{hint-env}{% This is the (default) style for hint environments.
+%%%         Line information for borders.
+        linewidth=          1pt,%
+        roundcorner=        8pt,%   This rounds the corner a bit to improve aesthetic.
+%%%         Spacing Information
+        skipabove=          10pt,%                      Space above the background coloring and the previous text line.
+        skipbelow=          10pt,%                      Space below the background coloring and the next text line.
+        innertopmargin=     6pt,%                       Space between the first text line within a colored box and the top of the color box.
+        innerbottommargin=  6pt,%                       Space between the bottom text line within a colored box and the bottom of the color box.
+        leftmargin =        10pt,%                      Space between the colored box and the left margin of the page.
+        rightmargin =       10pt,%                      Space between the colored box and the right margin of the page.
+        innerleftmargin=    6pt,%                       Space between the colored box and the text within the color box on the left.
+        innerrightmargin=   6pt,%                       Space between the colored box and the text within the color box on the right.
+%%%         Coloring Information
+        linecolor=          hintBorderColor,%   Set the border line coloring to a defined color, so users can change it as desired.
+        backgroundcolor=hintBackgroundColor,%   Set the background coloring to a user definable color.
+%%%         Box Breaking Behavior
+        nobreak=everyline,%                             Allow the box to break if it needs to, but still gives a full frame after breaking.
+        needspace=30pt,%                                If there isn't at least a 30pt space before the bottom of the
+    }% End hint environment styling.
+
+\mdfdefinestyle{solution-env}{% This is the (default) style for solution environments.
+%%%         Line information for borders.
+        linewidth=          1pt,%
+        roundcorner=        8pt,%   This rounds the corner a bit to improve aesthetic.
+%%%         Spacing Information
+        skipabove=          10pt,%                      Space above the background coloring and the previous text line.
+        skipbelow=          10pt,%                      Space below the background coloring and the next text line.
+        innertopmargin=     6pt,%                       Space between the first text line within a colored box and the top of the color box.
+        innerbottommargin=  6pt,%                       Space between the bottom text line within a colored box and the bottom of the color box.
+        leftmargin =        10pt,%                      Space between the colored box and the left margin of the page.
+        rightmargin =       10pt,%                      Space between the colored box and the right margin of the page.
+        innerleftmargin=    6pt,%                       Space between the colored box and the text within the color box on the left.
+        innerrightmargin=   6pt,%                       Space between the colored box and the text within the color box on the right.
+%%%         Coloring Information
+        linecolor=          solutionBorderColor,%   Set the border line coloring to a defined color, so users can change it as desired.
+        backgroundcolor=solutionBackgroundColor,%   Set the background coloring to a user definable color.
+%%%         Box Breaking Behavior
+        nobreak=everyline,%                             Allow the box to break if it needs to, but still gives a full frame after breaking.
+        needspace=30pt,%                                If there isn't at least a 30pt space before the bottom of the
+    }% End solution environment styling.
+
+
+\ifweb% Web styling info
+\else% pdf Styling info
+    \surroundwithmdframed[style=problem-env]{problem}% Problem Environment assignment
+    \surroundwithmdframed[style=problem-env]{exercise}% Exercise Environment assignment
+    \surroundwithmdframed[style=problem-env]{exploration}% Exploration Environment assignment
+    \surroundwithmdframed[style=problem-env]{question}% Question Environment assignment
+    \surroundwithmdframed[style=multipleChoice-env]{multipleChoice}% multipleChoice Environment assignment
+    \surroundwithmdframed[style=selectAll-env]{selectAll}% selectAll Environment assignment
+    \surroundwithmdframed[style=feedback-env]{feedback}% feedback Environment assignment
+    \surroundwithmdframed[style=freeResponse-env]{freeResponse}% Free response Environment assignment
+    \surroundwithmdframed[style=hint-env]{hint}% Hint Environment assignment
+    \surroundwithmdframed[style=solution-env]{solution}% Solution Environment assignment
+\fi
+
 %% 
 %% Copyright (C) 2018-2020 by Bart Snapp <bart.snapp@gmail.com> and Jim Fowler <kisonecat@gmail.com>
 %% 

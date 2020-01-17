@@ -8,7 +8,9 @@
 \setkeys{interactive}{id=}
 \newcommand{\includeinteractive}[2][]{
 \setkeys*{interactive}{#1}%
-\ifthenelse{\equal{\interactive@id}{}}{}{\recordvariable{\interactive@id}}
+\ifthenelse{\equal{\interactive@id}{}}{}{
+    %\recordvariable{\interactive@id}% This shouldn't exist according to Jim. Commenting out for now in case we find why it's even here.
+    }
 Interactive
 }
 %</classXimera>
