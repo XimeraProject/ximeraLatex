@@ -914,12 +914,10 @@ Interactive
   \special{ximera:begin selectall}
   \begingroup
   \renewcommand{\labelitemi}{\rule[-3pt]{12pt}{12pt}}
-  \begin{itemize}
   }% Note this means that \item has to be the first line after \begin{multipleChoice}.
   {% Environment End Code
-    \hspace{12pt} \@checkwork
+    \\ \@checkwork
     \special{ximera:end selectall}
-  \end{itemize}
   \endgroup
 }
 \else
