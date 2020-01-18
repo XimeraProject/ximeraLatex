@@ -164,7 +164,6 @@
 \RequirePackage{xifthen}% http://ctan.org/pkg/xifthen
 \RequirePackage{multido}% http://ctan.org/pkg/multid
 \RequirePackage{listings} %% is this required? Check code environments: sage, etc.
-\RequirePackage{tcolorbox} %% for choice colors.
 
 \RequirePackage{xkeyval}
 
@@ -829,10 +828,10 @@ Interactive
 \ifweb
 \renewcommand{\choice}[2][]{%
   \ifthenelse{\boolean{\choice@correct}}{\special{ximera:choice correct}}{\special{ximera:choice}}
-  \item \begingroup\setlength{\fboxsep}{6pt}\begin{tcolorbox}[colback=green]{#2}\end{tcolorbox}\endgroup
+  %\item \colorbox{green}{\parbox{\textwidth-\itemindent-\itemindent}{\begingroup\setlength{\fboxsep}{6pt}#2\endgroup}}
+  \colorbox{green}{\parbox{\textwidth-\itemindent-\itemindent}{\begingroup\setlength{\fboxsep}{6pt}#2\endgroup}}
 }
 
- %\newcounter{choiceId}
  %\renewcommand{\choice}[2][]{%
  %\setkeys{choice}{correct=false}%
  %\setkeys{choice}{#1}%
@@ -869,12 +868,12 @@ Interactive
   \special{ximera:begin multiplechoice}
   \begingroup
   \renewcommand{\labelitemi}{\rule[-3pt]{12pt}{12pt}}
-  \begin{itemize}
+  %\begin{itemize}
   }% Note this means that \item has to be the first line after \begin{multipleChoice}.
   {% Environment End Code
-    \hspace{12pt} \@checkwork
+    \\ \@checkwork
     \special{ximera:end multiplechoice}
-  \end{itemize}
+  %\end{itemize}
   \endgroup
 }
 \else
@@ -886,7 +885,7 @@ Interactive
 \begin{enumerate}
 }% Note this means that \item has to be the first line after \begin{multipleChoice}.
 {% Environment End Code
-          \hspace{12pt} \@checkwork
+          \\ \@checkwork
 \end{enumerate}
               \end{trivlist}
 }
