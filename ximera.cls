@@ -828,8 +828,7 @@ Interactive
 \ifweb
 \renewcommand{\choice}[2][]{%
   \ifthenelse{\boolean{\choice@correct}}{\special{ximera:choice correct}}{\special{ximera:choice}}
-  %\item \colorbox{green}{\parbox{\textwidth-\itemindent-\itemindent}{\begingroup\setlength{\fboxsep}{6pt}#2\endgroup}}
-  \colorbox{green}{\parbox{\textwidth-\itemindent-\itemindent}{\begingroup\setlength{\fboxsep}{6pt}#2\endgroup}}
+  \newline\null\quad\labelitemi\quad\colorbox{green}{\parbox{\textwidth-12pt-1em-1em}{\begingroup\setlength{\fboxsep}{6pt}#2\endgroup}}
 }
 
  %\renewcommand{\choice}[2][]{%
