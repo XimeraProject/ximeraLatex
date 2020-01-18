@@ -162,8 +162,9 @@
 \RequirePackage{amsmath}% Included to have access to math typeset.
 \RequirePackage{amsthm}%  Included to have access to math typeset.
 \RequirePackage{xifthen}% http://ctan.org/pkg/xifthen
-\RequirePackage{multido}% http://ctan.org/pkg/multido
-\RequirePackage{listings} %% is this required???z
+\RequirePackage{multido}% http://ctan.org/pkg/multid
+\RequirePackage{listings} %% is this required? Check code environments: sage, etc.
+\RequirePackage{tcolorbox} %% for choice colors.
 
 \RequirePackage{xkeyval}
 
@@ -828,7 +829,7 @@ Interactive
 \ifweb
 \renewcommand{\choice}[2][]{%
   \ifthenelse{\boolean{\choice@correct}}{\special{ximera:choice correct}}{\special{ximera:choice}}
-  \item \begingroup\setlength{\fboxsep}{6pt}\colorbox{green}{#2}\endgroup
+  \item \begingroup\setlength{\fboxsep}{6pt}\begin{tcolorbox}[colback=green]{#2}\end{tcolorbox}\endgroup
 }
 
  %\newcounter{choiceId}
@@ -847,12 +848,12 @@ Interactive
 
 \ifweb
 \newcommand{\@checkwork@check}{\special{ximera:checkwork check}\begingroup\setlength{\fboxsep}{6pt}\colorbox{blue}{\textcolor{white}{\textup{\textsf{\textbf{Check Work}}}}}\endgroup}
-\newcommand{\@checkwork@correct}{\special{ximera:checkwork correct}\begingroup\setlength{\fboxsep}{6pt}\colorbox{green}{\textcolor{white}{\textrm{\textsf{Correct}}}}\endgroup}
-\newcommand{\@checkwork@incorrect}{\special{ximera:checkwork incorrect}\begingroup\setlength{\fboxsep}{6pt}\colorbox{red}{\textcolor{white}{\textrm{\textsf{Incorrect}}}}\endgroup}
+\newcommand{\@checkwork@correct}{\special{ximera:checkwork correct}\begingroup\setlength{\fboxsep}{6pt}\colorbox{green}{\textcolor{white}{\textup{\textsf{\textbf{Correct}}}}}\endgroup}
+\newcommand{\@checkwork@incorrect}{\special{ximera:checkwork incorrect}\begingroup\setlength{\fboxsep}{6pt}\colorbox{red}{\textcolor{white}{\textup{\textsf{\textbf{Incorrect}}}}}\endgroup}
 
 \newcommand{\@checkwork}{%
   \special{ximera:begin checkwork}%
-  \makebox[0in][l]{\@checkwork@incorrect}%
+  \hfill\makebox[0in][l]{\@checkwork@incorrect}%
   \makebox[0in][l]{\@checkwork@correct}%
   \@checkwork@check%  The longest one
   \special{ximera:end checkwork}
