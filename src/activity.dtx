@@ -87,6 +87,7 @@
 \ifweb
 \newcommand{\activity}[2][]{%
   \renewcommand{\maketitle}{
+    \special{ximera:activity #2}
     \raggedright
     {\bfseries{\@title}}%
 
@@ -123,7 +124,7 @@
 %    \end{macrocode}
 
 % \subsubsection{Practice activities}
-% \DescribeMacro{\practice}{Like |\activity| but not expecting a title.}
+% \DescribeMacro{\practice}{Like |\activity| but not expecting a title.  On the web, |\practice| only emits the appropriate special.}
 %    \begin{macrocode}
 %<*classXourse>
 \ifhandout
@@ -140,6 +141,12 @@
   \let\input\otherinput}
 \fi
 \relax
+
+\ifweb
+\renewcommand{\practice}[2][]{
+  \special{ximera:practice #2}
+}
+\fi
 %</classXourse>
 %    \end{macrocode}
 

@@ -110,7 +110,8 @@
 %<*classXimera>
 \ifweb
 \renewcommand{\choice}[2][]{%
-  \item \colorbox{gray}{#2}
+  \ifthenelse{\boolean{\choice@correct}}{\special{ximera:choice correct}}{\special{ximera:choice}}
+  \item \begingroup\setlength{\fboxsep}{6pt}\colorbox{green}{#2}\endgroup
 }
 
  %\newcounter{choiceId}
@@ -134,6 +135,38 @@
 % \DescribeEnv{multipleChoice}{Wrap |\choice|s in a |multipleChoice| environment to make a multiple choice question.}
 %    \begin{macrocode}
 %<*classXimera>
+\ifweb
+\newcommand{\@checkwork@check}{\special{ximera:checkwork check}\begingroup\setlength{\fboxsep}{6pt}\colorbox{blue}{\textcolor{white}{\textrm{\textsf{Check Work}}}}\endgroup}
+\newcommand{\@checkwork@correct}{\special{ximera:checkwork correct}\begingroup\setlength{\fboxsep}{6pt}\colorbox{green}{\textcolor{white}{\textrm{\textsf{Correct}}}}\endgroup}
+\newcommand{\@checkwork@incorrect}{\special{ximera:checkwork incorrect}\begingroup\setlength{\fboxsep}{6pt}\colorbox{red}{\textcolor{white}{\textrm{\textsf{Incorrect}}}}\endgroup}
+
+\newcommand{\@checkwork}{%
+  \special{ximera:begin checkwork}%
+  \makebox[0in][l]{\@checkwork@incorrect}%
+  \makebox[0in][l]{\@checkwork@correct}%
+  \@checkwork@check%  The longest one
+  \special{ximera:end checkwork}
+}
+\else
+\newcommand{\@checkwork}{}
+\fi
+
+\ifweb
+\newenvironment{multipleChoice}[1][]
+{% Environment Start Code
+  \setkeys{multipleChoice}{#1}%
+  \special{ximera:begin multiplechoice}
+  \begingroup
+  \renewcommand{\labelitemi}{\rule[-3pt]{12pt}{12pt}}
+  \begin{itemize}
+  }% Note this means that \item has to be the first line after \begin{multipleChoice}.
+  {% Environment End Code
+    \hspace{12pt} \@checkwork
+    \special{ximera:end multiplechoice}
+  \end{itemize}
+  \endgroup
+}
+\else
 \newenvironment{multipleChoice}[1][]
 	{% Environment Start Code
 	\setkeys{multipleChoice}{#1}%
@@ -142,33 +175,18 @@
 		\begin{enumerate}
 	}% Note this means that \item has to be the first line after \begin{multipleChoice}.
 	{% Environment End Code
+          \hspace{12pt} \@checkwork
 		\end{enumerate}
-	\end{trivlist}
+              \end{trivlist}
 	}
-
+\fi
+        
 %multipleChoice@ is for internal use only! (used in wordChoice)
 %this is simply a wrapper for the sole showing (other)choice.
 \newenvironment{multipleChoice@}[1][]{}{)}
 %</classXimera>
 %    \end{macrocode}
 
-
-
-% On the web, you might also expect these to be "problem environments"
-% but they aren't -- they're respondables.  You might expect a
-% |\setcounter{choiceId}{0}| here --- that would be wrong, because then
-% the generated IDs would no longer be unique.
-%    \begin{macrocode}
-%<*htXimera>
-\renewenvironment{multipleChoice}[1][]
-{\setkeys{multipleChoice}{#1}%
-\stepcounter{identification}\ifvmode \IgnorePar\fi \EndP\HCode{<div class="multiple-choice" }%
-\ifthenelse{\equal{\mc@id}{}}{}{\HCode{data-id="\mc@id" }}%
-\HCode{id="problem\arabic{identification}">}%
-}{\HCode{</div>}\IgnoreIndent}
-\ConfigureEnv{multipleChoice}{}{}{}{}
-%</htXimera>
-%    \end{macrocode}
 
 % \subsection{Word choice}
 % \DescribeMacro{\wordChoice}{An in-line version of multipleChoice:
@@ -207,9 +225,26 @@
 % \DescribeEnv{selectAll}{A multiple-multiple choice question}
 %    \begin{macrocode}
 %<*classXimera>
+\ifweb
+\newenvironment{selectAll}[1][]
+{% Environment Start Code
+  \setkeys{multipleChoice}{#1}%
+  \special{ximera:begin selectall}
+  \begingroup
+  \renewcommand{\labelitemi}{\rule[-3pt]{12pt}{12pt}}
+  \begin{itemize}
+  }% Note this means that \item has to be the first line after \begin{multipleChoice}.
+  {% Environment End Code
+    \hspace{12pt} \@checkwork
+    \special{ximera:end selectall}
+  \end{itemize}
+  \endgroup
+}
+\else
 \newenvironment{selectAll}[1][]
 {\begin{trivlist}\item[\hskip \labelsep\small\bfseries Select All Correct Answers:]\hfil\begin{enumerate}}
     {\end{enumerate}\end{trivlist}}
+\fi
 %</classXimera>
 %    \end{macrocode}
 

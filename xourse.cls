@@ -80,6 +80,7 @@
 \ifweb
 \newcommand{\activity}[2][]{%
   \renewcommand{\maketitle}{
+    \special{ximera:activity #2}
     \raggedright
     {\bfseries{\@title}}%
 
@@ -127,6 +128,12 @@
   \let\input\otherinput}
 \fi
 \relax
+
+\ifweb
+\renewcommand{\practice}[2][]{
+  \special{ximera:practice #2}
+}
+\fi
 
 
 \renewcommand*\l@section{\@dottedtocline{1}{1.5em}{4.2em}}

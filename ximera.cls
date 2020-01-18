@@ -827,7 +827,8 @@ Interactive
 
 \ifweb
 \renewcommand{\choice}[2][]{%
-  \item \colorbox{gray}{#2}
+  \ifthenelse{\boolean{\choice@correct}}{\special{ximera:choice correct}}{\special{ximera:choice}}
+  \item \begingroup\setlength{\fboxsep}{6pt}\colorbox{green}{#2}\endgroup
 }
 
  %\newcounter{choiceId}
@@ -844,6 +845,38 @@ Interactive
  %\let\inlinechoice\choice
 \fi
 
+\ifweb
+\newcommand{\@checkwork@check}{\special{ximera:checkwork check}\begingroup\setlength{\fboxsep}{6pt}\colorbox{blue}{\textcolor{white}{\textrm{\textsf{Check Work}}}}\endgroup}
+\newcommand{\@checkwork@correct}{\special{ximera:checkwork correct}\begingroup\setlength{\fboxsep}{6pt}\colorbox{green}{\textcolor{white}{\textrm{\textsf{Correct}}}}\endgroup}
+\newcommand{\@checkwork@incorrect}{\special{ximera:checkwork incorrect}\begingroup\setlength{\fboxsep}{6pt}\colorbox{red}{\textcolor{white}{\textrm{\textsf{Incorrect}}}}\endgroup}
+
+\newcommand{\@checkwork}{%
+  \special{ximera:begin checkwork}%
+  \makebox[0in][l]{\@checkwork@incorrect}%
+  \makebox[0in][l]{\@checkwork@correct}%
+  \@checkwork@check%  The longest one
+  \special{ximera:end checkwork}
+}
+\else
+\newcommand{\@checkwork}{}
+\fi
+
+\ifweb
+\newenvironment{multipleChoice}[1][]
+{% Environment Start Code
+  \setkeys{multipleChoice}{#1}%
+  \special{ximera:begin multiplechoice}
+  \begingroup
+  \renewcommand{\labelitemi}{\rule[-3pt]{12pt}{12pt}}
+  \begin{itemize}
+  }% Note this means that \item has to be the first line after \begin{multipleChoice}.
+  {% Environment End Code
+    \hspace{12pt} \@checkwork
+    \special{ximera:end multiplechoice}
+  \end{itemize}
+  \endgroup
+}
+\else
 \newenvironment{multipleChoice}[1][]
 {% Environment Start Code
 \setkeys{multipleChoice}{#1}%
@@ -852,12 +885,13 @@ Interactive
 \begin{enumerate}
 }% Note this means that \item has to be the first line after \begin{multipleChoice}.
 {% Environment End Code
+          \hspace{12pt} \@checkwork
 \end{enumerate}
-\end{trivlist}
+              \end{trivlist}
 }
+\fi
 
 \newenvironment{multipleChoice@}[1][]{}{)}
-
 
 \newcommand{\wordChoice}[1]{%
 \let\choicetemp\choice% Assign a "choicetemp" command to duplicate choice.
@@ -874,9 +908,26 @@ Interactive
 }%
 
 
+\ifweb
+\newenvironment{selectAll}[1][]
+{% Environment Start Code
+  \setkeys{multipleChoice}{#1}%
+  \special{ximera:begin selectall}
+  \begingroup
+  \renewcommand{\labelitemi}{\rule[-3pt]{12pt}{12pt}}
+  \begin{itemize}
+  }% Note this means that \item has to be the first line after \begin{multipleChoice}.
+  {% Environment End Code
+    \hspace{12pt} \@checkwork
+    \special{ximera:end selectall}
+  \end{itemize}
+  \endgroup
+}
+\else
 \newenvironment{selectAll}[1][]
 {\begin{trivlist}\item[\hskip \labelsep\small\bfseries Select All Correct Answers:]\hfil\begin{enumerate}}
     {\end{enumerate}\end{trivlist}}
+\fi
 
 
 
