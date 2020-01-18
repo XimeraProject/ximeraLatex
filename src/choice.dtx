@@ -105,22 +105,28 @@
 
 %</classXimera>
 %    \end{macrocode}
-% On the HTML side, |\choice| emits |<span>|s.
+% To support the HTML side, |\choice| emits special rules.
 %    \begin{macrocode}
-%<*htXimera>
-\newcounter{choiceId}
+%<*classXimera>
+\ifweb
 \renewcommand{\choice}[2][]{%
-\setkeys{choice}{correct=false}%
-\setkeys{choice}{#1}%
-\stepcounter{choiceId}\IgnorePar%
-\HCode{<span class="choice }%
-\ifthenelse{\boolean{\choice@correct}}{\HCode{correct}}{}
-\HCode{" }
-\ifthenelse{\equal{\choice@value}{}}{}{\HCode{data-value="\choice@value" }}
-\HCode{id="choice\arabic{choiceId}">}%
-#2\HCode{</span>}}
-\let\inlinechoice\choice
-%</htXimera>
+  \item \colorbox{gray}{#2}
+}
+
+ %\newcounter{choiceId}
+ %\renewcommand{\choice}[2][]{%
+ %\setkeys{choice}{correct=false}%
+ %\setkeys{choice}{#1}%
+ %\stepcounter{choiceId}\IgnorePar%
+ %\HCode{<span class="choice }%
+ %\ifthenelse{\boolean{\choice@correct}}{\HCode{correct}}{}
+ %\HCode{" }
+ %\ifthenelse{\equal{\choice@value}{}}{}{\HCode{data-value="\choice@value" }}
+ %\HCode{id="choice\arabic{choiceId}">}%
+ %#2\HCode{</span>}}
+ %\let\inlinechoice\choice
+\fi
+%</classXimera>
 %    \end{macrocode}
 
 % \subsubsection{Environment(s)}

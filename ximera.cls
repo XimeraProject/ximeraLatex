@@ -645,7 +645,6 @@
 \setkeys{interactive}{id=}
 \newcommand{\includeinteractive}[2][]{
 \setkeys*{interactive}{#1}%
-\ifthenelse{\equal{\interactive@id}{}}{}{\recordvariable{\interactive@id}}
 Interactive
 }
 
@@ -675,7 +674,7 @@ Interactive
 \ifweb
 \def\answer{%
   \begingroup
-  \catcode`^=12
+  \catcode`^=12\relax
   \catcode`_=12\relax
   \answerbox
 }
@@ -734,14 +733,13 @@ Interactive
   \renewcommand{\varsigma}{\string\sigma}
   \renewcommand{\vartheta}{\string\theta}
   %[#2]
-  \rule[-0.5em]{\widthof{#2}}{2.5em}
+  \rule[-0.5em]{1in}{2.5em}
   \endgroup
 }
 \else
 \newcommand{\answer}[2][]{%
 \ifmmode%
 \setkeys{answer}{#1}%
-\recordvariable{\ans@id}
 \ifthenelse{\boolean{\ans@given}}
 {% Start then statement
 \ifhandout
@@ -827,6 +825,24 @@ Interactive
 \hspace{-.25em}\ignorespaces%
 }
 
+\ifweb
+\renewcommand{\choice}[2][]{%
+  \item \colorbox{gray}{#2}
+}
+
+ %\newcounter{choiceId}
+ %\renewcommand{\choice}[2][]{%
+ %\setkeys{choice}{correct=false}%
+ %\setkeys{choice}{#1}%
+ %\stepcounter{choiceId}\IgnorePar%
+ %\HCode{<span class="choice }%
+ %\ifthenelse{\boolean{\choice@correct}}{\HCode{correct}}{}
+ %\HCode{" }
+ %\ifthenelse{\equal{\choice@value}{}}{}{\HCode{data-value="\choice@value" }}
+ %\HCode{id="choice\arabic{choiceId}">}%
+ %#2\HCode{</span>}}
+ %\let\inlinechoice\choice
+\fi
 
 \newenvironment{multipleChoice}[1][]
 {% Environment Start Code

@@ -8,8 +8,8 @@
 %    \begin{macrocode}
 %<*classXourse>
 \newcommand{\skip@preamble}{%
-    \let\document\relax\let\enddocument\relax%
-    \newenvironment{document}{\let\input\otherinput}{}%
+    %\let\document\relax\let\enddocument\relax%
+    \renewenvironment{document}{\let\input\otherinput}{}%
     \renewcommand{\documentclass}[2][subfiles]{}}
 %    \end{macrocode}
 % Note that the new command |\subfile| calls for |\skip@preamble| \emph{within a group}. The changes to |document| and |\documentclass| are undone after the inclusion of the subfile.
@@ -61,47 +61,66 @@
 %    \begin{macrocode}
 }
 \relax
+%    \end{macrocode}
+% But we do not include a titlepage on the web.
+%    \begin{macrocode}
+\ifweb\renewcommand{\maketitle}{}\fi
 %</classXourse>
 %    \end{macrocode}
 
 % \subsubsection{Regular activities}
 % \DescribeMacro{\activity}{Documents included with |\activity| will
-% be included in the body of the xourse document. Any |\input|
-% commands within included \textsf{ximera} documents will be ignored.
-% Any |\usepackage| commands within included ximera documents will
-% cause an error.  Overlapping |\newcommand| definitions within
-% multiple ximera documents included simultaneously will cause an
-% error.}  The |\activity| command inputs the file name provided
-% without |\documentclass|, without
+% be included in the body of the xourse document.
+%
+% On the web, |\activity|s emit small pages with the title.
+%
+% Any |\input| commands within included \textsf{ximera} documents will
+% be ignored.  Any |\usepackage| commands within included ximera
+% documents will cause an error.  Overlapping |\newcommand|
+% definitions within multiple ximera documents included simultaneously
+% will cause an error.}  The |\activity| command inputs the file name
+% provided without |\documentclass|, without
 % |\begin{document}|/|\end{document}| and without any inputs in the
 % preamble of the included file.
 %    \begin{macrocode}
 %<*classXourse>
+\ifweb
+\newcommand{\activity}[2][]{%
+  \renewcommand{\maketitle}{
+    \raggedright
+    {\bfseries{\@title}}%
+
+    \raggedright
+    {\textit\theabstract}
+    \end{document}\endinput
+  }
+  
+  \setkeys{activity}{#1}
+  \renewcommand{\input}[1]{}
+  \begingroup
+    \skip@preamble
+    \otherinput{#2}
+  \endgroup\clearpage
+  \let\input\otherinput
+}
+\else
 \ifnonewpage
 \newcommand{\activity}[2][]{%
-	\setkeys{activity}{#1}
+  \setkeys{activity}{#1}
   \renewcommand{\input}[1]{}
   \begingroup\skip@preamble\otherinput{#2}\endgroup\par\vspace{\topsep}
   \let\input\otherinput}
 \else
 \newcommand{\activity}[2][]{%
-	\setkeys{activity}{#1}
+  \setkeys{activity}{#1}
   \renewcommand{\input}[1]{}
   \begingroup\skip@preamble\otherinput{#2}\endgroup\clearpage
   \let\input\otherinput}
 \fi
+\fi
 \relax
 %</classXourse>
 %    \end{macrocode}
-
-%    \begin{macrocode}
-%<*htXourse>
-\renewcommand\activity[2][]{%
-\ifvmode \IgnorePar\fi \EndP\HCode{<a class="activity card \activitystyle" href="#2" data-options="#1">#2</a>}\IgnoreIndent%
-}
-%</htXourse>
-%    \end{macrocode}
-
 
 % \subsubsection{Practice activities}
 % \DescribeMacro{\practice}{Like |\activity| but not expecting a title.}

@@ -38,9 +38,16 @@
 \ProcessOptions\relax
 \LoadClass{ximera}
 
+\ifweb\notoctrue\fi
+
+\ifweb
+\geometry{margin=6pt,paperwidth=1.4in,paperheight=1.4in}
+\sloppy
+\fi
+
 \newcommand{\skip@preamble}{%
-    \let\document\relax\let\enddocument\relax%
-    \newenvironment{document}{\let\input\otherinput}{}%
+    %\let\document\relax\let\enddocument\relax%
+    \renewenvironment{document}{\let\input\otherinput}{}%
     \renewcommand{\documentclass}[2][subfiles]{}}
 \let\otherinput\input
 \let\othermaketitle\maketitle
@@ -68,22 +75,43 @@
 \let\maketitle\othermaketitle
 }
 \relax
+\ifweb\renewcommand{\maketitle}{}\fi
 
+\ifweb
+\newcommand{\activity}[2][]{%
+  \renewcommand{\maketitle}{
+    \raggedright
+    {\bfseries{\@title}}%
+
+    \raggedright
+    {\textit\theabstract}
+    \end{document}\endinput
+  }
+
+  \setkeys{activity}{#1}
+  \renewcommand{\input}[1]{}
+  \begingroup
+    \skip@preamble
+    \otherinput{#2}
+  \endgroup\clearpage
+  \let\input\otherinput
+}
+\else
 \ifnonewpage
 \newcommand{\activity}[2][]{%
-\setkeys{activity}{#1}
+  \setkeys{activity}{#1}
   \renewcommand{\input}[1]{}
   \begingroup\skip@preamble\otherinput{#2}\endgroup\par\vspace{\topsep}
   \let\input\otherinput}
 \else
 \newcommand{\activity}[2][]{%
-\setkeys{activity}{#1}
+  \setkeys{activity}{#1}
   \renewcommand{\input}[1]{}
   \begingroup\skip@preamble\otherinput{#2}\endgroup\clearpage
   \let\input\otherinput}
 \fi
+\fi
 \relax
-
 
 \ifhandout
 \newcommand{\practice}[2][]{

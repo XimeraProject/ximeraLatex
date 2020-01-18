@@ -35,7 +35,7 @@
 \ifweb
 \def\answer{%
   \begingroup
-  \catcode`^=12
+  \catcode`^=12\relax
   \catcode`_=12\relax
   \answerbox
 }
@@ -94,14 +94,13 @@
   \renewcommand{\varsigma}{\string\sigma}
   \renewcommand{\vartheta}{\string\theta}
   %[#2]
-  \rule[-0.5em]{\widthof{#2}}{2.5em}
+  \rule[-0.5em]{1in}{2.5em}
   \endgroup
 }
 \else
 \newcommand{\answer}[2][]{%
 	\ifmmode%
 		\setkeys{answer}{#1}%
-		\recordvariable{\ans@id}
 		\ifthenelse{\boolean{\ans@given}}
 			{% Start then statement
 			\ifhandout 

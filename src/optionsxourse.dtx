@@ -1,9 +1,7 @@
+% \begin{macro}{notoc}
+%    The default behavior of the class is to provide a table of contents listing all activities in the course. This option will supress this table of contents.  The web version should not include this table of contents.
 %    \begin{macrocode}
 %<*classXourse>
-%    \end{macrocode}
-% \begin{macro}{notoc}
-%    The default behavior of the class is to provide a table of contents listing all activities in the course. This option will supress this table of contents.
-%    \begin{macrocode}
 \newif\ifnotoc
 \notocfalse
 \DeclareOption{notoc}{\notoctrue}
@@ -22,6 +20,23 @@
 \ProcessOptions\relax
 \LoadClass{ximera}
 %    \begin{macrocode}
+%</classXourse>
+%    \end{macrocode}
+
+%  The web version should not include a table of contents.
+%    \begin{macrocode}
+%<*classXourse>
+\ifweb\notoctrue\fi
+%</classXourse>
+%    \end{macrocode}
+
+%  The web version should also be presented on small ``card'' sized pages.
+%    \begin{macrocode}
+%<*classXourse>
+\ifweb
+\geometry{margin=6pt,paperwidth=1.4in,paperheight=1.4in}
+\sloppy
+\fi
 %</classXourse>
 %    \end{macrocode}
 
