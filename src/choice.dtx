@@ -199,9 +199,7 @@
 \let\choicetemp\choice% Assign a "choicetemp" command to duplicate choice.
 \ifwordchoicegiven% If wordchoice option is on, we need to juggle around some definitions.
 \let\choice\otherchoice%
-%\begin{multipleChoice@}% -unnecessary (REMOVE THIS LINE IF THE YEAR IS 2019 or Beyond)
 #1
-%\end{multipleChoice@}% -unnecessary (REMOVE THIS LINE IF THE YEAR IS 2019 or Beyond)
 \else% If it isn't the regular "choice" command should work.
 \let\choice\inlinechoice%
 \begin{multipleChoice@}%
