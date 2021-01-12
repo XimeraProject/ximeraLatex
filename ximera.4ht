@@ -47,7 +47,7 @@
 
 \usepackage{microtype}
 \DisableLigatures[f]{encoding=*}
-\RenewEnviron{html}{\HCode{\BODY}}
+\NewEnviron{html}{\HCode{\BODY}}
 \Configure{@HEAD}{\HCode{<meta name="author" content="}\@author\HCode{" />\Hnewline}}
 \def\and{and }
 
