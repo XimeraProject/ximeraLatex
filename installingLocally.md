@@ -35,7 +35,7 @@ Hello $\answer[format=string]{World}$
 
 ## MacOS
 
-If you are running MacOS, create the local directory structure `~/Library/texmf/tex/latex`. To do this, you'll need to make your Library folder visible, see [http://kb.mit.edu/confluence/display/istcontrib/How+to+make+your+Library+folder+visible+in+the+Finder+in+OS+X+10.9+%28Mavericks%29+or+later](How to make your Library folder visible in the Finder in OS X 10.9 (Mavericks) or later).
+If you are running MacOS, create the local directory structure `~/Library/texmf/tex/latex`. To do this, you'll need to make your Library folder visible, see [http://kb.mit.edu/confluence/display/istcontrib/How+to+make+your+Library+folder+visible+in+the+Finder+in+OS+X+10.9+%28Mavericks%29+or+later](How to make your Library folder visible in the Finder).
 
 ├── Library
 
