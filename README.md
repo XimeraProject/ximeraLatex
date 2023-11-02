@@ -11,7 +11,7 @@ To install the XimeraLaTeX package, see:
 
 For a list of different Ximera commands, see: 
 
-[Examples of Ximera Envrionments](https://ximera.osu.edu/examples)
+[Examples of Ximera Envrionments](https://ximera.osu.edu/tester/exampleActivityCollection)
 
 
 Since Ximera is built on LaTeX source, we want to use LaTeX as a
@@ -41,13 +41,6 @@ Contents of the repository
 * The Ximera documented LaTeX file type, ximera.dtx. This file
   generates ximera.cls, xourse.cls, and ximeraLaTeX.pdf, as well as a
   few other files.
-
-Installing
-----------
-
-To install, checkout: 
-
-[Introduction to Ximera](https://ximera.osu.edu/introduction/gettingStarted)
 
 
 Staying up-to-date
