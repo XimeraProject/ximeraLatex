@@ -5,9 +5,11 @@ In this repository, we hope to supply potential authors of Ximera
 activities with the LaTeX document classes they need to write Ximera
 documents. 
 
-For directions on using Ximera, see: 
+To install the XimeraLaTeX package, see: 
 
-[Introduction to Ximera](https://ximera.osu.edu/introduction/gettingStarted)
+[//]: #[Introduction to Ximera](https://ximera.osu.edu/introduction/gettingStarted)
+
+[Installing Locally]([Introduction to Ximera](https://github.com/XimeraProject/ximeraLatex/blob/master/installingLocally.md)
 
 For a list of different Ximera commands, see: 
 
