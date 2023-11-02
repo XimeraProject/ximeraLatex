@@ -7,7 +7,7 @@ below. Please feel free to contact Bart Snapp with questions
 (snapp.14@osu.edu).
 
 1. Get a GitHub account
-2. Go to: [https://github.com/XimeraProject/ximeraLatex](XimeraLaTeX on GitHub)
+2. Go to: [XimeraLaTeX on GitHub](https://github.com/XimeraProject/ximeraLatex)
 3. Click on the green code button: ![Click on the green code button.](https://github.com/XimeraProject/.github/blob/main/profile/codeButton.png "Click on the green code button.") and copy the code, (or just copy: `git@github.com:XimeraProject/ximeraLatex.git`)
 4. Clone the repository. 
 
@@ -35,7 +35,7 @@ Hello $\answer[format=string]{World}$
 
 ## MacOS
 
-If you are running MacOS, create the local directory structure `~/Library/texmf/tex/latex`. To do this, you'll need to make your Library folder visible, see [http://kb.mit.edu/confluence/display/istcontrib/How+to+make+your+Library+folder+visible+in+the+Finder+in+OS+X+10.9+%28Mavericks%29+or+later](How to make your Library folder visible in the Finder).
+If you are running MacOS, create the local directory structure `~/Library/texmf/tex/latex`. To do this, you'll need to make your Library folder visible, see [How to make your Library folder visible in the Finder](http://kb.mit.edu/confluence/display/istcontrib/How+to+make+your+Library+folder+visible+in+the+Finder+in+OS+X+10.9+%28Mavericks%29+or+later).
 
 ├── Library
 
