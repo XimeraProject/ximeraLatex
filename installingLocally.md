@@ -13,7 +13,7 @@ below. Please feel free to contact Bart Snapp with questions
 
 At this point the installation becomes operating-system specific.
 
-# Linux
+## Linux
 
 If you are running linux, create the local directory structure `~/texmf/tex/latex`
 
@@ -33,7 +33,7 @@ Hello $\answer[format=string]{World}$
 \end{document}
 ```
 
-# MacOS
+## MacOS
 
 If you are running MacOS, create the local directory structure `~/Library/texmf/tex/latex`. To do this, you'll need to make your Library folder visible, see [http://kb.mit.edu/confluence/display/istcontrib/How+to+make+your+Library+folder+visible+in+the+Finder+in+OS+X+10.9+%28Mavericks%29+or+later](How to make your Library folder visible in the Finder in OS X 10.9 (Mavericks) or later).
 
@@ -56,4 +56,36 @@ Hello $\answer[format=string]{World}$
 ```
 
 
-# Windows
+## Windows
+
+If you are running MacOS, create the local directory structure `C:\localtexmf\tex\latex\`
+
+├── C:
+
+├───└── localtexmf
+
+├───────└── tex
+
+└───────────└── latex
+
+Now move the `ximeraLatex` folder (cloned in step 4. above) into the latex folder. 
+
+For MiKteX to notice this directory, go to:
+
+* Start → All programs → MiKTeX Folder → Maintenance (Admin) Folder → Settings (Admin).
+* Now select the tab “Roots.”
+* Click “Add” because you are going to add a path.
+* Find `C:\localtexmf\` and click “OK.”
+* Click “apply” then “OK.”
+* Reopen Miktex Settings (Admin). Click **Refresh FNDB.**
+
+The steps above will vary between systems. However, the key steps are "adding the path" and "Refreshing FNDB."
+At this point you have installed XimeraLaTeX! You can test your installation by compiling:
+```
+\documentclass{ximera}
+\begin{document}
+\begin{problem}
+Hello $\answer[format=string]{World}$
+\end{problem}
+\end{document}
+```
