@@ -7,9 +7,7 @@ documents.
 
 To install the XimeraLaTeX package, see: 
 
-[//]: #[Introduction to Ximera](https://ximera.osu.edu/introduction/gettingStarted)
-
-[Installing Locally]([Introduction to Ximera](https://github.com/XimeraProject/ximeraLatex/blob/master/installingLocally.md)
+[Installing Locally](https://github.com/XimeraProject/ximeraLatex/installingLocally.md)
 
 For a list of different Ximera commands, see: 
 
