@@ -79,7 +79,7 @@ For MiKteX to notice this directory, go to:
 * Click “apply” then “OK.”
 * Reopen Miktex Settings (Admin). Click **Refresh FNDB.**
 
-The steps above will vary between systems. However, the key steps are "adding the path" and "Refreshing FNDB."
+The steps above will vary between systems. However, the key steps are **adding the path** and **Refreshing FNDB.**
 At this point you have installed XimeraLaTeX! You can test your installation by compiling:
 ```
 \documentclass{ximera}
