@@ -58,7 +58,7 @@ Hello $\answer[format=string]{World}$
 
 ## Windows
 
-If you are running MacOS, create the local directory structure `C:\localtexmf\tex\latex\`
+If you are running Windows, create the local directory structure `C:\localtexmf\tex\latex\`
 
 ├── C:
 
