@@ -1,0 +1,33 @@
+\documentclass{ximera}
+\title{Publishing}
+\input{../preamble}
+
+
+\begin{document}
+\begin{abstract}
+    How to publish Xronos content
+\end{abstract}
+\maketitle
+
+Here we present how to get your assignments published/edited - the various routes to do this for different level of access, control, and corresponding required computer/tech savvy.
+
+\section{The Easy Way: More delay on edits, but little expertise needed.}
+
+    At UF you can always \href{https://xronos.clas.ufl.edu/examples/exampleCore/template/overleafTemplate}{make (or update existing) Xronos content} and then send that content to the Xronos maintainer to get it published. This requires no technical expertise (beyond the LaTeX necessary to make the content itself) and no special setup, since all that is handled by the Xronos maintainer. For contact details, you can contact the math department for the Xronos maintainer's email. Typically the turn-around time is less than 24 hours, although this can obviously depend on how busy people are as the maintainer usually also teaches courses.
+
+
+\section{The Hard Way: Immediate editing/update, but requires significantly more expertise.}
+
+    If you want direct and immediate control over updating assignments, then you will need the Xake tool. Note however, that (at the time of this writing) the Xronos maintainer is the only one with the necessary admin permissions from UFIT to be able to actually initially add a Xronos assignment to a Canvas shell - assuming you want it graded. For ungraded assignments, edits to assignments, and/or assignments being ported in from another Canvas shell, the maintainer doesn't need to be involved, they are only needed for the initial setup/configuration in Canvas when it is added to a shell for the first time.
+
+    \subsection{Xake: The tool to Publish!}
+        In order to install the Xake tool, you need a linux environment. You can do this by installing linux on a machine as the primary OS, or you can install some Virtual Machine software to create a linux VM on your local machine. Doing this is outside the scope of this documentation, and likely requires at least some familiarity with linux and installing custom software.
+        
+        Once you have a linux system setup and ready, you can following the installation instructions to install xake from the xake repository, To publish currently, you would need to install the xake tool on a linux system. This tool is no longer supported as we are moving to a system that will no longer require xake, but that release is still being worked on. If you want to publish/edit Xronos content in the meantime, you will need the xake tool. You can find the github repository with the tool and instructions here:
+        \href{https://github.com/XimeraProject/xake}{found here}.
+        
+    \subsection{Configuring Xake}
+        
+        You will need to contact the Xronos Maintainer to get Xake setup and configured correctly, as it will require a GPG key that is matched to the server, and a few other configurations setup. This is a one-time configuration process, so although it can get kind of annoying to initially set it up, once Xake is installed and working, you have direct and immediate ability to publish and edit Xronos content.
+
+\end{document}

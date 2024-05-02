@@ -12,7 +12,7 @@
 %% src/graded.dtx  (with options: `classXourse')
 %% ------------:| ------------------------------------------------------------
 %%       ximera:| Simultaneously writing print and online interactive materials
-%%       Author:| Jim Fowler and Jeramiah Hocutt and Oscar Levin and Jason Nowell and Hans Parshall and Bart Snapp
+%%       Author:| Jim Fowler and Oscar Levin and Jason Nowell and Hans Parshall and Bart Snapp
 %%       E-mail:| bart.snapp@gmail.com
 %%      License:| Released under the LaTeX Project Public License v1.3c or later
 %%          See:| http://www.latex-project.org/lppl.txt
@@ -93,13 +93,13 @@
 \newcommand{\practice}[2][]{
 \setkeys{practice}{#1}%!!!!!
   \renewcommand{\input}[1]{}
-  \begingroup\skip@preamble\otherinput{#2}\endgroup
+  \begingroup\skip@preamble\otherinput{#2}\endgroup\clearpage
   \let\input\otherinput}
 \else
 \newcommand{\practice}[2][]{\texttt{\detokenize{#2}}%% gives file name for practice
 \setkeys{practice}{#1}%!!!!!
   \renewcommand{\input}[1]{}
-  \begingroup\skip@preamble\otherinput{#2}\endgroup
+  \begingroup\skip@preamble\otherinput{#2}\endgroup\clearpage
   \let\input\otherinput}
 \fi
 \relax

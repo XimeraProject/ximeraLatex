@@ -15,22 +15,25 @@
 % a bit nicer, although this seems redundant with |texttt|. It
 % shouldn't cause any harm so I have left it in for now.
 %    \begin{macrocode}
-\newenvironment{validator}[1][]{
-	\def\PH@Command{#1}% Use PH@Command to hold the content and be a target for "\expandafter" to expand once.
-	\mbox{\texttt{\detokenize\expandafter{\PH@Command}}}% Now expand PH@Command once and then detokenize. 
-	}{}
+\newenvironment{validator}[1][]
+    {% Start env code.
+	   \def\PH@Command{#1}% Use PH@Command to hold the content and be a target for "\expandafter" to expand once.
+	   \mbox{\texttt{\detokenize\expandafter{\PH@Command}}}% Now expand PH@Command once and then detokenize. 
+	}
+    {% End env code.
+    }
 %    \end{macrocode}
 % First, if it's a handout, we want feedback to eat everything and
 % then disappear entirely. So we do this:
 %    \begin{macrocode}
 \ifhandout%
 \newenvironment{feedback}
-               {%
-		 \setbox0\vbox\bgroup
-	       }
-               {%
-		 \egroup
-	       }               
+    {% Start env code.
+        \setbox0\vbox\bgroup
+    }
+    {% End env code.
+        \egroup
+    }
 %    \end{macrocode}
 % If this isn't a handout, then we want to display the Feedback by
 % using a label, positioned and formated as a |\item| in a
@@ -60,13 +63,29 @@
 % when the feedback is to be provided)
 %    \begin{macrocode}
 %<*htXimera>
-\def\feedback{\@ifnextchar[{\@feedbackcode}{\@feedbackattempt}}
+\def\feedback{\@ifnextchar[{\@feedbackcode}{\@feedbackattempt}}% Set default to attempt.
 \def\@feedbackattempt{\@feedbackcode[attempt]}
-\def\@feedbackcode[#1]{\stepcounter{identification}%
-\ifvmode \IgnorePar\fi \EndP%
-\ifthenelse{\equal{#1}{attempt}}{\HCode{<div class="feedback" data-feedback="attempt" id="feedback\arabic{identification}">}}%
-{\ifthenelse{\equal{#1}{correct}}{\HCode{<div class="feedback" data-feedback="correct" id="feedback\arabic{identification}">}}%
-{\HCode{<div class="feedback" data-feedback="script" id="feedback\arabic{identification}"><script type="text/javascript">function feedback\arabic{identification}() }\{\HCode{ return \detokenize{#1}; }\}\HCode{</script>}}}}
-\def\endfeedback{\HCode{</div>}\IgnoreIndent}
+\def\@feedbackcode[#1]
+    {% Start "begin feedback" code.
+        \stepcounter{identification}%
+        \ifvmode \IgnorePar\fi \EndP%
+        \ifthenelse{\equal{#1}{attempt}}
+            {% If we flag it as just an attempt then:
+                \HCode{<div class="feedback" data-feedback="attempt" id="feedback\arabic{identification}">}
+            }% End of "attempt" flag code.
+            {% If it isn't an "attempt" flag code...
+                \ifthenelse{\equal{#1}{correct}}
+                {% Check to see if it is a "correct" flag instead. If so...
+                    \HCode{<div class="feedback" data-feedback="correct" id="feedback\arabic{identification}">}
+                }% End "correct" flag.
+                {% If it isn't a "correct" flag then we assume there is some kind of js script and load it... and pray.
+                    \HCode{<div class="feedback" data-feedback="script" id="feedback\arabic{identification}"><script type="text/javascript">function feedback\arabic{identification}() }\{\HCode{ return \detokenize{#1}; }\}\HCode{</script>}
+                }% End "if not correct" flag.
+            }% End "if not attempt" flag
+    }% Terminate "begin feedback" code.
+\def\endfeedback
+    {% Start "end feedback" code.
+        \HCode{</div>}\IgnoreIndent
+    }% Terminate "end feedback" code.
 %</htXimera>
 %    \end{macrocode}

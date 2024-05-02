@@ -49,7 +49,7 @@
 %% src/ungraded.dtx  (with options: `classXimera')
 %% ------------:| ------------------------------------------------------------
 %%       ximera:| Simultaneously writing print and online interactive materials
-%%       Author:| Jim Fowler and Jeramiah Hocutt and Oscar Levin and Jason Nowell and Hans Parshall and Bart Snapp
+%%       Author:| Jim Fowler and Oscar Levin and Jason Nowell and Hans Parshall and Bart Snapp
 %%       E-mail:| bart.snapp@gmail.com
 %%      License:| Released under the LaTeX Project Public License v1.3c or later
 %%          See:| http://www.latex-project.org/lppl.txt
@@ -146,6 +146,7 @@
 \fi
 
 
+
 \RequirePackage[makeroom]{cancel}
 \RequirePackage[inline]{enumitem}
 \RequirePackage[pagestyles]{titlesec}
@@ -236,8 +237,9 @@
 \newcounter{#1}
 \setcounter{#1}{0}
 }
-{%If so, reset to 0.
+{%If so, reset to 0, but throw a warning.
 \setcounter{#1}{0}
+        \PackageWarning{MakeCounter}{The Counter #1 already existed so we reset it to zero. Hope this doesn't break anything!}
 }
 }
 
@@ -247,13 +249,11 @@
 \newcounter{#1}
 \setcounter{#1}{0}
 }
-{%If so, reset to 0.
+{%If so, reset to 0, but throw a warning.
 \setcounter{#1}{0}
+        \PackageWarning{MakeCounter}{The Counter #1 already existed so we reset it to zero. Hope this doesn't break anything!}
 }
 }
-
-
-\MakeCounter{footnoteNum}
 
 \setlength{\parindent}{0pt}
 \setlength{\parskip}{5pt}
@@ -267,7 +267,6 @@
 \newcommand{\acknowledgement}{\excludecomment}
 
 \renewcommand{\tag}{\excludecomment}
-
 \def\theoutcomes{}
 
 \ifdefined\HCode%
@@ -277,15 +276,11 @@
   \immediate\openout\outcomefile=\jobname.oc
 
   \newcommand{\outcome}[1]{
-      \ifsuppressOutcomesDisplay% If we are suppressing outcomes, we should suppress the entire chain?
-      \else% If we aren't suppressing them, it should work as before regardless.
-          \outcomestrue% If we invoke |\outcome|, then we should have outcomes and thus we will flag it as true.
-          \edef\theoutcomes{\theoutcomes #1~}%
-          \immediate\write\outcomefile{\unexpanded{\outcome}{#1}}
-      \fi
+      \outcomestrue% If we invoke |\outcome|, then we should have outcomes and thus we will flag it as true.
+      \edef\theoutcomes{\theoutcomes #1~}%
+      \immediate\write\outcomefile{\unexpanded{\outcome}{#1}}
       }
   \fi%
-  
 \everymath{\displaystyle}
 \let\prelim\lim
 \renewcommand{\lim}{\displaystyle\prelim}
@@ -534,17 +529,12 @@
 \let\abstract\relax
 \let\endabstract\relax
 \NewEnviron{abstract}{\protected@xdef\theabstract{\BODY}}
-\newif\ifauthor% Flag for whether or not author is given
-    \authorfalse% Defaults to false.
 \let\@emptyauthor\@author
 \def\author#1{
-    \ifsuppressAuthorDisplay\else% If the author is not being suppressed we will allow it to be defined and flagged as true.
-        \gdef\@author{#1}% Defines activity author
-        \authortrue% Flags author as given.
-    \fi
+    \gdef\@author{#1}% Defines activity author
+    \authortrue% Flags author as given.
     }
 \def\@author{\@latex@warning@no@line{No \noexpand\author given}}
-
 \def\and{and }
 
 \let\title\relax
@@ -570,18 +560,21 @@
   \phantomsection%
   \ifnumbers\addcontentsline{toc}{section}{\thetitlenumber~\@title}\else\addcontentsline{toc}{section}{\@title}\fi
   \vskip .6em\noindent\textit\theabstract\setcounter{problem}{0}\setcounter{section}{0}\setcounter{subsection}{0}\par\vspace{2em}
-  \ifoutcomes% If we have learning outcomes, we should display them.
+  %%% Design Question:
+  % Would it make more sense to have author/outcomes in the header and reserve footer for footnotes?
+  % Or some other method to distinguish between the two now that footnotes are viable?
+  \ifoutcomes%                                          If we have learning outcomes, we should display them.
       \bgroup
-          \let\thefootnote\relax% Kills off the symbol of the footnote
+          \let\thefootnote\relax%                       Kills off the symbol of the footnote
           \footnote{Learning outcomes: \theoutcomes}
-          \setcounter{footnote}{0}% Reset the footnote to zero to fix numberings.
+          \setcounter{footnote}{0}%                     Reset the footnote to zero to fix numberings.
       \egroup
       \fi
-  \ifauthor% If we have an author, we should display it.
+  \ifauthor%                                            If we have an author, we should display it.
       \bgroup
-          \let\thefootnote\relax% Kills off the symbol of the footnote
+          \let\thefootnote\relax%                       Kills off the symbol of the footnote
           \footnote{Author(s):~\@author}
-          \setcounter{footnote}{0}% Reset the footnote to zero to fix numberings.
+          \setcounter{footnote}{0}%                     Reset the footnote to zero to fix numberings.
       \egroup
       \fi
   \aftergroup\@afterindentfalse
@@ -656,9 +649,9 @@ Interactive
 
 
 \newcommand*{\link}[2][]{#1%
-    \ifthenelse{\equal{#1}{}}%
-    {\footnote{Link: \url{#2}}}%
-    {\footnote{See #1 at \url{#2}}}
+\ifthenelse{\equal{#1}{}}%
+{\footnote{Link: \url{#2}}}%
+{\footnote{See #1 at \url{#2}}}
 }
 
 \newcommand{\youtube}[1]{YouTube link: \url{https://www.youtube.com/watch?v=#1}}
@@ -696,7 +689,7 @@ Interactive
 \fi
 }% End else statement
 \else%
-\GenericError{\space\space\space\space}% Throw an error based on... something? -- Jason
+\GenericError{\space\space\space\space}% Throw an error if the \answer command is not in mathmode -- Jason
 {Attempt to use \@backslashchar answer outside of math mode}
 {See https://github.com/ximeraProject/ximeraLatex for explanation.}
 {Need to use either inline or display math.}%
@@ -746,6 +739,7 @@ Interactive
 {}% Start/End else result
 \ignorespaces%
 }%
+
 \newcommand{\inlinechoice}[2][]{%
 \setkeys{choice}{#1}%
 \iffirstinlinechoice
@@ -824,18 +818,21 @@ Interactive
 \fi
 
 \newcommand{\PH@Command}{}
-\newenvironment{validator}[1][]{
-\def\PH@Command{#1}% Use PH@Command to hold the content and be a target for "\expandafter" to expand once.
-\mbox{\texttt{\detokenize\expandafter{\PH@Command}}}% Now expand PH@Command once and then detokenize.
-}{}
+\newenvironment{validator}[1][]
+    {% Start env code.
+   \def\PH@Command{#1}% Use PH@Command to hold the content and be a target for "\expandafter" to expand once.
+   \mbox{\texttt{\detokenize\expandafter{\PH@Command}}}% Now expand PH@Command once and then detokenize.
+}
+    {% End env code.
+    }
 \ifhandout%
 \newenvironment{feedback}
-               {%
- \setbox0\vbox\bgroup
-       }
-               {%
- \egroup
-       }
+    {% Start env code.
+        \setbox0\vbox\bgroup
+    }
+    {% End env code.
+        \egroup
+    }
 \else
 \newenvironment{feedback}[1][attempt]{
 
@@ -1047,10 +1044,6 @@ Interactive
 
 \fi
 \newenvironment{ungraded}{}{}
-%
-%\newcommand{\inputGif}[1]{%
-%    The gif ``#1" would be inserted here when publishing online.
-%    }
 
 %% 
 %% Copyright (C) 2018 by Bart Snapp <bart.snapp@gmail.com> and Jim Fowler <kisonecat@gmail.com>

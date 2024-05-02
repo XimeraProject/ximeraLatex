@@ -1,0 +1,54 @@
+\documentclass{ximera}
+\title{Expandable Content}
+
+
+\begin{document}
+\begin{abstract}
+    Demo of collapsible/expandable content.
+\end{abstract}
+\maketitle
+
+\subsection*{How to make expandable content}
+    You can include content that expands out, or collapses back in (i.e. expandable/collapsible boxes, which starts expanded or collapsed). To do this you want to use one of two environments, either the foldable environment or expandable environment.
+    
+    Thus to have collapsible content that starts compressed, we would type something like:
+    \begin{verbatim}
+        \begin{expandable}
+            This text will be hidden inside an expandable bar with an arrow prompt to the right.
+        \end{expandable}
+    \end{verbatim}
+    
+    Which gives:
+
+    \begin{expandable}
+        This text will be hidden inside an expandable bar with arrow prompt to the right.
+    \end{expandable}
+        
+    And to have collapsible content that starts expanded, we would type something like this:
+
+    \begin{verbatim}
+        \begin{foldable}
+            This text will be visible, but inside a collapsible box with an arrow prompt to the right.
+        \end{foldable}
+    \end{verbatim}
+
+    Which gives:
+
+    \begin{foldable}
+        This text will be visible, but inside a collapsible box with an arrow prompt to the right.
+    \end{foldable}
+
+    In theory you could use this to subdivide your content a little more cleanly and provide optional commentary and such that students can collapse/expand as they want. 
+    
+\subsection*{Optional Arguments}
+    There are currently no optional arguments for these environments.
+
+\subsection*{Potential Pitfalls and Problems}
+
+    \subsubsection*{The Collapsible Arrow is Subtle}
+        As you may notice, the arrow that lets you collapse/expand the included content can be pretty small and far to the right, depending on the device and/or window size/resolution the student has, so you may consider prompting them to let them know that some content is expandable so they see the arrow to expand and read info if they are interested. You could also include the environment within other environments to shrink it's size (e.g. inside an explanation environment or something similar) which may help.
+
+
+
+
+\end{document}
