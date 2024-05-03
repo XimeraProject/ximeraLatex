@@ -22,7 +22,7 @@
 \renewcommand\part[1]{%
 \stepcounter{ximera@part}%
 \ifvmode \IgnorePar\fi \EndP%
-\HCode{<h1 id="part\arabic{ximera@part}" class="card part">#1</h1>}%
+\HCode{<h1 id="part\arabic{ximera@part}" class="card part">}#1\HCode{</h1>}%
 \IgnoreIndent%
 }
 %</htXourse>
