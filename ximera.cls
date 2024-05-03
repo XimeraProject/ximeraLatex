@@ -43,6 +43,7 @@
 %% src/instructornotes.dtx  (with options: `classXimera')
 %% src/xkcd.dtx  (with options: `classXimera')
 %% src/foldable.dtx  (with options: `classXimera')
+%% src/accordion.dtx  (with options: `classXimera')
 %% src/leash.dtx  (with options: `classXimera')
 %% src/interactives/sagemath.dtx  (with options: `classXimera')
 %% src/jax.dtx  (with options: `classXimera')
@@ -188,8 +189,9 @@
         pdflatex \tikzexternalcheckshellescape
         -halt-on-error -interaction=batchmode
         -jobname "\image" "\\PassOptionsToClass{tikzexport}{ximera}\texsource";
-        mutool draw -o \image.svg \image.pdf ;
+        mutool draw -F svg \image.pdf > \image.svg ;     % mutool adds "1" to filename ????
         mutool draw -r 150 -c rgbalpha -o \image.png \image.pdf ;
+        ebb -x \image.png
       }
     }
     \tikzexternalize[optimize=false,prefix=./]
@@ -275,6 +277,7 @@
 \let\prelim\lim
 \renewcommand{\lim}{\displaystyle\prelim}
 
+\theoremstyle{definition} % No italic  (because this makes also text in TikZ italic !!!)
 
       \newtheorem{theorem}{Theorem}
 
@@ -640,7 +643,9 @@ Interactive
 \define@key{answer}{validator}{}
 \define@key{answer}{id}{\def\ans@id{#1}}
 \define@key{answer}{format}{}
-\setkeys{answer}{id=,given=false}
+\define@key{answer}{onlinenoinput}[false]{}
+\define@key{answer}{onlineshowanswerbutton}[false]{}
+\setkeys{answer}{id=,given=false,onlinenoinput=false,onlineshowanswerbutton=false}
 \newcommand{\answer}[2][]{%
 \ifmmode%
 \setkeys{answer}{#1}%
@@ -655,9 +660,9 @@ Interactive
 }% End then statement
 {% Start else statement
 \ifhandout
-\fbox{\rm{?}}
+        \ldots\ldots  
 \else% show answer in box outside handout mode
-\fbox{\ensuremath{#2}}
+{\color{blue}\ensuremath{#2}}
 \fi
 }% End else statement
 \else%
@@ -978,6 +983,26 @@ Interactive
 \newcommand{\unfoldable}[1]{#1}
 
 
+\colorlet{textColor}{black} % since textColor is referenced below
+\colorlet{background}{white} % since background is referenced below
+
+%% accordion container
+\newenvironment{accordion}{%
+}{%
+}
+%% pretty-accordion
+\iftikzexport
+\newenvironment{accordion-item}[1][]{%
+}{%
+}
+\else
+\newenvironment{accordion-item}[1][]{%
+\paragraph{#1}
+}{%
+}
+\fi
+
+
 \newenvironment{leash}[1]{%
 }{%
 }
@@ -989,6 +1014,7 @@ Interactive
 
 \DefineVerbatimEnvironment{sageOutput}{Verbatim}{numbers=left,frame=lines,label=SAGE-Output,labelposition=topline}
 
+\DefineVerbatimEnvironment{sagesilent}{Verbatim}{numbers=left,frame=lines,label=SAGE-Silent,labelposition=topline}
 
 \ifdefined\HCode
   \else

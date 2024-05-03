@@ -13,6 +13,7 @@
 %% src/image.dtx  (with options: `htXimera')
 %% src/dialogue.dtx  (with options: `htXimera')
 %% src/foldable.dtx  (with options: `htXimera')
+%% src/accordion.dtx  (with options: `htXimera')
 %% src/interactives/video.dtx  (with options: `htXimera')
 %% src/xkcd.dtx  (with options: `htXimera')
 %% src/link.dtx  (with options: `htXimera')
@@ -47,7 +48,6 @@
 
 \usepackage{microtype}
 \DisableLigatures[f]{encoding=*}
-\NewEnviron{html}{\HCode{\BODY}}
 \Configure{@HEAD}{\HCode{<meta name="author" content="}\@author\HCode{" />\Hnewline}}
 \def\and{and }
 
@@ -58,24 +58,36 @@
 \setcounter{identification}{0}
 
 \newcommand{\ConfigureQuestionEnv}[2]{%
-\renewenvironment{#1}{\refstepcounter{problem}}{}%
-\ConfigureEnv{#1}{\stepcounter{identification}\ifvmode \IgnorePar\fi \EndP\HCode{<div role="article" class="problem-environment #2" id="problem\arabic{identification}">}}{\ifvmode \IgnorePar\fi \EndP\HCode{</div>}\IgnoreIndent}{}{}%
+\renewenvironment{#1}{%
+\refstepcounter{problem}%
+\stepcounter{identification}\ifvmode \IgnorePar\fi \EndP\HCode{<div role="article" class="problem-environment #2" id="problem\arabic{identification}">}%
+}{%
+  \HCode{</div>}\IgnoreIndent%
 }
+}
+
+%\ConfigureEnv{#1}{\stepcounter{identification}\ifvmode \IgnorePar\fi \EndP\HCode{<div role="article" class="problem-environment #2" id="problem\arabic{identification}">}}{\ifvmode \IgnorePar\fi \EndP\HCode{</div class="end-config-#1">}\IgnoreIndent}{}{}%
+
 
 \ConfigureQuestionEnv{problem}{problem}
 \ConfigureQuestionEnv{exercise}{exercise}
 \ConfigureQuestionEnv{question}{question}
 \ConfigureQuestionEnv{exploration}{exploration}
-\ConfigureQuestionEnv{xarmaBoost}{xarma-boost}
-\ConfigureQuestionEnv{hint}{hint}
-\ConfigureQuestionEnv{shuffle}{shuffle}
+%\ConfigureQuestionEnv{hint}{xmhint}
+
 \newcommand{\ConfigureTheoremEnv}[1]{%
-\renewenvironment{#1}[1][]{\refstepcounter{problem}%
+\renewenvironment{#1}[1][]{%
+\stepcounter{identification}\ifvmode \IgnorePar\fi \EndP\HCode{<div class="theorem-like problem-environment #1" id="problem\arabic{identification}">}%
+\refstepcounter{problem}%
 \ifthenelse{\equal{##1}{}}{}{%
   \HCode{<span class="theorem-like-title">}##1\HCode{</span>}%
-}}{}
-\ConfigureEnv{#1}{\stepcounter{identification}\ifvmode \IgnorePar\fi \EndP\HCode{<div class="theorem-like problem-environment #1" id="problem\arabic{identification}">}}{\HCode{</div>}\IgnoreIndent}{}{}%
+}}{%
+  \HCode{</div>}\IgnoreIndent%
+}%
 }
+
+%\ConfigureEnv{#1}{\stepcounter{identification}\ifvmode \IgnorePar\fi \EndP\HCode{<div class="theorem-like problem-environment #1" id="problem\arabic{identification}">}}{\Hnewline\HCode{<span>XX #1 YY</span></div>}\Hnewline\IgnoreIndent}{}{}%
+
 
 
       \ConfigureTheoremEnv{theorem}
@@ -151,11 +163,47 @@
    {\egroup\EndP\HCode{</dt><dd\Hnewline class="speech">}}
 \renewenvironment{foldable}{\stepcounter{identification}\ifvmode \IgnorePar\fi \EndP\HCode{<div id="foldable\arabic{identification}" class="foldable">}}{\HCode{</div>}\IgnoreIndent}
 
+
 \renewenvironment{expandable}{\stepcounter{identification}\ifvmode \IgnorePar\fi \EndP\HCode{<div data-original="expandable" id="foldable\arabic{identification}" class="foldable">}
 
 }{\HCode{</div>}\IgnoreIndent}
 
 \renewcommand{\unfoldable}[1]{\HCode{<span class="unfoldable">}#1\HCode{</span>}}
+\renewenvironment{accordion}{\ifvmode \IgnorePar\fi \EndP\HCode{<div class="accordion">}
+}{\HCode{</div>}\IgnoreIndent}
+
+\renewenvironment{accordion-item}[1][]{\stepcounter{identification}\ifvmode \IgnorePar\fi \EndP\HCode{<h3>}#1\HCode{</h3><div id="accordion-item\arabic{identification}" class="accordion-item">}
+}{\HCode{</div>}\IgnoreIndent}
+
+%\let\hint\relax
+%\let\endhint\relax
+\RenewEnviron{hint}{%
+ \begin{expandable}{xmhint}{}%
+   \BODY%
+ \end{expandable}%
+}
+
+%% re-implement 04/2023
+\let\expandable\relax
+\let\endexpandable\relax
+%\RenewEnviron{expandable}[2]{%
+\newenvironment{expandable}[2]{%
+  \stepcounter{identification}%
+  \ifvmode \IgnorePar\fi \EndP%
+  \HCode{<div class="accordion">\Hnewline}%
+  \HCode{<h3 class="#1">}#2\HCode{</h3>\Hnewline}%
+  \HCode{<div id="accordion-item\arabic{identification}" class="accordion-item #1-content">\Hnewline}
+}%
+%  \BODY
+{%
+  \HCode{</div>\Hnewline</div>\Hnewline}\IgnoreIndent
+}
+%
+
+\renewenvironment{accordion}{\ifvmode \IgnorePar\fi \EndP\HCode{<div class="accordion">}
+}{\HCode{</div>}\IgnoreIndent}
+
+
 \renewcommand{\youtube}[1]{\ifvmode \IgnorePar\fi \EndP\HCode{<div class="video youtube-player" data-youtube="#1">_</div>}}
 \renewcommand{\xkcd}[1]{\ifvmode \IgnorePar\fi \EndP\HCode{<img src="https://imgs.xkcd.com/comics/#1.png">}}
 
@@ -163,8 +211,6 @@
 \ifthenelse{\equal{#1}{}}%
 {\url{#2}}
 {\href{#2}{#1}}}
-
-\AtBeginDocument{\renewcommand{\ref}[1]{\HCode{<a class="reference" href="\##1">#1</a>}}}
 
 
 \renewcommand{\graph}[2][]{\HCode{<div class="graph" data-options="#1">}#2\HCode{</div>}}
@@ -230,8 +276,8 @@
 \setkeys{geogebra}{rc=false,sdz=false,smb=false,stb=false,stbh=false,ld=false,sri=false}
 \renewcommand{\geogebra}[4][]{%
   \setkeys{geogebra}{#1}% Set new keys
-  \HCode{<iframe scrolling="no" src="https://tube.geogebra.org/material/iframe/id/#2/width/#3/height/#4/border/888888/rc/\geo@rc/ai/false/sdz/\geo@sdz/smb/\geo@smb/stb/\geo@stb/stbh/\geo@stbh/ld/\geo@ld/sri/\geo@sri/at/auto" width="#3px" height="#4px" style="border:0px;"> </iframe>}}
-\renewcommand{\desmos}[3]{\HCode{<iframe src="https://www.desmos.com/calculator/#1" width="100\%" height="#3px" style="border: 1px solid #ccc" frameborder=0>This browser does not support embedded elements.</iframe>}}
+  \HCode{<iframe scrolling="no" src="https://www.geogebra.org/material/iframe/id/#2/width/#3/height/#4/border/888888/rc/\geo@rc/ai/false/sdz/\geo@sdz/smb/\geo@smb/stb/\geo@stb/stbh/\geo@stbh/ld/\geo@ld/sri/\geo@sri/at/auto" width="#3px" height="#4px" style="border:0px;"> </iframe>}}
+\renewcommand{\desmos}[3]{\HCode{<iframe src="https://www.desmos.com/calculator/#1" width="100\%" height="#3px" style="border: 1px solid \#ccc" frameborder=0>This browser does not support embedded elements.</iframe>}}
 
 \renewcommand{\googleSheet}[5]{%
   \ifthenelse{\equal{#4}{}}%
@@ -248,12 +294,13 @@
 \ifvmode \IgnorePar\fi \EndP%
 \ifthenelse{\equal{#1}{attempt}}{\HCode{<div class="feedback" data-feedback="attempt" id="feedback\arabic{identification}">}}%
 {\ifthenelse{\equal{#1}{correct}}{\HCode{<div class="feedback" data-feedback="correct" id="feedback\arabic{identification}">}}%
-{\HCode{<div class="feedback" data-feedback="script" id="feedback\arabic{identification}"><script type="text/javascript">function feedback\arabic{identification}() }\{\HCode{ return \detokenize{#1}; }\}\HCode{</script>}}}}
+{\ifthenelse{\equal{#1}{solution}}{\HCode{<div class="feedback" data-feedback="solution" id="feedback\arabic{identification}">}}%
+{\HCode{<div class="feedback" data-feedback="script" id="feedback\arabic{identification}"><script type="text/javascript">function feedback\arabic{identification}() }\{\HCode{ return \detokenize{#1}; }\}\HCode{</script>}}}}}
 \def\endfeedback{\HCode{</div>}\IgnoreIndent}
 
 \renewenvironment{leash}[1]{\ifvmode \IgnorePar\fi \EndP\HCode{<div style="overflow: auto; height: #1px">}}{\HCode{</div>}\IgnoreIndent}
-\renewcommand{\label}[1]{\HCode{<a class="ximera-label" id="#1"></a>}}
-\renewcommand{\ref}[1]{\HCode{<a class="reference" href="\##1">#1</a>}}
+\let\oldlabel\label
+\renewcommand{\label}[1]{\oldlabel{#1}\HCode{<a class="ximera-label" id="#1"></a>}}
 
 \renewenvironment{sageCell}{\NoFonts}{\EndNoFonts}
 \ScriptEnv{sageCell}{\ifvmode \IgnorePar\fi \EndP\HCode{<div class="sage"><script type="text/x-sage">}\HtmlParOff}{\HtmlParOn\HCode{\Hnewline</script></div>}}
@@ -262,13 +309,14 @@
 \renewenvironment{sageOutput}{\NoFonts}{\EndNoFonts}
 \ScriptEnv{sageOutput}{\ifvmode \IgnorePar\fi \EndP\HCode{<div class="sageOutput"><script type="text/x-sage">}}{\HCode{\Hnewline</script></div>}}
 
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \renewenvironment{sagesilent}{\NoFonts}{\EndNoFonts}
 \ScriptEnv{sagesilent}{\ifvmode \IgnorePar\fi \EndP\HCode{<script type="text/sagemath">}\HtmlParOff}{\HtmlParOn\HCode{</script></div>}}
 \renewenvironment{ungraded}{%
 \ifvmode \IgnorePar\fi \EndP\HCode{<div class="ungraded">}\IgnoreIndent%
 }{
-\ifvmode \IgnorePar\fi \EndP\HCode{</div>}}\IgnoreIndent%
+\ifvmode \IgnorePar\fi \EndP\HCode{</div>}\IgnoreIndent%
 }
 \Hinput{ximera}
 
