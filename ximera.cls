@@ -188,8 +188,10 @@
         pdflatex \tikzexternalcheckshellescape
         -halt-on-error -interaction=batchmode
         -jobname "\image" "\\PassOptionsToClass{tikzexport}{ximera}\texsource";
+        mutool draw -F svg \image.pdf > \image.svg ;     % mutool adds "1" to filename ????
         mutool draw -o \image.svg \image.pdf ;
         mutool draw -r 150 -c rgbalpha -o \image.png \image.pdf ;
+        ebb -x \image.png
       }
     }
     \tikzexternalize[optimize=false,prefix=./]
@@ -274,6 +276,7 @@
 \everymath{\displaystyle}
 \let\prelim\lim
 \renewcommand{\lim}{\displaystyle\prelim}
+\theoremstyle{definition} % No italic (because this makes also text in TikZ italic !!!)
 
 
       \newtheorem{theorem}{Theorem}
@@ -610,7 +613,7 @@
 Interactive
 }
 
-\newcommand{\geogebra}[3]{Geogebra link: \url{https://tube.geogebra.org/m/#1}}
+\newcommand{\geogebra}[3]{Geogebra link: \url{https://www.geogebra.org/m/#1}}
 \newcommand{\desmos}[3]{Desmos link: \url{https://www.desmos.com/calculator/#1}}
 \newcommand{\googleSheet}[5]{%
   Google Spreadsheet link: \url{https://docs.google.com/spreadsheets/d/#1}%
@@ -640,7 +643,9 @@ Interactive
 \define@key{answer}{validator}{}
 \define@key{answer}{id}{\def\ans@id{#1}}
 \define@key{answer}{format}{}
-\setkeys{answer}{id=,given=false}
+\define@key{answer}{onlinenoinput}[false]{}
+\define@key{answer}{onlineshowanswerbutton}[false]{}
+\setkeys{answer}{id=,given=false,onlinenoinput=false,onlineshowanswerbutton=false}
 \newcommand{\answer}[2][]{%
 \ifmmode%
 \setkeys{answer}{#1}%
@@ -655,9 +660,9 @@ Interactive
 }% End then statement
 {% Start else statement
 \ifhandout
-\fbox{\rm{?}}
+\ldots\ldots % versus \fbox{\rm{?}} ?
 \else% show answer in box outside handout mode
-\fbox{\ensuremath{#2}}
+{\color{blue}\ensuremath{#2}}
 \fi
 }% End else statement
 \else%

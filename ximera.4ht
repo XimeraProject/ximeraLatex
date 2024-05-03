@@ -66,7 +66,6 @@
 \ConfigureQuestionEnv{exercise}{exercise}
 \ConfigureQuestionEnv{question}{question}
 \ConfigureQuestionEnv{exploration}{exploration}
-\ConfigureQuestionEnv{xarmaBoost}{xarma-boost}
 \ConfigureQuestionEnv{hint}{hint}
 \ConfigureQuestionEnv{shuffle}{shuffle}
 \newcommand{\ConfigureTheoremEnv}[1]{%
@@ -231,7 +230,7 @@
 \renewcommand{\geogebra}[4][]{%
   \setkeys{geogebra}{#1}% Set new keys
   \HCode{<iframe scrolling="no" src="https://tube.geogebra.org/material/iframe/id/#2/width/#3/height/#4/border/888888/rc/\geo@rc/ai/false/sdz/\geo@sdz/smb/\geo@smb/stb/\geo@stb/stbh/\geo@stbh/ld/\geo@ld/sri/\geo@sri/at/auto" width="#3px" height="#4px" style="border:0px;"> </iframe>}}
-\renewcommand{\desmos}[3]{\HCode{<iframe src="https://www.desmos.com/calculator/#1" width="100\%" height="#3px" style="border: 1px solid #ccc" frameborder=0>This browser does not support embedded elements.</iframe>}}
+\renewcommand{\desmos}[3]{\HCode{<iframe src="https://www.desmos.com/calculator/#1" width="100\%" height="#3px" style="border: 1px solid \#ccc" frameborder=0>This browser does not support embedded elements.</iframe>}}
 
 \renewcommand{\googleSheet}[5]{%
   \ifthenelse{\equal{#4}{}}%
@@ -252,7 +251,8 @@
 \def\endfeedback{\HCode{</div>}\IgnoreIndent}
 
 \renewenvironment{leash}[1]{\ifvmode \IgnorePar\fi \EndP\HCode{<div style="overflow: auto; height: #1px">}}{\HCode{</div>}\IgnoreIndent}
-\renewcommand{\label}[1]{\HCode{<a class="ximera-label" id="#1"></a>}}
+\let\oldlabel\label
+\renewcommand{\label}[1]{\oldlabel{#1}\HCode{<a class="ximera-label" id="#1"></a>}}
 \renewcommand{\ref}[1]{\HCode{<a class="reference" href="\##1">#1</a>}}
 
 \renewenvironment{sageCell}{\NoFonts}{\EndNoFonts}
@@ -268,7 +268,7 @@
 \renewenvironment{ungraded}{%
 \ifvmode \IgnorePar\fi \EndP\HCode{<div class="ungraded">}\IgnoreIndent%
 }{
-\ifvmode \IgnorePar\fi \EndP\HCode{</div>}}\IgnoreIndent%
+\ifvmode \IgnorePar\fi \EndP\HCode{</div>}\IgnoreIndent%
 }
 \Hinput{ximera}
 
