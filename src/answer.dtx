@@ -35,10 +35,18 @@
 %    \begin{macrocode}
 \define@key{answer}{format}{}
 %    \end{macrocode}
+% Used to hide the answer input box on the web.
+%    \begin{macrocode}
+\define@key{answer}{onlinenoinput}[false]{}
+%    \end{macrocode}
+% Used to add a `show answer' button to the answer blank.
+%    \begin{macrocode}
+\define@key{answer}{onlineshowanswerbutton}[false]{}
+%    \end{macrocode}
 % Set default values for |\answer| command |key=value| pairs.
 % Default values are |given = false|.
 %    \begin{macrocode}
-\setkeys{answer}{id=,given=false}
+\setkeys{answer}{id=,given=false,onlinenoinput=false,onlineshowanswerbutton=false}
 %    \end{macrocode}
 % Basic code for |\answer|.
 %    \begin{macrocode}
@@ -56,9 +64,9 @@
 			}% End then statement
 			{% Start else statement
 			\ifhandout
-				\fbox{\rm{?}}
+				\ldots\ldots % versus \fbox{\rm{?}} ?
 			\else% show answer in box outside handout mode
-				\fbox{\ensuremath{#2}}
+				{\color{blue}\ensuremath{#2}}
 			\fi
 			}% End else statement
 	\else%
