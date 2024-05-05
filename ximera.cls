@@ -664,7 +664,7 @@ Interactive
 \ifhandout
 \handoutAnswer{#2} %% in case the argument helps formatting
 \else% show answer in box outside handout mode
-{\color{blue}\ensuremath{#2}}
+    {\color{blue}\ensuremath{#2}}
 \fi
 }% End else statement
 \else%
