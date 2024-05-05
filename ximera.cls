@@ -46,6 +46,7 @@
 %% src/leash.dtx  (with options: `classXimera')
 %% src/interactives/sagemath.dtx  (with options: `classXimera')
 %% src/jax.dtx  (with options: `classXimera')
+%% src/footnotes.dtx  (with options: `classXimera')
 %% src/ungraded.dtx  (with options: `classXimera')
 %% ------------:| ------------------------------------------------------------
 %%       ximera:| Simultaneously writing print and online interactive materials
@@ -646,6 +647,7 @@ Interactive
 \define@key{answer}{onlinenoinput}[false]{}
 \define@key{answer}{onlineshowanswerbutton}[false]{}
 \setkeys{answer}{id=,given=false,onlinenoinput=false,onlineshowanswerbutton=false}
+\newcommand{\handoutAnswer}[1]{\ldots\ldots} %% Can be redefined by the user
 \newcommand{\answer}[2][]{%
 \ifmmode%
 \setkeys{answer}{#1}%
@@ -660,7 +662,7 @@ Interactive
 }% End then statement
 {% Start else statement
 \ifhandout
-\ldots\ldots % versus \fbox{\rm{?}} ?
+\handoutAnswer{#2} %% in case the argument helps formatting
 \else% show answer in box outside handout mode
 {\color{blue}\ensuremath{#2}}
 \fi
@@ -1016,6 +1018,7 @@ Interactive
 \renewcommand{\DeclareMathOperator}[2]{\@OldDeclareMathOperator{#1}{#2}\immediate\write\myfile{\unexpanded{\DeclareMathOperator}{\unexpanded{#1}}{\unexpanded{#2}}}}
 
 \fi
+
 \newenvironment{ungraded}{}{}
 %% 
 %% Copyright (C) 2018 by Bart Snapp <bart.snapp@gmail.com> and Jim Fowler <kisonecat@gmail.com>
