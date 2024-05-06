@@ -1,9 +1,0 @@
-\documentclass[]{ximera}
-\usepackage{sagetex}
-\usepackage{PackageLoader}
-\renewenvironment{validator}[1]{}{}
-\renewenvironment{feedback}[1]{}{}
-\begin{document}
-\makeatletter
-\input{Useful-Sage-Macros}
-\renewcommand{\latexProblemContent}[1]{#1}

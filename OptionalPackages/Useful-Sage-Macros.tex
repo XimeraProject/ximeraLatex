@@ -2,15 +2,6 @@
 
 ######  Define a function to convert a sage number into a saved counter number.
 
-def setCounter(counterName, counterValue, fileName = 'counters.tex'):
-    file1 = open(fileName, 'w')
-    counterString = str(r'\setcounter{' + str(counterName) + '}{'+ str(counterValue) +'}')
-    commandString = str('\\newcommand{\\' + str(counterName) + '}{'+ str(counterValue) +'}')
-    file1.write(counterString + "\n" + commandString + "\n")
-    # more "string# =" and "file#.write()" as desired.
-
-
-
 #####Define default Sage variables.
 #Default function variables
 var('x,y,z,X,Y,Z')
@@ -18,6 +9,12 @@ var('x,y,z,X,Y,Z')
 var('f,g,h,dx,dy,dz,dh,df')
 #Default Wild cards
 w0 = SR.wild(0)
+
+def higherRoot(rootVal,rootArg):
+    # Note that this returns a String version of the latex higher root in root form, rather than exponential form.
+    rootString = LatexExpr(r'\sqrt[' + rootVal.str() + ']{' + rootArg.str() +'}')
+    return rootString
+
 
 def DispSign(b):
     """ Returns the string of the 'signed' version of `b`, e.g. 3 -> "+3", -3 -> "-3", 0 -> "".
@@ -88,83 +85,9 @@ def NonZeroInt(b,c, avoid = [0]):
         if a not in avoid:
             return a
 
-def RandAng(s,t):
-    """ Returns a random nice angle in [0,2*pi] which lies in [`s`,`t`].
-    """
-    angles = [i*pi/6 for i in range(0,13)] + [(2*i+1)*pi/4 for i in range(0,4)]
-
-    while True:
-        angle = choice(angles) # Picks a random element.
-        if s <= angle <= t:
-            return simplify(angle)
-
-def RandPoly(degree, zeroes=[], avoid=[], monic = False, expanded = False):
-    """ Returns a random polynomial of degree `d` with all the zeroes from
-        `zeroes` and none of them from `avoid`.
-
-        Note: If you want a polynomial of degree 4 with a zero at x=3 of
-        multiplicity 2, for example, you should call
-        >>> RandPoly(4, zeroes = [3,3], avoid = [3])
-        (x-3)^2*(x+1)*(x-5)
-    """
-    RP_missingDegree = degree - len(zeroes)
-    assert RP_missingDegree >= 0, "Can't have degree {} with all those zeroes! {}".format(degree,zeroes)
-
-    # First, compute the part that has the specified zeroes.
-    if monic:
-        RP_myRandomPoly = prod((x-RP_zero) for RP_zero in zeroes)
-    else:
-        RP_myRandomPoly = prod((RP_zero.denominator()*x - RP_zero.numerator()) for RP_zero in zeroes)
-
-    # Second, compute the missing factor.
-    if avoid:
-        RP_missingZeroes =[NonZeroInt(-10,10,avoid) for RP_ in range(RP_missingDegree)]
-        RP_missingFactor = prod((x-RP_missingZero) for RP_missingZero in RP_missingZeroes)
-    else:
-        if monic:
-            RP_missingFactor = x**RP_missingDegree
-        else:
-            RP_missingFactor = NonZeroInt(-10,10)*x**RP_missingDegree
-
-        for RP_i in range(0,RP_missingDegree):
-            RP_missingFactor += RandInt(-10,10)*x**RP_i
-        
-    RP_myRandomPoly *= RP_missingFactor
-    if expanded:
-        RP_myRandomPoly = expand(RP_myRandomPoly)
-    return RP_myRandomPoly
-
-def RandRational(c,d):
-    """ Returns a random rational function with numerator and denominator of degrees `c` and `d` resp.
-    """
-    num_zeros = [RandInt(-10,10) for _ in range(c)] # Zeroes of the numerator
-    num = RandPoly(c,zeroes=num_zeroes) # Numerator
-    den = RandPoly(d,avoid =num_zeroes) # Denominator
-    return num/den
-
-def saneCheck(a,b = 1000):
-    """ A function to check the reasonable-ness of an answer. It checks the 
-        numerator and denominator to see if they are reasonable numbers. `a` is 
-        the input number to check, and b is the threshold you want the numerator
-        and denominator (if present) to be below. Default is 1000. Thus 1/596
-        would pass, 5419/209 would not.
-    """
-    aTemp = abs(a/(7919*7907*6883)) # I need to force a denominator. Odds are, whatever you're checking won't have all these primes as factors. If they do, then you have fucked up royally anyway. Also take absolute value in order to test magnitude of values.
-    
-    # Initialize answer to -1 to detect if anything happened.
-    check = -1
-    
-    if aTemp.numerator() > b or aTemp.denominator() > (b*7919*7907*6883):
-        check = 0
-    else:
-        check = 1
-    
-    return check
-
 def RandVector(b, c, avoid=[], rep=1):
     """ Returns essentially a multiset permutation of ([b,c]-av) * rep.
         That is, a vector which contains each integer in [`b`,`c`] which is not in `av` a total of `rep` number of times.
-
         Example:
         sage: RandVector(1,3, [2], 2)
         [3, 1, 1, 3]
@@ -174,32 +97,40 @@ def RandVector(b, c, avoid=[], rep=1):
     shuffle(vec)
     return vec
 
-def RandMatrix(dim1, dim2, LBnum,UBnum,LBden,UBden):
-    """ Returns a random matrix with rational entries. 
-        The final four parameters specify lower and upper bounds for the 
-        numerators and denominators of the entries.
-    """
-    temp = matrix(QQ, dim1, dim2, 0)
-    for i in range(dim1):
-        for j in range(dim2):
-            num = RandInt(LBnum, UBnum)
-            den = NonZeroInt(LBden, UBden)
-            temp[i,j] = num/den
-    return temp
 
-# def pad(a,n,left=True):
-#   """ Returns the integer `a` padded with zeroes to be of length `n`.
-#       If `left` == True, then the zeroes go on the left.
-#   """
-#   a = str(a)
-#   missing = n - len(a) 
-#   assert missing >= 0, "{} is longer than length {}!".format(a,n)
-#   if left:
-#       return ("0" * missing) + a
-#   else:
-#       return a + ("0" * missing)
+def fudge(b):
+    up = b+RandInt(2,5)/10
+    down = b-RandInt(2,5)/10
+    fudgebup = round(up,1)
+    fudgebdown = round(down,1)
+    fudgedb = [fudgebdown,fudgebup]
+    return fudgedb
 
-if __name__ == "__main__":
-    print(RandPoly(4))
+def disjointCheck(checkvec):
+    if len(uniq(checkvec)) < len(checkvec):
+        return 1
+    else:
+        return 0
 
-# \end{sagesilent}
+def disjointIntervals(IntStart,IntEnd,CheckVal):
+    if IntStart < CheckVal and CheckVal < IntEnd:
+        return 1
+    else:
+        return 0
+
+def IntervalVecCheck(checkVec):
+    veclen = len(checkVec)
+    returnval = 0
+    for i in range(veclen):
+        for j in range(veclen):
+            if (disjointIntervals(checkVec[j][0],checkVec[j][1],checkVec[i][0]) + disjointIntervals(checkVec[j][0],checkVec[j][1],checkVec[i][1])) > 0:
+                returnval = returnval + 1
+    if returnval > 0:
+        return 1
+    else:
+        return 0
+
+
+
+
+\end{sagesilent}
