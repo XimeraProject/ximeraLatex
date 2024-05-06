@@ -647,7 +647,7 @@ Interactive
 \define@key{answer}{onlinenoinput}[false]{}
 \define@key{answer}{onlineshowanswerbutton}[false]{}
 \setkeys{answer}{id=,given=false,onlinenoinput=false,onlineshowanswerbutton=false}
-\newcommand{\handoutAnswer}[1]{\ldots\ldots} %% Can be redefined by the user
+\newcommand{\handoutAnswerFormat}[1]{\ldots\ldots} %% Can be redefined by the user
 \newcommand{\answer}[2][]{%
 \ifmmode%
 \setkeys{answer}{#1}%
@@ -662,7 +662,7 @@ Interactive
 }% End then statement
 {% Start else statement
 \ifhandout
-\handoutAnswer{#2} %% in case the argument helps formatting
+\handoutAnswerFormat{#2} %% in case the argument helps formatting
 \else% show answer in box outside handout mode
     {\color{blue}\ensuremath{#2}}
 \fi

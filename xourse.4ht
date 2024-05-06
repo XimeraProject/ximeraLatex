@@ -31,8 +31,8 @@
   \HCode{<meta name="og:image" content="}%
 \ifdefined\xourse@logo%
   \xourse@logo%
-  \HCode{" />\Hnewline}%
-\fi}
+\fi%
+\HCode{" />\Hnewline}}%
 
 
 
