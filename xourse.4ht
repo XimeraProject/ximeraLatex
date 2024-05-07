@@ -63,7 +63,7 @@
 \renewenvironment{graded}[1]{%
 \ifvmode \IgnorePar\fi \EndP\HCode{<div class="graded" data-weight="#1">}\IgnoreIndent%
 }{
-\ifvmode \IgnorePar\fi \EndP\HCode{</div>}}\IgnoreIndent%
+\ifvmode \IgnorePar\fi \EndP\HCode{</div>}\IgnoreIndent%
 }
 \renewcommand\youtube[1]{%
 \ifvmode \IgnorePar\fi \EndP\HCode{<a class="youtube" href="https://www.youtube.com/watch?v=#1">#1</a>}\IgnoreIndent%
