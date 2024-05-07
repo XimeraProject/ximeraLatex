@@ -7,7 +7,7 @@
 |
 ------------:| ------------------------------------------------------------
       ximera:| Simultaneously write print and online interactive materials
-      Author:| Jim Fowler and Jeramiah Hocutt and Oscar Levin and Jason Nowell and Hans Parshall and Bart Snapp
+      Author:| Jim Fowler and Oscar Levin and Jason Nowell and Hans Parshall and Bart Snapp
       E-mail:| bart.snapp@gmail.com
      License:| Released under the LaTeX Project Public License v1.3c or later
          See:| http://www.latex-project.org/lppl.txt
@@ -29,7 +29,7 @@ Some text about the class: probably the same as the abstract.
 \preamble
 ------------:| ------------------------------------------------------------
       ximera:| Simultaneously writing print and online interactive materials
-      Author:| Jim Fowler and Jeramiah Hocutt and Oscar Levin and Jason Nowell and Hans Parshall and Bart Snapp
+      Author:| Jim Fowler and Oscar Levin and Jason Nowell and Hans Parshall and Bart Snapp
       E-mail:| bart.snapp@gmail.com
      License:| Released under the LaTeX Project Public License v1.3c or later
          See:| http://www.latex-project.org/lppl.txt
@@ -109,8 +109,9 @@ Running "make install" installs the files in the local TeX tree.
     \from{src/leash.dtx}{classXimera}
     \from{src/interactives/sagemath.dtx}{classXimera}        
     \from{src/jax.dtx}{classXimera}
-    \from{src/footnotes.dtx}{classXimera}   
-    \from{src/ungraded.dtx}{classXimera}    
+    \from{src/ungraded.dtx}{classXimera}
+    \from{src/clearEnv.dtx}{classXimera}
+    \from{src/hideEnv.dtx}{classXimera}
   }
 }
 \generate{
@@ -136,7 +137,7 @@ Running "make install" installs the files in the local TeX tree.
     \from{src/outcomes.dtx}{cfgXimera}
     \from{src/textcolor.dtx}{cfgXimera}
     \from{src/verbatim.dtx}{cfgXimera}
-    \from{src/html.dtx}{cfgXimera}
+    \from{src/html.dtx}{cfgXimera}    
     \from{src/ending.dtx}{cfgXimera}        
   }
 }
@@ -168,8 +169,8 @@ Running "make install" installs the files in the local TeX tree.
     \from{src/labels.dtx}{htXimera}    
     \from{src/interactives/sagemath.dtx}{htXimera}
     \from{src/ungraded.dtx}{htXimera}            
+    \from{src/footnotes.dtx}{htXimera} 
     \from{src/ending.dtx}{htXimera}
-    \from{src/footnotes.dtx}{htXimera}
   }
 }
 \generate{
@@ -283,57 +284,36 @@ Running "make install" installs the files in the local TeX tree.
 \DocInput{src/graded.dtx}
 \DocInput{src/logo.dtx}
 \end{document}
-%</driver> \fi \def\fileversion{v1.0} \def\filedate{2018/10/28}
-% \DoNotIndex{\newcommand,\newenvironment} \title{\textsf{ximera} ---
-% Simultaneously write print and online interactive
-% materials.\thanks{This file describes version \fileversion, last
-% revised \filedate.}  } \author{Jim Fowler \and Jeramiah Hocutt \and
-% Oscar Levin \and Jason Nowell \and Hans Parshall \and Bart Snapp}
-% \date{Released \filedate} \maketitle
-% \changes{v1.0.0}{2018/05/25}{First public release} \begin{abstract}
-% ``\textsf{Ximera} begins where \TeX\ ends.''  The \textsf{ximera}
-% class aids in the creation of handouts, worksheets, exercises, and
-% sections of textbooks to be used either individually or ``glued''
-% together via a \textsf{xourse} file. All \textsf{ximera} documents
-% can be deployed in an online interactive form via \texttt{xake} See:
-% \href{https://ximera.osu.edu}{Ximera Project} and the source code on
-% \href{https://github.com/XimeraProject}{GitHub}.  \end{abstract} \section{Introduction}
-% Ximera, pronounced ``chimera,'' (\textbf{X}imera:
-% \textbf{I}nteractive, \textbf{M}athematics,
-% \textbf{E}\textbf{R}esources, for \textbf{A}ll) is an open-source
-% platform that provides tools for authoring and publishing (PDF and
-% Online), open-source, interactive educational content, such as textbooks, assessments, and online courses.  
-% The Ximera document class provides the following features:
-% \begin{description}
-% \item[Formatting for different domains] The Ximera document class
-%  provides built-in support for formatting documents in both PDF and
-%  online formats, which can be a big time-saver for
-%  authors. Additionally, it allows for the simultaneous creation of
-%  solution manuals and teaching editions, which can be especially
-%  useful for educators.
-%\item[Compiling individually or as a whole] With the Ximera document
-%  class, authors can easily compile individual documents or an entire
-%  collection of documents. This flexibility can be helpful when making
-%  changes to specific documents without having to re-compile the
-%  entire collection. Moreover, this allows an author to share large
-%  portions of a text with another, with minimal changes.
-%\item[Interactive content] The Ximera document class allows for the
-%  inclusion of interactive content, such as answer boxes that are
-%  validated by a client-side computer algebra system. Additionally, it
-%  allows for the embedding of YouTube videos, Desmos graphs, and
-%  GeoGebra interactives. 
-%\item[All content displayed] By default, the Ximera document class
-%  displays all content to the author. This means the author see what
-%  the students see, along with answers and solutions, and links (that
-%  can be checked) to various interactive elements (when deployed, the
-%  interactive elements are truly embedded). This can be especially
-%  helpful for catching errors or inconsistencies in the content.
-%\end{description}
+%</driver>
+% \fi
 %
-%
-%
-%
+%\def\fileversion{v1.0}
+%\def\filedate{2018/10/28}
+% \DoNotIndex{\newcommand,\newenvironment}
 % 
+%\title{\textsf{ximera} --- Simultaneously write print and online interactive materials.\thanks{This file
+%   describes version \fileversion, last revised \filedate.}
+%}
+%\author{Jim Fowler \and Jeramiah Hocutt \and Oscar Levin \and Jason Nowell \and Hans Parshall \and Bart Snapp}
+%\date{Released \filedate}
+%
+%\maketitle
+%
+%\changes{v1.0.0}{2018/05/25}{First public release}
+%
+% \begin{abstract}
+%   ``\textsf{Ximera} begins where \TeX\ ends.''  The \textsf{ximera}
+%   class aids in the creation of handouts, worksheets, exercises, and
+%   sections of textbooks to be used either individually or ``glued''
+%   together via a \textsf{xourse} file. All \textsf{ximera} documents
+%   can be deployed in an online interactive form via \texttt{xake}
+%   See: \href{https://ximera.osu.edu}{Ximera Project} and the source
+%   code on \href{https://github.com/XimeraProject}{GitHub}.
+% \end{abstract}
+%
+% \section{Introduction}
+%
+
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
