@@ -616,6 +616,7 @@ Interactive
 
 \newcommand{\geogebra}[3]{Geogebra link: \url{https://www.geogebra.org/m/#1}}
 \newcommand{\desmos}[3]{Desmos link: \url{https://www.desmos.com/calculator/#1}}
+\newcommand{\desmosD}[3]{Desmos3D link: \url{https://www.desmos.com/3d/#1}}
 \newcommand{\googleSheet}[5]{%
   Google Spreadsheet link: \url{https://docs.google.com/spreadsheets/d/#1}%
 }
