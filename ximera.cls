@@ -46,11 +46,12 @@
 %% src/leash.dtx  (with options: `classXimera')
 %% src/interactives/sagemath.dtx  (with options: `classXimera')
 %% src/jax.dtx  (with options: `classXimera')
-%% src/footnotes.dtx  (with options: `classXimera')
 %% src/ungraded.dtx  (with options: `classXimera')
+%% src/clearEnv.dtx  (with options: `classXimera')
+%% src/hideEnv.dtx  (with options: `classXimera')
 %% ------------:| ------------------------------------------------------------
 %%       ximera:| Simultaneously writing print and online interactive materials
-%%       Author:| Jim Fowler and Jeramiah Hocutt and Oscar Levin and Jason Nowell and Hans Parshall and Bart Snapp
+%%       Author:| Jim Fowler and Oscar Levin and Jason Nowell and Hans Parshall and Bart Snapp
 %%       E-mail:| bart.snapp@gmail.com
 %%      License:| Released under the LaTeX Project Public License v1.3c or later
 %%          See:| http://www.latex-project.org/lppl.txt
@@ -558,35 +559,45 @@
 
 \ifnumbers
 \setcounter{secnumdepth}{2}
-\renewcommand{\thesection}{\arabic{titlenumber}.\arabic{section}~}
+\renewcommand{\thesection}{\arabic{titlenumber}.\arabic{section}}
+\renewcommand{\thesubsection}{\arabic{titlenumber}.\arabic{section}.\arabic{subsection}}
 \else
 \setcounter{secnumdepth}{-2}
 \fi
 
 \def\activitystyle{}
 \newcounter{sectiontitlenumber}
-\setcounter{secnumdepth}{0}
+
 \newcommand\chapterstyle{%
   \def\activitystyle{activity-chapter}
   \def\maketitle{%
     \addtocounter{titlenumber}{1}%
                     {\flushleft\small\sffamily\bfseries\@pretitle\par\vspace{-1.5em}}%
                     {\flushleft\LARGE\sffamily\bfseries\thetitlenumber\hspace{1em}\@title \par }%
-                    {\vskip .6em\noindent\textit\theabstract\setcounter{problem}{0}\setcounter{sectiontitlenumber}{0}}%
+                    {\vskip .6em\noindent\textit\theabstract\setcounter{problem}{0}\setcounter{section}{0}}%
                     \par\vspace{2em}
                     \phantomsection\addcontentsline{toc}{section}{\textbf{\thetitlenumber\hspace{1em}\@title}}%
-                  }}
+}}
 
 \newcommand\sectionstyle{%
   \def\activitystyle{activity-section}
   \def\maketitle{%
-    \addtocounter{sectiontitlenumber}{1}
+    \addtocounter{section}{1}
+    \setcounter{sectiontitlenumber}{\value{section}}
     {\flushleft\small\sffamily\bfseries\@pretitle\par\vspace{-1.5em}}%
     {\flushleft\Large\sffamily\bfseries\thetitlenumber.\thesectiontitlenumber\hspace{1em}\@title \par}%
-    {\vskip .6em\noindent\textit\theabstract}%
+    {\vskip .6em\noindent\textit\theabstract\setcounter{subsection}{0}}%
     \par\vspace{2em}
-    \phantomsection\addcontentsline{toc}{subsection}{\thetitlenumber.\thesectiontitlenumber\hspace{1em}\@title}%
-  }}
+    \phantomsection\addcontentsline{toc}{section}{\thetitlenumber.\thesectiontitlenumber\hspace{1em}\@title}%
+ \renewcommand\section{\@startsection{subsection}{2}{\z@}%
+                                       {-3.25ex\@plus -1ex \@minus -.2ex}%
+                                       {1.5ex \@plus .2ex}%
+                                       {\normalfont\large\bfseries}}
+ \renewcommand\subsection{\@startsection{subsubsection}{3}{\z@}%
+                                          {-3.25ex\@plus -1ex \@minus -.2ex}%
+                                          {1.5ex \@plus .2ex}%
+                                          {\normalfont\normalsize\bfseries}}
+}}
 
 \iftikzexport%% allows xake to handle \chapterstyle and \sectionstye
 \renewcommand\chapterstyle{\def\activitystyle{chapter}}
@@ -1019,8 +1030,40 @@ Interactive
 \renewcommand{\DeclareMathOperator}[2]{\@OldDeclareMathOperator{#1}{#2}\immediate\write\myfile{\unexpanded{\DeclareMathOperator}{\unexpanded{#1}}{\unexpanded{#2}}}}
 
 \fi
-
 \newenvironment{ungraded}{}{}
+\newcommand{\clearEnv}[1]{
+    %% Syntax: \clearEnv{envName}
+    %   #1 is envName is the name of the environment you want to clear. This will (re)define the
+    %       begin and end environments, as well as the internal counter from \newtheoremenv to \relax.
+    \expandafter\let\csname #1\endcsname\relax
+    \expandafter\let\csname end#1\endcsname\relax
+    \expandafter\let\csname c@#1\endcsname\relax
+    }
+
+\newcommand{\hideEnv}[2][]{
+    %% Syntax: \hideEnv[NewCode]{environmentName}
+
+    \expandafter\def\csname temp@#2\endcsname\csname #2\endcsname
+    \expandafter\def\csname temp@end#2\endcsname\csname end#2\endcsname
+    \expandafter\def\csname#2\endcsname{
+        \ifnum\value{depth@Check}<1
+        Suppress Should start here.
+        \suppress
+        \fi
+        \stepcounter{depth@Check}
+
+        }
+    \expandafter\def\csname end#2\endcsname{
+        \addtocounter{depth@Check}{-1}
+        \ifnum\value{depth@Check}<1
+        Suppress Should End Here.
+        \endsuppress
+        \fi
+
+    \noexpand{#1}
+    }
+    }
+
 %% 
 %% Copyright (C) 2018 by Bart Snapp <bart.snapp@gmail.com> and Jim Fowler <kisonecat@gmail.com>
 %% 
