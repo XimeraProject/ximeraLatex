@@ -593,19 +593,12 @@
                                        {-3.25ex\@plus -1ex \@minus -.2ex}%
                                        {1.5ex \@plus .2ex}%
                                        {\normalfont\large\bfseries}}
- \renewcommand\section*{\@startsection{subsection}{2}{\z@}%
-                                        {-3.25ex\@plus -1ex \@minus -.2ex}%
-                                        {1.5ex \@plus .2ex}%
-                                        {\normalfont\large\bfseries}}
 
  \renewcommand\subsection{\@startsection{subsubsection}{3}{\z@}%
                                           {-3.25ex\@plus -1ex \@minus -.2ex}%
                                           {1.5ex \@plus .2ex}%
                                           {\normalfont\normalsize\bfseries}}
- \renewcommand\subsection*{\@startsection{subsubsection}{3}{\z@}%
-                                           {-3.25ex\@plus -1ex \@minus -.2ex}%
-                                           {1.5ex \@plus .2ex}%
-                                           {\normalfont\normalsize\bfseries}}
+
 }}
 
 \iftikzexport%% allows xake to handle \chapterstyle and \sectionstye
