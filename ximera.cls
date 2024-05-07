@@ -661,7 +661,23 @@ Interactive
 \define@key{answer}{onlinenoinput}[false]{}
 \define@key{answer}{onlineshowanswerbutton}[false]{}
 \setkeys{answer}{id=,given=false,onlinenoinput=false,onlineshowanswerbutton=false}
-\newcommand{\handoutAnswerFormat}[1]{\ldots\ldots} %% Can be redefined by the user
+
+\newcommand{\answerFormatLength}{2cm}
+
+\newcommand{\answerFormatDots}[1]{\ldots\ldots}
+\newcommand{\answerFormatLine}[1]{\protect\rule{\answerFormatLength}{0.4pt}}
+\newcommand{\answerFormatFlexibleLine}[1]{\protect\rule{\widthof{$#1$}*2}{0.4pt}}
+\newcommand{\answerFormatFlexibleBox}[1]{\fbox{\scalebox{2}{\phantom{$#1$}}}}
+
+\newcommand{\answerFormatPlain}[1]{\ensuremath{#1}}
+\newcommand{\answerFormatBlue}[1]{\color{blue}\ensuremath{#1}}
+\newcommand{\answerFormatBoxed}[1]{\fbox{\ensuremath{#1}}}
+\newcommand{\answerFormatBoxedGiven}[1]{\underset{\scriptstyle\mathrm{given}}{\fbox{\ensuremath{#1}}}}
+
+\let\handoutAnswerFormat\answerFormatDots
+\let\defaultAnswerFormat\answerFormatBlue
+\let\givenAnswerFormat\answerFormatBoxedGiven
+
 \newcommand{\answer}[2][]{%
 \ifmmode%
 \setkeys{answer}{#1}%
@@ -671,14 +687,14 @@ Interactive
 \ifhandout
 #2
 \else
-\underset{\scriptstyle\mathrm{given}}{\fbox{\ensuremath{#2}}}
+\givenAnswerFormat{#2} %% in case the argument helps formatting
 \fi
 }% End then statement
 {% Start else statement
 \ifhandout
 \handoutAnswerFormat{#2} %% in case the argument helps formatting
 \else% show answer in box outside handout mode
-    {\color{blue}\ensuremath{#2}}
+\defaultAnswerFormat{#2} %% in case the argument helps formatting
 \fi
 }% End else statement
 \else%
