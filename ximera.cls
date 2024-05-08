@@ -567,7 +567,8 @@
 
 \def\activitystyle{}
 \newcounter{sectiontitlenumber}
-
+\setcounter{secnumdepth}{2}
+\setcounter{tocdepth}{2}
 \newcommand\chapterstyle{%
   \def\activitystyle{activity-chapter}
   \def\maketitle{%
