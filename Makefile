@@ -43,7 +43,6 @@ ctan: all
 	cp ./src/*.dtx ./ctan/ximera/src # only copy the dtx files!
 	cp ./src/interactives/*.dtx ./ctan/ximera/src/interactives/ # only copy the dtx files!
 	cp LICENSE ./ctan/ximera/
-	cp pgfsys-ximera.def ./ctan/ximera/
 	cp README ./ctan/ximera/
 	zip -r ./ctan/ximera.zip ./ctan/ximera
 

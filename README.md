@@ -30,13 +30,7 @@ Contents of the repository
 
 * This README.md file. 
 
-* The GNU license.
-
-* The Ximera document class, ximera.cls
-
-* The Xourse document class, xourse.cls
-
-* Documentation for the document classes above, ximeraLaTeX.pdf
+* The LPPL 1.3c license.
 
 * The Ximera documented LaTeX file type, ximera.dtx. This file
   generates ximera.cls, xourse.cls, and ximeraLaTeX.pdf, as well as a
