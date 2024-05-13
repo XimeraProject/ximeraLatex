@@ -35,7 +35,7 @@ distclean: clean
 
 ctan: all
 	mkdir -p ./ctan/ximera/src/interactives/ # create a directory structure
-	touch ximera.zip
+	touch ./ctan/ximera.zip
 	rm ./ctan/ximera.zip # remove old zip file
 	cp ximera.dtx  ./ctan/ximera/ # copy files 
 	cp ximera.pdf ./ctan/ximera/
