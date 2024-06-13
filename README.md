@@ -1,17 +1,15 @@
 Greetings! [![Build Status](https://travis-ci.org/XimeraProject/ximeraLatex.svg?branch=master)](https://travis-ci.org/XimeraProject/ximeraLatex)
 ==========
 
-In this repository, we hope to supply potential authors of Ximera
-activities with the LaTeX document classes they need to write Ximera
-documents. 
+In this repository, we develop the Ximera LaTeX document class. As of summer of 2024, the Ximera document class is available in [CTAN](https://ctan.org/pkg/ximera?lang=en).
 
-To install the XimeraLaTeX package, see: 
+However, if a user should wish to install locally at this point (not recommended) see: 
 
 [Installing Locally](./installingLocally.md)
 
 For a list of different Ximera commands, see: 
 
-[Examples of Ximera Envrionments](https://ximera.osu.edu/tester/exampleActivityCollection)
+[Examples of Ximera Envrionments](https://go.osu.edu/ximera-examples)
 
 
 Since Ximera is built on LaTeX source, we want to use LaTeX as a
