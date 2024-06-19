@@ -52,3 +52,17 @@ will reset your ximeraLatex directory. Note it will also overwrite
 *any* modifications you have made in this directory. You should not be
 building your activities in this directory.
 
+
+
+Future Features
+---------------
+
+- Ability to include \activities and \practice within a ximera document
+  - when adding Xourses, the path to the xourse/file needs to be given
+in some way. We have an example of this in the preamble of
+examples/exerciseCollection/exerciseCollection.tex This enables an
+author to print the file and know where to find the parts.
+  - Perhaps by default, all Xourse files appear on the top page, but if modified with `\documentclass[hidden]{xourse}, they would no longer appear
+  - We'd like a separate, perhaps password protected page with ALL content on it.
+- Perhaps xourse as an option for ximera documents
+- \xsection \xsubsection (for formatting mixed xourses)
