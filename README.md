@@ -1,26 +1,18 @@
-Greetings! [![Build Status](https://travis-ci.org/XimeraProject/ximeraLatex.svg?branch=master)](https://travis-ci.org/XimeraProject/ximeraLatex)
-==========
+This repository contains 'ximera' and 'xourse' LaTeX document classes, that provide support 
+for authoring and publishing educational content such as textbooks, assessments, and courses.
 
-In this repository, we develop the Ximera LaTeX document class. As of summer of 2024, the Ximera document class is available in [CTAN](https://ctan.org/pkg/ximera?lang=en).
+Every LaTeX source file generates both a PDF and an HTML page, 
+where the HTML page can have several types of interactivity.
 
-However, if a user should wish to install locally at this point (not recommended) see: 
+As of summer of 2024, Ximera is available in [CTAN](https://ctan.org/pkg/ximera?lang=en).
 
-[Installing Locally](./installingLocally.md)
-
-For a list of different Ximera commands, see: 
-
-[Examples of Ximera Envrionments](https://go.osu.edu/ximera-examples)
+For a list of different Ximera commands, see these
+[examples](https://go.osu.edu/ximera-examples)
 
 
-Since Ximera is built on LaTeX source, we want to use LaTeX as a
-method of validating the code authors write. Hence, if you want to
-write a Ximera online activity, the first step is constructing LaTeX
-documents.
-
-Once you have the LaTeX documents, and you have checked them for
-typos, accuracy, etc, the fact that they compile should be reasonable
-evidence that they will display correctly in Ximera.
-
+Ximera courses are built from LaTeX source, and compile to PDF just as any other LaTeX source file.
+By using a Ximera build script 'xake' and a Ximera-specific webserver, this same LaTeX source
+genenerates an interactive online course.
 
 
 Contents of the repository
@@ -30,9 +22,17 @@ Contents of the repository
 
 * The LPPL 1.3c license.
 
-* The Ximera documented LaTeX file type, ximera.dtx. This file
-  generates ximera.cls, xourse.cls, and ximeraLaTeX.pdf, as well as a
-  few other files.
+* A collection of .dtx files in the src folder
+  
+* The main ximera.dtx file that generates ximera.cls, xourse.cls, and .4ht files for the generation of HTML.
+
+* A PDF ximeraLaTeX.pdf with technical documentation, also generated from the files in the src folder.
+
+  
+Manual installation (not recommended)
+-------------------
+
+[Installing Locally](./installingLocally.md)
 
 
 Staying up-to-date
