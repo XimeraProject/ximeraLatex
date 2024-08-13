@@ -2,10 +2,10 @@
 % \DescribeEnv{abstract}{Every activity should include a short abstract.}
 %    \begin{macrocode}
 %<*classXimera>
-\let\abstract\relax
+\let\abstract\relax% We kill off abstract as we will want to remake it as an Environ to capture the BODY
 \let\endabstract\relax
 % Use of environ package, may want to find a better way.
-\NewEnviron{abstract}{\protected@xdef\theabstract{\BODY}}
+\NewEnviron{abstract}{\protected@xdef\theabstract{\BODY}}% Define abstract as an Environ and capture BODY
 %</classXimera>
 %    \end{macrocode}
 % The abstract has been stored in |\theabstract| and should be emitted
@@ -14,7 +14,7 @@
 % probably unnecessary.
 %    \begin{macrocode}
 %<*cfgXimera>
-\let\abstract\relax
-\let\endabstract\relax
+\let\abstract\relax% Config file helps interface between tex and html conversion code.
+\let\endabstract\relax% So we want to kill off abstract here too. As noted above it may not be necessary.
 %</cfgXimera>
 %    \end{macrocode}
