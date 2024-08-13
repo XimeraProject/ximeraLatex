@@ -280,7 +280,7 @@
   \immediate\openout\outcomefile=\jobname.oc
 
   \newcommand{\outcome}[1]{
-      \ifoutcomestrue% If we invoke |\outcome|, then we should have outcomes and thus we will flag it as true.
+      \outcomestrue% If we invoke |\outcome|, then we should have outcomes and thus we will flag it as true.
       \edef\theoutcomes{\theoutcomes #1~}%
       \immediate\write\outcomefile{\unexpanded{\outcome}{#1}}
       }
@@ -537,7 +537,7 @@
 \let\@emptyauthor\@author
 \def\author#1{
     \gdef\@author{#1}% Defines activity author
-    \ifauthortrue% Flags author as given.
+    \authortrue% Flags author as given.
     }
 \def\@author{\@latex@warning@no@line{No \noexpand\author given}}
 \def\and{and }

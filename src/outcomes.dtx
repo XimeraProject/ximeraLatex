@@ -11,7 +11,7 @@
   \immediate\openout\outcomefile=\jobname.oc
 
   \newcommand{\outcome}[1]{
-      \ifoutcomestrue% If we invoke |\outcome|, then we should have outcomes and thus we will flag it as true.
+      \outcomestrue% If we invoke |\outcome|, then we should have outcomes and thus we will flag it as true.
       \edef\theoutcomes{\theoutcomes #1~}%
       \immediate\write\outcomefile{\unexpanded{\outcome}{#1}}
       }
