@@ -4,16 +4,32 @@
 \iffalse
 %</internal>
 %<*readme>
-|
 ------------:| ------------------------------------------------------------
       ximera:| Simultaneously write print and online interactive materials
-      Author:| Jim Fowler and Oscar Levin and Jason Nowell and Hans Parshall and Bart Snapp
+      Author:| Jim Fowler and Oscar Levin and Jason Nowell and Wim Obbels and Hans Parshall and Bart Snapp
       E-mail:| bart.snapp@gmail.com
      License:| Released under the LaTeX Project Public License v1.3c or later
          See:| http://www.latex-project.org/lppl.txt
 
-Short description:
-Some text about the class: probably the same as the abstract.
+Ximera, pronounced "chimera," (Ximera: Interactive, Mathematics,
+Education, Resources, for All) is an open-source platform that
+provides tools for authoring and publishing (PDF and Online),
+open-source, interactive educational content, such as textbooks,
+assessments, and online courses.
+
+The Ximera document class is designed to support all syntax used to
+create interactive online content. This means that by default, we try
+to display all authoring content. This includes links to online
+interactives, notifications when something differs in the PDF vs the
+online incarnation. By using various options in the documentclass,
+notably `handout` reasonable PDF handouts and full books can be
+created along side the document class.
+
+While one can produce high-quality PDF using Ximera, authors need to
+decide exactly how Ximera documents fit-in to their work and use them
+consistently.
+
+Please reach out to the developers with any questions.
 %</readme>
 %<*internal>
 \fi
@@ -29,7 +45,7 @@ Some text about the class: probably the same as the abstract.
 \preamble
 ------------:| ------------------------------------------------------------
       ximera:| Simultaneously writing print and online interactive materials
-      Author:| Jim Fowler and Oscar Levin and Jason Nowell and Hans Parshall and Bart Snapp
+      Author:| Jim Fowler and Oscar Levin and Jason Nowell and Wim Obbels and Hans Parshall and Bart Snapp
       E-mail:| bart.snapp@gmail.com
      License:| Released under the LaTeX Project Public License v1.3c or later
          See:| http://www.latex-project.org/lppl.txt
@@ -37,7 +53,7 @@ Some text about the class: probably the same as the abstract.
 \endpreamble
 \postamble
 
-Copyright (C) 2018 by Bart Snapp <bart.snapp@gmail.com> and Jim Fowler <kisonecat@gmail.com>
+Copyright (C) 2024 by Bart Snapp <bart.snapp@gmail.com> and Jim Fowler <kisonecat@gmail.com>
 
 This work may be distributed and/or modified under the
 conditions of the LaTeX Project Public License (LPPL), either
@@ -109,7 +125,9 @@ Running "make install" installs the files in the local TeX tree.
     \from{src/leash.dtx}{classXimera}
     \from{src/interactives/sagemath.dtx}{classXimera}        
     \from{src/jax.dtx}{classXimera}
-    \from{src/ungraded.dtx}{classXimera}    
+    \from{src/ungraded.dtx}{classXimera}
+    \from{src/clearEnv.dtx}{classXimera}
+    \from{src/hideEnv.dtx}{classXimera}
   }
 }
 \generate{
@@ -210,7 +228,7 @@ Running "make install" installs the files in the local TeX tree.
 %<classXimera|classXourse>\NeedsTeXFormat{LaTeX2e}[1999/12/01]
 %<classXimera>\ProvidesClass{ximera}
 %<classXourse>\ProvidesClass{xourse}
-%<classXimera|classXourse> [2018/10/28 v1.00
+%<classXimera|classXourse> [2024/05/12 v1.5.1
 %<classXimera> Simultaneously write print and online interactive materials]
 %<classXourse> Combining Ximera activities into Xourses]
 %<*driver>
@@ -285,20 +303,22 @@ Running "make install" installs the files in the local TeX tree.
 %</driver>
 % \fi
 %
-%\def\fileversion{v1.0}
-%\def\filedate{2018/10/28}
+%\def\fileversion{v1.5.1}
+%\def\filedate{2024/05/12}
 % \DoNotIndex{\newcommand,\newenvironment}
 % 
 %\title{\textsf{ximera} --- Simultaneously write print and online interactive materials.\thanks{This file
 %   describes version \fileversion, last revised \filedate.}
 %}
-%\author{Jim Fowler \and Jeramiah Hocutt \and Oscar Levin \and Jason Nowell \and Hans Parshall \and Bart Snapp}
+%\author{Jim Fowler \and Jeramiah Hocutt \and Oscar Levin \and Jason Nowell \and Wim Obbels \and Hans Parshall \and Bart Snapp}
 %\date{Released \filedate}
 %
 %\maketitle
 %
 %\changes{v1.0.0}{2018/05/25}{First public release}
-%
+%\changes{v1.5.0}{2024/05/08}{Submitting to CTAN}
+%\changes{v1.5.1}{2024/05/12}{Fixed date bug}
+
 % \begin{abstract}
 %   ``\textsf{Ximera} begins where \TeX\ ends.''  The \textsf{ximera}
 %   class aids in the creation of handouts, worksheets, exercises, and
@@ -311,6 +331,42 @@ Running "make install" installs the files in the local TeX tree.
 %
 % \section{Introduction}
 %
+% Ximera, pronounced ``chimera,'' (\textbf{X}imera:
+% \textbf{I}nteractive, \textbf{M}athematics,
+% \textbf{E}\textbf{R}esources, for \textbf{A}ll) is an open-source
+% platform that provides tools for authoring and publishing (PDF and
+% Online), open-source, interactive educational content, such as textbooks, assessments, and online courses.  
+% The Ximera document class provides the following features:
+% \begin{description}
+% \item[Formatting for different domains] The Ximera document class
+%  provides built-in support for formatting documents in both PDF and
+%  online formats, which can be a big time-saver for
+%  authors. Additionally, it allows for the simultaneous creation of
+%  solution manuals and teaching editions, which can be especially
+%  useful for educators.
+%\item[Compiling individually or as a whole] With the Ximera document
+%  class, authors can easily compile individual documents or an entire
+%  collection of documents. This flexibility can be helpful when making
+%  changes to specific documents without having to re-compile the
+%  entire collection. Moreover, this allows an author to share large
+%  portions of a text with another, with minimal changes.
+%\item[Interactive content] The Ximera document class allows for the
+%  inclusion of interactive content, such as answer boxes that are
+%  validated by a client-side computer algebra system. Additionally, it
+%  allows for the embedding of YouTube videos, Desmos graphs, and
+%  GeoGebra interactives. 
+%\item[All content displayed] By default, the Ximera document class
+%  displays all content to the author. This means the author see what
+%  the students see, along with answers and solutions, and links (that
+%  can be checked) to various interactive elements (when deployed, the
+%  interactive elements are truly embedded). This can be especially
+%  helpful for catching errors or inconsistencies in the content.
+%\end{description}
+%
+%Online examples can be found at
+%\begin{center}
+%\url{https://go.osu.edu/ximera-examples}
+%\end{center}
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

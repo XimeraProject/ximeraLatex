@@ -1,17 +1,15 @@
 Greetings!
 ==========
 
-In this repository, we hope to supply potential authors of Ximera
-activities with the LaTeX document classes they need to write Ximera
-documents. 
+In this repository, we develop the Ximera LaTeX document class. As of summer of 2024, the Ximera document class is available in [CTAN](https://ctan.org/pkg/ximera?lang=en).
 
-For directions on using Ximera, see: 
+However, if a user should wish to install locally at this point (not recommended) see: 
 
-[Introduction to Ximera](https://ximera.osu.edu/introduction/gettingStarted)
+[Installing Locally](./installingLocally.md)
 
 For a list of different Ximera commands, see: 
 
-[Examples of Ximera Envrionments](https://ximera.osu.edu/examples)
+[Examples of Ximera Envrionments](https://go.osu.edu/ximera-examples)
 
 
 Since Ximera is built on LaTeX source, we want to use LaTeX as a
@@ -30,24 +28,11 @@ Contents of the repository
 
 * This README.md file. 
 
-* The GNU license.
-
-* The Ximera document class, ximera.cls
-
-* The Xourse document class, xourse.cls
-
-* Documentation for the document classes above, ximeraLaTeX.pdf
+* The LPPL 1.3c license.
 
 * The Ximera documented LaTeX file type, ximera.dtx. This file
   generates ximera.cls, xourse.cls, and ximeraLaTeX.pdf, as well as a
   few other files.
-
-Installing
-----------
-
-To install, checkout: 
-
-[Introduction to Ximera](https://ximera.osu.edu/introduction/gettingStarted)
 
 
 Staying up-to-date
@@ -67,3 +52,17 @@ will reset your ximeraLatex directory. Note it will also overwrite
 *any* modifications you have made in this directory. You should not be
 building your activities in this directory.
 
+
+
+Future Features
+---------------
+
+- Ability to include \activities and \practice within a ximera document
+  - when adding Xourses, the path to the xourse/file needs to be given
+in some way. We have an example of this in the preamble of
+examples/exerciseCollection/exerciseCollection.tex This enables an
+author to print the file and know where to find the parts.
+  - Perhaps by default, all Xourse files appear on the top page, but if modified with `\documentclass[hidden]{xourse}, they would no longer appear
+  - We'd like a separate, perhaps password protected page with ALL content on it.
+- Perhaps xourse as an option for ximera documents
+- \xsection \xsubsection (for formatting mixed xourses)

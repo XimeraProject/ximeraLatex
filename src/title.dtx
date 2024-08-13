@@ -81,35 +81,49 @@
 
 \ifnumbers
 \setcounter{secnumdepth}{2}
-\renewcommand{\thesection}{\arabic{titlenumber}.\arabic{section}~} 
+\renewcommand{\thesection}{\arabic{titlenumber}.\arabic{section}}
+\renewcommand{\thesubsection}{\arabic{titlenumber}.\arabic{section}.\arabic{subsection}}
 \else
 \setcounter{secnumdepth}{-2}
 \fi
 
 \def\activitystyle{}
 \newcounter{sectiontitlenumber}
-\setcounter{secnumdepth}{0}
+\setcounter{secnumdepth}{2}
+\setcounter{tocdepth}{2}
 \newcommand\chapterstyle{%
   \def\activitystyle{activity-chapter}
   \def\maketitle{%
     \addtocounter{titlenumber}{1}%
                     {\flushleft\small\sffamily\bfseries\@pretitle\par\vspace{-1.5em}}%
                     {\flushleft\LARGE\sffamily\bfseries\thetitlenumber\hspace{1em}\@title \par }%
-                    {\vskip .6em\noindent\textit\theabstract\setcounter{problem}{0}\setcounter{sectiontitlenumber}{0}}%
+                    {\vskip .6em\noindent\textit\theabstract\setcounter{problem}{0}\setcounter{section}{0}}%
                     \par\vspace{2em}
                     \phantomsection\addcontentsline{toc}{section}{\textbf{\thetitlenumber\hspace{1em}\@title}}%
-                  }}
+}}
+
 
 \newcommand\sectionstyle{%
   \def\activitystyle{activity-section}
   \def\maketitle{%
-    \addtocounter{sectiontitlenumber}{1}
+    \addtocounter{section}{1}
+    \setcounter{sectiontitlenumber}{\value{section}} 
     {\flushleft\small\sffamily\bfseries\@pretitle\par\vspace{-1.5em}}%
     {\flushleft\Large\sffamily\bfseries\thetitlenumber.\thesectiontitlenumber\hspace{1em}\@title \par}%
-    {\vskip .6em\noindent\textit\theabstract}%
+    {\vskip .6em\noindent\textit\theabstract\setcounter{subsection}{0}}%
     \par\vspace{2em}
-    \phantomsection\addcontentsline{toc}{subsection}{\thetitlenumber.\thesectiontitlenumber\hspace{1em}\@title}%
-  }}
+    \phantomsection\addcontentsline{toc}{section}{\thetitlenumber.\thesectiontitlenumber\hspace{1em}\@title}%
+ \renewcommand\section{\@startsection{subsection}{2}{\z@}%
+                                       {-3.25ex\@plus -1ex \@minus -.2ex}%
+                                       {1.5ex \@plus .2ex}%
+                                       {\normalfont\large\bfseries}}
+
+ \renewcommand\subsection{\@startsection{subsubsection}{3}{\z@}%
+                                          {-3.25ex\@plus -1ex \@minus -.2ex}%
+                                          {1.5ex \@plus .2ex}%
+                                          {\normalfont\normalsize\bfseries}}
+
+}}
 
 
 \iftikzexport%% allows xake to handle \chapterstyle and \sectionstye

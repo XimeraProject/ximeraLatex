@@ -47,17 +47,20 @@
 %% src/interactives/sagemath.dtx  (with options: `classXimera')
 %% src/jax.dtx  (with options: `classXimera')
 %% src/ungraded.dtx  (with options: `classXimera')
+%% src/clearEnv.dtx  (with options: `classXimera')
+%% src/hideEnv.dtx  (with options: `classXimera')
 %% ------------:| ------------------------------------------------------------
 %%       ximera:| Simultaneously writing print and online interactive materials
-%%       Author:| Jim Fowler and Oscar Levin and Jason Nowell and Hans Parshall and Bart Snapp
+%%       Author:| Jim Fowler and Oscar Levin and Jason Nowell and Wim Obbels and Hans Parshall and Bart Snapp
 %%       E-mail:| bart.snapp@gmail.com
 %%      License:| Released under the LaTeX Project Public License v1.3c or later
 %%          See:| http://www.latex-project.org/lppl.txt
 %% 
 \NeedsTeXFormat{LaTeX2e}[1999/12/01]
 \ProvidesClass{ximera}
- [2018/10/28 v1.00
+ [2024/05/12 v1.5.1
  Simultaneously write print and online interactive materials]
+
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -146,7 +149,6 @@
 \fi
 
 
-
 \RequirePackage[makeroom]{cancel}
 \RequirePackage[inline]{enumitem}
 \RequirePackage[pagestyles]{titlesec}
@@ -193,8 +195,10 @@
         pdflatex \tikzexternalcheckshellescape
         -halt-on-error -interaction=batchmode
         -jobname "\image" "\\PassOptionsToClass{tikzexport}{ximera}\texsource";
+        mutool draw -F svg \image.pdf > \image.svg ;     % mutool adds "1" to filename ????
         mutool draw -o \image.svg \image.pdf ;
         mutool draw -r 150 -c rgbalpha -o \image.png \image.pdf ;
+        ebb -x \image.png
       }
     }
     \tikzexternalize[optimize=false,prefix=./]
@@ -276,7 +280,7 @@
   \immediate\openout\outcomefile=\jobname.oc
 
   \newcommand{\outcome}[1]{
-      \outcomestrue% If we invoke |\outcome|, then we should have outcomes and thus we will flag it as true.
+      \ifoutcomestrue% If we invoke |\outcome|, then we should have outcomes and thus we will flag it as true.
       \edef\theoutcomes{\theoutcomes #1~}%
       \immediate\write\outcomefile{\unexpanded{\outcome}{#1}}
       }
@@ -284,6 +288,7 @@
 \everymath{\displaystyle}
 \let\prelim\lim
 \renewcommand{\lim}{\displaystyle\prelim}
+\theoremstyle{definition} % No italic (because this makes also text in TikZ italic !!!)
 
 
       \newtheorem{theorem}{Theorem}
@@ -526,13 +531,13 @@
 {\end{trivlist}}
 \fi
 
-\let\abstract\relax
+\let\abstract\relax% We kill off abstract as we will want to remake it as an Environ to capture the BODY
 \let\endabstract\relax
-\NewEnviron{abstract}{\protected@xdef\theabstract{\BODY}}
+\NewEnviron{abstract}{\protected@xdef\theabstract{\BODY}}% Define abstract as an Environ and capture BODY
 \let\@emptyauthor\@author
 \def\author#1{
     \gdef\@author{#1}% Defines activity author
-    \authortrue% Flags author as given.
+    \ifauthortrue% Flags author as given.
     }
 \def\@author{\@latex@warning@no@line{No \noexpand\author given}}
 \def\and{and }
@@ -582,35 +587,48 @@
 
 \ifnumbers
 \setcounter{secnumdepth}{2}
-\renewcommand{\thesection}{\arabic{titlenumber}.\arabic{section}~}
+\renewcommand{\thesection}{\arabic{titlenumber}.\arabic{section}}
+\renewcommand{\thesubsection}{\arabic{titlenumber}.\arabic{section}.\arabic{subsection}}
 \else
 \setcounter{secnumdepth}{-2}
 \fi
 
 \def\activitystyle{}
 \newcounter{sectiontitlenumber}
-\setcounter{secnumdepth}{0}
+\setcounter{secnumdepth}{2}
+\setcounter{tocdepth}{2}
 \newcommand\chapterstyle{%
   \def\activitystyle{activity-chapter}
   \def\maketitle{%
     \addtocounter{titlenumber}{1}%
                     {\flushleft\small\sffamily\bfseries\@pretitle\par\vspace{-1.5em}}%
                     {\flushleft\LARGE\sffamily\bfseries\thetitlenumber\hspace{1em}\@title \par }%
-                    {\vskip .6em\noindent\textit\theabstract\setcounter{problem}{0}\setcounter{sectiontitlenumber}{0}}%
+                    {\vskip .6em\noindent\textit\theabstract\setcounter{problem}{0}\setcounter{section}{0}}%
                     \par\vspace{2em}
                     \phantomsection\addcontentsline{toc}{section}{\textbf{\thetitlenumber\hspace{1em}\@title}}%
-                  }}
+}}
 
 \newcommand\sectionstyle{%
   \def\activitystyle{activity-section}
   \def\maketitle{%
-    \addtocounter{sectiontitlenumber}{1}
+    \addtocounter{section}{1}
+    \setcounter{sectiontitlenumber}{\value{section}}
     {\flushleft\small\sffamily\bfseries\@pretitle\par\vspace{-1.5em}}%
     {\flushleft\Large\sffamily\bfseries\thetitlenumber.\thesectiontitlenumber\hspace{1em}\@title \par}%
-    {\vskip .6em\noindent\textit\theabstract}%
+    {\vskip .6em\noindent\textit\theabstract\setcounter{subsection}{0}}%
     \par\vspace{2em}
-    \phantomsection\addcontentsline{toc}{subsection}{\thetitlenumber.\thesectiontitlenumber\hspace{1em}\@title}%
-  }}
+    \phantomsection\addcontentsline{toc}{section}{\thetitlenumber.\thesectiontitlenumber\hspace{1em}\@title}%
+ \renewcommand\section{\@startsection{subsection}{2}{\z@}%
+                                       {-3.25ex\@plus -1ex \@minus -.2ex}%
+                                       {1.5ex \@plus .2ex}%
+                                       {\normalfont\large\bfseries}}
+
+ \renewcommand\subsection{\@startsection{subsubsection}{3}{\z@}%
+                                          {-3.25ex\@plus -1ex \@minus -.2ex}%
+                                          {1.5ex \@plus .2ex}%
+                                          {\normalfont\normalsize\bfseries}}
+
+}}
 
 \iftikzexport%% allows xake to handle \chapterstyle and \sectionstye
 \renewcommand\chapterstyle{\def\activitystyle{chapter}}
@@ -638,8 +656,9 @@
 Interactive
 }
 
-\newcommand{\geogebra}[3]{Geogebra link: \url{https://tube.geogebra.org/m/#1}}
+\newcommand{\geogebra}[3]{Geogebra link: \url{https://www.geogebra.org/m/#1}}
 \newcommand{\desmos}[3]{Desmos link: \url{https://www.desmos.com/calculator/#1}}
+\newcommand{\desmosThreeD}[3]{Desmos3D link: \url{https://www.desmos.com/3d/#1}}
 \newcommand{\googleSheet}[5]{%
   Google Spreadsheet link: \url{https://docs.google.com/spreadsheets/d/#1}%
 }
@@ -668,7 +687,26 @@ Interactive
 \define@key{answer}{validator}{}
 \define@key{answer}{id}{\def\ans@id{#1}}
 \define@key{answer}{format}{}
-\setkeys{answer}{id=,given=false}
+\define@key{answer}{onlinenoinput}[false]{}
+\define@key{answer}{onlineshowanswerbutton}[false]{}
+\setkeys{answer}{id=,given=false,onlinenoinput=false,onlineshowanswerbutton=false}
+
+\newcommand{\answerFormatLength}{2cm}
+
+\newcommand{\answerFormatDots}[1]{\ldots\ldots}
+\newcommand{\answerFormatLine}[1]{\protect\rule{\answerFormatLength}{0.4pt}}
+\newcommand{\answerFormatFlexibleLine}[1]{\protect\rule{\widthof{$#1$}*2}{0.4pt}}
+\newcommand{\answerFormatFlexibleBox}[1]{\fbox{\scalebox{2}{\phantom{$#1$}}}}
+
+\newcommand{\answerFormatPlain}[1]{\ensuremath{#1}}
+\newcommand{\answerFormatBlue}[1]{\color{blue}\ensuremath{#1}}
+\newcommand{\answerFormatBoxed}[1]{\fbox{\ensuremath{#1}}}
+\newcommand{\answerFormatBoxedGiven}[1]{\underset{\scriptstyle\mathrm{given}}{\fbox{\ensuremath{#1}}}}
+
+\let\handoutAnswerFormat\answerFormatDots
+\let\defaultAnswerFormat\answerFormatBlue
+\let\givenAnswerFormat\answerFormatBoxedGiven
+
 \newcommand{\answer}[2][]{%
 \ifmmode%
 \setkeys{answer}{#1}%
@@ -678,14 +716,14 @@ Interactive
 \ifhandout
 #2
 \else
-\underset{\scriptstyle\mathrm{given}}{\fbox{\ensuremath{#2}}}
+\givenAnswerFormat{#2} %% in case the argument helps formatting
 \fi
 }% End then statement
 {% Start else statement
 \ifhandout
-\fbox{\rm{?}}
+\handoutAnswerFormat{#2} %% in case the argument helps formatting
 \else% show answer in box outside handout mode
-\fbox{\ensuremath{#2}}
+\defaultAnswerFormat{#2} %% in case the argument helps formatting
 \fi
 }% End else statement
 \else%
@@ -1044,9 +1082,41 @@ Interactive
 
 \fi
 \newenvironment{ungraded}{}{}
+\newcommand{\clearEnv}[1]{
+    %% Syntax: \clearEnv{envName}
+    %   #1 is envName is the name of the environment you want to clear. This will (re)define the
+    %       begin and end environments, as well as the internal counter from \newtheoremenv to \relax.
+    \expandafter\let\csname #1\endcsname\relax
+    \expandafter\let\csname end#1\endcsname\relax
+    \expandafter\let\csname c@#1\endcsname\relax
+    }
+
+\newcommand{\hideEnv}[2][]{
+    %% Syntax: \hideEnv[NewCode]{environmentName}
+
+    \expandafter\def\csname temp@#2\endcsname\csname #2\endcsname
+    \expandafter\def\csname temp@end#2\endcsname\csname end#2\endcsname
+    \expandafter\def\csname#2\endcsname{
+        \ifnum\value{depth@Check}<1
+        Suppress Should start here.
+        \suppress
+        \fi
+        \stepcounter{depth@Check}
+
+        }
+    \expandafter\def\csname end#2\endcsname{
+        \addtocounter{depth@Check}{-1}
+        \ifnum\value{depth@Check}<1
+        Suppress Should End Here.
+        \endsuppress
+        \fi
+
+    \noexpand{#1}
+    }
+    }
 
 %% 
-%% Copyright (C) 2018 by Bart Snapp <bart.snapp@gmail.com> and Jim Fowler <kisonecat@gmail.com>
+%% Copyright (C) 2024 by Bart Snapp <bart.snapp@gmail.com> and Jim Fowler <kisonecat@gmail.com>
 %% 
 %% This work may be distributed and/or modified under the
 %% conditions of the LaTeX Project Public License (LPPL), either

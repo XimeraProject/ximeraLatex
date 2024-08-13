@@ -1,7 +1,5 @@
 % \subsection{How to handle footnotes in this setting.}
-\DescribeMacro{\footnote}{% Written by Jason Nowell
-    Standard Footnotes in pdf, but expandable parenthetical online. Supports different coloring by using |\colorlet{fncolor}{COLOR}| and setting COLOR to whatever color you want (Default is blue).
-    }%
+% \DescribeMacro{\footnote}{% Written by Jason Nowell Standard Footnotes in pdf, but expandable parenthetical online. Supports different coloring by using |\colorlet{fncolor}{COLOR}| and setting COLOR to whatever color you want (Default is blue).}%
 % 
 %    \begin{macrocode}
 %<*htXimera>
@@ -15,7 +13,7 @@
             function footnotefunction(ID) {
               var x = document.getElementById(ID);
               if (x.style.display === "none") {
-                x.style.color = "#002db3";
+                x.style.color = "blue";
                 x.style.display = "inline";
               } else {
                 x.style.display = "none";
@@ -51,7 +49,7 @@
                 position:relative;
                 left:2px;
                 padding:5px;
-                color:#002db3;
+                color:blue;
                 word-wrap:break-word;
                 z-index=9999;
                 overflow=auto;"

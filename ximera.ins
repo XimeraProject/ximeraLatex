@@ -7,7 +7,7 @@
 %% ximera.dtx  (with options: `install')
 %% ------------:| ------------------------------------------------------------
 %%       ximera:| Simultaneously writing print and online interactive materials
-%%       Author:| Jim Fowler and Oscar Levin and Jason Nowell and Hans Parshall and Bart Snapp
+%%       Author:| Jim Fowler and Oscar Levin and Jason Nowell and Wim Obbels and Hans Parshall and Bart Snapp
 %%       E-mail:| bart.snapp@gmail.com
 %%      License:| Released under the LaTeX Project Public License v1.3c or later
 %%          See:| http://www.latex-project.org/lppl.txt
@@ -18,7 +18,7 @@
 \preamble
 ------------:| ------------------------------------------------------------
       ximera:| Simultaneously writing print and online interactive materials
-      Author:| Jim Fowler and Oscar Levin and Jason Nowell and Hans Parshall and Bart Snapp
+      Author:| Jim Fowler and Oscar Levin and Jason Nowell and Wim Obbels and Hans Parshall and Bart Snapp
       E-mail:| bart.snapp@gmail.com
      License:| Released under the LaTeX Project Public License v1.3c or later
          See:| http://www.latex-project.org/lppl.txt
@@ -26,7 +26,7 @@
 \endpreamble
 \postamble
 
-Copyright (C) 2018 by Bart Snapp <bart.snapp@gmail.com> and Jim Fowler <kisonecat@gmail.com>
+Copyright (C) 2024 by Bart Snapp <bart.snapp@gmail.com> and Jim Fowler <kisonecat@gmail.com>
 
 This work may be distributed and/or modified under the
 conditions of the LaTeX Project Public License (LPPL), either
@@ -99,6 +99,8 @@ Running "make install" installs the files in the local TeX tree.
     \from{src/interactives/sagemath.dtx}{classXimera}
     \from{src/jax.dtx}{classXimera}
     \from{src/ungraded.dtx}{classXimera}
+    \from{src/clearEnv.dtx}{classXimera}
+    \from{src/hideEnv.dtx}{classXimera}
   }
 }
 \generate{
@@ -174,6 +176,7 @@ Running "make install" installs the files in the local TeX tree.
 }
 \endbatchfile
 
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -181,7 +184,7 @@ Running "make install" installs the files in the local TeX tree.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 %% 
-%% Copyright (C) 2018 by Bart Snapp <bart.snapp@gmail.com> and Jim Fowler <kisonecat@gmail.com>
+%% Copyright (C) 2024 by Bart Snapp <bart.snapp@gmail.com> and Jim Fowler <kisonecat@gmail.com>
 %% 
 %% This work may be distributed and/or modified under the
 %% conditions of the LaTeX Project Public License (LPPL), either

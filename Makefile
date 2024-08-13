@@ -32,8 +32,22 @@ distclean: clean
 
 # BADBAD: The code below still needs to be fixed
 
+
+ctan: all
+	mkdir -p ./ctan/ximera/src/interactives/ # create a directory structure
+	touch ./ctan/ximera.zip
+	rm ./ctan/ximera.zip # remove old zip file
+	cp ximera.dtx  ./ctan/ximera/ # copy files 
+	cp ximera.pdf ./ctan/ximera/
+	cp ximera.ins ./ctan/ximera/
+	cp ./src/*.dtx ./ctan/ximera/src # only copy the dtx files!
+	cp ./src/interactives/*.dtx ./ctan/ximera/src/interactives/ # only copy the dtx files!
+	cp LICENSE ./ctan/ximera/
+	cp README ./ctan/ximera/
+	zip -r ./ctan/ximera.zip ./ctan/ximera
+
 inst: all
-	mkdir -p $(UTREE)/{tex,source,doc}/latex/$(NAME)
+	mkdir -p $(UTREE)/{tex,source,doc}/latexn/$(NAME)
 	cp $(NAME).dtx $(UTREE)/source/latex/$(NAME)
 	cp $(NAME).cls $(UTREE)/tex/latex/$(NAME)
 	cp $(NAME).pdf $(UTREE)/doc/latex/$(NAME)
