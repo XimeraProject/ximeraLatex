@@ -38,13 +38,13 @@ Contents of the repository
 Compiling the files
 -------------------
 
-Running "make" generates the derived files README, ximera.pdf, ximera.cls, xourse.cls.
+Running `make` generates the derived files README, ximera.pdf, ximera.cls, xourse.cls.
 
-Running "make ctan" generates a submission suitable for CTAN
+Running `make ctan` generates a submission suitable for CTAN
 
-Running "make inst" installs the files in the user's TeX tree.
+Running `make inst` installs the files in the user's TeX tree.
 
-Running "make install" installs the files in the local TeX tree.
+Running `make install` installs the files in the local TeX tree.
 
 Staying up-to-date
 ------------------
