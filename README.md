@@ -38,7 +38,7 @@ Contents of the repository
 Compiling the files
 -------------------
 
-Running `make` generates the derived files README, ximera.pdf, ximera.cls, xourse.cls.
+Running `make` generates the derived files README, ximera.pdf, ximera.cls, xourse.cls, ximera.cfg, ximera.4ht, xourse.4ht.
 
 Running `make ctan` generates a submission suitable for CTAN
 
