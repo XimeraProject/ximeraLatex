@@ -53,6 +53,8 @@
 \Configure{@HEAD}{\HCode{<meta name="author" content="}\@author\HCode{" />\Hnewline}}
 \def\and{and }
 
+% why do you remove \maketitle? does it produce errors? or you are not interested 
+% in titles in the HTML version?
 \renewcommand{\maketitle}{}
 
 
@@ -131,6 +133,10 @@
 
       \ConfigureTheoremEnv{warning}
 
+\ConfigureEnv{proof}{\ifvmode\IgnorePar\fi\EndP\HCode{<div class="proof">}
+\ConfigureList{trivlist}{\ifvmode\IgnorePar\fi\EndP}{}{}{}
+}{\ifvmode\IgnorePar\fi\EndP\HCode{</div>}}{}{}
+
 \newcounter{imagealt}
 \setcounter{imagealt}{0}
 \renewenvironment{image}[1][]{\stepcounter{imagealt}%
@@ -138,7 +144,7 @@
   \HCode{<div class="image-environment" role="img" aria-labelledby="image-alt-\arabic{imagealt}">}%
 }{\HCode{</div>}}
 \renewcommand{\alt}[1]{\HCode{<div style="display: none;" id="image-alt-\arabic{imagealt}">}#1\HCode{</div>}}
-\newcommand{\pgfsyspdfmark}[3]{}
+\providecommand{\pgfsyspdfmark}[3]{}
 \renewenvironment{dialogue}{\begin{description}}{\end{description}}
 
 \ConfigureList{dialogue}%
@@ -231,7 +237,7 @@
 \setkeys{geogebra}{rc=false,sdz=false,smb=false,stb=false,stbh=false,ld=false,sri=false}
 \renewcommand{\geogebra}[4][]{%
   \setkeys{geogebra}{#1}% Set new keys
-  \HCode{<iframe scrolling="no" src="https://www.geogebra.org/material/iframe/id/#2/width/#3/height/#4/border/888888/rc/\geo@rc/ai/false/sdz/\geo@sdz/smb/\geo@smb/stb/\geo@stb/stbh/\geo@stbh/ld/\geo@ld/sri/\geo@sri/at/auto" width="#3px" height="#4px" style="border:0px"></iframe>}}
+  \HCode{<iframe scrolling="no" src="https://www.geogebra.org/material/iframe/id/#2/width/#3/height/#4/border/888888/rc/\geo@rc/ai/false/sdz/\geo@sdz/smb/\geo@smb/stb/\geo@stb/stbh/\geo@stbh/ld/\geo@ld/sri/\geo@sri/at/auto" width="#3px" height="#4px" style="border:0px; max-width: fit-content"> </iframe>}}
 \renewcommand{\desmos}[3]{\HCode{<iframe src="https://www.desmos.com/calculator/#1" width="100\%" height="#3px" style="border: 1px solid \#ccc" frameborder=0>This browser does not support embedded elements.</iframe>}}
 \renewcommand{\desmosThreeD}[3]{\HCode{<iframe src="https://www.desmos.com/3d/#1" width="#2px" height="#3px" style="border: 1px solid \#ccc" frameborder=0>This browser does not support embedded elements.</iframe>}}
 
@@ -266,7 +272,9 @@
 \ScriptEnv{sageOutput}{\ifvmode \IgnorePar\fi \EndP\HCode{<div class="sageOutput"><script type="text/x-sage">}}{\HCode{\Hnewline</script></div>}}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\renewenvironment{sagesilent}{\NoFonts}{\EndNoFonts}
+\ifdefined\sagesilent
+  \renewenvironment{sagesilent}{\NoFonts}{\EndNoFonts}
+\fi
 \ScriptEnv{sagesilent}{\ifvmode \IgnorePar\fi \EndP\HCode{<script type="text/sagemath">}\HtmlParOff}{\HtmlParOn\HCode{</script></div>}}
 \renewenvironment{ungraded}{%
 \ifvmode \IgnorePar\fi \EndP\HCode{<div class="ungraded">}\IgnoreIndent%
