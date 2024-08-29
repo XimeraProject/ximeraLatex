@@ -136,7 +136,8 @@
 
 \ifdefined\HCode
   \xaketrue%
-  \tikzexporttrue%
+  % dont't set tikz export in TeX4ht by default
+  % \tikzexporttrue%
   \handoutfalse%
   \numbersfalse%
   \newpagefalse%
@@ -173,7 +174,14 @@
 \RequirePackage{nameref}
 \RequirePackage{epstopdf}
 \ifdefined\HCode
-  \tikzexporttrue
+  % \tikzexporttrue
+  % TeX4ht creates SVG images for TikZ pictures by default. There is no need to explicitly
+  % use external graphics, unless explicitly requested by the user. 
+  % To speed up the compilation, it is possible to use the dvisvgm_hashes make4ht extension:
+  % $ make4ht -f html5+dvisvgm_hashes -c ximera.cfg -m draft filename.tex
+  % It compiles only images that were changed from previous runs and generates SVG images
+  % in paralel, so it is much faster than the default method which generates images sequentially.
+  \tikzexportfalse
 \fi
 
 \iftikzexport
