@@ -77,11 +77,13 @@
 \ifthenelse{\equal{##1}{}}{}{%
   \HCode{<span class="theorem-like-title">}##1\HCode{</span>}%
 }}{}
-\ConfigureEnv{#1}{\stepcounter{identification}\ifvmode \IgnorePar\fi \EndP\HCode{<div class="theorem-like problem-environment #1" id="problem\arabic{identification}">}}{\HCode{</div>}\IgnoreIndent}{}{}%
+\ConfigureEnv{#1}{\stepcounter{identification}\ifvmode \IgnorePar\fi \EndP\HCode{<div class="theorem-like problem-environment #1" id="problem\arabic{identification}">}}{\ifvmode\IgnorePar\fi\EndP\HCode{</div>}\IgnoreIndent}{}{}%
 }
 
 
       \ConfigureTheoremEnv{theorem}
+
+      \ConfigureTheoremEnv{proof}
 
       \ConfigureTheoremEnv{algorithm}
 
