@@ -284,6 +284,8 @@
 
       \newtheorem{theorem}{Theorem}
 
+      \newtheorem{proof}{Proof}
+
       \newtheorem{algorithm}{Algorithm}
 
       \newtheorem{axiom}{Axiom}

@@ -64,10 +64,10 @@
 \IfFileExists{\jobname.ids}{\HCode{<script type="text/javascript">\Hnewline}%
 \BVerbatimInput{\jobname.ids}%
 \HCode{</script>\Hnewline}%
-\Tg</div>%
 }{}
+\Tg</div>%
 }{%
-\HCode{</body>\Hnewline}%
+\ifvmode\IgnorePar\fi\EndP\HCode{</body>\Hnewline}%
 }
 %    \end{macrocode}
 % Now I just need to add a newcommand command which outputs the
