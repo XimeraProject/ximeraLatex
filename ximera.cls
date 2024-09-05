@@ -284,8 +284,6 @@
 
       \newtheorem{theorem}{Theorem}
 
-      \newtheorem{proof}{Proof}
-
       \newtheorem{algorithm}{Algorithm}
 
       \newtheorem{axiom}{Axiom}
@@ -335,7 +333,6 @@
       \newtheorem{template}{Template}
 
       \newtheorem{warning}{Warning}
-
 \renewcommand{\theenumi}{\textup{(\alph{enumi})}}
 \renewcommand{\labelenumi}{\theenumi}
 \renewcommand{\theenumii}{\textup{(\roman{enumii})}}
@@ -344,6 +341,7 @@
 \renewenvironment{proof}[1][\proofname]
   {\begin{trivlist}\item[\hskip \labelsep \itshape \bfseries #1{}\hspace{2ex}]}
 {\qed\end{trivlist}}
+
 
 \ifxake
         \newenvironment{prompt}{}{}

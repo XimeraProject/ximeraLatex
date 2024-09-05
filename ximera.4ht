@@ -10,6 +10,7 @@
 %% src/problem.dtx  (with options: `htXimera')
 %% src/macros.dtx  (with options: `htXimera')
 %% src/theorems.dtx  (with options: `htXimera')
+%% src/proof.dtx  (with options: `htXimera')
 %% src/image.dtx  (with options: `htXimera')
 %% src/dialogue.dtx  (with options: `htXimera')
 %% src/foldable.dtx  (with options: `htXimera')
@@ -81,8 +82,6 @@
 
       \ConfigureTheoremEnv{theorem}
 
-      \ConfigureTheoremEnv{proof}
-
       \ConfigureTheoremEnv{algorithm}
 
       \ConfigureTheoremEnv{axiom}
@@ -132,7 +131,8 @@
       \ConfigureTheoremEnv{template}
 
       \ConfigureTheoremEnv{warning}
-
+      % Mmm, (why) do we want/need this ...?
+      \ConfigureTheoremEnv{proof}
 \ConfigureEnv{proof}{\ifvmode\IgnorePar\fi\EndP\HCode{<div class="proof">}
 \ConfigureList{trivlist}{\ifvmode\IgnorePar\fi\EndP}{}{}{}
 }{\ifvmode\IgnorePar\fi\EndP\HCode{</div>}}{}{}
