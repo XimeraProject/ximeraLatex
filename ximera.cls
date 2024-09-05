@@ -172,6 +172,8 @@
 \RequirePackage{gettitlestring}
 \RequirePackage{nameref}
 \RequirePackage{epstopdf}
+\ifdefined\reallyneverever
+
 \ifdefined\HCode
   \tikzexporttrue
 \fi
@@ -201,7 +203,7 @@
   \fi
 
   \fi
-
+\fi
 \ifdefined\HCode
 \RequirePackage{hyperref}
 \else
