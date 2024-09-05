@@ -58,9 +58,13 @@
 \Configure{BODY}{%
 \HCode{<body>\Hnewline}%
 \Tg<div class="preamble">%
+\IfFileExists{\jobname.jax}{
 \Tg<script type="math/tex">%
 \BVerbatimInput{\jobname.jax}%
 \Tg</script>%
+}
+{\Hnewline\HCode{<!-- mm, no \newcommands provided -->}\Hnewline}
+
 \IfFileExists{\jobname.ids}{\HCode{<script type="text/javascript">\Hnewline}%
 \BVerbatimInput{\jobname.ids}%
 \HCode{</script>\Hnewline}%
