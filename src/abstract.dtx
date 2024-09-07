@@ -9,12 +9,10 @@
 %</classXimera>
 %    \end{macrocode}
 % The abstract has been stored in |\theabstract| and should be emitted
-% as a div, but confusingly I guess |<div class="abstract">| is
-% defined somewhere deeper inside tex4ht, so the code below is
-% probably unnecessary.
+% as a div. The code below is required for the abstract to show online.
 %    \begin{macrocode}
 %<*cfgXimera>
-\let\abstract\relax% Config file helps interface between tex and html conversion code.
-\let\endabstract\relax% So we want to kill off abstract here too. As noted above it may not be necessary.
+\let\abstract\relax
+\let\endabstract\relax
 %</cfgXimera>
 %    \end{macrocode}
