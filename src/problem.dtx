@@ -12,7 +12,7 @@
 %    \begin{macrocode}
 \providecommand{\latexProblemContent}[1]{#1}
 % Iterate count for problem counts.
-\Make@Counter{Iteration@probCnt}        
+\Make@Counter{Iteration@probCnt}
 %    \end{macrocode}
 % \end{macro}
 %    \begin{macrocode}
@@ -50,9 +50,14 @@
 %
 % Configure environment configuration commands
 %
-% The command |\problemNumber| contains all the format code to determine the number (and the format of the number) for any of the problem environments.
+% The command |\problemNumber| contains all the format code to determine the number 
+%   (and the format of the number) for any of the problem environments in the pdf.
+%   To activate problem numbering online, change the line: \numberedProblemsfalse to \numberedProblemstrue below.
+%       (We should make this a cls option at some point)
 % 
 %    \begin{macrocode}
+\newif\ifnumberedProblems
+\numberedProblemsfalse% Default to no numbers, as that was previous behavior.
 \MakeCounter{problem}
 \newcommand{\problemNumber}{
 % First we determine if we have a counter for this question depth level.
@@ -176,14 +181,64 @@
 
 
 % Use an ``identification'' counter to assign IDs to the various problem-related DOM elements
+% We have now also implemented numbering for problems online. 
+%   It is disabled by default to match previous behavior. 
+%   To activate, put the command \numberedProblemstrue in your preamble somewhere.
 %    \begin{macrocode}
 %<*htXimera>
 \MakeCounter{identification}
+\MakeCounter{problem@Depth}
 
 \providecommand{\ConfigureQuestionEnv}[2]{%
-% refstepcounter ensures that labels get updated within these environments
-\renewenvironment{#1}{\refstepcounter{problem}}{}%
-\ConfigureEnv{#1}{\stepcounter{identification}\ifvmode \IgnorePar\fi \EndP\HCode{<div role="article" class="problem-environment #2" id="problem\arabic{identification}">}}{\ifvmode \IgnorePar\fi \EndP\HCode{</div>}\IgnoreIndent}{}{}%
+    \renewenvironment{#1}
+        {
+        }
+        {
+        }%
+    \ConfigureEnv{#1}
+        {
+            \ifnumberedProblems% The code below is all to generate problem numbering.
+                \stepcounter{problem@Depth}% Started a problem, so we've sunk another problem layer.
+                \ifcsname c@depth\Roman{problem@Depth}Count\endcsname
+                \else
+                \expandafter\newcounter{depth\Roman{problem@Depth}Count}
+                \expandafter\setcounter{depth\Roman{problem@Depth}Count}{0}
+                \fi
+                \expandafter\stepcounter{depth\Roman{problem@Depth}Count}
+                            
+                \def\problemNumDisp{
+                \arabic{depthICount}% Top Level Problem Number: X.1.1.1.1 Number.
+                \ifcsname c@depthIICount\endcsname\ifnum\value{problem@Depth}>1 .\arabic{depthIICount}\fi% Problem 1.X.1.1.1 Number.
+                \ifcsname c@depthIIICount\endcsname\ifnum\value{problem@Depth}>2 .\arabic{depthIIICount}\fi% Problem 1.1.X.1.1 Number.
+                \ifcsname c@depthIVCount\endcsname\ifnum\value{problem@Depth}>3 .\arabic{depthIVCount}\fi% Problem 1.1.1.X.1 Number.
+                \ifcsname c@depthVCount\endcsname\ifnum\value{problem@Depth}>4 .\arabic{depthVCount}\fi% Problem 1.1.1.1.X Number.
+                \fi\fi\fi\fi
+                }
+            \else
+                \def\problemNumDisp{.}% Otherwise just make it the normal period.
+            \fi
+            \stepcounter{identification}
+            \ifvmode 
+                \IgnorePar
+            \fi 
+            \EndP
+            \HCode{<div role="article" class="problem-environment #2" id="problem\arabic{identification}" numbered=" \problemNumDisp">}
+        }
+        {
+            \stepcounter{problem@Depth}
+            \ifcsname c@depth\Roman{problem@Depth}Count\endcsname
+                \expandafter\ifnum\expandafter\value{depth\Roman{problem@Depth}Count}>0
+                    \expandafter\setcounter{depth\Roman{problem@Depth}Count}{0}
+                \fi
+            \fi
+            \addtocounter{problem@Depth}{-2}% Exited a problem so we've exited a problem layer. Need -2 because we steppped once at the start to check for needing a depth-level count reset.
+            
+            \ifvmode 
+                \IgnorePar
+            \fi
+            \EndP
+            \HCode{</div>}\IgnoreIndent
+        }{}{}%
 }
 
 \ConfigureQuestionEnv{problem}{problem}

@@ -97,6 +97,8 @@
     \outcomesfalse%                                     Default to false.
 \newif\ifsuppressOutcomesDisplay%                       Flag for if outcome displays should be suppressed, even if given.
     \suppressOutcomesDisplayfalse%                      Default to not supressing the display of outcomes
+\newif\ifnumberedProblems
+    \numberedProblemsfalse%                             Default to no numbers, as that was previous behavior.
 \DeclareOption{nooutcomes}{\suppressOutcomesDisplaytrue}
 \newif\ifinstructornotes
 \instructornotesfalse
@@ -412,6 +414,7 @@
     \end{picture}%
   \endgroup%
 }%
+
 \MakeCounter{problem}
 \newcommand{\problemNumber}{
 \ifcsname c@depth\Roman{problem@Depth}Count\endcsname% Check to see if counter exists
@@ -422,7 +425,6 @@
 
 \expandafter\stepcounter{depth\Roman{problem@Depth}Count}
 \arabic{depthICount}% The first problem depth, what use to be |\theproblem|.
-
 \forloop{Iteration@probCnt}{2}{\arabic{Iteration@probCnt} < \numexpr \value{problem@Depth} + 1 \relax}{%
     .\expandafter\arabic{depth\Roman{Iteration@probCnt}Count}% Get the problem number of the next depth level and append it with a ".".
 }
@@ -434,7 +436,6 @@
 %%%% Configure environments start content
 
 \newcommand{\problemEnvironmentStart}[2]{%
-
 \stepcounter{problem@Depth}% Started a problem, so we've sunk another problem layer.
 \def\spaceatend{#1}%
 \begin{trivlist}%
@@ -559,14 +560,21 @@
 }
 \pagestyle{main}
 \renewcommand\maketitle{%
-  \addtocounter{titlenumber}{1}%
-  {\flushleft\large\bfseries \@pretitle\par\vspace{-1em}}
-  {\flushleft\LARGE\bfseries {\ifnumbers\thetitlenumber\fi}{\ifnumbers\hspace{1em}\else\hspace{0em}\fi}\@title \par }
-  \phantomsection%
-  \ifnumbers\addcontentsline{toc}{section}{\thetitlenumber~\@title}\else\addcontentsline{toc}{section}{\@title}\fi
-  \vskip .6em\noindent\textit\theabstract\setcounter{problem}{0}\setcounter{section}{0}\setcounter{subsection}{0}\par\vspace{2em}
-  %%% Design Question:
-  % Would it make more sense to have author/outcomes in the header and reserve footer for footnotes?
+    \addtocounter{titlenumber}{1}%
+    {\flushleft\large\bfseries \@pretitle\par\vspace{-1em}}
+    {\flushleft\LARGE\bfseries {\ifnumbers\thetitlenumber\fi}{\ifnumbers\hspace{1em}\else\hspace{0em}\fi}\@title \par }
+    \phantomsection%
+    \ifnumbers\addcontentsline{toc}{section}{\thetitlenumber~\@title}\else\addcontentsline{toc}{section}{\@title}\fi
+    \@ifundefined{theabstract}{% Only include the abstract if it is defined.
+            \relax% if the abstract is not included, then we throw in a dummy command to make sure that followup actions don't throw errors  
+            %           due to expecting something to happen from the abstract.
+        }
+        {% If the abstract is defined, then we can print it with some formatting.
+            \vskip .6em\noindent\textit\theabstract
+        }
+    \setcounter{problem}{0}\setcounter{section}{0}\setcounter{subsection}{0}\par\vspace{2em}
+  %%% Design Question: 
+  % Would it make more sense to have author/outcomes in the header and reserve footer for footnotes? 
   % Or some other method to distinguish between the two now that footnotes are viable?
   \ifoutcomes%                                          If we have learning outcomes, we should display them.
       \bgroup
@@ -711,7 +719,7 @@ Interactive
 \ifmmode%
 \setkeys{answer}{#1}%
 \recordvariable{\ans@id}
-\ifthenelse{\boolean{\ans@given}}
+\ifthenelse{\boolean{\ans@given}}e s
 {% Start then statement
 \ifhandout
 #2
@@ -1114,6 +1122,553 @@ Interactive
     \noexpand{#1}
     }
     }
+
+
+%%%% Below this is testing content.
+
+%%======================Code for \UDcollectverbarg=============================
+%% \UDcollectverbarg{<non-optional 1>}{<non-optional 2>}|<verbatim arg>|
+%% 
+%% reads <verbatim arg> under verbatim-catcode-regime and delivers:
+%%
+%%    <non-optional 1>{<non-optional 2>{<verbatim arg>}}
+%%-----------------------------------------------------------------------------
+%% \UDcollectverbarg*{<non-optional 1>}{<non-optional 2>}|<verbatim arg>|
+%% 
+%% reads <verbatim arg> under verbatim-catcode-regime and delivers:
+%%
+%%    <non-optional 1>{<non-optional 2>{|<verbatim arg>|}}
+%%-----------------------------------------------------------------------------
+%% Instead of using verbatim-delimiter | or the like the <verbatim arg> can 
+%% be nested in braces.
+%%
+%% You cannot use percent or spaces or horizontal tab as verbatim-delimiter.
+%%
+%% You can use <non-optional 1> for nesting calls to \UDcollectverbarg.
+%%
+%% The unstarred variant removes the verbatim-delimiters/braces that surround
+%% <verbatim arg>.
+%% The starred variant keeps the verbatim-delimiters/braces that surround
+%% <verbatim arg>.
+%% Reason: When you feed things to \scantokens you don't need the verbatim-
+%%         delimiters.
+%%         When you use things for writing to temporary files and reading back
+%%         verbatimized, you may need them.
+%%=============================================================================
+\@ifdefinable\UDcollectverbarg{%
+  \DeclareRobustCommand\UDcollectverbarg{%
+    \@ifstar{\UD@collectverbarg{\@secondoftwo}}{\UD@collectverbarg{\@firstoftwo}}%
+  }%
+}%
+\newcommand\UD@collectverbarg[3]{%
+  % #1 - indicator whether to remove/keep the verb-delimiter (\@firstoftwo/\@secondoftwo)
+  % #2 - non-optional 1
+  % #3 - non-optional 2
+  \begingroup
+  \let\do\@makeother % <- this and the next line switch to
+  \dospecials        %    verbatim-category-code-régime.
+  \catcode`\{=1      % <- give opening curly brace the usual catcode so a 
+                     %    curly-brace-balanced argument can be gathered in
+                     %    case of the first thing of the verbatimized-argument 
+                     %    being a curly opening brace.
+  \catcode`\ =10     % <- give space and horizontal tab the usual catcode so \UD@@collectverbarg
+  \catcode`\^^I=10   %    cannot catch a space or a horizontal tab as its 4th undelimited argument.
+                     %    (Its 4th undelimited argument denotes the verbatim-
+                     %     syntax-delimiter in case of not gathering a
+                     %     curly-brace-nested argument.)
+  \catcode`\%=14     % <- make percent comment.
+  \kernel@ifnextchar\bgroup
+  {% seems a curly-brace-nested argument is to be picked:
+    \catcode`\}=2    % <- give closing curly brace the usual catcode also.
+    \UD@@collectverbarg{#1}{\@firstoftwo}{#2}{#3}{}%
+  }{% seems an argument with verbatim-syntax-delimiter is to be picked:
+    \do\{% <- give opening curly brace the verbatim-catcode again.
+    \UD@@collectverbarg{#1}{\@secondoftwo}{#2}{#3}%
+  }%
+}%
+\newcommand\UD@@collectverbarg[5]{%
+  % #1 - indicator whether to remove/keep the verb-delimiter (\@firstoftwo/\@secondoftwo)
+  % #2 - indicator whether braces or verb-delimiter (\@firstoftwo/\@secondoftwo)
+  % #3 - non-optional 1
+  % #4 - non-optional 2
+  % #5 - verb-delimiter or emptiness
+  \do\ %   <- Now that \UD@@collectverbarg has the delimiter or
+  \do\^^I%    emptiness in its 4th arg, give space and horizontal tab
+         %    the verbatim-catcode again.
+  \do\^^M% <- Give the carriage-return-character the verbatim-catcode.
+  \do\%%   <- Give the percent-character the verbatim-catcode.
+  \long\def\@tempb##1#5{%
+    #1{\def\@tempb{##1}}{#2{\def\@tempb{{##1}}}{\def\@tempb{#5##1#5}}}%
+    \@onelevel@sanitize\@tempb % <- Turn characters into their "12/other"-pendants.
+                               %    This may be important with things like the 
+                               %    inputenc-package which may make characters 
+                               %    active/which give them catcode 13(active).
+    \expandafter\UD@@@collectverbarg\expandafter{\@tempb}{#3}{#4}% <- this "spits out the result.
+  }%
+  \@tempb
+}%
+\newcommand\UD@@@collectverbarg[3]{\endgroup#2{#3{#1}}}%
+%%================= End of code for \UDcollectverbarg =========================
+
+\RequirePackage{trimclip}
+
+\newbox\MYverbbox
+\newtoks\MYverbtoks
+\global\MYverbtoks={}%
+\newcommand\exchange[2]{#2#1}%
+\@ifdefinable\stopromannumeral{\chardef\stopromannumeral=`\^^00}%
+\begingroup
+\catcode`\^^M=12\relax%
+\@firstofone{%
+  \endgroup%
+  \newcommand\@@appendtoverbtoks[1]{\global\MYverbtoks=\expandafter{\the\MYverbtoks#1^^M}\@esphack}%
+  \newcommand\@@prependtoverbtoks[1]{%
+    \global\MYverbtoks=%
+    \expandafter\expandafter\expandafter{\expandafter\exchange\expandafter{\the\MYverbtoks}{#1^^M}}%
+    \@esphack%
+  }%
+}%
+\newcommand\appendtoverbtoks{\@bsphack\UDcollectverbarg{\@firstofone}{\@@appendtoverbtoks}}%
+\newcommand\prependtoverbtoks{\@bsphack\UDcollectverbarg{\@firstofone}{\@@prependtoverbtoks}}%
+\newcommand\scantokenssetvbox[4]{%
+  \setbox#2=\vbox{%
+    \begingroup\newlinechar=\endlinechar\relax\scantokens{\endgroup#3#1#4}%
+  }%
+  %---------------------------------------------------------------------------
+  %Just in case - who knows what else already is in the \AtEndDocument-hook...
+  \ifhmode\@bsphack\clipbox*{0pt 0pt 0pt 0pt}{\box#2}\@esphack
+  \else\clipbox*{0pt 0pt 0pt 0pt}{\box#2}\fi
+  %---------------------------------------------------------------------------
+  %Uncomment to typeset the box:
+  %\ifvmode\else\par\fi\box#2%
+  %You may wish to check for restricted horizontal mode and raise an error...
+}%
+
+\UDcollectverbarg{%
+  \UDcollectverbarg{\AtEndDocument}%
+}{\expandafter\scantokenssetvbox\expandafter{\the\MYverbtoks}{\MYverbbox}}_\begin{javascript}
+__\end{javascript}_%
+\appendtoverbtoks?
+var debugInfo=false;
+
+/*
+HOW THIS SHOULD WORK:
+    Initially check to make sure the submitted answer (and proposed answer) are at least in some kind of theoretically factored form.
+    
+    Next duplicate the raw trees so we can mess with them without worrying about changing the original.
+    
+    Fold up any exponents on both trees so that our root node is of the form: ['*',factor1,factor2,factor3,...]. 
+        This includes killing off any leading negative signs (again we'll compare for equality using the original raw string)
+    
+    Now call a recursive function to deep-dive into each factor to find what degree that factor actually is.
+        Will also identify if the factor isn't even a factor, in which case we will return a negative value to negate the answer.
+        
+    Once we have the degree for each factor, now we can compare the instructor degree list and student degree list as intended.
+*/
+
+
+// Subfunction to identify if something is a number:
+
+function isNum(numb) {
+    if ((typeof numb === 'number')||(numb=='e')||(numb=='pi'))
+    {return true} else {return false}
+}
+
+// Subfunction to identify if something is a non-negative integer:
+
+function isPosInt(numb) {
+    if ((isNum(numb))&&((numb>=0)&&(numb%1==0)))
+    {return true} else {return false}
+}
+
+
+// This does a recursion through a factor to eventually find it's degree - assuming it's a polynomial.
+
+function degreeHunt(tree,position,curDeg) {
+    //(Re)set curDeg just in case:
+    var curDeg=0;
+    
+    // First, let's figure out what to do about negative signs, since they can be annoying.
+    //  I think there's three possibilities, it's a negative array, a negative x, or a negative number.
+    
+    if (tree[position][0]=='-') {
+        debugText('Processing a minus sign.');
+        if (tree[position][1]=='x') {
+            // We found a ``-x'' term within our factor, so that's degree 1 I guess!
+            
+            debugText('Found a -x term!');
+            curDeg = Math.max(curDeg,1);
+            
+        } else if (Array.isArray(tree[position][1])) {
+            // Else if there's a negative outside of an array, just bypass the negative and keep digging for an exponent sign.
+            
+            debugText('Found a negative Array term!');
+            let tempVal = degreeHunt(tree[position],1)
+            if (tempVal<0) { return (-1)} else {
+                curDeg = Math.max(curDeg,tempVal);
+            }
+            
+            
+        }// Note that, if it's a negative number, I don't care about it, so no need for an ``else''.
+    } else if (tree[position][0]=='apply') {
+        debugText('Processing an apply symbol.');
+        // any 'apply' is inevitably a function that isn't a polynomial.
+        //  Although, only if it actually has an 'x' in there - so I need to fix/update that at some point.
+        
+        // To find out if the apply is actually just a number or not, we need to recurs through every sub-node looking for an 'x'.
+        //  If the degree ends up positive, then we have a variable inside the apply function it's not a polynomial.
+        //  If the degree ends up zero, then it's ultimately some bizarre number formation and we're fine.
+        
+        var tempDeg = 0;
+        
+        for (var j = 1; j < tree[position].length; ++j) {
+            // Walk the array to find any powers of x.
+            if (tree[position][j]=='x') {
+                // If the entry is just x, then we have pos deg and we are done.
+                debugText('Found an x inside an apply function that suggests the factor is not actually a polynomial!');
+                return (-1);
+            } else if (Array.isArray(tree[position][j])) {
+                // If the term is an array, then we need to recurs to find the degree.
+                let tempVal=degreeHunt(tree[position],j,0);
+                if (tempVal!==0) {
+                    debugText('Found an issue inside an apply function that suggests the factor is not actually a polynomial!');
+                    return (-1)
+                }
+            }// Any other option is degree 0, so no need for an else.
+        }// End of for loop and end up 'apply' function
+    } else if (tree[position][0]=='^') {
+        // Now we process the exponent sign case, but be careful cause students do crazy shit,
+        //  So it might be a x^N situation, but it might be some other shenanigans.
+        
+        debugText('Processing an exponential sign.');
+        
+        if ((tree[position][1]=='x')&&(isPosInt(tree[position][2]))) {
+            // We have something like x^N
+            
+            debugText('We have x^N');
+            
+            curDeg = Math.max(curDeg,tree[position][2]);
+            
+        } else if (tree[position][1]=='x') {
+            // If the base is x but it's not being raised to an integer power, then it's not a proper monomial.
+            //  Note that we are assuming here that students won't put shit like ``1+1'' as the power, if so, it will be marked wrong.
+            
+            debugText('We have x^(g(x)) but g(x) is not a positive integer.');
+            
+            return -1;
+            
+        } else if ((isNum(tree[position][1]))&&(isNum(tree[position][2]))) {
+            // This means we have a^b which is still just a number, so it's fine... but doesn't give a degree.
+            
+            debugText('We have a^b');
+            
+        } else if ((Array.isArray(tree[position][1]))&&(isPosInt(tree[position][2]))) {
+            // We have something of the form (f(x))^N which might be a part of a factor.
+            //  We recurse on the array, and multiply the result by the N.
+            
+            debugText('We have f(x)^N');
+            let tempVal = tree[position][2]*degreeHunt(tree[position],1,curDeg);
+            if (tempVal<0) { return (-1)} else {
+                curDeg = Math.max(curDeg,tempVal);
+            }
+
+            
+        } else {
+            // All other situations are inevitably not polynomials.
+            
+            return (-1);
+        }
+    } else if (tree[position][0]=='/') {
+        // This is problematic, because the only way we can allow a division is if the denominator is just a number.
+        //  But if the denominator has an 'x' anywhere in it, then we have a problem...
+        
+        debugText('Processing a division sign.');
+        
+        if (tree[position][2]=='x') {
+            // We're dividing by x, which is bad.
+            
+            debugText('Dividing by x, naughty naughty!');
+            
+            return (-1);
+        } else if (Array.isArray(tree[position][2])) {
+            //  Let's try doing a recurs, and if we get a result that isn't 0, then that means there's an 'x' so we return -1.
+            if (degreeHunt(tree[position],2,0)!==0) {
+                // If it's not 0, then we found an 'x' or something that invalidates the polynomial.
+                return (-1)
+            } // otherwise we have some kind of 'dividing by a number' situation, so it's fine, and doesn't impact degree.
+            
+        }
+        
+        // Now that we've dealt with the possibilities that cause a non-polynomial function, we can proceed assuming it is just division by a number.
+        
+        debugText('The denominator is just a number, so we need to check the numerator.');
+        
+        if (tree[position][1]=='x') {
+            // If we've made it past the first two hurtles, then the bottom is just a number of some form.
+            //  So if the top is 'x', then we have something like ``x/a'' which is still a degree 1 factor.
+            var curDeg = Math.max(curDeg,1);
+            debugText('We found a fraction with just x in the top.');
+        } else if (Array.isArray(tree[position][1])) {
+            // If the top of the fraction is an array - but we've already reduced to case where denominator is a number.
+            //  So we need to figure out if there is a degree in the top to count.
+            
+            debugText('We found a fraction with an array for the numerator.')
+            var tempVal = degreeHunt(tree[position],1,0)
+            debugText('I think the numerator degree from the array is: '+tempVal);
+            if (tempVal<0) { return (-1)} else {
+                 var curDeg = Math.max(curDeg,tempVal);
+            }
+            
+        }// Note that if none of the above, then it's just a/b, which is fine and doesn't impact degree.
+
+    } else if (tree[position][0]=='*') {
+        // If we are multiplying, we could be multiplying a bunch of terms - maybe a bunch of x terms.
+        
+        debugText('Processing a product sign.');
+        
+        var tempDeg = 0;
+        for (var j = 0; j < tree[position].length; ++j) {
+            // Add the degree of each thing being multiplied, even though most are probably zero.
+            if (tree[position][j]=='x') {
+                // If the entry is just x, then we have deg 1.
+                debugText('Found a solo x term inside the product sign, degree is at least 1.')
+                tempDeg = Math.max(tempDeg,1);
+            } else if (Array.isArray(tree[position][j])) {
+                // If the term is an array, then we need to recurs to find the degree.
+                // let tempVal=degreeHunt(tree[position],j,0);
+                if (degreeHunt(tree[position],j,0)<0) { 
+                    return (-1)
+                } else if (degreeHunt(tree[position],j,0)==0){
+                    debugText('No degree term found inside product sign, so we stay at degree: '+tempDeg);
+                } else {
+                    debugText('found a higher degree term inside the product sign, degree is at least: '+tempDeg);
+                    tempDeg = Math.max(tempDeg,degreeHunt(tree[position],j,0));
+                }
+            }// Any other option is degree 0, so no need for an else.
+        }
+        // Once the for loop finishes, we convert the temp deg to the current deg.
+        var curDeg = Math.max(curDeg,tempDeg);
+        debugText('Inside the product sign we found the degree is: '+tempDeg);
+        debugText('So we set the curDeg to: '+curDeg);
+    } else {
+        // If it's none of the above, then we should just recurs on any arrays we find.
+        
+        debugText('Processing an unknown sign... Specifically: '+tree[position][0]);
+        
+        for (var j = 0; j < tree[position].length; ++j) {
+            // Walk the array to find any powers of x.
+            if (tree[position][j]=='x') {
+                // If the entry is just x, then we have deg 1.
+                curDeg = Math.max(curDeg,1);
+            } else if (Array.isArray(tree[position][j])) {
+                // If the term is an array, then we need to recurs to find the degree.
+                let tempVal=degreeHunt(tree[position],j,0);
+                if (tempVal<0) { return (-1)} else {
+                    curDeg = Math.max(curDeg,tempVal);
+                }
+            }// Any other option is degree 0, so no need for an else.
+        }
+        
+    }
+    debugText('Made it to the end of the degreeHunt function, which means we need to return a curDeg variable, which is: '+curDeg);
+    return curDeg
+}
+
+// Subfunction just to make sure that the submitted function is in a legitimately factored form.
+
+function JNFisFactored(factorTree) {
+   
+    // First we check to see if we have a negative factored out, which messes everything up in the tree.
+    if ((factorTree[0]=='-')||(factorTree[0]=='*')||((factorTree[0]=='/')&&(isNum(JNFoperation[1])))
+    ) {return true} else {return false}
+}
+
+// Subfunction to make debug easier.
+
+function debugText(text) {
+    if (debugInfo) {
+    console.log('DEBUG INFO::' + text)
+    }
+}
+
+function debugArray(array) {
+    if (debugInfo) {
+    console.log(array);
+    }
+}
+
+function factorCheck(f,g) {
+    // This validator is designed to check that a student is submitting a factored polynomial. It works by:
+    //  Checking that the degree of each factor matches between student submitted and instructor submitted answers (NOT order sensitive),
+    //  Checking that the submitted answer and the expected answer are the same via real Ximera evaluation,
+    //  Checking that the outer most (last to be computed when following order of operations) operation is multiplication.
+    //  It ignores degree 0 terms for degree check, and now can ignore factored out negative signs.
+    
+    
+    debugText(f.tree);
+    debugText(g.tree);
+
+    if (JNFisFactored(g.tree)==false) {
+        console.log('Answer rejected, instructor answer not in a factored form. Bad instructor, no donut.');
+        return false
+    }
+    
+    // First we check to make sure it is in *a* factored form:
+    if (JNFisFactored(f.tree)==true) {
+        console.log('The student answer is at least in *a* factored form.');
+        
+        
+    } else {
+        console.log('Answer rejected, student answer not in a factored form.');
+        return false
+    }
+    
+    // Let's duplicate the trees to manipulate, so we keep the original correctly.
+    var studentAns=f.tree
+    var instructorAns=g.tree
+    
+    // Also, if there is a factored out negative, let's just kill that, since we aren't doing a funtion comparison on this part:
+    while (studentAns[0]=='-'){studentAns = studentAns[1];};
+    while (instructorAns[0]=='-'){instructorAns = instructorAns[1];};
+    
+    // Now we want to fold up any root-level exponents into duplicate children of the master tree,
+    //  This lets us assume the top-level node has 1 child per factor.
+    debugText('folding up external exponents of studentTree  so factors do not have exponents');
+    for (var i = 0; i < studentAns.length; ++i) {
+        if ((studentAns[i][0] == '^')&&(isPosInt(studentAns[i][2]))) {
+            studentAns=studentAns.concat(Array(studentAns[i][2]).fill(studentAns[i][1]));
+            studentAns.splice(i,1);// This should theoretically remove the original term now that we've duplicated it.
+            i=i-1;// since we shortened our array by 1, we should move the iteration value down 1 too.
+            debugText('Ok, I folded up a term, so hopefully our student vector still makes sense. It is now: '+studentAns);
+        } else if (studentAns[i][0] == '^') {
+            //if we have a power, but not a positive integer power, then we have a non-polynomial factor, so we're done.
+            console.log('I think I found a non-polynomial term, specifically some root term has a non natural number (or zero) power.');
+            return false;
+        }
+    }
+    debugText('After all preprocessing my studentAns vector is:');
+    debugText(studentAns);
+
+    // Now re repeat with instructor tree:
+    debugText('folding up external exponents of instructorTree so factors do not have exponents')
+    for (var i = 0; i < instructorAns.length; ++i) {
+        if ((instructorAns[i][0] == '^')&&(isPosInt(instructorAns[i][2]))) {
+            instructorAns=instructorAns.concat(Array(instructorAns[i][2]).fill(instructorAns[i][1]));
+            instructorAns.splice(i,1);// This should theoretically remove the original term now that we've duplicated it.
+            i=i-1;// since we shortened our array by 1, we should move the iteration value down 1 too.
+            debugText('Ok, I folded up a term, so hopefully our student vector still makes sense. It is now: '+instructorAns);
+        } else if (instructorAns[i][0] == '^') {
+            //if we have a power, but not a positive integer power, then we have a non-polynomial factor, so we're done.
+            return false;
+            console.log('Found a non-polynomial term in the instructor answer... huh... Check the code!');
+        }
+    }
+    debugText('After all preprocessing my instructorAns vector is: '+instructorAns);
+    
+    /*
+        ::NOW LETS PROCESS THE STUDENT ANSWER::
+    */
+    
+    var studentDegList=[0]
+    for (var i = 0; i < studentAns.length; ++i) {
+        if (studentAns[i] == 'x') {
+            // If the factor is simply 'x', then it's a degree 1 factor... yay...
+            studentDegList.push(1);
+            debugText('Found another factors degree, so now studentDegList is: '+studentDegList); 
+        } else if (Array.isArray(studentAns[i])) {
+            // Otherwise, if it is an array, we have something to go hunting in.
+            studentDegList.push(degreeHunt(studentAns,i,0));
+            debugText('Found another factors degree, so now studentDegList is: '+studentDegList); 
+        }// Note that the only other possibility is it being a number, which we don't care about.
+    }
+    studentDegList = studentDegList.filter(x => x!==0);// Remove all zeros from the array to avoid stupid padded constant multipliers.
+    studentDegList.sort();// Sort the result so that we can later compare it to the instructor version.
+    debugText('The final List of Factor Degrees given by the student is: ' + studentDegList);
+    
+    if (studentDegList.some(elem => elem<0)) {
+        console.log('I think one of the student factors is NOT a polynomial. So I am rejecting the answer.');
+        return false
+        }
+    
+    
+    /*
+        ::NOW LETS PROCESS THE INSTRUCTOR ANSWER::
+    */
+    
+    var instructorDegList=[0]
+    for (var i = 0; i < instructorAns.length; ++i) {
+        if (instructorAns[i] == 'x') {
+            // If the factor is simply 'x', then it's a degree 1 factor... yay...
+            instructorDegList.push(1);
+            debugText('Found another factors degree, so now instructorDegList is: '+instructorDegList); 
+        } else if (Array.isArray(instructorAns[i])) {
+            // Otherwise, if it is an array, we have something to go hunting in.
+            instructorDegList.push(degreeHunt(instructorAns,i,0));
+            debugText('Found another factors degree, so now instructorDegList is: '+instructorDegList); 
+        }// Note that the only other possibility is it being a number, which we don't care about.
+    }
+    instructorDegList = instructorDegList.filter(x => x!==0);// Remove all zeros from the array to avoid stupid padded constant multipliers.
+    instructorDegList.sort();// Sort the result so that we can later compare it to the instructor version.
+    debugText('The final List of Factor Degrees given by the instructor is: ' + instructorDegList);
+    
+    if (instructorDegList.some(elem => elem<0)) {
+        console.log('I think one of the instructor factors is NOT a polynomial. So I am rejecting the answer.');
+        return false
+        }
+    
+   /*
+        ::NOW WE COMPARE::
+   */
+    
+    if (studentDegList.length!=instructorDegList.length){
+        console.log('Ans Rejected: Wrong number of factors.');
+        return false;
+        }
+    
+    for (var i = 0; i < studentDegList.length; ++i) {
+        if (studentDegList[i] !== instructorDegList[i]) {
+        console.log('Ans Rejected: At least one factor is the wrong degree.');
+        return false;
+        }
+    }
+
+    if (f.equals(g)){
+        } else {
+        console.log('Ans Rejected: Factors do not expand to original Polynomial.');
+        }
+
+    return (f.equals(g));
+}
+
+function compSubTree(f, treeOne,treeTwo) {
+    /* 
+        We assume that the input f is the full math expressions object we will need for cloning,
+        treeOne is a level of the tree that is used as the subtree to compare
+        treeTwo is a level of another tree that is used as the subtree to compare.
+        We want to see if f.treeOne = f.treeTwo in the Ximera sense of equality.
+    */
+    // First we duplicate the object structure so the equals command can be used without pitching a fit.
+    let fTemp=Object.create(f);
+    let gTemp=Object.create(f);
+    
+    // Now we assign the subtrees as the full tree of the objects.
+    fTemp.tree = treeOne;
+    gTemp.tree = treeTwo;
+    
+    // Now we return the validity of their equality using Ximera equality validation.
+    return (fTemp.equals(gTemp))
+}
+
+?%
+%\makeatother
+
+%\begin{document}
+%Some \appendtoverbtoks|This is appended 1.| text. Some text. Some \prependtoverbtoks|This is prepended 1.| text.
+%Some \appendtoverbtoks*This is appended 2.* text. Some text. Some \prependtoverbtoks{This is prepended 2.} text.
+%\end{document}
+
+
+
 
 %% 
 %% Copyright (C) 2024 by Bart Snapp <bart.snapp@gmail.com> and Jim Fowler <kisonecat@gmail.com>

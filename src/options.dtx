@@ -89,6 +89,9 @@
 % \end{macro}
 %    \begin{macrocode}
 
+\newif\ifnumberedProblems
+    \numberedProblemsfalse%                             Default to no numbers, as that was previous behavior.
+    
 \newif\ifxake
 \xakefalse
 \DeclareOption{xake}{\xaketrue}

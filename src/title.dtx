@@ -53,12 +53,19 @@
 % |\phantomsection| is to fix the hrefs.}
 %    \begin{macrocode}
 \renewcommand\maketitle{%
-  \addtocounter{titlenumber}{1}%
-  {\flushleft\large\bfseries \@pretitle\par\vspace{-1em}}
-  {\flushleft\LARGE\bfseries {\ifnumbers\thetitlenumber\fi}{\ifnumbers\hspace{1em}\else\hspace{0em}\fi}\@title \par }
-  \phantomsection%
-  \ifnumbers\addcontentsline{toc}{section}{\thetitlenumber~\@title}\else\addcontentsline{toc}{section}{\@title}\fi
-  \vskip .6em\noindent\textit\theabstract\setcounter{problem}{0}\setcounter{section}{0}\setcounter{subsection}{0}\par\vspace{2em}
+    \addtocounter{titlenumber}{1}%
+    {\flushleft\large\bfseries \@pretitle\par\vspace{-1em}}
+    {\flushleft\LARGE\bfseries {\ifnumbers\thetitlenumber\fi}{\ifnumbers\hspace{1em}\else\hspace{0em}\fi}\@title \par }
+    \phantomsection%
+    \ifnumbers\addcontentsline{toc}{section}{\thetitlenumber~\@title}\else\addcontentsline{toc}{section}{\@title}\fi
+    \@ifundefined{theabstract}{% Only include the abstract if it is defined.
+            \relax% if the abstract is not included, then we throw in a dummy command to make sure that followup actions don't throw errors  
+            %           due to expecting something to happen from the abstract.
+        }
+        {% If the abstract is defined, then we can print it with some formatting.
+            \vskip .6em\noindent\textit\theabstract
+        }
+    \setcounter{problem}{0}\setcounter{section}{0}\setcounter{subsection}{0}\par\vspace{2em}
   %%% Design Question: 
   % Would it make more sense to have author/outcomes in the header and reserve footer for footnotes? 
   % Or some other method to distinguish between the two now that footnotes are viable?
