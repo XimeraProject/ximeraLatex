@@ -41,7 +41,7 @@
 %    \begin{macrocode}
 %<*cfgXimera>
 % Remove commands that use @
-\immediate\write18{sed -i "/@/d" \jobname.jax}
+	\immediate\write18{sed -i "/[:*@]/d" \jobname.jax}
 % Replace ##1 with #1 and so forth
 \immediate\write18{sed -i "s/\string#\string#\string\\([0-9]\string\\)/\string#\string\\1/g" \jobname.jax}
 
