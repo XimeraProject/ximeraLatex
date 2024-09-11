@@ -32,6 +32,7 @@
 %% src/interactives/sagemath.dtx  (with options: `htXimera')
 %% src/ungraded.dtx  (with options: `htXimera')
 %% src/footnotes.dtx  (with options: `htXimera')
+%% src/accordion.dtx  (with options: `htXimera')
 %% src/ending.dtx  (with options: `htXimera')
 %% ------------:| ------------------------------------------------------------
 %%       ximera:| Simultaneously writing print and online interactive materials
@@ -336,6 +337,12 @@
             \textcolor{fncolor}{(#1)}% Display the actual footnote here with color `fncolor' and within ()'s.
         \HCode{</span></span>}
     }% End of footnote definition.
+
+\renewenvironment{accordion}{\ifvmode \IgnorePar\fi \EndP\HCode{<div class="accordion">}
+}{\HCode{</div>}\IgnoreIndent}
+
+\renewenvironment{accordion-item}[1][]{\stepcounter{identification}\ifvmode \IgnorePar\fi \EndP\HCode{<h3>}#1\HCode{</h3><div id="accordion-item\arabic{identification}" class="accordion-item">}
+}{\HCode{</div>}\IgnoreIndent}
 
 \Hinput{ximera}
 

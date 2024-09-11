@@ -46,6 +46,7 @@
 %% src/leash.dtx  (with options: `classXimera')
 %% src/interactives/sagemath.dtx  (with options: `classXimera')
 %% src/jax.dtx  (with options: `classXimera')
+%% src/accordion.dtx  (with options: `classXimera')
 %% src/ungraded.dtx  (with options: `classXimera')
 %% src/clearEnv.dtx  (with options: `classXimera')
 %% src/hideEnv.dtx  (with options: `classXimera')
@@ -1052,6 +1053,26 @@ Interactive
 \renewcommand{\DeclareMathOperator}[2]{\@OldDeclareMathOperator{#1}{#2}\immediate\write\myfile{\unexpanded{\DeclareMathOperator}{\unexpanded{#1}}{\unexpanded{#2}}}}
 
 \fi
+
+\colorlet{textColor}{black} % since textColor is referenced below
+\colorlet{background}{white} % since background is referenced below
+
+%% accordion container
+\newenvironment{accordion}{%
+}{%
+}
+%% pretty-accordion
+\iftikzexport
+\newenvironment{accordion-item}[1][]{%
+}{%
+}
+\else
+\newenvironment{accordion-item}[1][]{%
+\paragraph{#1}
+}{%
+}
+\fi
+
 \newenvironment{ungraded}{}{}
 \newcommand{\clearEnv}[1]{
     %% Syntax: \clearEnv{envName}
