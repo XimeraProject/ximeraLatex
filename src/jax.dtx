@@ -74,6 +74,13 @@
 \ifvmode\IgnorePar\fi\EndP\HCode{</body>\Hnewline}%
 }
 
+% prevent spaces as in  "\begin {align}"  (it confuses Mathax2)
+\renewcommand\VerbMathToks[2]{%
+  \HCode{\string\begin{#2}}%
+    \alteqtoks{#1}%
+  \HCode{\string\end{#2}}%
+}
+
 % This is a fix for the LAODE book, which uses matlabEquation as if it were an equation
 \ScriptEnv{matlabEquation}{\ifvmode \IgnorePar\fi \EndP\HCode{<script type="math/tex; mode=display"> \string\begin{equation}\Hnewline}\HtmlParOff}{\HtmlParOn\HCode{\string\end{equation}</script>}}
 
