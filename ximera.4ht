@@ -70,6 +70,10 @@
 \ConfigureQuestionEnv{exercise}{exercise}
 \ConfigureQuestionEnv{question}{question}
 \ConfigureQuestionEnv{exploration}{exploration}
+
+\ifhintAsExpandable\else
+  \ConfigureQuestionEnv{hint}{hint}     % 2024: hint is no longer a 'question-environment'.
+\fi
 %%%%\ConfigureQuestionEnv{shuffle}{shuffle}
 \newcommand{\ConfigureTheoremEnv}[1]{%
 \renewenvironment{#1}[1][]{\refstepcounter{problem}%
