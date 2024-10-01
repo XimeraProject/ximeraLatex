@@ -50,6 +50,7 @@
 %% src/ungraded.dtx  (with options: `classXimera')
 %% src/clearEnv.dtx  (with options: `classXimera')
 %% src/hideEnv.dtx  (with options: `classXimera')
+%% src/preamble.dtx  (with options: `classXimera')
 %% ------------:| ------------------------------------------------------------
 %%       ximera:| Simultaneously writing print and online interactive materials
 %%       Author:| Jim Fowler and Oscar Levin and Jason Nowell and Wim Obbels and Hans Parshall and Bart Snapp
@@ -612,6 +613,13 @@
 \else
 \fi
 
+\graphicspath{  %% When looking for images,
+{./}            %% look here first,
+{./pictures/}   %% then look for a pictures folder,
+{../pictures/}  %% which may be a directory up.
+{../../pictures/}  %% which may be a directory up.
+{../../../pictures/}  %% which may be a directory up.
+}
 \NewEnviron{image}[1][3in]{%
   \begin{center}\resizebox{#1}{!}{\BODY}\end{center}% resize and center
 }
@@ -1112,6 +1120,27 @@ Interactive
     \noexpand{#1}
     }
     }
+
+\def\input@path{{./}{../}{../../}{../../../}}    % Mmm, do we need to reset it to the previous value ?
+\providecommand{\xmDefaultPreamble}{ximeraPreamble.tex}
+    \IfFileExists{\xmDefaultPreamble}
+    {
+        \typeout{Loading Ximera defaultPreamble \xmDefaultPreamble}
+        \input{\xmDefaultPreamble}
+    }{
+        \typeout{Info: No default preamble loaded (\xmDefaultPreamble)}
+    }
+\providecommand{\xmDefaultPrintstyle}{ximeraPrintstyle.sty}
+\iftikzexport\else   % only in PDF
+    \IfFileExists{\xmDefaultPrintstyle}
+    {
+        \typeout{Loading Ximera defaultPrintstyle \xmDefaultPrintstyle}
+        \input{\xmDefaultPrintstyle}
+    }{
+        \typeout{Info: No default printstyle loaded (\xmDefaultPrintstyle)}
+    }
+\fi
+
 
 %% 
 %% Copyright (C) 2024 by Bart Snapp <bart.snapp@gmail.com> and Jim Fowler <kisonecat@gmail.com>
