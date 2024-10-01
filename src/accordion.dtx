@@ -9,6 +9,11 @@
 %    \begin{macrocode}
 %<*classXimera>
 
+\newif\ifexpandableAsAccordion
+\expandableAsAccordiontrue   %% set to false for pre-2024 functionality
+\newif\ifhintAsExpandable
+\hintAsExpandabletrue   %% set to false for pre-2024 functionality
+
 \colorlet{textColor}{black} % since textColor is referenced below
 \colorlet{background}{white} % since background is referenced below
 
@@ -19,27 +24,14 @@
 }
 %% pretty-accordion
 \iftikzexport
-\newenvironment{accordion-item}[1][]{%
-}{%
-}
+  \newenvironment{accordion-item}[1][]{%
+  }{%
+  }
 \else
-%\newmdenv[
-%  font=\upshape,
-%  outerlinewidth=3,
-%  topline=false,
-%  bottomline=false,
-%  leftline=true,
-%  rightline=false, 
-%  leftmargin=0,
-%  innertopmargin=0pt,
-%  innerbottommargin=0pt,
-%  skipbelow=\baselineskip,
-%  linecolor=black,
-%]{accordion-item}%
-\newenvironment{accordion-item}[1][]{%
-	\paragraph{#1}
-}{%
-}
+  \newenvironment{accordion-item}[1][]{%
+	  \paragraph{#1}
+  }{%
+  }
 \fi
 
 %</classXimera>
@@ -50,8 +42,35 @@
 \renewenvironment{accordion}{\ifvmode \IgnorePar\fi \EndP\HCode{<div class="accordion">}
 }{\HCode{</div>}\IgnoreIndent}
 
-	\renewenvironment{accordion-item}[1][]{\stepcounter{identification}\ifvmode \IgnorePar\fi \EndP\HCode{<h3>}#1\HCode{</h3><div id="accordion-item\arabic{identification}" class="accordion-item">}
+\renewenvironment{accordion-item}[1][]{\stepcounter{identification}\ifvmode \IgnorePar\fi \EndP\HCode{<h3>}#1\HCode{</h3><div id="accordion-item\arabic{identification}" class="accordion-item">}
 }{\HCode{</div>}\IgnoreIndent}
+
+
+\ifhintAsExpandable
+%\let\hint\relax
+%\let\endhint\relax
+\RenewEnviron{hint}{%
+ \begin{expandable}{xmhint}{}%
+   \BODY%
+ \end{expandable}%
+}
+\fi
+
+\ifexpandableAsAccordion
+%% re-implement expandable (04/2023)
+\let\expandable\relax
+\let\endexpandable\relax
+\newenvironment{expandable}[2]{%
+  \stepcounter{identification}%
+  \ifvmode \IgnorePar\fi \EndP%
+  \HCode{<div class="accordion">\Hnewline}%
+  \HCode{<h3 class="#1">}#2\HCode{</h3>\Hnewline}%
+  \HCode{<div id="accordion-item\arabic{identification}" class="accordion-item #1-content">\Hnewline}
+}%
+{%
+  \HCode{</div>\Hnewline</div>\Hnewline}\IgnoreIndent
+}
+\fi
 
 %</htXimera>
 %    \end{macrocode}

@@ -1013,7 +1013,8 @@ Interactive
 }
 
 %% pretty-expandable
-\newenvironment{expandable}{%
+%% Overwritten in .4ht, but probably also in accordion!
+\newenvironment{expandable}[2]{%
 }{%
 }
 
@@ -1054,6 +1055,11 @@ Interactive
 
 \fi
 
+\newif\ifexpandableAsAccordion
+\expandableAsAccordiontrue   %% set to false for pre-2024 functionality
+\newif\ifhintAsExpandable
+\hintAsExpandabletrue   %% set to false for pre-2024 functionality
+
 \colorlet{textColor}{black} % since textColor is referenced below
 \colorlet{background}{white} % since background is referenced below
 
@@ -1063,14 +1069,14 @@ Interactive
 }
 %% pretty-accordion
 \iftikzexport
-\newenvironment{accordion-item}[1][]{%
-}{%
-}
+  \newenvironment{accordion-item}[1][]{%
+  }{%
+  }
 \else
-\newenvironment{accordion-item}[1][]{%
-\paragraph{#1}
-}{%
-}
+  \newenvironment{accordion-item}[1][]{%
+  \paragraph{#1}
+  }{%
+  }
 \fi
 
 \newenvironment{ungraded}{}{}
