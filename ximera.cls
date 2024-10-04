@@ -46,9 +46,11 @@
 %% src/leash.dtx  (with options: `classXimera')
 %% src/interactives/sagemath.dtx  (with options: `classXimera')
 %% src/jax.dtx  (with options: `classXimera')
+%% src/accordion.dtx  (with options: `classXimera')
 %% src/ungraded.dtx  (with options: `classXimera')
 %% src/clearEnv.dtx  (with options: `classXimera')
 %% src/hideEnv.dtx  (with options: `classXimera')
+%% src/preamble.dtx  (with options: `classXimera')
 %% ------------:| ------------------------------------------------------------
 %%       ximera:| Simultaneously writing print and online interactive materials
 %%       Author:| Jim Fowler and Oscar Levin and Jason Nowell and Wim Obbels and Hans Parshall and Bart Snapp
@@ -172,6 +174,8 @@
 \RequirePackage{gettitlestring}
 \RequirePackage{nameref}
 \RequirePackage{epstopdf}
+\ifdefined\reallyneverever
+
 \ifdefined\HCode
   \tikzexporttrue
 \fi
@@ -201,7 +205,7 @@
   \fi
 
   \fi
-
+\fi
 \ifdefined\HCode
 \RequirePackage{hyperref}
 \else
@@ -333,7 +337,6 @@
       \newtheorem{template}{Template}
 
       \newtheorem{warning}{Warning}
-
 \renewcommand{\theenumi}{\textup{(\alph{enumi})}}
 \renewcommand{\labelenumi}{\theenumi}
 \renewcommand{\theenumii}{\textup{(\roman{enumii})}}
@@ -342,6 +345,7 @@
 \renewenvironment{proof}[1][\proofname]
   {\begin{trivlist}\item[\hskip \labelsep \itshape \bfseries #1{}\hspace{2ex}]}
 {\qed\end{trivlist}}
+
 
 \ifxake
         \newenvironment{prompt}{}{}
@@ -609,6 +613,13 @@
 \else
 \fi
 
+\graphicspath{  %% When looking for images,
+{./}            %% look here first,
+{./pictures/}   %% then look for a pictures folder,
+{../pictures/}  %% which may be a directory up.
+{../../pictures/}  %% which may be a directory up.
+{../../../pictures/}  %% which may be a directory up.
+}
 \NewEnviron{image}[1][3in]{%
   \begin{center}\resizebox{#1}{!}{\BODY}\end{center}% resize and center
 }
@@ -901,6 +912,14 @@ Interactive
 \DefineVerbatimEnvironment{code}{Verbatim}{numbers=left,frame=lines,label=Code,labelposition=topline}
 \DefineVerbatimEnvironment{python}{Verbatim}{numbers=left,frame=lines,label=Python,labelposition=topline}
 \DefineVerbatimEnvironment{javascriptCode}{Verbatim}{numbers=left,frame=lines,label=JavaScript,labelposition=topline}
+%%% On the web, translate verbatim and lstlisting blocks into |<pre>|
+%%% elements.
+%%%    \begin{macrocode}
+%%%<*cfgXimera>
+%%\ConfigureEnv{verbatim}{\ifvmode\IgnorePar\fi\EndP\HCode{<pre style="white-space: pre; background-color: lightgray;" >}}{\ifvmode\IgnorePar\fi\EndP\HCode{</pre>}}{}{}
+%%\ConfigureEnv{lstlisting}{\ifvmode\IgnorePar\fi\EndP\HCode{<pre>}}{\ifvmode\IgnorePar\fi\EndP\HCode{</pre>}}{}{}
+%%%</cfgXimera>
+%%%    \end{macrocode}
 \newenvironment{dialogue}{%
    \renewcommand\descriptionlabel[1]{\hspace{\labelsep}\textbf{##1:}}
    \begin{description}%
@@ -1010,7 +1029,8 @@ Interactive
 }
 
 %% pretty-expandable
-\newenvironment{expandable}{%
+%% Overwritten in .4ht, but probably also in accordion!
+\newenvironment{expandable}[2]{%
 }{%
 }
 
@@ -1050,6 +1070,31 @@ Interactive
 \renewcommand{\DeclareMathOperator}[2]{\@OldDeclareMathOperator{#1}{#2}\immediate\write\myfile{\unexpanded{\DeclareMathOperator}{\unexpanded{#1}}{\unexpanded{#2}}}}
 
 \fi
+
+\newif\ifexpandableAsAccordion
+\expandableAsAccordiontrue   %% set to false for pre-2024 functionality
+\newif\ifhintAsExpandable
+\hintAsExpandabletrue   %% set to false for pre-2024 functionality
+
+\colorlet{textColor}{black} % since textColor is referenced below
+\colorlet{background}{white} % since background is referenced below
+
+%% accordion container
+\newenvironment{accordion}{%
+}{%
+}
+%% pretty-accordion
+\iftikzexport
+  \newenvironment{accordion-item}[1][]{%
+  }{%
+  }
+\else
+  \newenvironment{accordion-item}[1][]{%
+  \paragraph{#1}
+  }{%
+  }
+\fi
+
 \newenvironment{ungraded}{}{}
 \newcommand{\clearEnv}[1]{
     %% Syntax: \clearEnv{envName}
@@ -1083,6 +1128,27 @@ Interactive
     \noexpand{#1}
     }
     }
+
+\def\input@path{{./}{../}{../../}{../../../}}    % Mmm, do we need to reset it to the previous value ?
+\providecommand{\xmDefaultPreamble}{ximeraPreamble.tex}
+    \IfFileExists{\xmDefaultPreamble}
+    {
+        \typeout{Loading Ximera defaultPreamble \xmDefaultPreamble}
+        \input{\xmDefaultPreamble}
+    }{
+        \typeout{Info: No default preamble loaded (\xmDefaultPreamble)}
+    }
+\providecommand{\xmDefaultPrintstyle}{ximeraPrintstyle.sty}
+\iftikzexport\else   % only in PDF
+    \IfFileExists{\xmDefaultPrintstyle}
+    {
+        \typeout{Loading Ximera defaultPrintstyle \xmDefaultPrintstyle}
+        \input{\xmDefaultPrintstyle}
+    }{
+        \typeout{Info: No default printstyle loaded (\xmDefaultPrintstyle)}
+    }
+\fi
+
 
 %% 
 %% Copyright (C) 2024 by Bart Snapp <bart.snapp@gmail.com> and Jim Fowler <kisonecat@gmail.com>

@@ -12,7 +12,8 @@
 % as a div. The code below is required for the abstract to show online.
 %    \begin{macrocode}
 %<*cfgXimera>
-\let\abstract\relax
-\let\endabstract\relax
+% contents of abstract is saved to a macro, but there are still tags for abstract, 
+% so we need to remove it
+\ConfigureEnv{abstract}{}{}{}{}
 %</cfgXimera>
 %    \end{macrocode}

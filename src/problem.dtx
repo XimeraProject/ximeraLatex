@@ -191,7 +191,10 @@
 \ConfigureQuestionEnv{exercise}{exercise}
 \ConfigureQuestionEnv{question}{question}
 \ConfigureQuestionEnv{exploration}{exploration}
-\ConfigureQuestionEnv{hint}{hint}
+
+\ifhintAsExpandable\else
+  \ConfigureQuestionEnv{hint}{hint}     % 2024: hint is no longer a 'question-environment'. 
+\fi
 %%%%\ConfigureQuestionEnv{shuffle}{shuffle}
 %</htXimera>
 %    \end{macrocode}

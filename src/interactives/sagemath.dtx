@@ -33,11 +33,13 @@
 %</htXimera>
 %    \end{macrocode}
 
-% \DescribeEnv{sageSilent}{Execute SageMath code without outputing the result.}
+% \DescribeEnv{sageSilent}{Execute SageMath code without outputting the result.}
 %    \begin{macrocode}
 %<*htXimera>
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\renewenvironment{sagesilent}{\NoFonts}{\EndNoFonts}
+\ifdefined\sagesilent
+  \renewenvironment{sagesilent}{\NoFonts}{\EndNoFonts}
+\fi
 \ScriptEnv{sagesilent}{\ifvmode \IgnorePar\fi \EndP\HCode{<script type="text/sagemath">}\HtmlParOff}{\HtmlParOn\HCode{</script></div>}}
 %</htXimera>
 %    \end{macrocode}

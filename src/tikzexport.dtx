@@ -1,13 +1,16 @@
 % \subsubsection{TikZ export}
-% We generate SVGs and PNGs for any TikZ images, via the
+% 2024: We DON NOT ANYMORE generate SVGs and PNGs for any TikZ images, via the
 % ``externalize'' feature of TikZ.
 %
-% Currently TikZ doesn't compile natively into the website because of
+% Previously TikZ didn't compile natively into the website because of
 % how the xake bake compilation works.  In order to make Tikz work,
 % you need to get the tool \verb|mutool| on the machine that is
 % performing \verb|xake bake|.
 %    \begin{macrocode}
 %<*classXimera>
+% everything skipped, assumle TeX4ht does the jjb now
+\ifdefined\reallyneverever
+
 \ifdefined\HCode
   \tikzexporttrue
 \fi
@@ -37,6 +40,6 @@
   \fi
 
   \fi
-
+\fi
 %</classXimera>
 %    \end{macrocode}
