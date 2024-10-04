@@ -912,6 +912,14 @@ Interactive
 \DefineVerbatimEnvironment{code}{Verbatim}{numbers=left,frame=lines,label=Code,labelposition=topline}
 \DefineVerbatimEnvironment{python}{Verbatim}{numbers=left,frame=lines,label=Python,labelposition=topline}
 \DefineVerbatimEnvironment{javascriptCode}{Verbatim}{numbers=left,frame=lines,label=JavaScript,labelposition=topline}
+%%% On the web, translate verbatim and lstlisting blocks into |<pre>|
+%%% elements.
+%%%    \begin{macrocode}
+%%%<*cfgXimera>
+%%\ConfigureEnv{verbatim}{\ifvmode\IgnorePar\fi\EndP\HCode{<pre style="white-space: pre; background-color: lightgray;" >}}{\ifvmode\IgnorePar\fi\EndP\HCode{</pre>}}{}{}
+%%\ConfigureEnv{lstlisting}{\ifvmode\IgnorePar\fi\EndP\HCode{<pre>}}{\ifvmode\IgnorePar\fi\EndP\HCode{</pre>}}{}{}
+%%%</cfgXimera>
+%%%    \end{macrocode}
 \newenvironment{dialogue}{%
    \renewcommand\descriptionlabel[1]{\hspace{\labelsep}\textbf{##1:}}
    \begin{description}%
