@@ -122,7 +122,7 @@
 
 \addtocounter{problem@Depth}{-2}% Exited a problem so we've exited a problem layer. Need -2 because we steppped once at the start to check for needing a depth-level count reset. 
 
-\par\addvspace{.5ex}\nobreak\noindent\hung %% line at the bottom
+% 202410: no longer \par\addvspace{.5ex}\nobreak\noindent\hung %% line at the bottom
 
 \ifhandout
 	\ifnewpage
@@ -138,6 +138,8 @@
 %
 % Old environments were "problem", "exercise", "exploration", and "question".
 % Note that you can add content to the start/end code on top of these base code pieces if you want.
+%
+% These definitions will be overwritten in ximera.4ht !
 
 
 \newenvironment{problem}[1][2in]%
@@ -181,6 +183,7 @@
 \newcounter{identification}
 \setcounter{identification}{0}
 
+% 2024: should perhaps better have been called \ConfigureProblemEnv ...??
 \newcommand{\ConfigureQuestionEnv}[2]{%
 % refstepcounter ensures that labels get updated within these environments
 \renewenvironment{#1}{\refstepcounter{problem}}{}%

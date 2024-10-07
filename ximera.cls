@@ -453,7 +453,6 @@
 
 \addtocounter{problem@Depth}{-2}% Exited a problem so we've exited a problem layer. Need -2 because we steppped once at the start to check for needing a depth-level count reset.
 
-\par\addvspace{.5ex}\nobreak\noindent\hung %% line at the bottom
 
 \ifhandout
 \ifnewpage
@@ -834,7 +833,7 @@ Interactive
        % %% line at the bottom}
        {
 \end{trivlist}
- \par\addvspace{.5ex}\nobreak\noindent\hung
+ % (202410: no longer \par\addvspace{.5ex}\nobreak\noindent\hung
        }
 \fi
 
