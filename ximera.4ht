@@ -6,6 +6,7 @@
 %%
 %% ximera.dtx  (with options: `htXimera')
 %% src/pagesetup.dtx  (with options: `htXimera')
+%% src/abstract.dtx  (with options: `htXimera')
 %% src/title.dtx  (with options: `htXimera')
 %% src/problem.dtx  (with options: `htXimera')
 %% src/macros.dtx  (with options: `htXimera')
@@ -52,6 +53,7 @@
 \usepackage{microtype}
 \DisableLigatures[f]{encoding=*}
 \NewEnviron{html}{\HCode{\BODY}}
+\RenewEnviron{abstract}{\BODY}
 \Configure{@HEAD}{\HCode{<meta name="author" content="}\@author\HCode{" />\Hnewline}}
 \def\and{and }
 

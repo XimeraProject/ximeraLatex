@@ -5,6 +5,7 @@
 \let\abstract\relax
 \let\endabstract\relax
 % Use of environ package, may want to find a better way.
+% see the messing around with \theabstract in title.dtx ... Is this really needed/wanted?
 \NewEnviron{abstract}{\protected@xdef\theabstract{\BODY}}
 %</classXimera>
 %    \end{macrocode}
@@ -12,8 +13,11 @@
 % as a div. The code below is required for the abstract to show online.
 %    \begin{macrocode}
 %<*cfgXimera>
-% contents of abstract is saved to a macro, but there are still tags for abstract, 
-% so we need to remove it
-\ConfigureEnv{abstract}{}{}{}{}
+\ConfigureEnv{abstract}{\HCode{\Hnewline<div class="abstract">}}{\HCode{\Hnewline</div>}}{}{}
 %</cfgXimera>
+%    \end{macrocode}
+%    \begin{macrocode}
+%<*htXimera>
+\RenewEnviron{abstract}{\BODY}
+%<*htXimera>
 %    \end{macrocode}
