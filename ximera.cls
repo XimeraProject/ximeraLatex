@@ -1029,9 +1029,11 @@ Interactive
 
 %% pretty-expandable
 %% Overwritten in .4ht, but probably also in accordion!
-\newenvironment{expandable}[2]{%
-}{%
-}
+\ifdefined\xmNotExpandableAsAccordion
+\newenvironment{expandable}{}{}
+\else
+\newenvironment{expandable}[2]{}{}
+\fi
 
 \newcommand{\unfoldable}[1]{#1}
 
@@ -1069,11 +1071,6 @@ Interactive
 \renewcommand{\DeclareMathOperator}[2]{\@OldDeclareMathOperator{#1}{#2}\immediate\write\myfile{\unexpanded{\DeclareMathOperator}{\unexpanded{#1}}{\unexpanded{#2}}}}
 
 \fi
-
-\newif\ifexpandableAsAccordion
-\expandableAsAccordiontrue   %% set to false for pre-2024 functionality
-\newif\ifhintAsExpandable
-\hintAsExpandabletrue   %% set to false for pre-2024 functionality
 
 \colorlet{textColor}{black} % since textColor is referenced below
 \colorlet{background}{white} % since background is referenced below

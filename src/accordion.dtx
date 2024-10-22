@@ -9,10 +9,6 @@
 %    \begin{macrocode}
 %<*classXimera>
 
-\newif\ifexpandableAsAccordion
-\expandableAsAccordiontrue   %% set to false for pre-2024 functionality
-\newif\ifhintAsExpandable
-\hintAsExpandabletrue   %% set to false for pre-2024 functionality
 
 \colorlet{textColor}{black} % since textColor is referenced below
 \colorlet{background}{white} % since background is referenced below
@@ -46,7 +42,7 @@
 }{\HCode{</div>}\IgnoreIndent}
 
 
-\ifhintAsExpandable
+\ifdefined\xmNotHintAsExpandable\else
 %\let\hint\relax
 %\let\endhint\relax
 \RenewEnviron{hint}{%
@@ -56,7 +52,7 @@
 }
 \fi
 
-\ifexpandableAsAccordion
+\ifdefined\xmNotExpandableAsAccordion\else
 %% re-implement expandable (04/2023)
 \let\expandable\relax
 \let\endexpandable\relax
