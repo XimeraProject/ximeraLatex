@@ -1,16 +1,18 @@
 % \subsubsection{Images}
 % \DescribeEnv{image}{Place images inside an |image| environment.  On paper, this centers the image.  On the web, this provides additional benefits.}
+% \DescribeMacro{\xmDefaultGraphicsPath}{Base graphicspath, deafult '/xmPictures'. Can only be changed BEFORE loading ximera.cls!}
 %    \begin{macrocode}
 %<*classXimera>
 % Provide a default graphicspath
 % (somewhat tricky: an activity can be included in a xourse in a wildly different path !)
 % Suggested convention: put all images in i /pictures folder in the root of your project
+\providecommand{\xmDefaultGraphicsPath}{/xmPictures}
 \graphicspath{  %% When looking for images,
 {./}            %% look here first,
-{./pictures/}   %% then look for a pictures folder,
-{../pictures/}  %% which may be a directory up.
-{../../pictures/}  %% which may be a directory up.
-{../../../pictures/}  %% which may be a directory up.
+{.\xmDefaultGraphicsPath/}   %% then look for a pictures folder,
+{..\xmDefaultGraphicsPath/}   %% then look for a pictures folder,
+{../..\xmDefaultGraphicsPath/}   %% then look for a pictures folder,
+{../../..\xmDefaultGraphicsPath/}   %% then look for a pictures folder,
 }
 %\newenvironment{image}[1][]{\begin{center}}{\end{center}}
 \NewEnviron{image}[1][3in]{% 

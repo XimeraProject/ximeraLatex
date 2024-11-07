@@ -612,12 +612,13 @@
 \else
 \fi
 
+\providecommand{\xmDefaultGraphicsPath}{/xmPictures}
 \graphicspath{  %% When looking for images,
 {./}            %% look here first,
-{./pictures/}   %% then look for a pictures folder,
-{../pictures/}  %% which may be a directory up.
-{../../pictures/}  %% which may be a directory up.
-{../../../pictures/}  %% which may be a directory up.
+{.\xmDefaultGraphicsPath/}   %% then look for a pictures folder,
+{..\xmDefaultGraphicsPath/}   %% then look for a pictures folder,
+{../..\xmDefaultGraphicsPath/}   %% then look for a pictures folder,
+{../../..\xmDefaultGraphicsPath/}   %% then look for a pictures folder,
 }
 \NewEnviron{image}[1][3in]{%
   \begin{center}\resizebox{#1}{!}{\BODY}\end{center}% resize and center
@@ -1126,7 +1127,7 @@ Interactive
     }
 
 \def\input@path{{./}{../}{../../}{../../../}}    % Mmm, do we need to reset it to the previous value ?
-\providecommand{\xmDefaultPreamble}{ximeraPreamble.tex}
+\providecommand{\xmDefaultPreamble}{xmPreamble.tex}
     \IfFileExists{\xmDefaultPreamble}
     {
         \typeout{Loading Ximera defaultPreamble \xmDefaultPreamble}
@@ -1134,7 +1135,7 @@ Interactive
     }{
         \typeout{Info: No default preamble loaded (\xmDefaultPreamble)}
     }
-\providecommand{\xmDefaultPrintstyle}{ximeraPrintstyle.sty}
+\providecommand{\xmDefaultPrintstyle}{xmPrintstyle.sty}
 \iftikzexport\else   % only in PDF
     \IfFileExists{\xmDefaultPrintstyle}
     {
