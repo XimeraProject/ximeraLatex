@@ -1051,23 +1051,28 @@ Interactive
 \DefineVerbatimEnvironment{sageOutput}{Verbatim}{numbers=left,frame=lines,label=SAGE-Output,labelposition=topline}
 
 
+%% Pre-202412: .jax file written in non-\HCode, and in a next run inserted by ximera.cfg in .html file
+%% Post-202412: .mjax file written in \HCode, and in luaxake post-processing inerted in .html file
+%% For backward-compatibility, the pre-202412 code is kept around for some time
+%% (and the extension .mjax was used to make both versions coexist...)
+\newwrite\myfile
 \ifdefined\HCode
-  \else
-    \newwrite\myfile
-    \immediate\openout\myfile=\jobname.jax
+\immediate\openout\myfile=\jobname.xmjax
+\else
+\immediate\openout\myfile=\jobname.jax
 \fi
-\ifdefined\HCode
-  \else
-    \immediate\write\myfile{\unexpanded{\newenvironment}{prompt}{}{}}
-\fi
-\ifdefined\HCode
-  \else
+
+%% From |only.dtx| we must also create |prompt| on the MathJax side.
+\immediate\write\myfile{\unexpanded{\newenvironment}{prompt}{}{}}
+
+%% Write all newcommands to .xmjax file, that will be included in the .html via luaxake
 \let\@oldargdef\@argdef
 \long\def\@argdef#1[#2]#3{%
 \immediate\write\myfile{\unexpanded{\newcommand}{\unexpanded{#1}}[\unexpanded{#2}]{\unexpanded{#3}}}%
 \@oldargdef#1[#2]{#3}%
 }
 
+%% Same for \DeclareMathOperator
 \let\@OldDeclareMathOperator\DeclareMathOperator
 \renewcommand{\DeclareMathOperator}[2]{\@OldDeclareMathOperator{#1}{#2}\immediate\write\myfile{\unexpanded{\DeclareMathOperator}{\unexpanded{#1}}{\unexpanded{#2}}}}
 

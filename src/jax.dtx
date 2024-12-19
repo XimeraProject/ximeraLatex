@@ -2,42 +2,38 @@
 % When using mathjax, dump all the |\newcommand|s to a |.jax| file.
 %
 % First, create the |.jax| file.
-%    \begin{macrocode}
-%<*classXimera>
-\ifdefined\HCode
-  \else
-    \newwrite\myfile
-    \immediate\openout\myfile=\jobname.jax
-\fi    
-%</classXimera>
-%    \end{macrocode}
-% From |only.dtx| we must also create |prompt| on the MathJax side.
-%    \begin{macrocode}
-%<*classXimera>
-\ifdefined\HCode
-  \else
-    \immediate\write\myfile{\unexpanded{\newenvironment}{prompt}{}{}}
-\fi
-%</classXimera>
-%    \end{macrocode}
 % Redefine newcommand appropriately.
 %    \begin{macrocode}
 %<*classXimera>
+%% Pre-202412: .jax file written in non-\HCode, and in a next run inserted by ximera.cfg in .html file
+%% Post-202412: .mjax file written in \HCode, and in luaxake post-processing inerted in .html file
+%% For backward-compatibility, the pre-202412 code is kept around for some time
+%% (and the extension .mjax was used to make both versions coexist...)
+\newwrite\myfile
 \ifdefined\HCode
-  \else
+\immediate\openout\myfile=\jobname.xmjax
+\else
+\immediate\openout\myfile=\jobname.jax
+\fi
+
+%% From |only.dtx| we must also create |prompt| on the MathJax side.
+\immediate\write\myfile{\unexpanded{\newenvironment}{prompt}{}{}}
+
+%% Write all newcommands to .xmjax file, that will be included in the .html via luaxake 
 \let\@oldargdef\@argdef
 \long\def\@argdef#1[#2]#3{%
 \immediate\write\myfile{\unexpanded{\newcommand}{\unexpanded{#1}}[\unexpanded{#2}]{\unexpanded{#3}}}%
 \@oldargdef#1[#2]{#3}%
 }
 
+%% Same for \DeclareMathOperator
 \let\@OldDeclareMathOperator\DeclareMathOperator
 \renewcommand{\DeclareMathOperator}[2]{\@OldDeclareMathOperator{#1}{#2}\immediate\write\myfile{\unexpanded{\DeclareMathOperator}{\unexpanded{#1}}{\unexpanded{#2}}}}
-    
+
 \fi
 %</classXimera>
 %    \end{macrocode}
-% Include the jax'ed newcommands
+% Include the jax'ed newcommands  (pre-202412 versions ....)
 %    \begin{macrocode}
 %<*cfgXimera>
 % Remove commands that use @
@@ -55,16 +51,24 @@
 \makeatother
 
 % Include the mathjax newcommands in a math/tex script right at the beginning of the body
+%  (post 202412: this will hopefully (only) be done via luaxake post-processing!)
 \Configure{BODY}{%
 \HCode{<body>\Hnewline}%
 \Tg<div class="preamble">%
+%% If there is a .jax file, but no .xmjax file: include it 
+%% (If tere is only a .xmjax file, it will presumably be included by luaxake post-processing)
+%% Once post-202412 functionality is considered stable, this whole thing can be removed here
 \IfFileExists{\jobname.jax}{
+\IfFileExists{\jobname.xmjax}{
+%% DO NOTHING HERE, as the .xmjax file will presumably be added to the .html by luaxake
+}{
 \Tg<script type="math/tex">%
 \BVerbatimInput{\jobname.jax}%
 \Tg</script>%
-}
-{\Hnewline\HCode{<!-- mm, no \newcommands provided -->}\Hnewline}
+}}
+{\Hnewline\HCode{<!--Mmm, no newcommands provided -->}\Hnewline}
 
+%% Include the .ids file
 \IfFileExists{\jobname.ids}{\HCode{<script type="text/javascript">\Hnewline}%
 \BVerbatimInput{\jobname.ids}%
 \HCode{</script>\Hnewline}%
@@ -74,7 +78,7 @@
 \ifvmode\IgnorePar\fi\EndP\HCode{</body>\Hnewline}%
 }
 
-% prevent spaces as in  "\begin {align}"  (it confuses Mathax2)
+% prevent spaces as in  "\begin {align}"  (it confuses Mathjax2)
 \renewcommand\VerbMathToks[2]{%
   \HCode{\string\begin{#2}}%
     \alteqtoks{#1}%
