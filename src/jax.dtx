@@ -30,7 +30,6 @@
 \let\@OldDeclareMathOperator\DeclareMathOperator
 \renewcommand{\DeclareMathOperator}[2]{\@OldDeclareMathOperator{#1}{#2}\immediate\write\myfile{\unexpanded{\DeclareMathOperator}{\unexpanded{#1}}{\unexpanded{#2}}}}
 
-\fi
 %</classXimera>
 %    \end{macrocode}
 % Include the jax'ed newcommands  (pre-202412 versions ....)
