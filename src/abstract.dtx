@@ -13,7 +13,8 @@
 % as a div. The code below is required for the abstract to show online.
 %    \begin{macrocode}
 %<*cfgXimera>
-\ConfigureEnv{abstract}{\HCode{\Hnewline<div class="abstract">}}{\HCode{\Hnewline</div>}}{}{}
+\ifvmode\IgnorePar\fi\EndP
+\ConfigureEnv{abstract}{\ifvmode\IgnorePar\fi\EndP\HCode{\Hnewline<div class="abstract">}\par}{\ifvmode\IgnorePar\fi\EndP\HCode{\Hnewline</div>}\par}{}{}
 %</cfgXimera>
 %    \end{macrocode}
 %    \begin{macrocode}
