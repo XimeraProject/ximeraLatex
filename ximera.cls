@@ -352,27 +352,48 @@
 \else
 \ifhandout
 \NewEnviron{prompt}{}
+    % Breaks when put in mathmode ?
+    % \newenvironment{prompt}{\suppress}{\endsuppress}
 \else
-\newenvironment{prompt}
-     {\bgroup\color{gray!50!black}}
-        {\egroup}
+\newenvironment{prompt}{\bgroup\color{gray!50!black}}{\egroup}
+\fi
+\fi
+\ifdefined\HCode
+\newenvironment{onlyPdf}{\setbox0\vbox\bgroup}{\egroup}
+\newenvironment{onlyHtml}{\bgroup}{\egroup}
+\newenvironment{onlineOnly}{\bgroup}{\egroup}
+\else
+\newenvironment{onlyPdf}{\bgroup}{\egroup}
+\ifdefined\xmPrintHtmlOnlyAlsoInPdf
+\newenvironment{onlyHtml}{\bgroup\color{red!50!black}}{\egroup}
+\newenvironment{onlineOnly}{\bgroup\color{red!50!black}}{\egroup}
+\else
+\newenvironment{onlyHtml}{\setbox0\vbox\bgroup}{\egroup}
+\newenvironment{onlineOnly}{\setbox0\vbox\bgroup}{\egroup}
 \fi
 \fi
 
-\ifhandout
-\NewEnviron{onlineOnly}{
-\iftikzexport
-\BODY
+
+\ifdefined\HCode
+\newcommand{\pdfOnly}[1]{}
+\newcommand{\htmlOnly}[1]{#1}
 \else
+\ifdefined\xmPrintHtmlOnlyAlsoInPdf
+\newcommand{\pdfOnly}[1]{#1}
+\newcommand{\htmlOnly}[1]{\bgroup\color{red!50!black}#1\egroup}
+\else
+\newcommand{\pdfOnly}[1]{#1}
+\newcommand{\htmlOnly}[1]{}
 \fi
-}
-\else
-\newenvironment{onlineOnly}
-     {\bgroup\color{red!50!black}}
-{\egroup}
 \fi
 
-\newcommand{\pdfOnly}[1]{\iftikzexport\else #1\fi}
+\providecommand{\ifonlineTF}[2]{\htmlOnly{#1}\pdfOnly{#2}}
+\newif{\ifonline}
+\ifdefined\HCode
+\onlinetrue
+\else
+\onlinefalse
+\fi
 
 
 \providecommand{\latexProblemContent}[1]{#1}
