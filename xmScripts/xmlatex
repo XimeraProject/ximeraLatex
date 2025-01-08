@@ -294,16 +294,16 @@ reset_file_times() {
  then
   # .tex files older then 1 day: presumably the git was not checked out just now,
   # and modittimes are correct
-  echo "Skipping resetting file times"
+  debug "Skipping resetting file times"
  else
   # all .tex files are recent, presumable just after a git clone. This would cause re-compile of everything
   # therefore: restore all modif-dates
-  echo "Resetting file times"
+  echo "Resetting file times (this prevents some unneeded recompilations after a recent git checkout ...)"
   # HACK: git-restore-time is not in (old) images: install it on-the-fly
   git restore-mtime -f  || apt install git-restore-mtime && git restore-mtime -f && echo OK
   # git status   # in DETACHED HEAD in CI !!
-  debug "Current .tex, .sty and .pdf files):"
-  [[ -n "$DEBUG" ]] && ls -al *.tex *.sty *.pdf 2>/dev/null
+  debug "Current .tex, .sty, .html and .pdf files):"
+  [[ -n "$DEBUG" ]] && ls -al *.tex *.sty *.html *.pdf 2>/dev/null
  fi
 }
 

@@ -309,7 +309,7 @@ local function serve(force_serving)
     if ret > 0 then
         log:tracef("Could not push to 'ximera' target: %s",output)
         if force_serving then
-            log:debugf("Trying with more power (git push -f ...)")
+            log:infof("Retrying push with more power (git push -f ...)")
             ret, output = osExecute("git push -f ximera "..tagName)
             if ret > 0 then
                 return ret,output
@@ -320,7 +320,7 @@ local function serve(force_serving)
     if ret > 0 then
         log:tracef("Could not push refs to 'ximera' target: %s",output)
         if force_serving then
-            log:debugf("Trying with more power (git push -f ... refs )")
+            log:infof("Retrying push with more power (git push -f ... refs )")
             ret, output = osExecute("git push -f ximera "..tag_oid..":refs/heads/master") 
             if ret > 0 then
                 return ret,output
