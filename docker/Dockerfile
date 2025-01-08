@@ -105,18 +105,14 @@ RUN tlmgr install \
 # make4ht is not in /usr/local/bin if installed with tlmgr!!!
 ENV PATH="$PATH:/usr/local/texlive/2024/bin/x86_64-linux"
 
-
 # Add this complete ximeraLatex repo (is overkill, but allows bugfixing/editing inside the docker image!
+# It automatically adds the luaxake and xmlatex scripts
 RUN mkdir -p /root/texmf/tex/latex
 ADD . /root/texmf/tex/latex/ximeraLatex
 
-ADD xmScripts/xmlatex  /usr/local/bin/xmlatex
-ADD xmScripts/xmlatex.base /usr/local/bin/xmlatex.base
-
-ADD luaxake /root/texmf/tex/latex/luaxake
-
-RUN ln -s /root/texmf/tex/latex/luaxake/luaxake /usr/local/bin/luaxake
-
-RUN git config --global --add safe.directory /code
+# Add some needed/convenience setup
+RUN ln -s /root/texmf/tex/latex/ximeraLatex/luaxake/luaxake /usr/local/bin/luaxake; \
+    ln -s /root/texmf/tex/latex/ximeraLatex/xmScripts/xmlatex /usr/local/bin/xmlatex; \
+    git config --global --add safe.directory /code
 
 WORKDIR /code

@@ -77,7 +77,7 @@ fi
 
 if [[ -f /.dockerenv ]]  
 then
-    echo "Running in docker container (with local hostname $HOSTNAME)"
+    [[ -n "$DEBUG" ]] && echo "Running in docker container (with local hostname $HOSTNAME)"
 elif [[ -n "$KUBERNETES_SERVICE_HOST" ]] 
 then
     echo "Running in kubernetes container ($KUBERNETES_SERVICE_HOST)"
@@ -127,7 +127,7 @@ fi
 #  -> processing of options./config/settings in lua (ie what is in config.txt)
 #  -> implement 'xake name' in lua (is now still in bash, in this script)
 
-echo "Starting $0 $*"
+echo "Starting $0 $* (on host $HOSTNAME, i.e. inside a docker container)"
 
 # utility functions for errorhandling/debugging (and logging to be added ...?)
 error() {
