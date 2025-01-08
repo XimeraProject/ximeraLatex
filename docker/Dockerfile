@@ -2,19 +2,18 @@ FROM registry.gitlab.com/islandoftex/images/texlive:TL2024-2024-11-17-medium
 
 RUN apt-get update -y;  \
     apt-get install -y \
-    curl \
     git  git-restore-mtime \
-    mupdf-tools pdf2svg \
+    # mupdf-tools \
+    pdf2svg \
     gnupg \
     jq \
-    vim wget strace less 
+    curl \
+    wget  \
+    vim-tiny strace less 
 
-
-ADD hashcash_1.22-1_amd64.deb .
-RUN dpkg -i hashcash_1.22-1_amd64.deb
-    
-# Install xake (from repo)
-ADD scripts/xake.bin /usr/local/bin/xake
+# hashcash needed for setting up communication to ximeraServer; seems unfortunately not (easily?) installable with apt..
+ADD docker/hashcash_1.22-1_amd64.deb .
+RUN dpkg -i hashcash_1.22-1_amd64.deb    
 
 
 # Extra packages (on top of 'medium')
@@ -107,18 +106,14 @@ RUN tlmgr install \
 ENV PATH="$PATH:/usr/local/texlive/2024/bin/x86_64-linux"
 
 
-# Add ximeraLatex repo
+# Add this complete ximeraLatex repo (is overkill, but allows bugfixing/editing inside the docker image!
 RUN mkdir -p /root/texmf/tex/latex
-WORKDIR /root/texmf/tex/latex
+ADD . /root/texmf/tex/latex/ximeraLatex
 
-RUN git clone https://github.com/XimeraProject/ximeraLatex.git 
-WORKDIR /root/texmf/tex/latex/ximeraLatex
-RUN git pull && git checkout luaxake
+ADD xmScripts/xmlatex  /usr/local/bin/xmlatex
+ADD xmScripts/xmlatex.base /usr/local/bin/xmlatex.base
 
-ADD scripts/xmlatex-lua /usr/local/bin/xmlatex
-ADD scripts/xmlatex     /usr/local/bin/xmlatex.xake
-
-ADD scripts/luaxake /root/texmf/tex/latex/luaxake
+ADD luaxake /root/texmf/tex/latex/luaxake
 
 RUN ln -s /root/texmf/tex/latex/luaxake/luaxake /usr/local/bin/luaxake
 
