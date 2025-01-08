@@ -1,19 +1,40 @@
 # Luaxake
 
-This is a reimplementation of Xake using Lua.
+ `luaxake` is a reimplementation in LUA of Ximera's original `xake` program, that was written in GO.
 
-What it should do:
+ The main part of the reimplementation was done by Michal Hoftich (summer 2024), and it was further completed by Wim Obbels (dec 2024).
 
-- convert all standalone TeX files in a directory tree to PDF and HTML:
-  - we search for all files in subdirectories of the path
-  - standalone files are files that contain `\documentclass` command
-  - we detect included TeX files and recompile if any dependency is updated
+ The `luaxake` program is (or should) most often be called via the wrapper script `xmlatex`, that automatically starts a docker container if needed, and provides some extra defaults and options. 
+
+The `luaxake` program should provide
+
+- '`bake`: convert to PDF and/or HTML all standalone TeX files in directories given as argument
+  - find (interesting....) files (.tex, .pdf, .html...)
+  - detect dependencies  (mainly relevant in the HTML case to get proper titles/abstracts for xourses out of .html files)
+  - (re-)compile (only) if the files themselves or their dependencies have changed
+  - (standalone files are files that contain a `\documentclass` command)
+
+- `name`: setup a destination ximera-server. This currently needs a GPG key, and is done in `xmlatex`. This could/should change in/with a new ximera server setup....
+
+- `frost`: create a git tag for publishing, containing the necessary output files and some metadata
+ in the generated file `metadata.json`
+
+- `serve`: publish the (previuosly `frosted`) content to a (previously `name`d) ximera server
+
 
 # Usage:
 
-    $ texlua luaxake [options] path/to/directory
+```
+    luaxake [options] command <path/to/directory...>
+```
 
-# Options
+# Options   (TO BE UPADTED)
+
+The command is `bake`, `frost`, `serve` or a number of variants/alternatives/extensions.
+
+One or more directories and/or TeX files can be given as argument.
+
+For the options, see `luaxake -h`, or the `luaxake`source code. Main options are
 
 - `-c`,`--config` -- name of TeX4ht config file. It can be full path to the
   config file, or just the name. If you pass just the filename, Luaxake will
@@ -25,10 +46,10 @@ What it should do:
   values: `debug`, `info`, `status`, `warning`, `error`, `fatal`. Default value is `status`,
   which prints warnings, errors and status messages.
 
-- `-s`,`--script` -- Lua script that can change Luaxake configuration settings.
+- `-s`,`--settings` -- Lua script that can change Luaxake configuration settings.
 
 
-# Lua configuration 
+# Lua settings  (implementation to be documented/improved)
 
 You can set settings using a Lua script with the `-s` option. The script should 
 only set the configuration values. For example, to change the command for HTML 
@@ -46,12 +67,7 @@ compilers.html.command = "make4ht -c @{config_file} @{filename} 'options'"
 output_formats = {"html", "pdf", "sagetex.sage"},
 ```
 
-- `documentclass_lines`   -- number of lines in tex files where we should look for `\documentclass`. Luaxake compiles only files which contains the 
-  `\documentclass` command on a line in this range.
-
-```Lua
-documentclass_lines = 30,
-```
+OBSOLETE: this is calculated by `luaxake` now, based on the `compile_sequence`
 
 - `compile_sequence` -- sequence  of compilers to be called on each TeX file
 
@@ -69,11 +85,11 @@ clean = { "aux", "4ct", "4tc", "oc", "md5", "dpth", "out", "jax", "idv", "lg", "
 
 - `compilers` -- settings for compiler commands. Each compiler contains table with additional settings.
 
-There are three available compilers, but you can add more:
+There are several available compilers, and more can be added in the settings:
 
 - `pdf` -- command used for the PDF generation
 - `html` -- command used for the HTML generation
-- `sagetex.sage` -- command used for the `sagetex.sage` generation
+- `sagetex.sage` -- command used for the `sagetex.sage` generation  (NOT YET IMPLEMENTED)
 
 ```Lua
 compilers = {

@@ -25,7 +25,9 @@ Manual local installation of the Ximera LaTeX package is normally never needed, 
 
 * In the `src` folder the ximareLatex source files (as used by ximera.dtx)
 
-* In the `luaxake` folder the LUA code of the `luaxake` build script.
+* In the `luaxake` folder the LUA code of the `luaxake` build script. This has its own [README](luaxake/README.md).
+
+* In the `xmScripts` folder, the (wrapper-) script `xmlatex`. One version goes into the docker image, a simplified 'header' part should go in each ximera-repo (or just once somewhere in the PATH) oo your PC.
 
 * In the `docker` folder build files for docker images. Images are automatically build for each tag of this repo, and released versions are available from [github](https://github.com/orgs/XimeraProject/packages)
 
