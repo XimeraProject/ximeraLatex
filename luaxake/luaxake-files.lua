@@ -211,6 +211,12 @@ local function update_depends_on_files(fileinfo)
   local relfilename = fileinfo.relative_path     -- for logging ...
   local current_dir = fileinfo.absolute_dir
 
+  if fileinfo.depends_on_files and tablex.size(fileinfo.depends_on_files) > 0 then
+    -- TODO: check this? Is it safe to skip? Should the duplicate work not be detected earlier?
+    log:debugf("Mmm, %s already has %d dependent files! Skip potential duplicate work...?", relfilename, tablex.size(fileinfo.depends_on_files))
+    return
+  end
+
   for _, dep in ipairs(config.default_dependencies or {}) do
     local dep_fileinfo = get_fileinfo(dep)
     dep_fileinfo.tex_documentclass = false      -- HACK: prevent compilation later
@@ -230,13 +236,20 @@ local function update_depends_on_files(fileinfo)
 
     local content = f:read("*a")
     f:close()
+    -- 
+    -- Warning: this matching of commands is definitely not completely correct !!!
+    --
     -- remove all comments   (otherwise also commented commands would be processed!)
     -- content = content:gsub("([^\\])%%.-\n", "%1\n")
     content = content:gsub("%%[^\n]*", "")
+    -- remove all optional arguments (they break the matching infra!)
+    content = content:gsub("%[[^%]]*%]", "")    
 
     fileinfo.tex_documentclass = false    -- default, might be overwritten infra
     -- loop over all LaTeX commands with arguments
     for command, argument in content:gmatch("\\(%w+)%s*{([^%}]+)}") do
+
+      -- log:tracef("MATCHED  command=%s and argument=%s.", command, argument)
       -- add dependency if the current command is \input like
       --- local metadata = nil    -- should be fileinfo ...
       local included_file = nil
@@ -250,6 +263,7 @@ local function update_depends_on_files(fileinfo)
       elseif command == "dependsonpdf" then
         -- hack to include PDF (or SVG) eg of cheatsheets (that can/should not converted to HTML)
         included_file = fileinfo.relative_path:gsub(".tex","_pdf.tex")
+        log:debugf("%s explicitely dependsonpdf (%s, but use semi-hardcoded %s)", relfilename, argument, included_file)
         wanted_extension = "pdf"
       elseif fileinfo.tex_documentclass and config.input_commands[command] then   -- only process inputs AFTER the documentclass (and thus not INSIDE preambles etc) !!!
         -- log:tracef("Consider %s{%s}", command, argument)
@@ -269,8 +283,8 @@ local function update_depends_on_files(fileinfo)
         log:debugf("%s: consider included file %s (rel %s)", relfilename, included_file, path.relpath(included_file, current_dir))
         included_file = path.relpath(included_file, GLOB_root_dir)      -- make relative path 
 
-      else
-        -- log:tracef("Nothing to process for command %s", command)   -- would log all commands in the .tex file .... !!!
+      -- else
+        -- log:tracef("Skipping command %s (arg=%s)", command, argument)   -- would log all commands in the .tex file .... !!!
       end
 
       if included_file then
