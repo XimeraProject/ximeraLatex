@@ -374,8 +374,10 @@ function filter_main_tex_files(tbl)
 end
 
 to_be_compiled = filter_main_tex_files(to_be_compiled)
-if #to_be_compiled > 0 then
-  log:status(#to_be_compiled.." files need compiling")
+if #to_be_compiled == 1 then
+  log:statusf("%d file needs compiling: %s", #to_be_compiled, to_be_compiled[1].relative_path)
+elseif #to_be_compiled > 0 then
+  log:statusf("%d files need compiling", #to_be_compiled)
     for i,file in ipairs(to_be_compiled) do
       log:infof("%3d %s",i,file.relative_path)
     end

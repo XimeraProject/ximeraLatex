@@ -269,7 +269,7 @@ local function update_depends_on_files(fileinfo)
         wanted_extension = "pdf"
       elseif fileinfo.tex_documentclass and config.input_commands[command] then   -- only process inputs AFTER the documentclass (and thus not INSIDE preambles etc) !!!
         -- log:tracef("Consider %s{%s}", command, argument)
-        included_file = path.normpath(current_dir.."/"..argument)     -- remove potential ../ 
+        included_file = path.normpath(current_dir.."/"..argument)     -- make absolute dir, and remove potential ../ constructs
         wanted_extension = "html"    -- because the html will/might be read to get 
         if not path.isfile(included_file) then
           if not path.isfile(included_file..".tex") then
@@ -282,7 +282,7 @@ local function update_depends_on_files(fileinfo)
             included_file = included_file..".tex"
           end
         end
-        log:debugf("%-40s: consider included file %s (rel %s)", relfilename, included_file, path.relpath(included_file, current_dir))
+        log:debugf("%-40s considering included file %s (from %s)", relfilename, path.relpath(included_file, GLOB_root_dir), included_file)
         included_file = path.relpath(included_file, GLOB_root_dir)      -- make relative path 
 
       -- else
@@ -333,20 +333,14 @@ local function update_output_files(metadata, extensions, compilers)
       log:debug("Ignored output file doesn't exist: " .. html_file.absolute_path)
       status = false
     end
-    needs_compilation = needs_compilation or status
-    log:debugf("%-12s %-18s: %s",extension,  status and 'COMPILE' or 'OK', html_file.absolute_path)
-    --- @class output_file 
-    --- @field needs_compilation boolean true if the file needs compilation
-    --- @field metadata metadata of the output file 
-    --- @field extension string of the output file
-    -- output_files[#output_files+1] = {
-    --   needs_compilation = status,
-    --   metadata          = html_file,
-    --   extension         = extension
-    -- }
-    -- Mmm, use a 'flatter' structure for output_files ...
+    
     html_file.needs_compilation = status
     html_file.extension         = extension
+    
+    needs_compilation = needs_compilation or status
+    
+    log:debugf("Marked %-12s %-18s for  %s",extension,  status and 'NEEDS_COMPILATION' or 'OK', html_file.relative_path)
+    
     output_files[#output_files+1] = html_file
   end
   metadata.needs_compilation = needs_compilation
@@ -437,9 +431,10 @@ function update_status_tex_file(metadata, output_formats, compilers)
         -- metadata.config_file = find_config(config.config_file, {lfs.currentdir(), metadata.absolute_dir, abspath(dir)})
         metadata.config_file = find_config(config.config_file, {lfs.currentdir(), metadata.absolute_dir, abspath(dir or ".")})
         if metadata.config_file ~= config.config_file then log:debug("Use config file: " .. metadata.config_file) end
-        log:infof("%-12s %-18s: %s", metadata.extension,  'NEEDS_COMPILATION', metadata.relative_path)
+        log:infof( "Marked %-12s %-18s for %s", metadata.extension,  'NEEDS_COMPILATION', metadata.relative_path)
       else
-        log:debugf("%-12s %-18s: %s", metadata.extension, 'OK'                , metadata.relative_path)
+        log:debugf("Marked %-12s %-18s for %s", metadata.extension, 'OK'                , metadata.relative_path)
+
       end
     end
     -- return tex_fileinfos

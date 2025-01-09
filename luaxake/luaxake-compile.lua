@@ -315,7 +315,7 @@ local function clean(basefile, extensions, infixes, only_check)
     for _, ext in ipairs(extensions) do
       local filename = basename .. infix .. "." .. ext
       if path.exists(filename) then
-        log:debugf("%s  %13s file %s", (only_check and "Would remove" or "Removing") ,infix.."."..ext, filename)
+        log:debugf("%s %-14s file %s", (only_check and "Would remove" or "Removing") ,infix.."."..ext, filename)
         if not only_check then os.remove(filename); nfiles = nfiles + 1 end
       -- else
       --   log:tracef("No file %s present", filename)

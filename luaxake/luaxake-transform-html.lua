@@ -413,7 +413,7 @@ end
 ---@return boolean status
 ---@return string? msg
 local function post_process_html(src, file, cmd_meta, root_dir)
-  log:debugf("post_process_html %s",src)
+  log:tracef("post_process_html %s",src)
     
   -- only for debugging
   -- local hash_orig = hash_file(html_name)
@@ -422,7 +422,7 @@ local function post_process_html(src, file, cmd_meta, root_dir)
   local dom, msg = load_html(src)
   if not dom then return false, msg end
   
-  local ret, msg =  update_html_fileinfo(file, dom)     -- not really 'post-processing', but implicit checking-of-gebnerated-images
+  local ret, msg =  update_html_fileinfo(file, dom)     -- not really 'post-processing', but implicit checking-of-generated-images
   if ret then return ret, msg end
 
   if file.has_title and ( not file.title or file.title == "" ) then
@@ -435,6 +435,7 @@ local function post_process_html(src, file, cmd_meta, root_dir)
   -- add_dependencies(dom, file)    -- IS THIS NEEDED???
 
 
+  log:debug("Remove blanks in '\\begin {' if present")
   for _, mjax in ipairs(dom:query_selector(".mathjax-inline, .mathjax-block")) do
     local mtext = mjax:get_text()
     mtext = mtext:gsub("\\begin%s*{", "\\begin{")
@@ -445,7 +446,7 @@ local function post_process_html(src, file, cmd_meta, root_dir)
     end
   end
 
-  log:debug("Check if .xmjax file is present") 
+  log:trace("Process .xmjax file if present")
   local jax_file = src:gsub(".html$", ".xmjax")
   if not path.exists(jax_file) then
     log:warning("Strange: no JAX file with extra LaTeX commands for MathJAX")
@@ -489,7 +490,8 @@ local function post_process_html(src, file, cmd_meta, root_dir)
     local _, n_cmds = cmds:gsub("\n","")
     local _, n_filtered_cmds = filtered_cmds:gsub("\n","")
 
-    log:debugf("Adding %d newcommands (%d filtered)",n_filtered_cmds,n_cmds - n_filtered_cmds) 
+    log:debugf("Adding %d newcommands (from %s,  %d filtered)",n_filtered_cmds, jax_file,   n_cmds - n_filtered_cmds)
+
     local scrpt_text = scrpt:create_text_node(filtered_cmds)
     scrpt:add_child_node(scrpt_text)
     preamble:add_child_node(scrpt)
@@ -497,7 +499,8 @@ local function post_process_html(src, file, cmd_meta, root_dir)
   end
 
   
-  if is_xourse(dom, src) then
+  -- if is_xourse(dom, src) then   -- not needed anymore, was already determened from .tex source ???
+  if file.tex_documentclass == "xourse" then
     transform_xourse(dom, file)
 
     
