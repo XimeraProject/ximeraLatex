@@ -254,16 +254,18 @@ local function update_depends_on_files(fileinfo)
       --- local metadata = nil    -- should be fileinfo ...
       local included_file = nil
       local wanted_extension = nil
-      if command == "documentclass" then
-        log:debugf("%s has documentclass %s", relfilename, argument)
+      if not fileinfo.tex_documentclass and command == "documentclass" then
+        -- only process the first documentclass found (poor-mans prevention against later \documentclass in \verb or so ... !)
+        log:debugf("%-40s has documentclass %s", relfilename, argument)
         fileinfo.tex_documentclass = argument
-      elseif command == "title" or command == "xmtitle" then 
-        log:debugf("%s has title %s", relfilename, argument)
+      elseif not fileinfo.has_title and (command == "title" or command == "xmtitle") then 
+        -- only process the first title/xmtitle found (poor-mans prevention against later \documentclass in \verb or so ... !)
+        log:debugf("%-40s has title %s", relfilename, argument)
         fileinfo.has_title = true
       elseif command == "dependsonpdf" then
-        -- hack to include PDF (or SVG) eg of cheatsheets (that can/should not converted to HTML)
+        -- hack to include PDF (or SVG) eg of cheatsheets (that can/should not converted to HTML): a (dummy) \dependsonpdf{xxx} can explicitely mark the dependency of aaa.tex on aaa_pdf.tex)
         included_file = fileinfo.relative_path:gsub(".tex","_pdf.tex")
-        log:debugf("%s explicitely dependsonpdf (%s, but use semi-hardcoded %s)", relfilename, argument, included_file)
+        log:debugf("%-40s explicitely dependsonpdf (%s, but use semi-hardcoded %s)", relfilename, argument, included_file)
         wanted_extension = "pdf"
       elseif fileinfo.tex_documentclass and config.input_commands[command] then   -- only process inputs AFTER the documentclass (and thus not INSIDE preambles etc) !!!
         -- log:tracef("Consider %s{%s}", command, argument)
@@ -272,7 +274,7 @@ local function update_depends_on_files(fileinfo)
         if not path.isfile(included_file) then
           if not path.isfile(included_file..".tex") then
             if not path.isfile(included_file..".sty") then
-              log:warningf("Included file %s not found", included_file)
+              log:warningf("%-40s has included file %s not found", relfilename, included_file)
             else
               included_file = included_file..".sty"
             end
@@ -280,7 +282,7 @@ local function update_depends_on_files(fileinfo)
             included_file = included_file..".tex"
           end
         end
-        log:debugf("%s: consider included file %s (rel %s)", relfilename, included_file, path.relpath(included_file, current_dir))
+        log:debugf("%-40s: consider included file %s (rel %s)", relfilename, included_file, path.relpath(included_file, current_dir))
         included_file = path.relpath(included_file, GLOB_root_dir)      -- make relative path 
 
       -- else
@@ -291,7 +293,7 @@ local function update_depends_on_files(fileinfo)
 
           local included_fileinfo = get_fileinfo(included_file)
 
-          log:debugf("File %s depends on %s", relfilename, included_file)
+          log:debugf("%-40s depends on %s", relfilename, included_file)
           fileinfo.depends_on_files[included_file] = included_fileinfo
 
 
@@ -299,10 +301,10 @@ local function update_depends_on_files(fileinfo)
           update_status_tex_file(included_fileinfo, {wanted_extension}, {wanted_extension} )
           for fname, finfo in pairs(included_fileinfo.depends_on_files) do
             if finfo.exists then
-              log:debugf("File %s indirectly depends on %s", relfilename, finfo.relative_path)
+              log:debugf("%-40s indirectly depends on %s", relfilename, finfo.relative_path)
               fileinfo.depends_on_files[finfo.relative_path] = finfo
             else
-              log:warningf("File %s indirectly depends on non-existing file %s (%s); NOT ADDED TO DEPENDENT FILES", relfilename, finfo.relative_path, finfo.absolute_path)
+              log:warningf("%-40s indirectly depends on non-existing file %s (%s); NOT ADDED TO DEPENDENT FILES", relfilename, finfo.relative_path, finfo.absolute_path)
             end  
   
           end
@@ -332,7 +334,7 @@ local function update_output_files(metadata, extensions, compilers)
       status = false
     end
     needs_compilation = needs_compilation or status
-    log:debugf("%-12s %18s: %s",extension,  status and 'COMPILE' or 'OK', html_file.absolute_path)
+    log:debugf("%-12s %-18s: %s",extension,  status and 'COMPILE' or 'OK', html_file.absolute_path)
     --- @class output_file 
     --- @field needs_compilation boolean true if the file needs compilation
     --- @field metadata metadata of the output file 
@@ -435,9 +437,9 @@ function update_status_tex_file(metadata, output_formats, compilers)
         -- metadata.config_file = find_config(config.config_file, {lfs.currentdir(), metadata.absolute_dir, abspath(dir)})
         metadata.config_file = find_config(config.config_file, {lfs.currentdir(), metadata.absolute_dir, abspath(dir or ".")})
         if metadata.config_file ~= config.config_file then log:debug("Use config file: " .. metadata.config_file) end
-        log:infof("%-12s %18s: %s", metadata.extension,  'NEEDS_COMPILATION', metadata.relative_path)
+        log:infof("%-12s %-18s: %s", metadata.extension,  'NEEDS_COMPILATION', metadata.relative_path)
       else
-        log:debugf("%-12s %18s: %s", metadata.extension, 'OK'                , metadata.relative_path)
+        log:debugf("%-12s %-18s: %s", metadata.extension, 'OK'                , metadata.relative_path)
       end
     end
     -- return tex_fileinfos
