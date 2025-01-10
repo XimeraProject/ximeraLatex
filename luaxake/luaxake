@@ -264,7 +264,7 @@ config = {
   -- make4ht_loglevel = "",
   make4ht_extraoptions= "",
   -- number of lines in tex files where we should look for \documentclass
-  -- dump_fileinfo = ".html",     
+  dump_fileinfo = "afgeleiden_integralen.tex",
 }
 
 -- set/add potential default dependencies
@@ -544,4 +544,3 @@ if command == "extrainfo" then
       require 'pl.pretty'.dump(all_labels)
   end
 end
-

@@ -94,6 +94,7 @@ local function compile(file, compilers, compile_sequence, only_check)
       goto uptonextcompilation 
     end
     
+    -- HACK: _pdf.tex and _beamer.tex files should by convention NOT generate HTML (as they typically would contain non-TeX4ht-compatible constructs)
     if extension:match("html$") and ( file.relative_path:match("_pdf.tex$") or file.relative_path:match("_beamer.tex$") ) then
       log:infof("Skipping HTML compilation of pdf-only file %s",file.relative_path) 
 
@@ -123,7 +124,7 @@ local function compile(file, compilers, compile_sequence, only_check)
     log:tracef("Changing directory to %s (for actual compilations, from %s)",file.absolute_dir,current_dir)
     lfs.chdir(file.absolute_dir)
 
-
+    -- Construct the expected names of the generated output and logfiles
     local infix = ""    -- used for compilation-variations, eg 'handout' of 'make4ht'/'draft'
     if command_metadata.infix and command_metadata.infix ~= "" then
       infix = command_metadata.infix.."."
@@ -157,6 +158,7 @@ local function compile(file, compilers, compile_sequence, only_check)
       else
         log:info("Running " .. command )
 
+        -- !!! HERE THE ACTUAL COMPILATION IS STARTED !!!
         -- we reuse this file from make4ht's mkutils.lua
         local f = io.popen(command, "r")
         output = f:read("*all")
@@ -168,10 +170,8 @@ local function compile(file, compilers, compile_sequence, only_check)
         local end_time = socket.gettime()
         compilation_time = end_time - start_time
 
-
         log:debugf("Compilation of %s for %s ended: returns %d (expected %d) after %3f seconds", extension, file.relative_path, status, command_metadata.status,compilation_time)
       end
-
 
       --- @class compile_info
       --- @field source_file string source file name
@@ -194,8 +194,9 @@ local function compile(file, compilers, compile_sequence, only_check)
       }
       if command_metadata.check_log then
         local errors = parse_log_file(log_file)  -- gets errors the make4ht-way !
-        compile_info.errors = errors
+        compile_info.errors = errors             -- keep them around
         
+        -- Show nicely formatted errors 
         local err_context = ""
         local err_line = ""
         for i, err in ipairs(errors or {}) do
@@ -205,11 +206,11 @@ local function compile(file, compilers, compile_sequence, only_check)
           end
 
           -- Format errormessage a bit, and store it in err.constructed_errormessage
-          -- remove useless context ...
           err_context  = "at "..err.context
           err_line = ""
           if err.line then err_line = "[l." .. err.line .. "]" end
-
+          
+          -- remove useless context ...
           if err.context:match('See the LaTeX manual or LaTeX Companion for explanation') 
           or err.context:match('^ <-') then
             err_context = ""
@@ -220,28 +221,33 @@ local function compile(file, compilers, compile_sequence, only_check)
         end
       end
 
-
     if status ~= command_metadata.status then
       log:errorf("Compilation of %s for %s failed: returns %d (not %d) after %3f seconds", extension, file.relative_path, status, command_metadata.status,compilation_time)
       if path.exists(output_file) then
-        -- prevent  trailing non-correct files, as they prevent automatic re-compilation !
-        log:infof("Moving failed output file to %s", output_file..".failed")
+        -- prevent trailing non-correct files, as they prevent automatic re-compilation !
+        log:infof("Moving output of failed compilation to %s", output_file..".failed")
         pl.file.move(output_file, output_file..".failed")
       end
       goto endofthiscompilation  -- nice: a goto-statement !!!
     end
 
+    -- The 'output_file' might need to be post-processed into a 'compiled_file'
+    --  ( eg html manipulation, or moving a pdf to a downloads folder)
     if not command_metadata.post_command then
       -- in case no postprocessing: 
-      compiled_file = output_file  
+      compiled_file = output_file
     else
       local cmd = command_metadata.post_command
       log:infof("Postprocessing: %s", cmd)
       -- call the post_command
       local status, msg = _G[cmd](output_file, file, command_metadata, current_dir)     -- lua way of calling the function whose name is in 'cmd'
       
-      if status then
 
+      if not status then
+        compiled_file = msg    -- the post_command should return the final file upon success
+      else 
+        -- post-processing failed
+        -- This could typically be a missing title, and thus:
         -- HACK: to get a title in the html file, a second compilation is needed...
         if extension == "draft.html" and status == 'RETRY_COMPILATION' and first_try
         then
@@ -254,13 +260,10 @@ local function compile(file, compilers, compile_sequence, only_check)
           log:tracef("Non-retryable status %s for %s of %s", status, extension, file.relative_path)
         end
 
-
         log:errorf("Error in postprocessing: %s", msg)
         compiled_file = nil
         compile_info.post_status = status
         compile_info.post_message = msg
-      else 
-        compiled_file = msg
       end
     end
 
@@ -281,6 +284,8 @@ local function compile(file, compilers, compile_sequence, only_check)
     log:tracef("Ended compilation %s, chdir back to %s", extension, current_dir)
     ::uptonextcompilation::
   end
+
+  files.dump_fileinfo(file)     -- only for debugging
 
   return statuses
 end

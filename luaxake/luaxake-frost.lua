@@ -40,7 +40,9 @@ end
 
 local function get_output_files(file, extension)
     local result = {}
-    for _, entry in ipairs(file.output_files) do
+    for _, entry in ipairs(file.output_files or {}) do
+        log:tracef("Getting  %-14s entry: %s ", file.extension, entry.absolute_path)
+
         if entry.extension == extension then --and entry.info.type == targetType then
             if extension == "make4ht.html" then
                 local file = files.get_fileinfo(entry.relative_dir .."/" .. entry.basenameshort..".html")
@@ -49,7 +51,7 @@ local function get_output_files(file, extension)
                 table.insert(result, file)
                 log:debug(string.format("Hacking  %-14s outputfile: %s ", file.extension, file.absolute_path))
             elseif extension == "draft.html" then
-                local file = files.get_metadata(entry.relative_dir .. "/" .. entry.basenameshort..".html")
+                local file = files.get_fileinfo(entry.relative_dir .. "/" .. entry.basenameshort..".html")
                 -- require 'pl.pretty'.dump(entry)
                 -- require 'pl.pretty'.dump(file)
                 table.insert(result, file)
@@ -110,7 +112,7 @@ local function frost(tex_files, to_be_compiled_files)
         
         for i,html_file in ipairs(html_files) do
             log:debugf("Processing %s", html_file.relative_path)
-
+            
             needing_publication[#needing_publication + 1] = html_file.relative_path
             
             -- local html_name = html_file.absolute_path

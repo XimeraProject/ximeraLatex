@@ -136,9 +136,10 @@ local function read_title_and_abstract(activity_dom)
   log:trace("Read title ", title)
   local abstract_el = activity_dom:query_selector("div.abstract")[1]
   if abstract_el then
-    return title, abstract_el:get_text()
+    abstract = abstract_el:get_text()
+    -- log:trace("Read abstract ", abstract)
   end
-  return title, nil
+  return title, abstract
 end
 
 local function get_labels(activity_dom)
@@ -167,64 +168,78 @@ end
 local function transform_xourse(dom, file)
   for _, activity in ipairs(dom:query_selector("a.activity")) do
     local href = activity:get_attribute("href")
-    log:trace("activity", href)
-    if href then
+    log:trace("Updating srv/title/abstract for activity", href)
+    if not href then
+      log:warningf("Bizar, an activity without href in %s? Nothing to process...", file.relative_path)
+      goto next_activity
+    end
         -- some activity links don't have links to HTML files
         -- remove the optional '.tex'
-      local newhref = href
-      if path.extension(href) == ".tex" then newhref, _ = path.splitext(href) end
-      -- add .html if no extension (anymore)
-      if path.extension(newhref) == "" then newhref = newhref .. ".html" end
-      
-      local relhref = file.relative_dir.."/"..newhref
-      relhref = relhref:gsub("^/","")   -- remove leading /
-
-      if relhref:gsub(".html$","") ~= href then 
-        -- The  .html extension breaks the previous/next buttons in ximeraServer 
-        log:debug("Resetting href to "..relhref:gsub(".html$","") .. "( from "..href..")") 
-        activity:set_attribute("href",relhref:gsub(".html$",""))
-      end
-      
-      local htmlpath = file.absolute_dir .. "/" .. newhref
-      
-      if not path.exists(htmlpath) then 
-        log:error("HTML file "..htmlpath.." for activity in "..file.filename.." not (yet?) found; SKIPPING add/update title and abstract")
-      else
-        -- add the title and abstract of the activity to the xourse file ...
-        log:debug("Updating title/abstract for activity ", htmlpath)
-
-        local activity_dom, msg = load_html(htmlpath)
-        if not activity_dom then
-          log:error(msg)
-        else
-
-          local title, abstract = read_title_and_abstract(activity_dom)
-          -- add titles and abstracts from linked activity HTML
-          -- local parent = activity:get_parent()
-          local parent = activity
-          -- local pos = activity:find_element_pos()
-          if title and title ~= "" then
-            local h2 = parent:create_element("h2")
-            local h2_text = h2:create_text_node(title )
-            log:trace("Adding title for "..href..": "..title) 
-            h2:add_child_node(h2_text)
-            parent:add_child_node(h2,1)
-          else 
-            log:debug("No title found for "..href)
-          end
-          -- the problem with abstract is that Ximera redefines \maketitle in TeX4ht to produce nothing, 
-          -- abstract in Ximera is part of \maketitle, so abstracts are missing in the generated HTML
-          if abstract then
-            --require 'pl.pretty'.dump(abstract)
-            local h3 = parent:create_element("h3")
-            local h3_text = h3:create_text_node(abstract)
-            log:trace("Adding abstract (h3) for "..href..": "..abstract) 
-            h3:add_child_node(h3_text)
-            parent:add_child_node(h3,1)
-          end
-        end
-      end
+    local newhref = href
+    if path.extension(href) == ".tex" then newhref, _ = path.splitext(href) end
+    -- add .html if no extension (anymore)
+    if path.extension(newhref) == "" then newhref = newhref .. ".html" end
+    
+    local relhref = file.relative_dir.."/"..newhref
+    relhref = relhref:gsub("^/","")   -- remove leading /
+   if relhref:gsub(".html$","") ~= href then 
+      -- The  .html extension breaks the previous/next buttons in ximeraServer 
+      log:debug("Resetting href to "..relhref:gsub(".html$","") .. "( from "..href..")") 
+      activity:set_attribute("href",relhref:gsub(".html$",""))
     end
+    
+    -- the absolute path to .html of the linked activity
+    local htmlpath    = file.absolute_dir .. "/" .. newhref
+    local relhtmlpath = file.relative_dir .. "/" .. newhref
+    local title, abstract
+
+    if not path.exists(htmlpath) then 
+      log:error("HTML file "..htmlpath.." for activity in "..file.filename.." not (yet?) found; SKIPPING add/update title and abstract")
+      goto next_activity
+    end
+  
+    -- add the title and abstract of the activity to the xourse file ...
+    -- TODO: these could already be in the fileinfo of htmlpath, which would prevent reading/parsing the .html here (again...)
+    
+    -- add titles and abstracts from linked activity HTML
+    local html_fileinfo = GLOB_files[relhtmlpath]
+    if html_fileinfo then
+      log:debug("Found cached fileinfo for "..htmlpath)
+      title    = html_fileinfo.title
+      abstract = html_fileinfo.abstract
+  
+    else
+      log:warning("No fileinfo for "..htmlpath.." yet (for activity in "..file.filename.."); Getting it now")
+
+      local activity_dom, msg = load_html(htmlpath)
+      if not activity_dom then
+        log:error(msg)
+        goto next_activity
+      end
+      title, abstract = read_title_and_abstract(activity_dom)
+    end
+
+
+    if title and title ~= "" then
+      local h2 = activity:create_element("h2")
+      local h2_text = h2:create_text_node(title )
+      log:trace("Adding title for "..href..": "..title) 
+      h2:add_child_node(h2_text)
+      activity:add_child_node(h2,1)
+    else 
+      log:debug("No title found for "..href)
+    end
+    -- the problem with abstract is that Ximera redefines \maketitle in TeX4ht to produce nothing, 
+    -- abstract in Ximera is part of \maketitle, so abstracts are missing in the generated HTML
+    if abstract then
+      --require 'pl.pretty'.dump(abstract)
+      local h3 = activity:create_element("h3")
+      local h3_text = h3:create_text_node(abstract)
+      log:trace("Adding abstract (h3) for "..href..": "..abstract:gsub("\n","")) 
+      h3:add_child_node(h3_text)
+      activity:add_child_node(h3,1)
+    end
+    ::next_activity::
   end
 
   return dom
@@ -430,10 +445,8 @@ local function post_process_html(src, file, cmd_meta, root_dir)
     return "RETRY_COMPILATION", "No title generated for ".. file.relative_path
   end
 
-  
   remove_empty_paragraphs(dom)
-  -- add_dependencies(dom, file)    -- IS THIS NEEDED???
-
+  --add_dependencies(dom, file)    -- IS THIS NEEDED???
 
   log:debug("Remove blanks in '\\begin {' if present")
   for _, mjax in ipairs(dom:query_selector(".mathjax-inline, .mathjax-block")) do
@@ -501,7 +514,7 @@ local function post_process_html(src, file, cmd_meta, root_dir)
   
   -- if is_xourse(dom, src) then   -- not needed anymore, was already determened from .tex source ???
   if file.tex_documentclass == "xourse" then
-    transform_xourse(dom, file)
+    transform_xourse(dom, file)    
 
     
     log:debug("Checking if a 'part' is present") 
