@@ -248,9 +248,9 @@ local function frost(tex_files, to_be_compiled_files)
         return 0, 'OK'
     end
     
-    -- -- Give a dummy account to push/commit if none is available
-    -- ret, output = osExecute("git config  --get user.name  || { echo Setting git user.name;  git config --local user.name  'xmlatex Xake'; }")
-    -- ret, output = osExecute("git config  --get user.email || { echo Setting git user.email; git config --local user.email 'xmlatex@xakecontainer'; }")
+    -- Give a dummy account to push/commit if none is available
+    ret, output = osExecute("git config  --get user.name  || { echo Setting container-global git user.name;  git config --global user.name  'xmlatex Xake'; }")
+    ret, output = osExecute("git config  --get user.email || { echo Setting container-global git user.email; git config --global user.email 'xmlatex@xakecontainer'; }")
 
     local ret, commit_oid = osExecute("git commit-tree -m "..publication_branch.." -p "..publication_oid.." "..new_tree)
     if ret > 0 then
