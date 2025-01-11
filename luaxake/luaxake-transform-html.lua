@@ -203,7 +203,7 @@ local function transform_xourse(dom, file)
     
     -- add titles and abstracts from linked activity HTML
     local html_fileinfo = GLOB_files[relhtmlpath]
-    if html_fileinfo then
+    if false and html_fileinfo then   -- TODO : DOES NOT WORK (file not (yet?) there
       log:debug("Found cached fileinfo for "..abshtmlpath)
       title    = html_fileinfo.title
       abstract = html_fileinfo.abstract
@@ -511,8 +511,8 @@ local function post_process_html(src, file, cmd_meta, root_dir)
   end
 
   
-  -- if is_xourse(dom, src) then   -- not needed anymore, was already determened from .tex source ???
-  if file.tex_documentclass == "xourse" then
+  if is_xourse(dom, src) then   -- not needed anymore, was already determened from .tex source ???
+  -- if file.tex_documentclass == "xourse" then
     transform_xourse(dom, file)    
 
     
