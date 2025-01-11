@@ -264,7 +264,7 @@ config = {
   -- make4ht_loglevel = "",
   make4ht_extraoptions= "",
   -- number of lines in tex files where we should look for \documentclass
-  dump_fileinfo = "afgeleiden_integralen.tex",
+  -- dump_fileinfo = "aFirstXourse.tex",
 }
 
 -- set/add potential default dependencies
@@ -340,18 +340,35 @@ log:infof("Set compile_sequence=%s (and output_formats=%s)", table.concat(config
 local tex_fileinfos = {}
 
 for i,nextarg in ipairs(config.dirs) do 
-  log:info("Processing argument " .. nextarg)
+  log:infof("Processing argument %d: %s", i,nextarg)
 
-  if path.isdir(nextarg) or ( path.isfile(nextarg) and nextarg:match("%.tex$")  )then
-    -- some files might need compilation even if they are not in the args, e.g. _pdf.tex files, or other dependent .tex files
+  --if path.isdir(nextarg) or path.isfile(nextarg) then
     
+    if not path.isdir(nextarg) then
+      local ext = nextarg:match(("%.([^%.]+)$"))
+      if ext  ~= "tex" and path.isfile(nextarg..".tex")   then
+        log:trace("Adding .tex to " .. nextarg)
+        nextarg = nextarg..".tex"
+      elseif ext ~= "tex" then 
+        log:warningf("Argument %s not folder nor tex-file (%s): SKIPPING", nextarg, ext)
+        goto nextarg    -- continue ...
+      end
+    end
+        
+    -- some files might need compilation even if they are not in the args, e.g. _pdf.tex files, or other dependent .tex files
     for fname, finfo in pairs(files.get_tex_files_with_status(nextarg, config.output_formats, config.compile_sequence)) do
       log:tracef("Collecting into tex_fileinfos:  %s", fname)
       tex_fileinfos[fname] = finfo
     end
-  else
-    log:warning("File "..nextarg.." not folder or tex-file: SKIPPING")
-  end
+
+    if path.isfile(nextarg) and config.force then
+      log:debugf("Explicitly force (re-) compilation of %s", nextarg)
+      tex_fileinfos[nextarg].needs_compilation = true
+    end
+  -- else
+  --   log:warning("Argument "..nextarg.." not folder nor file: SKIPPING")    -- should not occur (socket, pipe, ...)
+  -- end
+  ::nextarg::
 end
 
 -- add extra files we depend on to the potentially to-be-compiled tex_files
@@ -359,7 +376,7 @@ local tex_files = tablex.values(tex_fileinfos)
 
 
 log:debugf("Finding and sorting dependencies for %d tex_files", #tex_files)
-local to_be_compiled = files.sort_dependencies(tex_files, config.force)
+local to_be_compiled = files.sort_dependencies(tex_files)
 
 function filter_main_tex_files(tbl)
   local result = {}
@@ -482,9 +499,9 @@ if command == "bake" or command == "compilePdf" or command ==  "compile" then
   --            require 'pl.pretty'.dump(err)
             end
         else
-          if compile_info.post_status then
-              log:errorf("[%-10s] %s: %s", "post_command", compile_info.source_file, compile_info.post_message or "")
-              local _, n_errors = compile_info.post_message:gsub("\n", "")   -- HACK: number of lines equals number of errors ...
+          if compile_info.post_processing_error then
+              log:errorf("[%-10s] %s: %s", "post_command", compile_info.source_file, compile_info.post_processing_error)
+              local _, n_errors = compile_info.post_processing_error:gsub("\n", "")   -- HACK: number of lines equals number of errors ...
               failed_files[compile_info.log_file] = n_errors + 1
           end
         end 

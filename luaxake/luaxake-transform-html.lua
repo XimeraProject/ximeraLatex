@@ -189,29 +189,29 @@ local function transform_xourse(dom, file)
     end
     
     -- the absolute path to .html of the linked activity
-    local htmlpath    = file.absolute_dir .. "/" .. newhref
-    local relhtmlpath = file.relative_dir .. "/" .. newhref
+    local abshtmlpath = path.join(file.absolute_dir,  newhref)
+    local relhtmlpath = path.join(file.relative_dir,  newhref)
     local title, abstract
 
-    if not path.exists(htmlpath) then 
-      log:error("HTML file "..htmlpath.." for activity in "..file.filename.." not (yet?) found; SKIPPING add/update title and abstract")
+    if not path.exists(abshtmlpath) then 
+      log:errorf("File %s: html file for activity %s does not (yet?) exist; SKIPPING add/update title and abstract", file.relative_path, abshtmlpath)
       goto next_activity
     end
   
     -- add the title and abstract of the activity to the xourse file ...
-    -- TODO: these could already be in the fileinfo of htmlpath, which would prevent reading/parsing the .html here (again...)
+    -- TODO: these could already be in the fileinfo of abshtmlpath, which would prevent reading/parsing the .html here (again...)
     
     -- add titles and abstracts from linked activity HTML
     local html_fileinfo = GLOB_files[relhtmlpath]
     if html_fileinfo then
-      log:debug("Found cached fileinfo for "..htmlpath)
+      log:debug("Found cached fileinfo for "..abshtmlpath)
       title    = html_fileinfo.title
       abstract = html_fileinfo.abstract
   
     else
-      log:warning("No fileinfo for "..htmlpath.." yet (for activity in "..file.filename.."); Getting it now")
+      log:warningf("File %s: no fileinfo yet for activity %30s; Getting it now.",  file.relative_path, relhtmlpath)
 
-      local activity_dom, msg = load_html(htmlpath)
+      local activity_dom, msg = load_html(abshtmlpath)
       if not activity_dom then
         log:error(msg)
         goto next_activity
@@ -412,37 +412,36 @@ end
 --- Save DOM to file
 ---@param dom DOM_Object
 ---@param filename string
+--- returns nil on success, errormessage on failure
 local function save_html(dom, filename)
   local f, err = io.open(filename, "w")
   if not f then
-    return 1, "Cannot save updated HTML to " .. (filename or "" .. ": ".. err) 
+    return "Cannot save updated HTML to " .. (filename or "" .. ": ".. err) 
   end
   f:write(dom:serialize())
   f:close()
-  return nil, filename
+  return nil
 end
 
 
 --- Post-process HTML files
 ---@param file fileinfo 
----@return boolean status
----@return string? msg
+---@return string? name of post_processed file (could be same name/file is src, or not...)
+---@return string? msg  (if error: name in nil)
 local function post_process_html(src, file, cmd_meta, root_dir)
-  log:tracef("post_process_html %s",src)
-    
-  -- only for debugging
-  -- local hash_orig = hash_file(html_name)
-  -- backup_file(html_name, hash_orig..".bak" or "ORIG.bak")
-  
+  log:tracef("post_process_html %s (%s)",src, file.relative_path)
+      
   local dom, msg = load_html(src)
-  if not dom then return false, msg end
+  if not dom then return nil, msg end
   
+
   local ret, msg =  update_html_fileinfo(file, dom)     -- not really 'post-processing', but implicit checking-of-generated-images
-  if ret then return ret, msg end
+  -- BADBAD: inconsistent error-conventions .... !
+  if ret then return nil, msg end
 
   if file.has_title and ( not file.title or file.title == "" ) then
     log:warningf("No title found in %s; recompiling once more might solve this ...", file.relative_path)
-    return "RETRY_COMPILATION", "No title generated for ".. file.relative_path
+    return nil, "RETRY_COMPILATION: No title generated for ".. file.relative_path
   end
 
   remove_empty_paragraphs(dom)
@@ -539,15 +538,19 @@ local function post_process_html(src, file, cmd_meta, root_dir)
   --<h1 class='card part' id='part1'>The First Topic of This Course</h1>
   end
 
-  local tgt = string.format("%s/%s.%s", file.absolute_dir, file.basename, cmd_meta.extension)
+  -- save with absolute path to be independent of chdir's in compilation-step ...
+  local abstgt = path.join(file.absolute_dir, file.basename ..".".. cmd_meta.extension)
+  local reltgt = path.join(file.relative_dir, file.basename ..".".. cmd_meta.extension)
 
-  log:infof("Adapted html being saved as %s", tgt )
-  return save_html(dom, tgt) 
+  log:infof("Adapted html being saved as %s (%s)", reltgt, abstgt)
+  
+  local err = save_html(dom, abstgt)
+  if err then  return nil, err  end   -- return failure
+
+  return reltgt    -- return success: relative path of post_processed file
 end
 
 M.post_process_html = post_process_html
--- M.load_html = load_html
--- M.get_labels = get_labels
 M.update_html_fileinfo = update_html_fileinfo
 
 return M

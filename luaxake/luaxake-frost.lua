@@ -40,7 +40,7 @@ end
 
 local function get_output_files(file, extension)
     local result = {}
-    for _, entry in ipairs(file.output_files or {}) do
+    for fname, entry in pairs(file.output_files_needed or {}) do
         log:tracef("Getting  %-14s entry: %s ", file.extension, entry.absolute_path)
 
         if entry.extension == extension then --and entry.info.type == targetType then

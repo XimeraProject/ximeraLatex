@@ -351,7 +351,7 @@ end
 --- @param metadata metadata metadata of the TeX file
 --- @param extensions table list of extensions
 local function update_output_files(metadata, extensions, compilers)
-  local output_files = {}
+  metadata.output_files_needed = {}
   local needs_compilation = false
   for _, extension in ipairs(extensions) do
     local out_file = get_fileinfo(metadata.relative_path:gsub("tex$", extension))
@@ -373,11 +373,10 @@ local function update_output_files(metadata, extensions, compilers)
     
     log:debugf("Marked output %-12s %-18s for  %s",extension,  status and 'NEEDS_COMPILATIONS' or 'NO_COMPILATION', out_file.relative_path)
     
-    output_files[#output_files+1] = out_file
+    -- output_files[#output_files+1] = out_file
+    metadata.output_files_needed[out_file.relative_path]  = out_file
   end
   metadata.needs_compilation = needs_compilation
-  metadata.output_files      = output_files
-
   if metadata.tex_documentclass == "ximera" or metadata.tex_documentclass == "xourse"
   then
     metadata.config_file = config.config_file
@@ -400,11 +399,11 @@ end
 --- create sorted table of files that needs to be compiled 
 --- @param tex_files metadata[] list of TeX files metadata
 --- @return metadata[] to_be_compiled list of files in order to be compiled
-local function sort_dependencies(tex_files, force_compilation)
+local function sort_dependencies(tex_files)
   -- create a dependency graph for files that needs compilation 
   -- the files that include other courses needs to be compiled after changed courses 
   -- at least that is what the original Xake command did. I am not sure if it is really necessary.
-  log:tracef("Sorting dependencies (%s)", force_compilation)
+  log:tracef("Sorting dependencies")
 
   local Graph = graph:new()
   local used = {}
@@ -413,14 +412,14 @@ local function sort_dependencies(tex_files, force_compilation)
   for _, metadata in ipairs(tex_files) do
     log:tracef("Consider %s", metadata.relative_path)
 
-    if force_compilation or metadata.needs_compilation then
+    if metadata.needs_compilation then
       Graph:add_edge("root", metadata.relative_path)
       used[metadata.relative_path] = metadata
     end
   end
   
   -- now add edges to included files which needs to be recompiled
-  for _, metadata in pairs(used) do
+  for _, metadata in pairs(used or {}) do
     local current_name = metadata.relative_path
     log:tracef("Get used = %s (%s)",current_name, tablex.keys(metadata.depends_on_files))
     for filename, child in pairs(metadata.depends_on_files or {}) do
@@ -446,16 +445,17 @@ local function sort_dependencies(tex_files, force_compilation)
   end
   
   -- we need to save files in the reversed order, because these needs to be compiled first
+  -- and delete the dummy 'root' entry
+
+  if not sorted[1] == "root" then
+    log:errorf("The first entry of the sorted dependency list is NOT the dummy 'root' entry, but %s. BADBAD, this should not have happened...")
+  else
+    table.remove(sorted,1) -- remove the dummy entry
+  end
   for i = #sorted, 1, -1 do
-    local name = sorted[i]
-    local usd = used[name]
-    local uname = ""
-    if name == "root" then
-      log:tracef("Skipping artificial 'root' node")
-    else
-      log:tracef("Adding to be compiled %2d: %-30s (%s)",i,name, used[name].relative_path)
+      local name = sorted[i]
+      log:tracef("Adding file to be compiled %2d: %-30s (%s)",i ,name, used[name].relative_path)
       to_be_compiled[#to_be_compiled+1] = used[name]
-    end
   end
   return to_be_compiled
 end
@@ -483,7 +483,7 @@ function update_status_tex_file(metadata, output_formats, compilers)
 
       -- 20250109: SKIPPED finding config_file; now set above in update_output_files
       
-      log:infof( "Marked source  %-12s %-18s for %s", metadata.extension, metadata.needs_compilation and 'NEEDS_COMPILATIONS' or 'NO_COMPILATION', metadata.relative_path)
+      log:infof( "Marked source %-12s %-18s for %s", metadata.extension, metadata.needs_compilation and 'NEEDS_COMPILATIONS' or 'NO_COMPILATION', metadata.relative_path)
 
     end
 
