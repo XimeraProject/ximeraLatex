@@ -9,6 +9,7 @@ RUN apt-get update -y;  \
     jq \
     curl \
     wget  \
+    dos2unix  \
     vim-tiny strace less 
 
 # hashcash needed for setting up communication to ximeraServer; seems unfortunately not (easily?) installable with apt..

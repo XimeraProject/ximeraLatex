@@ -8,6 +8,7 @@ RUN apt-get update -y;  \
     mupdf-tools pdf2svg imagemagick \
     gnupg \
     jq \
+    dos2unix \
     vim wget strace less 
 
 # RUN apt-get install -u hashcash
