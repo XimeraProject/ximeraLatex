@@ -35,13 +35,13 @@ Options:
 -v,--verbose                         Set log level to 'info'
 -d,--debug                           Set log level to 'debug'
 -t,--trace                           Set log level to 'trace'
---settings     (default none)        Luaxake settings script
 --version                            Version info
 -f,--force                           Recompile anyway
--C,--compile   (default none)        Compile sequence (default 'pdf,html', or as set in settings)
 --check                              Only check, no actual compiling/cleaning
 --noclean                            Keep all temp files
---config       (default ximera.cfg)  TeX4ht config file
+--compile       (default none)       Compile sequence (default 'pdf,html', or as set in settings)
+--settingsfile  (default none)       Luaxake settings script
+--configfile    (default none)       TeX4ht config file
 
 Possible commands:
  bake
@@ -81,29 +81,6 @@ if args.loglevel then logging.set_level(args.loglevel) end
 GLOB_root_dir = path.abspath(".")  -- TODO: find git folder ...?
 -- log:tracef("Setting GLOB_root_dir=%s",GLOB_root_dir)
 
--- first real argument is the command (bake/frost/serve/...)
-local command = table.remove(args, 1)
-
-if not command then
-  log:error("Usage: script [command] <files-or-folders...>")
-  os.exit(1)
-end
-
-log:debug("command: "..command)
-
- 
--- all further arguments are considered dirs/files to be processed
-local dirs = {}
-
-for i, value in ipairs(args) do
-    log:trace("Args: adding file/dir "..value)
-    table.insert(dirs, value)
-end
-
-if #dirs == 0 then
-  log:debug("Using root folder . as default argument/target")
-  dirs = {"."}
-end
 
 --
 -- FOR REFERENCE:   (and to be checked ...?)
@@ -129,11 +106,24 @@ end
 --- @field output_formats      [string] list of output format extensions, calculated from compile_sequence
 --- @field compilers           {string: compiler}  table with available 'compilers'
 --- @field clean               [string] list of extensions of temp files to be removed after the compilation
---- @field config_file         string   TeX4ht config file 
+--- @field configfile         string   TeX4ht config file 
 --- @field documentclass_lines number   on how many lines in TeX files we should try to look for \documentclass
 
+
+-- a GLOBAL config class
+--   The values here are defaults, that can be overwritten with
+--     - values in a settingsfile  (the file itself can be given with --settingsfile or as environment variable)
+--     - environment variables (see infra)
+--     - optional arguments  (--clean, etc)
+--     - explicit constructs infra  (ef default_dependencies, ...)
+-- General rule:
+--  an explicitly give argument always wins, over
+--  an environment variables, that wins over
+--  an setting in the settings file, that wins over
+--  a default value provided here.
+
 config = {
-  compile_sequence = {"pdf", "draft.html"},
+  ---   will be set infra --- compile_sequence = {"pdf", "draft.html"},
   -- compile_sequence = {"pdf", "make4ht.html", "handout.pdf"},
   -- compile_sequence = {"pdf", "sagetex.sage", "pdf", "html"},
   -- see infra --   default_dependencies = { "xmPreamble.tex" },     -- add here e.g. xmPreamble, ximera.cls, ...
@@ -159,42 +149,44 @@ config = {
       post_command = 'post_process_pdf',
       download_folder = 'ximera-downloads/handouts',
     },
-    -- 20241217: better use draft.html (this keeps logfiles etc from being overwritten ...)!
-    html = {
-      -- command = "make4ht -f html5+dvisvgm_hashes -c @{config_file} -sm draft @{filename}",
-      -- command = "make4ht -c @{config_file} -f html5+dvisvgm_hashes -s @{make4ht_mode} -a debug @{filename} 'svg,htex4ht,mathjax,-css,info,tikz+' '' '' '--interaction=nonstopmode -shell-escape -file-line-error'",
-      command = "make4ht -l -c @{config_file} -f html5+dvisvgm_hashes          -j @{basename}.make4ht -s @{make4ht_extraoptions} @{filename} 'svg,htex4ht,mathjax,-css,info,tikz+' '' '' '--interaction=nonstopmode -shell-escape -file-line-error'",
-      check_log = true, -- check log
-      status = 0, -- check that the latex command return 0
-      post_command = 'post_process_html',
-      extension = "html",
-      infix = "make4ht" ,
-    },
-    ["make4ht.html"] = {
-      command = "make4ht -l -c @{config_file} -f html5+dvisvgm_hashes          -j @{basename}.make4ht -s @{make4ht_extraoptions} @{filename} 'svg,htex4ht,mathjax,-css' '' '' '--interaction=nonstopmode -shell-escape -file-line-error'",
-      check_log = true, -- check log
-      status = 0, -- check that the latex command return 0
-      post_command = 'post_process_html',
-      extension = "html",
-      infix = "make4ht" ,
-    },
+    -- 20241217: no longet use "html", but eg draft.html (this keeps logfiles etc from being overwritten ...)!
     ["draft.html"] = {
-      command = "make4ht -l -c @{config_file} -f html5+dvisvgm_hashes -m draft -j @{basename}.draft -s @{make4ht_extraoptions} @{filename} 'svg,htex4ht,mathjax,-css' '' '' '--interaction=nonstopmode -shell-escape -file-line-error'",
+      command = "make4ht -l -c @{configfile} -f html5+dvisvgm_hashes -m draft -j @{basename}.draft -s @{make4ht_extraoptions} @{filename} 'svg,htex4ht,mathjax,-css' '' '' '--interaction=nonstopmode -shell-escape -file-line-error'",
       check_log = true, -- check log
       status = 0, -- check that the latex command return 0
       post_command = 'post_process_html',
       extension = "html",
       infix = "draft" ,
+    },    
+    -- alternatives, use at your own risk
+    ["make4ht.html"] = {
+      command = "make4ht -l -c @{configfile} -f html5+dvisvgm_hashes          -j @{basename}.make4ht -s @{make4ht_extraoptions} @{filename} 'svg,htex4ht,mathjax,-css' '' '' '--interaction=nonstopmode -shell-escape -file-line-error'",
+      check_log = true, -- check log
+      status = 0, -- check that the latex command return 0
+      post_command = 'post_process_html',
+      extension = "html",
+      infix = "make4ht" ,
     },
     -- test: use 'tikz+' option (FAILS for some tikzpictures, eg with shading/patterns)
     ["tikz.html"] = {
-      command = "make4ht -l -c @{config_file} -f html5+dvisvgm_hashes -m draft -j @{basename}.draft -s @{make4ht_extraoptions} @{filename} 'svg,htex4ht,mathjax,-css,tikz+' '' '' '--interaction=nonstopmode -shell-escape -file-line-error'",
+      command = "make4ht -l -c @{configfile} -f html5+dvisvgm_hashes -m draft -j @{basename}.draft -s @{make4ht_extraoptions} @{filename} 'svg,htex4ht,mathjax,-css,tikz+' '' '' '--interaction=nonstopmode -shell-escape -file-line-error'",
       check_log = true, -- check log
       status = 0, -- check that the latex command return 0
       post_command = 'post_process_html',
       extension = "html",
       infix = "draft" ,
     },
+    ["test.html"] = {
+      -- command = "make4ht -f html5+dvisvgm_hashes -c @{configfile} -sm draft @{filename}",
+      -- command = "make4ht -c @{configfile} -f html5+dvisvgm_hashes -s @{make4ht_mode} -a debug @{filename} 'svg,htex4ht,mathjax,-css,info,tikz+' '' '' '--interaction=nonstopmode -shell-escape -file-line-error'",
+      command = "make4ht -l -c @{configfile} -f html5+dvisvgm_hashes          -j @{basename}.make4ht -s @{make4ht_extraoptions} @{filename} 'svg,htex4ht,mathjax,-css,info,tikz+' '' '' '--interaction=nonstopmode -shell-escape -file-line-error'",
+      check_log = true, -- check log
+      status = 0, -- check that the latex command return 0
+      post_command = 'post_process_html',
+      extension = "html",
+      infix = "make4ht" ,
+    },
+
     -- sage not tested/implemented !!!!
     ["sagetex.sage"] = {
       command = "sage @{output_file}",
@@ -267,6 +259,70 @@ config = {
   -- dump_fileinfo = "aFirstXourse.tex",
 }
 
+
+
+-- first real argument is the command (bake/frost/serve/...)
+local command = table.remove(args, 1)
+
+if not command then
+  log:error("Usage: script [command] <files-or-folders...>")
+  os.exit(1)
+end
+
+log:debug("command: "..command)
+
+ 
+-- all further arguments are considered dirs/files to be processed
+local dirs = {}
+
+for i, value in ipairs(args) do
+    log:trace("Args: adding file/dir "..value)
+    table.insert(dirs, value)
+end
+
+if #dirs == 0 then
+  dirlist = os.getenv("XAKE_TO_PROCESS")  or "."
+  log:debugf("No files/directories given as argument, using default: %s", dirlist)
+  dirs = utils.split(dirlist,',')
+end
+
+-- Store all to_be_processed files/folders
+config.dirs = dirs
+
+
+if args.settingsfile ~= "none" then 
+  config.settingsfile   =  args.settingsfile     -- explicitly give as option
+else 
+  config.settingsfile   =  os.getenv("XAKE_SETTINGSFILE")   or "none"
+end
+
+-- Set/overwrite config 
+if config.settingsfile ~= "none" then
+  -- config file can be a Lua script, which should only set properties for the config table
+  local configlib = require "luaxake-config"
+  log:info("Using settings file: " .. config.settingsfile)
+  configlib.update_config(config.settingsfile, config)
+end
+
+config.check        = args.check        or os.getenv("XAKE_ONLY_CHECK")      or config.check
+config.noclean      = args.noclean      or os.getenv("XAKE_NOCLEAN")         or config.noclean
+config.force        = args.force        or os.getenv("XAKE_FORCE")           or config.force
+
+if args.configfile ~= "none" then 
+  config.configfile   =  args.configfile
+else 
+  config.configfile   =  os.getenv("XAKE_CONFIGFILE")   or "ximera.cfg"
+end
+
+if config.check   then log:info("Running only check") end
+if config.noclean then log:info("Running noclean")   end
+if config.force   then log:info("Running force")   end
+
+if config.configfile ~= "ximera.cfg" then
+  log:warning("Using non-default config file " .. config.configfile)
+end
+
+
 -- set/add potential default dependencies
 if not config.default_dependencies and path.exists("xmPreamble.tex") then
   log:info("Adding default dependency xmPreamble.tex")
@@ -274,25 +330,6 @@ if not config.default_dependencies and path.exists("xmPreamble.tex") then
 else
   config.default_dependencies = {}
 end
-
--- Store all args in config   (so that all args can also be specified in the config?)
-config.dirs = dirs
-if args.check   then config.check   = args.check end
-if args.noclean then config.noclean = args.noclean end
-if args.force   then config.force   = args.force end;
-
-config.config_file = args.config
-if config.config_file ~= "ximera.cfg" then
-  log:warning("Using non-default config file " .. config.config_file)
-end
-
-if args.settings ~= "none" then
-  -- config file can be a Lua script, which should only set properties for the config table
-  local configlib = require "luaxake-config"
-  log:info("Using settings file: " .. args.settings)
-  configlib.update_config(args.settings, config)
-end
-
 
 -- Function to get extensions for array of compilers
 local function get_extensions_for_compilers(tbl, kys)
@@ -318,8 +355,13 @@ local function get_infixes_for_compilers(tbl, kys)
   end
   return infixes
 end
+
 if args.compile ~= "none" then
   config.compile_sequence = utils.split(args.compile,',')
+else 
+  local compileseq = os.getenv("XAKE_COMPILE_SEQUENCE") or "pdf,draft.html"
+  config.compile_sequence = utils.split(compileseq,',')
+
 end
 
 for _, compiler in ipairs(config.compile_sequence) do
