@@ -1,4 +1,8 @@
 local M = {}
+local log = logging.new("config")
+local pretty = require("pl.pretty")
+local path = require("pl.path")
+
 -- load and run a script in the provided environment
 -- returns the modified environment table
 
@@ -10,6 +14,11 @@ local M = {}
 --- @return table env script environment table
 local function run_test_script(scriptfile, config)
   local env = setmetatable({}, {__index=config})
+  log:debugf("Loading settings %s",scriptfile)
+  if not path.isfile(scriptfile) then
+    log:errorf("File %s does not exists; SKIPPING LOADING SETTINGS",scriptfile)
+    return env
+  end
   assert(pcall(loadfile(scriptfile,"run_test_script",env)))
   setmetatable(env, nil)
   return env
@@ -26,6 +35,7 @@ local function merge(t1, t2)
     if (type(v) == "table") and (type(t1[k] or false) == "table") then
       merge(t1[k], t2[k])
     else
+      log:debugf("Setting key '%s' to value '%s'", tostring(k), pretty.write(v))
       t1[k] = v
     end
   end
