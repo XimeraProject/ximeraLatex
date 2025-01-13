@@ -298,9 +298,17 @@ reset_file_times() {
  else
   # all .tex files are recent, presumable just after a git clone. This would cause re-compile of everything
   # therefore: restore all modif-dates
-  echo "Resetting file times (this prevents some unneeded recompilations after a recent git checkout ...)"
+  echo "Resetting file modif times (this prevents some unneeded recompilations after a recent git checkout ...)"
+  
+  #
+  # Construct a git restore-mtime command with proper 'verbosity' (AND allow to overwrite everything by setting a GIT_RESTORE variable!)
+  # TODO: is -f really needed/wanted ...?
+  [[ -z "$GIT_RESTORE" && -n "$VERBOSE" ]] && GIT_RESTORE="git restore-mtime -f" 
+  [[ -z "$GIT_RESTORE" && -n "$DEBUG"   ]] && GIT_RESTORE="git restore-mtime -f -v" 
+  [[ -z "$GIT_RESTORE"                  ]] && GIT_RESTORE="git restore-mtime -f --quiet" 
+  
   # HACK: git-restore-time is not in (old) images: install it on-the-fly
-  git restore-mtime -f  || apt install git-restore-mtime && git restore-mtime -f && echo OK
+  $GIT_RESTORE || ( apt install git-restore-mtime && $GIT_RESTORE ) && debug "Restored modif-times from git"
   # git status   # in DETACHED HEAD in CI !!
   debug "Current .tex, .sty, .html and .pdf files):"
   [[ -n "$DEBUG" ]] && ls -al *.tex *.sty *.html *.pdf 2>/dev/null
@@ -311,64 +319,71 @@ reset_file_times() {
 
 xake_name() {
     # TODO: migrate to lua ...?
-    echo "Doing xake $COMMAND"
+    debug "Entering xake_name"
+
+  # Construct 'curl' and 'gpg' commands with proper 'verbosity' (AND allow to overwrite everything by setting a GIT_RESTORE variable!)
+
+  [[ -z "$CURL" && -n "$DEBUG"   ]] && CURL="curl -v" 
+  [[ -z "$CURL" && -n "$VERBOSE" ]] && CURL="curl" 
+  [[ -z "$CURL"                  ]] && CURL="curl --silent" 
+  
+  [[ -z "$GPG"  && -n "$DEBUG"   ]] && GPG="gpg -v" 
+  [[ -z "$GPG"  && -n "$VERBOSE" ]] && GPG="gpg " 
+  [[ -z "$GPG"                   ]] && GPG="gpg --quiet" 
+  
 
 
-        if [[ -n "$DEBUG" ]]
-        then
-            echo "git status:"
-            git status
-            echo "git tag -n:"
-            git tag -n
-            echo "git rev-parse --abbrev-ref --all:"
-            git rev-parse --abbrev-ref --all
-            echo "git remote -v:"
-            git remote -v
-        fi
+    if [[ -n "$DEBUG" ]]
+    then
+        echo "git status:"
+        git status
+        echo "git tag -n:"
+        git tag -n
+        echo "git rev-parse --abbrev-ref --all:"
+        git rev-parse --abbrev-ref --all
+        echo "git remote -v:"
+        git remote -v
+    fi
 
-    echo "Preparing serve (gpg stuff) ..."
+    debug "Setting up gpg stuff ..."
 
-    # If GPG_KEY_ID (and presumably GPG_KEY) are given, 
-    # ignore XM_KEYFILE, which probably should only be used for the DUMMY key ...
+    # If GPG_KEY_ID (and presumably GPG_KEY) are given, e.g. as Codespace/Action secrets 
+    # then ignore XM_KEYFILE (which probably should only be used for the DUMMY key ...)
     if [[ -z "$GPG_KEY_ID" ]]
     then
         if [[ -f "$XM_KEYFILE" ]]
         then
             echo "Using settings from $XM_KEYFILE"
             source $XM_KEYFILE
-	        echo GPG_KEY_ID=$GPG_KEY_ID
-	        echo GPG_KEY=${GPG_KEY:0:10}...
-            # : ${XIMERA_NAME:=$REPO_XIMERA}
-            # : ${XIMERA_URL:=$URL_XIMERA}
+	        echo "Using key_id $GPG_KEY_ID (with key ${GPG_KEY:0:5}...)"
         fi
-        if [[ -z "$GPG_KEY_ID" ]]   # still no key ...
-        then
-            error "No GPG_KEY_ID set; serving is not possible."
-        fi
+        [[ -z "$GPG_KEY_ID" ]]  &&  error "No GPG_KEY_ID set; serving will not be possible."     # still no key ...
     fi
-    debug "Loading GPG Key"
+
+    debug "Loading GPG private key (inside container)"
     if [[ -f "$GPG_KEY" ]]
     then
-        echo "Importing private key from GPG_KEY=$GPG_KEY"
+        echo "Importing private key from file GPG_KEY=$GPG_KEY"
         # First try import as 'binary' file, if this fails, try base64 decoded version...
-        if ! gpg -q $VERBOSE --import $GPG_KEY 
+        if ! $GPG --import $GPG_KEY 
         then
-            debug "Importing base64-encode private key from $GPG_KEY"
-            cat $GPG_KEY | base64 --decode > .gpg # decode the base64 gpg key
-            gpg -q $VERBOSE --import .gpg ||  error "gpg --import failed (from encoded key in file)"
+            debug "Importing base64-encoded private key from file $GPG_KEY"
+            cat $GPG_KEY | base64 --decode > .gpg || error "INVALID KEY FORMAT in file $GPG_KEY"         # decode the base64 gpg key
+            $GPG --import .gpg  ||  error "gpg --import failed (from encoded key in file)"
             rm .gpg # remove the gpg key so it is certainly not cached
         fi
     else 
-        echo  "Importing (encoded) private key from variable GPG_KEY"
-        echo "$GPG_KEY" | base64 --decode > .gpg # decode the base64 gpg key
+        echo "Importing (encoded) private key from variable GPG_KEY"
+        echo "$GPG_KEY" | base64 --decode > .gpg || error "INVALID KEY FORMAT in variable GPG_KEY=${GPG_KEY:0:5}..."    # decode the base64 gpg key
         debug "Decoded in .gpg: $(ls -al .gpg)"
         debug "Starting gpg -q $VERBOSE --import .gpg"
-        gpg -q $VERBOSE --import .gpg  || echo "gpg --import failed (from key itself in variable)"
+        $GPG --import .gpg  || echo "gpg --import failed (from key itself in variable)"
         rm .gpg # remove the gpg key so it is certainly not cached
     fi
-    [[ -n "$DEBUG" ]] && gpg --list-keys
+    [[ -n "$DEBUG" ]] && $GPG --list-keys
 
 
+    # The whole 'dummy' key thing could obsolete if genKey works properly ...?
     if [[ "$XIMERA_URL" =~ http://localhost ]]
     then
         # On localhost, don't care too much about consistency/security 
@@ -377,8 +392,6 @@ xake_name() {
         export XM_FROST_WITH_UNCOMMITTED_CHANGES=1
         export XM_PUBLISH_WITH_DUMMY_KEY=1
     fi
-
-
 
     if [[ "$GPG_KEY_ID" =~  ^215FC33FAB44D ]]
     then
@@ -389,81 +402,85 @@ xake_name() {
             error "I won't publish to $XIMERA_URL with a dummy GPG key." 
         fi 
     else
-	    debug "We're not using the dummy key, but ${GPG_KEY_ID:0:10}"
+	    debug "We're not using the dummy key, but ${GPG_KEY_ID:0:5}"
     fi
 
-    debug "KEYSERVER gpg $VERBOSE --keyserver $XIMERA_URL --send-key $GPG_KEY_ID"
-    gpg -q $VERBOSE --keyserver $XIMERA_URL --send-key "$GPG_KEY_ID" || echo "WARNING: gpg sendkey failed (to url $XIMERA_URL), which is no problem if this key is already there"
+    debug "Contacting KEYSERVER: $GPG --keyserver $XIMERA_URL --send-key $GPG_KEY_ID"
+    $GPG --keyserver $XIMERA_URL --send-key "$GPG_KEY_ID" || echo "WARNING: gpg sendkey failed (to url $XIMERA_URL). This is no problem if this key is already there."
     
     # echo "Doing xake NAME (on $XIMERA_URL set name to $XIMERA_NAME)"
     # debug "xake NAME: $XAKE -U $XIMERA_URL -k $GPG_KEY_ID name $XIMERA_NAME"
     # $XAKE -U $XIMERA_URL -k "$GPG_KEY_ID" name "$XIMERA_NAME" || error "xake name failed" 
 
 
-# ENCTOKEN="$(curl  ${XIMERA_URL}gpg/token/$GPG_KEY_ID)"
-echo "Contacting ${XIMERA_URL}gpg/token/$GPG_KEY_ID"
-TOKEN=$(curl  ${XIMERA_URL}gpg/token/$GPG_KEY_ID | gpg --decrypt)
+    # ENCTOKEN="$(curl  ${XIMERA_URL}gpg/token/$GPG_KEY_ID)"
+    echo "Getting gpg token from ${XIMERA_URL}gpg/token/$GPG_KEY_ID"
+    TOKEN=$($CURL ${XIMERA_URL}gpg/token/$GPG_KEY_ID | $GPG --decrypt)
 
 
-debug "Got $TOKEN"
-[[ -z "$TOKEN" ]] && error "Could not get initial token from $XIMERA_URL for $GPG_KEY_ID"
+    debug "Got token $TOKEN"
+    [[ -z "$TOKEN" ]] && error "Could not get initial token from $XIMERA_URL for $GPG_KEY_ID"
 
-# DECRYPTED_TOKEN=$(echo $TOKEN | gpg --decrypt)
-# echo "Got $DECRYPTED_TOKEN"
+    # DECRYPTED_TOKEN=$(echo $TOKEN | $GPG --decrypt)
+    # echo "Got $DECRYPTED_TOKEN"
 
-type hashcash >/dev/null || error "Executable 'hashcash' not available"
-type jq       >/dev/null || error "Executable 'jq' not available"
+    type hashcash >/dev/null || error "Executable 'hashcash' not available"
+    type jq       >/dev/null || error "Executable 'jq' not available"
 
-debug "Getting Temp key from  ${XIMERA_URL}$XIMERA_NAME.git"
-HASHCASH=$(hashcash -b 20 -qm $XIMERA_NAME.git)
-LKEYS=$(curl -s --data brol -H "X-Hashcash: $HASHCASH" -H "Authorization: Bearer $TOKEN" ${XIMERA_URL}$XIMERA_NAME.git)
-# openssl rand -hex 48 | gpg -e -a --always-trust --recipient 215FC33FAB44D5CCA31A04B2CC78CB561FDC49A8  | gpg --decrypt
+    debug "Getting a temporary key from  ${XIMERA_URL}$XIMERA_NAME.git"
+    HASHCASH=$(hashcash -b 20 -qm $XIMERA_NAME.git)
+    LKEYS=$($CURL --data brol -H "X-Hashcash: $HASHCASH" -H "Authorization: Bearer $TOKEN" ${XIMERA_URL}$XIMERA_NAME.git)
+    # openssl rand -hex 48 | $GPG -e -a --always-trust --recipient 215FC33FAB44D5CCA31A04B2CC78CB561FDC49A8  | $GPG --decrypt
 
-KEYS=$(echo $LKEYS | jq)
+    if [[ "$LKEYS" == "You do not own the repository." ]]
+    then
+        error "The repository $XIMERA_URL$XIMERA_NAME exists, but is not owned by you"
+    fi
 
-# eval $(echo $KEYS | jq -r 'to_entries | .[] | "export " + .key + "=" + @sh .value')
+    KEYS=$(echo $LKEYS | jq)
+    # eval $(echo $KEYS | jq -r 'to_entries | .[] | "export " + .key + "=" + @sh .value')
 
+    if [[ -z "$KEYS" ]]
+    then 
+       error "No keys received from $XIMERA_URL, the ximera server returned: $LKEYS"
+    fi
 
-if [[ -z "$KEYS" ]]
-then 
-   error "No keys received from $XIMERA_URL (got $LKEYS)"
-fi
+    export $(echo $KEYS | jq -r 'to_entries | map("\(.key | ascii_upcase)=\(.value)") | .[]')
 
-export $(echo $KEYS | jq -r 'to_entries | map("\(.key | ascii_upcase)=\(.value)") | .[]')
+    debug "keyid=$KEYID"
+    debug "token=$TOKEN"
 
-debug "keyid=$KEYID"
-debug "token=$TOKEN"
+    CURRENT_REMOTE=$(git remote get-url ximera)
+    if [[ -z "$CURRENT_REMOTE" ]]
+    then
+        echo "Adding ximera ${XIMERA_URL}$XIMERA_NAME.git as git remote"
+        git remote add ximera ${XIMERA_URL}$XIMERA_NAME.git
+    else
+        echo "Updating ximera ${XIMERA_URL}$XIMERA_NAME.git as git remote (was $CURRENT_REMOTE)"
+        git remote set-url ximera ${XIMERA_URL}$XIMERA_NAME.git
+    fi
 
-if ! git remote get-url ximera
-then
-    echo "Adding ximera ${XIMERA_URL}$XIMERA_NAME.git as git remote"
-    git remote add ximera ${XIMERA_URL}$XIMERA_NAME.git
-else
-    echo "Updating ximera ${XIMERA_URL}$XIMERA_NAME.git as git remote"
-    git remote set-url ximera ${XIMERA_URL}$XIMERA_NAME.git
-fi
+    [[ -n "$DEBUG" ]] && {
+        echo "CURRENT GIT CONFIG"
+        git config --local --get-all remote.ximera.url
+        git config --local --get-all http.$XIMERA_URL.extraHeader
+    }
 
-[[ -n "$DEBUG" ]] && {
-    echo "CURRENT GIT CONFIG"
-    git config --local --get-all remote.ximera.url
-    git config --local --get-all http.$XIMERA_URL.extraHeader
-}
+    # git config --local --unset remote.ximera.extraHeader 
+    # git config --local --add remote.ximera.extraHeader "Authorization: Bearer $TOKEN"
+    debug "Setting/updating extraHeader for $XIMERA_URL"
+    git config --local --unset http.$XIMERA_URL.extraHeader
+    git config --local --add   http.$XIMERA_URL.extraHeader "Authorization: Bearer $TOKEN"
 
-# git config --local --unset remote.ximera.extraHeader 
-# git config --local --add remote.ximera.extraHeader "Authorization: Bearer $TOKEN"
-debug "Setting/updating extraHeader for $XIMERA_URL"
-git config --local --unset http.$XIMERA_URL.extraHeader
-git config --local --add http.$XIMERA_URL.extraHeader "Authorization: Bearer $TOKEN"
+    [[ -n "$DEBUG" ]] && {
+        echo "NEW GIT CONFIG"
+        git config --local --get-all remote.ximera.url
+        git config --local --get-all http.$XIMERA_URL.extraHeader
+    }
 
-[[ -n "$DEBUG" ]] && {
-    echo "NEW GIT CONFIG"
-    git config --local --get-all remote.ximera.url
-    git config --local --get-all http.$XIMERA_URL.extraHeader
-}
-
-# set git name and email if not yet set (e.g. in vanilla docker container)
-git config  --get user.name  || { echo Setting git user.name; git config user.name "xmlatex Xake"; }
-git config  --get user.email || git config user.email "xmlatex@xakecontainer"
+    # set git name and email if not yet set (e.g. in vanilla docker container)
+    git config  --get user.name  || { echo Setting container-global git user.name;  git config --global user.name  'xmlatex Xake'; }
+    git config  --get user.email || { echo Setting container-global git user.email; git config --global user.email 'xmlatex@xakecontainer'; }
 
 }
 
@@ -490,57 +507,97 @@ then
     [[ -z "$YOUR_EMAIL" ]] && error "Please set YOUR_NAME and YOUR_EMAIL in config.txt"
     [[ -z "$YOUR_NAME" ]]  && error "Please set YOUR_NAME and YOUR_EMAIL in config.txt"
 
-    echo "Creating key fomr $KEY_UID" 
+
+    if [[ -f .keyconfig ]] then
+        echo "WARNING: Using existing .keyconfig" 
+    else
+        echo "Creating keyconfig for $KEY_UID" 
+        cat >.keyconfig <<EOF
+%no-protection
+Key-Type: RSA
+Key-Length: 4096
+Subkey-Type: RSA
+Subkey-Length: 4096
+Name-Real: $YOUR_NAME
+Name-Email: $YOUR_EMAIL
+Expire-Date: 1y    
+EOF
+    fi
+
     # Generate the key non-interactively
-    echo "" | gpg --batch --passphrase '' --quick-gen-key "$KEY_UID" rsa4096 default 1y 
+    echo "" | gpg --batch --passphrase '' --gen-key .keyconfig || error "Could not create a new private key" 
+
+    mv .keyconfig .keyconfig.bak || rm -f .keyconfig
 
     # Retrieve the fingerprint
-    FINGERPRINT=$(gpg --with-colons --list-keys "$YOUR_EMAIL" | grep '^fpr' | cut -d':' -f10)
+    # FINGERPRINT=$(gpg --with-colons --list-keys "$YOUR_EMAIL" | grep '^fpr' | cut -d':' -f10)
+    FINGERPRINT=$(gpg --fingerprint "$YOUR_EMAIL" | grep -A1 pub | tail -n1 | tr -d ' ')
 
-
+    [[ -z "$FINGERPRINT" ]] && error "Could not retreive FINGERPRINT for generated key"
+  
     # Output the fingerprint
     echo "Key generated successfully!"
     echo "Fingerprint: $FINGERPRINT"
 
-    PKEY=$(gpg --export-secret-keys -a "$YOUR_EMAIL" )
-    echo -e "PRIVATE KEY:\n $PKEY\n"
+    PKEY=$(gpg --export-secret-subkeys -a "$YOUR_EMAIL" | base64 )
+    echo -e "Private key (base64 encoded):\n\nGPG_KEY=\"\n$PKEY\n\"\n\n"
 
-    gpg --batch --yes --delete-secret-key "$FINGERPRINT"
-    gpg --batch --yes --delete-key "$FINGERPRINT"
+    IS_XMKEYFILE_IGNORED=$(git check-ignore -v .xmKeyFile)
 
-    echo "Immediately SAVE these values as 'Secrets' under your personal 'Settings -> Codespaces' in Github."
+    if [[ -z "$IS_XMKEYFILE_IGNORED" ]]
+    then
+        echo "You do NOT have a rule to gitignore a .xmKeyFile. I won't create one until you add a line '.XmKeyFile*' to your .gitignore file."
+        echo "Note: you don't necessarily want to use a .xmKeyFile: it's eg typically not useful in Codespaces."
+    elif [[ -f .xmKeyFile ]] then
+        echo "You do already have a .xmKeyFile. I will NOT overwrite it, so please remove the existing file if you want the key to be stored there"
+    else
+        echo "Creating a .xmKeyFile with the newly generated key. PLEASE NO NOT PUBLISH THIS KEY. Some of your students WILL find it if you do."
 
+        cat >.xmKeyFile <<EOF
+#
+# This file contains a private GPG key to publish Ximera courses.
+#
+#  These settings will be overwritten by existing environment variables GPG_KEY_ID and GPG_KEY
+#
+#   *** DO NEVER COMMIT THIS FILE ***
+#
+GPG_KEY_ID=$FINGERPRINT
+GPG_KEY="\\
+$PKEY
+"
+EOF
+    fi
+
+
+    # gpg --batch --yes --delete-secret-key "$FINGERPRINT"
+    # gpg --batch --yes --delete-key "$FINGERPRINT"
+
+    echo "Immediately SAVE these values in a SAFE location."
+    echo "This could be as 'Secrets' under your personal 'Settings -> Codespaces' in Github."
+    echo "           or as 'Secrets' under your personal 'Settings -> Actions' in Github."
+    echo ""
     echo "Add two secrets:"
     echo "GPG_KEY_ID  with value $FINGERPRINT"
-    echo "GPG_KEY     with value the private key that was printed above, between the -----BEGIN/END PGP PRIVATE KEY BLOCK----- lines"
+    echo 'GPG_KEY     with value the private key that was printed above, between the  GPG_KEY=" and " lines'
 
-    echo "You'll not be able to recover the keys from here. Better keep them somewhere save, thus NOT somewhere publicly available..."
-
+    echo "You'll not be able to recover the keys from here. Better keep them somewhere safe, thus NOT somewhere publicly available..."
 
     exit 0
 
 elif [[ "$COMMAND" == "copySettingsLocal" ]]
 then
     echo "Doing xake $COMMAND"
-    if [[  -d ".ximera" ]]
+    if [[  -d ".ximera_local" ]]
     then 
         echo "Please first (re)move the current .ximera folder"
     else
-        mkdir .ximera
-        echo "Copying ximeraLatex from docker image into .ximera folder"
-        cp  -r  /root/texmf/tex/latex/ximeraLatex/*  .ximera
+        mkdir .ximera_local
+        echo "Copying ximeraLatex from docker image into .ximera_local folder"
+        cp  -r  /root/texmf/tex/latex/ximeraLatex/*  .ximera_local
     fi
     
-    if [[  -d ".texmf/luaxake" ]]
-    then 
-        echo "Please first (re)move the current .texmf/luaxake folder"
-    else
-        mkdir -p .texmf/luaxake
-        echo "Copying luaxake from docker image into .texmf/luaxake folder"
-        cp  -r  /root/texmf/tex/latex/luaxake/*  .texmf/luaxake
-    fi
-    echo "Copying xmlatex from docker image into xmScripts/xmlatex.current"
-    cp  /usr/local/bin/xmlatex  ./xmScripts/xmlatex.current
+    echo "Copying xmlatex from docker image into xmScripts/xmlatex.fromimage.$(date +%Y%m%d)"
+    cp  /usr/local/bin/xmlatex  ./xmScripts/xmlatex.fromimage.$(date +%Y%m%d)
 
 elif [[ "$COMMAND" == "updateDevEnv" ]]
 then
@@ -642,34 +699,37 @@ then
     $*
 elif [[ "$COMMAND" == "name" ]]
 then
-    echo "Starting name (from bash script...)"
+    echo "Starting name (from bash script $0)"
     xake_name
+## TODO?:  get rid of these combinations, and put them in luaxake ... ?
 elif [[ "$COMMAND" == "all" ]]
 then
-    echo "Starting all"
+    echo "Starting all ((bake/name/frost/serve"
     shift
-    $LUAXAKE bake  $* || error "Exiting..." 
+    $LUAXAKE bake  $* || error "Problem with 'bake'; Exiting..." 
    
-    git remote show ximera 2>/dev/null || xake_name
+    # git remote show ximera 2>/dev/null || xake_name
+    
+    xake_name         || error "Problem with 'name'; Exiting ..."
 
-    $LUAXAKE frost $* || error "Exiting..."
-    $LUAXAKE serve $* || error "Exiting..."
+    $LUAXAKE frost $* || error "Problem with 'frost'; Exiting..."
+    $LUAXAKE serve $* || error "Problem with 'serve'; Exiting..."
 elif [[ "$COMMAND" == "ALL" ]]
 then
-    echo "Starting ALL (with force serving!)"
+    echo "Starting ALL ((bake/name/frost/serve, with *force* serving!)"
     shift
+
     $LUAXAKE bake  $* || error "Exiting..." 
    
-    git remote show ximera 2>/dev/null || xake_name
+    xake_name         || error "Problem with 'name'; Exiting ..."
 
     $LUAXAKE frost $* || error "Exiting..."
     $LUAXAKE serve -f $* || error "Exiting..."
 elif [[ "$COMMAND" == "Serve" ]]
 then
-    echo "Starting all"
+    echo "Starting Serve (name/frost/serve)"
     shift
     
-    # git remote show ximera 2>/dev/null || xake_name
     xake_name
 
     $LUAXAKE frost $* || error "Exiting..."
