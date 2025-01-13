@@ -127,17 +127,21 @@ end
 --- @param files? table retrieved files
 --- @return fileinfo[]
 local function get_files(dir)
-  --dir = dir:gsub("/$", "")    -- remove potential trailing '/'
-  dir = dir:gsub("^./", "")    -- remove potential leading './'     -- it confuses skippingb hidden .xxx files/folders
+  --dir = dir:gsub("/$", "")     -- remove potential trailing '/'
+  dir = dir:gsub("^.//*", "")    -- remove potential leading './'     -- it confuses skipping hidden .xxx files/folders
   dir = path.normpath(dir)
   local all_filenames = {}
 
   if path.isfile(dir)  then
     all_filenames = { dir }
     log:tracef("get_files: considering %s", dir)
-  else
+  elseif path.isdir(dir) then
     all_filenames = pl.dir.getallfiles(dir)
     log:tracef("get_files: considering %d files (for %s)", #all_filenames, dir)
+  else
+    all_filenames = { }
+    log:errorf("get_files %s: no such file or directory", dir)
+    return {}
   end
 
 
