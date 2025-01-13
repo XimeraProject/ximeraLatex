@@ -21,7 +21,7 @@
 #  - for serving, also (basefolder)/$XM_KEYFILE (default .xmKeyFile) will be read (for GPG key settings)
 #  - starts a xake docker container (unless we're already IN a container)
 #  - starts (presumably) a container-specific version of this very script
-#  - that (presumably) starts xake with the arguments passed to this script
+#  - that (presumably) starts (lua-)xake with the arguments passed to this script
 #  - optionally gets you a shell inside the container
 #  - optionally automates lots of other things
 #
@@ -42,8 +42,8 @@ fi
 # Set some defaults
 #
 # default docker image to run; overwrite with 'export XAKE_IMAGE=myxake:0.1'
-: "${XAKE_BASE:=xake2024}"
-: "${XAKE_VERSION:=v2.5}"
+: "${XAKE_BASE:=ximeralatex}"
+: "${XAKE_VERSION:=v2.5.2}"
 # : "${XAKE_BASE:=xake2019}"
 # : "${XAKE_VERSION:=v2.1.1}"
 : "${XAKE_CONTAINER:=$XAKE_BASE:$XAKE_VERSION}"
@@ -77,7 +77,7 @@ fi
 
 if [[ -f /.dockerenv ]]  
 then
-    echo "Running in docker container (with local hostname $HOSTNAME)"
+    [[ -n "$DEBUG" ]] && echo "Running in docker container (with local hostname $HOSTNAME)"
 elif [[ -n "$KUBERNETES_SERVICE_HOST" ]] 
 then
     echo "Running in kubernetes container ($KUBERNETES_SERVICE_HOST)"
