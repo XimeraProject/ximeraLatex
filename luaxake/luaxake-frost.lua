@@ -244,20 +244,21 @@ local function frost(tex_files, to_be_compiled_files)
     -- result, tag_oid = osExecute("git for-each-ref --sort=-creatordate --count=1 --format '%(refname:strip=2)' refs/tags/publications/*")
     
     local result, most_recent_publication = osExecute("git for-each-ref --sort=-creatordate --count=1 --format '%(tree) %(objectname) %(refname:strip=2)' refs/tags/publications/*")
-
+    
+    local tagtree_oid, tag_oid,tagName
     if not most_recent_publication or most_recent_publication == "" then
         log:info("No publication tag found")
     else
         log:debugf("Got publication: %s",most_recent_publication)
 
-        local tagtree_oid, tag_oid, tagName = most_recent_publication:match("([^%s]+) ([^%s]+) ([^%s]+)")
+        tagtree_oid, tag_oid, tagName = most_recent_publication:match("([^%s]+) ([^%s]+) ([^%s]+)")
 
         log:infof("Found %s  (tree:%s tag:%s) ", tagName, tagtree_oid, tag_oid)
     end
 
     if tagtree_oid and tagtree_oid == new_tree then
         log:statusf("Tag "..tagName.." already exists (for %s)",tag_oid)
-        return 0, 'OK'
+        return 0, 'Reusing '..tagName
     end
     
     -- Give a dummy account to push/commit if none is available
@@ -283,7 +284,7 @@ local function frost(tex_files, to_be_compiled_files)
         ret, output = osExecute("git update-ref refs/tags/"..tagName.." "..commit_oid)
     else
         --local tagName = "publications/"..os.date("%Y%m%d_%H%M%S")
-        local tagName = "publications/"..commit_oid
+        tagName = "publications/"..commit_oid
         log:statusf("Creating tag %s for %s", tagName, commit_oid)
         ret, output = osExecute("git tag "..tagName.." "..commit_oid)
         -- if ret > 0 then
@@ -291,6 +292,7 @@ local function frost(tex_files, to_be_compiled_files)
         -- end
     end
 
+    -- restore ownership of files: committing INSIDE a container creates files owned by root !
     local testfile = ".git"    -- file from which to get the original ownership; 
     local attributes = lfs.attributes(testfile)
 
@@ -304,7 +306,11 @@ local function frost(tex_files, to_be_compiled_files)
         ret, output = osExecute("chown -R " .. set_uidgid .. " .")
     end
 
-    return ret, output
+    if ret > 0 then    -- TODO: check/correct usage ret value(s)
+        return ret, output
+    else
+        return 0, "Created "..tagName
+    end
 end
 
 local function serve(force_serving)
@@ -336,7 +342,9 @@ local function serve(force_serving)
     local ret, output = osExecute("git push ximera "..tagName)
     if ret > 0 then
         log:tracef("Could not push to 'ximera' target: %s",output)
-        if force_serving then
+        if not force_serving then
+            return ret, output
+        else
             log:infof("Retrying push with more power (git push -f ...)")
             ret, output = osExecute("git push -f ximera "..tagName)
             if ret > 0 then
@@ -347,7 +355,9 @@ local function serve(force_serving)
     local ret, output =  osExecute("git push ximera "..tag_oid..":refs/heads/master")     -- HACK ???
     if ret > 0 then
         log:tracef("Could not push refs to 'ximera' target: %s",output)
-        if force_serving then
+        if not force_serving then
+            return ret,output
+        else
             log:infof("Retrying push with more power (git push -f ... refs )")
             ret, output = osExecute("git push -f ximera "..tag_oid..":refs/heads/master") 
             if ret > 0 then
@@ -357,8 +367,7 @@ local function serve(force_serving)
     end
     
     log:statusf("Published %s to     %s", tagName, remote_ximera)
-
-    return 0,'OK'
+    return 0, "Published  " .. tagName .. "to  " .. remote_ximera:gsub(".git","")
 end
 
 M.frost      = frost

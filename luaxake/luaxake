@@ -527,8 +527,10 @@ if command == "frost" then
   log:status("Start " .. command)
   local ret, msg = frost.frost(tex_files, to_be_compiled)
   if ret > 0 then
-    log:error("Frost failed:", msg)
+    log:error("Frost failed: " .. msg)
     os.exit(ret)
+  else 
+    log:statusf("Frost succeeded: " .. msg)
   end
 end
 
@@ -536,8 +538,10 @@ if command == "serve" then
   log:status("Start " .. command)
   local ret, msg = frost.serve(config.force)  
   if ret > 0 then
-    log:error("Serve failed:", msg)
+    log:error("Serve failed: " .. msg)
     os.exit(ret)
+  else 
+    log:statusf("Serve succeeded: " .. msg)
   end
 end
 
