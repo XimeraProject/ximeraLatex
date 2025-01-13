@@ -103,6 +103,12 @@ local function frost(tex_files, to_be_compiled_files)
         log:debugf("Getting output for %s (%s)", tex_file.absolute_path, tex_file.relative_path)
         needing_publication[#needing_publication + 1] = tex_file.relative_path
         
+        local css_file = tex_file.relative_path:gsub(".tex$",".css")
+        if path.exists(css_file) then
+            log:debugf("Added file-specific css file %s", css_file)
+            needing_publication[#needing_publication + 1] = css_file
+        end
+
         local html_files = {}
         if  tex_file.relative_path:match("_pdf.tex") or tex_file.relative_path:match("_beamer.tex")  then 
             log:tracef("No html output for _pdf or _beamer files: skipping %s", tex_file.relative_path)
@@ -151,6 +157,12 @@ local function frost(tex_files, to_be_compiled_files)
 
         end
     end
+
+    if path.exists("global.css") then
+        log:debugf("Added global.css file")
+        needing_publication[#needing_publication + 1] = "global.css"
+    end
+
 
     -- TODO: check/fix use of 'github'; check use of labels
     local xmmetadata={
@@ -278,6 +290,20 @@ local function frost(tex_files, to_be_compiled_files)
         --     log:errorf("Created tag %s for %s: %s", tagName, commit_oid, output)
         -- end
     end
+
+    local testfile = ".git"    -- file from which to get the original ownership; 
+    local attributes = lfs.attributes(testfile)
+
+    if not attributes then
+        log:warningf("Could not determine owner of .git folder....")
+    elseif attributes.uid == 0 then
+        log:warningf("BIZAR: .git folder owned by root ...? Skipping resetting ownership.")
+    else
+        local set_uidgid = attributes.uid ..":".. attributes.gid
+        log:debugf("Resetting ownership af all files to  uid:gid %s:%s", set_uidgid)
+        ret, output = osExecute("chown -R " .. set_uidgid .. " .")
+    end
+
     return ret, output
 end
 
