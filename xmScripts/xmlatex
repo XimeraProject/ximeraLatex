@@ -171,30 +171,6 @@ if [[ -f .ximera/sagetex.sty ]]; then
     cp .ximera/sagetex.sty /root/texmf/tex/latex/ximeraLatex/
 fi
 
-# NOT NEEDED ...?
-# [[ -d "/root/texmf/tex/generic" ]] || mkdir /root/texmf/tex/generic
-
-# # HACK (202410) : this is/has been is some ximeraLatex versions, until stable in CTAN/TeXLive
-# if [[ -f /root/texmf/tex/latex/ximeraLatex/pgfsys-dvisvgm4ht.def ]]; then
-#     echo "USING pgfsys-dvisvgm4ht.def from ximeraLatex in docker image"
-#     cp /root/texmf/tex/latex/ximeraLatex/pgfsys-dvisvgm4ht.def /root/texmf/tex/generic/
-# fi
-
-if [[ -f .ximera/pgfsys-dvisvgm4ht.def ]]; then
-    echo "USING pgfsys-dvisvgm4ht.def from local repo (OVERWRITE in ximeraLatex folder... !)"
-    cp .ximera/pgfsys-dvisvgm4ht.def /root/texmf/tex/latex/ximeraLatex/
-fi
-
-# Use a local xmlatex.full if available
-# Needed for call-xmlatex-from-xake, which DOES NOT use COMMAND/XMLATEX variable...
-# Deprecated .... (should become obsolete with new xake's ...)
-if [[ -f ./xmScripts/xmlatex.full ]]; then
-    echo "USING xmlatex.full from local repo"
-    [[ -n "$DEBUG" ]] && diff ./xmScripts/xmlatex.full /usr/local/bin/xmlatex
-    cp /usr/local/bin/xmlatex /usr/local/bin/xmlatex.$(date "+%F-%H-%M-%S")
-    cp ./xmScripts/xmlatex.full /usr/local/bin/xmlatex
-fi
-
 # Add anything that might not be installed in the container 
 if [[ -d .texmf ]]; then
     echo "USING .texmf etc from local repo"
@@ -233,6 +209,12 @@ export half_error_line=238
 # XIMERA_NAME determines the 'name' this repo is published to on the ximeraServer, ie the first part after the hostname
 #  By default the (official) git reponame, converted to lowercase and with dashed-replaced-by-underscores
 # Can be overwritten by ENV variable or in config.txt
+
+: "${REPO_ROOT:=$(git rev-parse --show-toplevel 2>/dev/null)}"
+
+# Inside a container, the directory from which xmlatex was started is mounted in /code:
+[[ -z "$REPO_ROOT" ]] && error "This script should only be started from the root folder of a Ximera repo"
+
 : "${XIMERA_NAME:=$(basename -s .git $(git config --get remote.origin.url) | tr '[:upper:]' '[:lower:]' | tr '-' '_')}"
 
 # : "${XIMERA_REPO:=test}"    # Obsolete (only used in gitlab pipelines)
@@ -245,13 +227,14 @@ while getopts ":hitvds" opt; do
   case ${opt} in
     h ) 
        cat <<EOF
-        Build and publish a ximera-repository to a ximera-server (via bake/frost/serve)
+    Build and publish a ximera-repository to a ximera-server (via bake/frost/serve)
 
-        Publishes to $XIMERA_URL$XIMERA_NAME 
+    Publishes to $XIMERA_URL$XIMERA_NAME 
 
-	This script is a (docker-)wrapper to 'luaxake', and contains some extra convenience-functions for building pdf's.
+    This script is a (docker-)wrapper to 'luaxake', and contains some extra convenience-functions.
+    Run 'xmlatex -- -h" to get the luaxake help. (The -- makes xmlatex pass all further argumets to luaxake!)
 	
-	Usage:
+    Usage:
         xmlatex bake path/to/file.tex
         xmlatex bake -l debug --compile pdf,html path/to/file.tex
         xmlatex clean
@@ -290,16 +273,15 @@ debug "COMMAND=$COMMAND"
 # After git clone, ALL files seem recent; try to reset them (to prevent baking all files all the time)
 #  (needed in gitlab CI/CD ...)
 reset_file_times() {
- if find . -maxdepth 1 -name "*.tex" -mtime +1 | grep . >/dev/null
+ if find . -maxdepth 2 -name "*.tex" -mmin +30 -print -quit | grep . >/dev/null
  then
-  # .tex files older then 1 day: presumably the git was not checked out just now,
-  # and modittimes are correct
-  debug "Skipping resetting file times"
+  # .tex files older then 30minutes: presumably the git was not checked out just now, and modiftimes are correct
+  debug "Skipping resetting file times (as there are old files this presumably is not just checked out)"
  else
-  # all .tex files are recent, presumable just after a git clone. This would cause re-compile of everything
+  # all .tex files are recent, presumable just after a git clone. 
+  # Even aftre a 'cache restore, this would cause re-compile of everything
   # therefore: restore all modif-dates
   echo "Resetting file modif times (this prevents some unneeded recompilations after a recent git checkout ...)"
-  
   #
   # Construct a git restore-mtime command with proper 'verbosity' (AND allow to overwrite everything by setting a GIT_RESTORE variable!)
   # TODO: is -f really needed/wanted ...?
@@ -307,10 +289,9 @@ reset_file_times() {
   [[ -z "$GIT_RESTORE" && -n "$DEBUG"   ]] && GIT_RESTORE="git restore-mtime -f -v" 
   [[ -z "$GIT_RESTORE"                  ]] && GIT_RESTORE="git restore-mtime -f --quiet" 
   
-  # HACK: git-restore-time is not in (old) images: install it on-the-fly
-  $GIT_RESTORE || ( apt install git-restore-mtime && $GIT_RESTORE ) && debug "Restored modif-times from git"
-  # git status   # in DETACHED HEAD in CI !!
-  debug "Current .tex, .sty, .html and .pdf files):"
+  $GIT_RESTORE && debug "Restored modif-times from git"
+
+  debug "Current .tex, .sty, .html and .pdf files in root):"
   [[ -n "$DEBUG" ]] && ls -al *.tex *.sty *.html *.pdf 2>/dev/null
  fi
 }
@@ -704,7 +685,7 @@ then
 ## TODO?:  get rid of these combinations, and put them in luaxake ... ?
 elif [[ "$COMMAND" == "all" ]]
 then
-    echo "Starting all ((bake/name/frost/serve"
+    echo "Starting all (bake/name/frost/serve)"
     shift
     $LUAXAKE bake  $* || error "Problem with 'bake'; Exiting..." 
    
@@ -716,7 +697,7 @@ then
     $LUAXAKE serve $* || error "Problem with 'serve'; Exiting..."
 elif [[ "$COMMAND" == "ALL" ]]
 then
-    echo "Starting ALL ((bake/name/frost/serve, with *force* serving!)"
+    echo "Starting ALL (bake/name/frost/serve, with *force* serving!)"
     shift
 
     $LUAXAKE bake  $* || error "Exiting..." 
