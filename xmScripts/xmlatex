@@ -185,7 +185,7 @@ if [[ -d .ximera_local ]]; then
     echo "USING .ximera_local from local repo"
     mv /root/texmf/tex/latex/ximeraLatex /root/ximeraLatex.ORI
     # mkdir /root/texmf/tex/latex/ximeraLatex
-    ln -s .ximera_local/ /root/texmf/tex/latex/ximeraLatex
+    ln -s /code/.ximera_local/ /root/texmf/tex/latex/ximeraLatex
 fi
 
 # [[ -n "$DEBUG" ]]  && ls -al /root/texmf/tex/latex/ximeraLatex/
@@ -358,7 +358,7 @@ xake_name() {
         echo "$GPG_KEY" | base64 --decode > .gpg || error "INVALID KEY FORMAT in variable GPG_KEY=${GPG_KEY:0:5}..."    # decode the base64 gpg key
         debug "Decoded in .gpg: $(ls -al .gpg)"
         debug "Starting gpg -q $VERBOSE --import .gpg"
-        $GPG --import .gpg  || echo "gpg --import failed (from key itself in variable)"
+        $GPG --import .gpg  || error "gpg --import failed (from key itself in variable)"
         rm .gpg # remove the gpg key so it is certainly not cached
     fi
     [[ -n "$DEBUG" ]] && $GPG --list-keys
@@ -715,7 +715,15 @@ then
 
     $LUAXAKE frost $* || error "Exiting..."
     $LUAXAKE serve $* || error "Exiting..."
+elif [[ "$COMMAND" == "ghaction" ]]
+then
+    echo "Starting Github-action build (name; bake/frost/serve)"
+    shift
+    
+    # Unfortunately, 'name' can not (yet?) be integrated into luaxake ...
+    git remote show ximera 2>&1 >/dev/null || xake_name
+
+    $LUAXAKE ghaction $* || error "Exiting..."
 else
     $LUAXAKE $*
 fi
-
