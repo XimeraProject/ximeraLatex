@@ -382,7 +382,7 @@ local function update_html_fileinfo(fileinfo, dom)
 
   -- if dom not passed, get it ...
   if not dom then
-    dom, msg = load_html(html_file)
+    dom, msg = load_html(fileinfo.absolute_path)
     if not dom then 
         log:tracef("No dom for %s (%s). SKIPPING", html_file, msg)
         return 1, "No dom loaded for " ..  html_file .. ": " .. msg 
