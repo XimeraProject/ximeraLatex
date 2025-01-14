@@ -43,7 +43,7 @@ fi
 #
 # default docker image to run; overwrite with 'export XAKE_IMAGE=myxake:0.1'
 : "${XAKE_BASE:=xake2024}"
-: "${XAKE_VERSION:=v2.5.1}"
+: "${XAKE_VERSION:=v2.5.5}"
 # : "${XAKE_BASE:=xake2019}"
 # : "${XAKE_VERSION:=v2.1.1}"
 : "${XAKE_CONTAINER:=$XAKE_BASE:$XAKE_VERSION}"
@@ -241,8 +241,12 @@ while getopts ":hitvds" opt; do
         xmlatex name
         xmlatex frost
         xmlatex serve 
-        xmlatex bash   (start a shell inside the container)
-	   
+
+        xmlatex bash              : start a shell inside the container
+        xmlatex genKey            : generate a new GPG key
+        xmlatex updateDevEnv      : get the most recent DevEnv setup from github
+        xmlatex copySettingsLocal : copy ximeraLatex into .ximera_local (for development/debugging-)
+   
 EOF
        exit 0
       ;;
@@ -570,7 +574,7 @@ then
     echo "Doing xake $COMMAND"
     if [[  -d ".ximera_local" ]]
     then 
-        echo "Please first (re)move the current .ximera folder"
+        echo "Please first (re)move the current .ximera_local folder"
     else
         mkdir .ximera_local
         echo "Copying ximeraLatex from docker image into .ximera_local folder"
@@ -579,6 +583,23 @@ then
     
     echo "Copying xmlatex from docker image into xmScripts/xmlatex.fromimage.$(date +%Y%m%d)"
     cp  /usr/local/bin/xmlatex  ./xmScripts/xmlatex.fromimage.$(date +%Y%m%d)
+
+    ## Use following line to skip the reset-git-fileowner-hack (e.g. in config.txt)
+    # export  XM_NO_RESET_GIT_FILEOWNER=1
+    if [[ -z "$XM_NO_RESET_GIT_FILEOWNER" ]]
+    then
+    # HACK: try to restore ownership of git files (might be set to root after git push in container ...)
+    # Get the owner and group of .git
+    owner_group=$(stat -c "%u:%g" ".git")
+
+    if [[ "$owner_group" != "0:0" ]]
+    then
+        # Change the ownership of all files in the current directory
+        debug "Changing ownership of copied files to $owner_group."
+        chown -R "$owner_group" .ximera_local xmScripts
+    fi
+
+    fi  # end reset-git-fileowner
 
 elif [[ "$COMMAND" == "updateDevEnv" ]]
 then

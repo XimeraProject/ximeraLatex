@@ -281,7 +281,7 @@ for i, value in ipairs(args) do
 end
 
 if #dirs == 0 then
-  dirlist = os.getenv("XAKE_TO_PROCESS")  or "."
+  dirlist = os.getenv("XM_TO_PROCESS")  or "."
   log:debugf("No files/directories given as argument, using default: %s", dirlist)
   dirs = utils.split(dirlist,',')
 end
@@ -293,7 +293,7 @@ config.dirs = dirs
 if args.settingsfile ~= "none" then 
   config.settingsfile   =  args.settingsfile     -- explicitly give as option
 else 
-  config.settingsfile   =  os.getenv("XAKE_SETTINGSFILE")   or "none"
+  config.settingsfile   =  os.getenv("XM_SETTINGSFILE")   or "none"
 end
 
 -- Set/overwrite config 
@@ -304,14 +304,14 @@ if config.settingsfile ~= "none" then
   configlib.update_config(config.settingsfile, config)
 end
 
-config.check        = args.check        or os.getenv("XAKE_ONLY_CHECK")      or config.check
-config.noclean      = args.noclean      or os.getenv("XAKE_NOCLEAN")         or config.noclean
-config.force        = args.force        or os.getenv("XAKE_FORCE")           or config.force
+config.check        = args.check        or os.getenv("XM_ONLY_CHECK")      or config.check
+config.noclean      = args.noclean      or os.getenv("XM_NOCLEAN")         or config.noclean
+config.force        = args.force        or os.getenv("XM_FORCE")           or config.force
 
 if args.configfile ~= "none" then 
   config.configfile   =  args.configfile
 else 
-  config.configfile   =  os.getenv("XAKE_CONFIGFILE")   or "ximera.cfg"
+  config.configfile   =  os.getenv("XM_CONFIGFILE")   or "ximera.cfg"
 end
 
 if config.check   then log:info("Running only check") end
@@ -359,7 +359,7 @@ end
 if args.compile ~= "none" then
   config.compile_sequence = utils.split(args.compile,',')
 else 
-  local compileseq = os.getenv("XAKE_COMPILE_SEQUENCE") or "pdf,draft.html"
+  local compileseq = os.getenv("XM_COMPILE_SEQUENCE") or "pdf,draft.html"
   config.compile_sequence = utils.split(compileseq,',')
 
 end
