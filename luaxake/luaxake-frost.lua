@@ -302,7 +302,7 @@ local function frost(tex_files, to_be_compiled_files)
         log:warningf("BIZAR: .git folder owned by root ...? Skipping resetting ownership.")
     else
         local set_uidgid = attributes.uid ..":".. attributes.gid
-        log:debugf("Resetting ownership af all files to  uid:gid %s:%s", set_uidgid)
+        log:debugf("Resetting ownership af all files to  uid:gid %s", set_uidgid)
         ret, output = osExecute("chown -R " .. set_uidgid .. " .")
     end
 
