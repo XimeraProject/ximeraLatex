@@ -487,7 +487,7 @@ local function post_process_html(src, file, cmd_meta, root_dir)
     local function filter_newcommands(text)
       local result = {}
       for line in text:gmatch("[^\r\n]+") do
-        if line:match("^\\newcommand") or line:match("^\\DeclareMathOperator") then
+        if line:match("^\\newcommand") or line:match("^\\DeclareMathOperator") or line:match("^\\newenvironment") then
             table.insert(result, line)
         end
       end
