@@ -624,6 +624,7 @@ then
 
 
     debug "Extracting $DEVENV_TGZFILE"
+    # BADBAD: this also overwrites ownership of . ?
     tar -xzvf "$DEVENV_TGZFILE"
 
 
@@ -639,7 +640,8 @@ then
     then
         # Change the ownership of all files in the current directory
         debug "Changing ownership of extracted files to $owner_group."
-        chown -R "$owner_group" .vscode .devcontainer .gitignore xmScripts
+        # chown -R "$owner_group" .vscode .devcontainer .gitignore xmScripts
+        chown -R "$owner_group" .
     fi
 
     fi  # end reset-git-fileowner
