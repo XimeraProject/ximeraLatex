@@ -18,7 +18,8 @@ RUN dpkg -i hashcash_1.22-1_amd64.deb
 
 
 # Extra packages (on top of 'medium')
-RUN tlmgr install \
+RUN tlmgr update --self; \ 
+    tlmgr install \
         # afterpage \
         amsmath \
         # amssymb \
@@ -40,6 +41,7 @@ RUN tlmgr install \
         enumitem \
         environ \
         epstopdf \
+        esint \
         eurosym \
         # extramarks \
         fancyhdr \
@@ -67,10 +69,12 @@ RUN tlmgr install \
         # nameref \
         pdflscape \
         pgfplots \
+        polynom \
         qrcode \
         relsize \
         # sagetex \
         silence \
+        signchart \
         siunitx \
         tabto-ltx \
         # tabularx \
@@ -95,6 +99,7 @@ RUN tlmgr install \
         doclicense \
         simplekv fmtcount pdfcol \
         tikzfill \
+        tkz-tab \
         csquotes \
         babel-dutch \
         microtype \
