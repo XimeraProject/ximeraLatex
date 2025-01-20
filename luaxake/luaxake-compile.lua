@@ -286,6 +286,10 @@ local function compile(file, compilers, compile_sequence, only_check)
     ::uptonextcompilation::
   end
 
+  -- Update 'needs_compilation' ... (BADBAD: should probably be done in a better way ...)
+  file.status_updated = false
+  files.update_output_files(file, compile_sequence, compilers)
+
   files.dump_fileinfo(file)     -- only for debugging
 
   return statuses

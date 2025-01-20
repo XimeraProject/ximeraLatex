@@ -522,6 +522,7 @@ function get_tex_files_with_status(dir, output_formats, compilers)
 end
 
 M.get_tex_files_with_status = get_tex_files_with_status
+M.update_output_files =  update_output_files
 M.sort_dependencies = sort_dependencies
 M.get_fileinfo  = get_fileinfo
 M.dump_fileinfo = dump_fileinfo

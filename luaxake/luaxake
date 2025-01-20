@@ -356,6 +356,20 @@ local function get_infixes_for_compilers(tbl, kys)
   return infixes
 end
 
+
+-- shope adhoc 'shortcuts', mainly because used in .vscode/tasks.json ...
+if command == "compilePdf" then
+  log:info("Compile only PDF")
+  config.compile_sequence = { "pdf" }
+  config.output_formats   = get_extensions_for_compilers(config.compilers, config.compile_sequence)
+end
+if command == "compile" then
+  log:info("Compile only HTML")
+  config.compile_sequence = { "draft.html" }
+  config.output_formats   = get_extensions_for_compilers(config.compilers, config.compile_sequence)
+end
+
+
 if args.compile ~= "none" then
   config.compile_sequence = utils.split(args.compile,',')
 else 
@@ -556,16 +570,6 @@ end
   -- TODO: fix commands (cfr xmlatex/xmlatex/lua)
 if command == "bake" or command == "compilePdf" or command ==  "compile" then
   log:status("Start "..command)
-  if command == "compilePdf" then
-    log:info("Compile only PDF")
-    config.compile_sequence = { "pdf" }
-    config.output_formats   = get_extensions_for_compilers(config.compilers, config.compile_sequence)
-  end
-  if command == "compile" then
-    log:info("Compile only HTML")
-    config.compile_sequence = { "draft.html" }
-    config.output_formats   = get_extensions_for_compilers(config.compilers, config.compile_sequence)
-  end
 
   local ret, msg
   if #to_be_compiled == 0 then
@@ -605,15 +609,39 @@ if command == "serve" then
 end
 
 if command == "ghaction" then
-  log:status("Start bake")
-  local ret, msg = bake(to_be_compiled)
-  if ret > 0 then
-    log:error("Bake failed: " .. msg)
-    log:warning("But, I'll continue, and hope for the best")
-    -- os.exit(ret)   
-  else 
-    log:statusf("Bake succeeded: " .. msg)
+
+  local ret, msg
+  if #to_be_compiled == 0 then
+    log:status("Nothing to be baked")
+    msg={}
+  else
+    log:status("Start bake")
+    ret, msg = bake(to_be_compiled)
+    
+    if ret > 0 then
+      log:error("Bake failed: " .. msg)
+      log:warning("But, I'll continue, and hope for the best")
+      -- os.exit(ret)   
+    else 
+      log:statusf("Bake succeeded: %d", #msg)
+    end
+  end  
+
+  -- Hack: update to_be_compiled for usage in frost (uncompiled files might/should genetate a warning or error ...) 
+  local still_to_be_compiled = {}
+  for _, lfile in ipairs(to_be_compiled) do
+     if lfile.needs_compilation then
+      log:infof("Mm, file %s still needs compilation.", lfile.relative_path)
+      table.insert(still_to_be_compiled, lfile)
+     end
   end
+      
+  if #still_to_be_compiled > 0 then
+    log:infof("Still %d files to be compiled after bake.", #still_to_be_compiled)
+  end
+  to_be_compiled = still_to_be_compiled
+  -- end-of-hack to_be_compiled
+
   log:status("Start frost")
   local ret, msg = frost.frost(tex_files, to_be_compiled)
   if ret > 0 then
