@@ -361,8 +361,14 @@ xake_name() {
         echo "Importing (encoded) private key from variable GPG_KEY"
         echo "$GPG_KEY" | base64 --decode > .gpg || error "INVALID KEY FORMAT in variable GPG_KEY=${GPG_KEY:0:5}..."    # decode the base64 gpg key
         debug "Decoded in .gpg: $(ls -al .gpg)"
-        debug "Starting gpg -q $VERBOSE --import .gpg"
-        $GPG --import .gpg  || error "gpg --import failed (from key itself in variable)"
+        debug "Starting $GPG --import .gpg"
+        # 2025-01: 2>/dev/null due to strange warning gpg: To migrate 'secring.gpg', with each smartcard, run: gpg --card-status
+        if [[ -z "$DEBUG" ]]
+        then
+            $GPG --import .gpg  2>/dev/null || { rm -f .gpg;  error "gpg --import failed (from key itself in variable)"; }
+        else
+            $GPG --import .gpg              || { rm -f .gpg;  error "gpg --import failed (from key itself in variable)"; }
+        fi
         rm .gpg # remove the gpg key so it is certainly not cached
     fi
     [[ -n "$DEBUG" ]] && $GPG --list-keys
@@ -399,7 +405,7 @@ xake_name() {
 
 
     # ENCTOKEN="$(curl  ${XIMERA_URL}gpg/token/$GPG_KEY_ID)"
-    echo "Getting gpg token from ${XIMERA_URL}gpg/token/$GPG_KEY_ID"
+    debug "Getting gpg token from ${XIMERA_URL}gpg/token/$GPG_KEY_ID"
     TOKEN=$($CURL ${XIMERA_URL}gpg/token/$GPG_KEY_ID | $GPG --decrypt)
 
 
@@ -435,15 +441,17 @@ xake_name() {
     debug "keyid=$KEYID"
     debug "token=$TOKEN"
 
-    CURRENT_REMOTE=$(git remote get-url ximera)
+    CURRENT_REMOTE=$(git remote get-url ximera 2>/dev/null)
     if [[ -z "$CURRENT_REMOTE" ]]
     then
-        echo "Adding ximera ${XIMERA_URL}$XIMERA_NAME.git as git remote"
+        debug "Adding ximera ${XIMERA_URL}$XIMERA_NAME.git as git remote"
         git remote add ximera ${XIMERA_URL}$XIMERA_NAME.git
     else
-        echo "Updating ximera ${XIMERA_URL}$XIMERA_NAME.git as git remote (was $CURRENT_REMOTE)"
+        debug "Updating ximera ${XIMERA_URL}$XIMERA_NAME.git as git remote (was $CURRENT_REMOTE)"
         git remote set-url ximera ${XIMERA_URL}$XIMERA_NAME.git
     fi
+
+    echo "Set remote ximera to $(git config --local --get-all remote.ximera.url)"
 
     [[ -n "$DEBUG" ]] && {
         echo "CURRENT GIT CONFIG"
@@ -464,8 +472,11 @@ xake_name() {
     }
 
     # set git name and email if not yet set (e.g. in vanilla docker container)
-    git config  --get user.name  || { echo Setting container-global git user.name;  git config --global user.name  'xmlatex Xake'; }
-    git config  --get user.email || { echo Setting container-global git user.email; git config --global user.email 'xmlatex@xakecontainer'; }
+    debug "Checking git user.name and user.email  (as used by frost)"
+    git config  --get user.name  >/dev/null || { debug Setting container-global git user.name  to dummy value; git config --global user.name  'xmlatex Xake'; }
+    git config  --get user.email >/dev/null || { debug Setting container-global git user.email to dummy value; git config --global user.email 'xmlatex@xakecontainer'; }
+
+    echo "Using git user.email=$(git config --get user.email)"
 
 }
 
@@ -624,7 +635,6 @@ then
 
 
     debug "Extracting $DEVENV_TGZFILE"
-    # BADBAD: this also overwrites ownership of . ?
     tar -xzvf "$DEVENV_TGZFILE"
 
 
@@ -640,8 +650,7 @@ then
     then
         # Change the ownership of all files in the current directory
         debug "Changing ownership of extracted files to $owner_group."
-        # chown -R "$owner_group" .vscode .devcontainer .gitignore xmScripts
-        chown -R "$owner_group" .
+        chown -R "$owner_group" .vscode .devcontainer .gitignore xmScripts
     fi
 
     fi  # end reset-git-fileowner
