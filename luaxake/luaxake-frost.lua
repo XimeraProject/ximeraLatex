@@ -25,13 +25,13 @@ local function save_as_json(xmmetadata)
   
   
 
-local function osExecute(cmd)
+local function osExecute(cmd, no_warnings)
     log:debug("Exec: "..cmd)
     local fileHandle = assert(io.popen(cmd .. " 2>&1", 'r'))
     local commandOutput = assert(fileHandle:read('*a'))
     local returnCode = fileHandle:close() and 0 or 1
     commandOutput = string.gsub(commandOutput, "\n$", "")
-    if returnCode > 0 then
+    if returnCode > 0 and not no_warnings then
         log:warningf("Command %s returns %d: %s", cmd, returnCode, commandOutput)
     end
     log:trace("returns "..returnCode..": "..commandOutput..".")
@@ -339,7 +339,8 @@ local function serve(force_serving)
 
     log:debugf("Publishing  %s  (tree:%s tag:%s) ", tagName, tree_oid, tag_oid)
     
-    local ret, output = osExecute("git push ximera "..tagName)
+    --  do not warn-on-error
+    local ret, output = osExecute("git push ximera "..tagName, true)
     if ret > 0 then
         log:tracef("Could not push to 'ximera' target: %s",output)
         if not force_serving then
@@ -352,13 +353,13 @@ local function serve(force_serving)
             end
         end
     end
-    local ret, output =  osExecute("git push ximera "..tag_oid..":refs/heads/master")     -- HACK ???
+    local ret, output =  osExecute("git push ximera "..tag_oid..":refs/heads/master", true)     -- HACK ???
     if ret > 0 then
         log:tracef("Could not push refs to 'ximera' target: %s",output)
         if not force_serving then
             return ret,output
         else
-            log:infof("Retrying push with more power (git push -f ... refs )")
+            log:infof("Retrying push with more power (git push -f ximera  "..tag_oid..":refs/heads/master)")
             ret, output = osExecute("git push -f ximera "..tag_oid..":refs/heads/master") 
             if ret > 0 then
                 return ret,output
@@ -366,7 +367,7 @@ local function serve(force_serving)
         end
     end
     
-    log:statusf("Published %s to     %s", tagName, remote_ximera)
+    log:debugf("Published %s to     %s", tagName, remote_ximera)
     return 0, "Published  " .. tagName .. "to  " .. remote_ximera:gsub(".git","")
 end
 
