@@ -63,10 +63,10 @@ end
 --- get absolute and relative file path, as well as other file metadata
 --- @param input_path string filename
 --- @return fileinfo
-local function get_fileinfo(input_path)
+local function get_fileinfo(input_path, use_no_cache)
 
   -- caching
-  if GLOB_files[input_path] then
+  if not use_no_cache and GLOB_files[input_path] then
     log:tracef("Getting cached fileinfo for %s", input_path)
     return GLOB_files[input_path]
   end
@@ -358,7 +358,7 @@ local function update_output_files(metadata, extensions, compilers)
   metadata.output_files_needed = {}
   local needs_compilation = false
   for _, extension in ipairs(extensions) do
-    local out_file = get_fileinfo(metadata.relative_path:gsub("tex$", extension))
+    local out_file = get_fileinfo(metadata.relative_path:gsub("tex$", extension), true)   -- do not use cached info
     -- detect if the HTML file needs recompilation
     local status = needs_compiling(metadata, out_file)
 
@@ -375,28 +375,21 @@ local function update_output_files(metadata, extensions, compilers)
     
     needs_compilation = needs_compilation or status
     
-    log:debugf("Marked output %-12s %-18s for  %s",extension,  status and 'NEEDS_COMPILATIONS' or 'NO_COMPILATION', out_file.relative_path)
+    log:debugf("Marked output %-12s %-18s for %s",extension,  status and 'NEEDS_COMPILATIONS' or 'NO_COMPILATION', out_file.relative_path)
     
     -- output_files[#output_files+1] = out_file
     metadata.output_files_needed[out_file.relative_path]  = out_file
   end
   metadata.needs_compilation = needs_compilation
+
+  log:infof( "Marked source %-12s %-18s for %s", metadata.extension, needs_compilation and 'NEEDS_COMPILATIONS' or 'NO_COMPILATION', metadata.relative_path)
+
   if metadata.tex_documentclass == "ximera" or metadata.tex_documentclass == "xourse"
   then
     metadata.config_file = config.config_file
   end
 
-  -- SKIPP finding config-file
-  --  -- try to find the TeX4ht .cfg file
-  --  -- to speed things up, we will find it only for files that needs a compilation
-  --  if metadata.needs_compilation then
-  --    -- search in the current work dir first, then in  the directory of the TeX file, and project root
-  --    -- TODO: check use of 'config.dir' !!!
-  --    -- metadata.config_file = find_config(config.config_file, {lfs.currentdir(), metadata.absolute_dir, abspath(dir)})
-  --    metadata.config_file = find_config(config.config_file, {lfs.currentdir(), metadata.absolute_dir, abspath(dir or ".")})
-  --    if metadata.config_file ~= config.config_file then log:debug("Use config file: " .. metadata.config_file) end
-  --   
-  --  end
+  -- removed finding config-file
 
 end
 
@@ -484,11 +477,7 @@ function update_status_tex_file(metadata, output_formats, compilers)
     else
         -- check for the need compilation
       update_output_files(metadata, output_formats, compilers)
-
       -- 20250109: SKIPPED finding config_file; now set above in update_output_files
-      
-      log:infof( "Marked source %-12s %-18s for %s", metadata.extension, metadata.needs_compilation and 'NEEDS_COMPILATIONS' or 'NO_COMPILATION', metadata.relative_path)
-
     end
 
     metadata.status_updated = true   -- prevent reprocessing (e.g. for preambles ...)

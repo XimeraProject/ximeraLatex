@@ -554,7 +554,7 @@ function bake(to_be_compiled)
   -- all compilations done; process/summarize errors
   --
   if tablex.size(failed_files) == 0 then
-    log:statusf("Baked %d files, no errors found", #to_be_compiled)
+    -- log:statusf("Baked %d files, no errors found", #to_be_compiled)
     return 0,  string.format("Baked %d files, no errors found", #to_be_compiled)
   else
     log:warningf("Baked %d files, but %d compilation%s failed", #to_be_compiled, tablex.size(failed_files), tablex.size(failed_files) == 1 and "" or "s")
@@ -562,7 +562,7 @@ function bake(to_be_compiled)
     for filename, errs in pairs(failed_files) do
           log:errorf("See logfile %s for %d errors", filename, errs)
     end
-    log:statusf("Baking resulted in %d errors", tablex.size(failed_files) )
+    -- log:statusf("Baking resulted in %d errors", tablex.size(failed_files) )
     return 1, string.format("Baking resulted in %d errors", tablex.size(failed_files) )
   end
 end
@@ -623,7 +623,7 @@ if command == "ghaction" then
       log:warning("But, I'll continue, and hope for the best")
       -- os.exit(ret)   
     else 
-      log:statusf("Bake succeeded: %d", #msg)
+      log:statusf("Bake succeeded: " .. msg)
     end
   end  
 
@@ -631,7 +631,7 @@ if command == "ghaction" then
   local still_to_be_compiled = {}
   for _, lfile in ipairs(to_be_compiled) do
      if lfile.needs_compilation then
-      log:infof("Mm, file %s still needs compilation.", lfile.relative_path)
+      log:infof("Mmm, file %s still needs compilation.", lfile.relative_path)
       table.insert(still_to_be_compiled, lfile)
      end
   end
