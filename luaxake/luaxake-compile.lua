@@ -70,7 +70,7 @@ end
 --- @param compilers [compiler] list of compilers
 --- @param compile_sequence table sequence of keys from the compilers table to be executed
 --- @return [compile_info] statuses information from the commands
-local function compile(file, compilers, compile_sequence, only_check)
+local function compile(file, compilers, compile_sequence, output_formats, only_check)
   only_check = only_check or false
 
   if not file.output_files_made then file.output_files_made = {} end
@@ -127,7 +127,7 @@ local function compile(file, compilers, compile_sequence, only_check)
     --   !!! CHDIR  might confuse all relative paths !!!!
     --
     local current_dir = lfs.currentdir()
-    log:tracef("Changing directory to %s (for actual compilations, from %s)",file.absolute_dir,current_dir)
+    log:tracef("chdir from %s to %s (for actual compilation of %s)",current_dir, file.absolute_dir, file.filename:gsub("tex$", extension))
     lfs.chdir(file.absolute_dir)
 
     -- Construct the expected names of the generated output and logfiles
@@ -143,11 +143,11 @@ local function compile(file, compilers, compile_sequence, only_check)
     -- sometimes compiler wants to check for the output file (like for sagetex.sage),
     if command_metadata.check_file and not path.exists(output_file) then
       log:debugf("Skipping compilation because of 'check_file', and file %s does not exist",output_file)
-      goto uptonextcompilation  -- nice: a goto-statement !!!
+      goto uptonextcompilation  -- TODO: CHECK (for sagetex.sage ...)
     end
     
-    if not output_file.needs_compilation then
-      log:debugf("Mmm, compiling file %s which seemed to be uptodate.",output_file)
+    if output_file.exists and not output_file.needs_compilation then
+      log:debugf("Mmm, compiling file %s which was registered as not needing compilation.",output_file)
     end
 
       -- replace placeholders like @{filename} with the corresponding keys (from the metadata table, or config)
@@ -178,7 +178,7 @@ local function compile(file, compilers, compile_sequence, only_check)
         local end_time = socket.gettime()
         compilation_time = end_time - start_time
 
-        log:debugf("Compilation of %s for %s ended: returns %d (expected %d) after %3f seconds", extension, file.relative_path, status, command_metadata.status,compilation_time)
+        log:debugf("Compilation of %s for %s ended: returns %d (expected %d) after %.3f seconds", extension, file.relative_path, status, command_metadata.status,compilation_time)
       end
 
       --- @class compile_info
@@ -255,6 +255,9 @@ local function compile(file, compilers, compile_sequence, only_check)
         then
           log:infof("Retrying compilation for %s", file.relative_path)
           first_try = false
+          -- BADBAD: there will be another chdir
+          lfs.chdir(current_dir)
+          log:tracef("chdir back to %s (for retry compilation)", current_dir)
           goto another_try
         elseif extension == "draft.html" and msg:match("RETRY_COMPILATION") then
           log:warningf("Retrying did not solve the problem for %s", file.relative_path)
@@ -270,7 +273,10 @@ local function compile(file, compilers, compile_sequence, only_check)
 
     if final_output_file then
       log:debugf("Adding outputfile %s to %s ", final_output_file, file.relative_path)
-      file.output_files_made[final_output_file] = files.get_fileinfo(final_output_file)     -- never used?
+      -- BADBAD: a terrible mess: get_fileinfo only works from the 'root folder' ...
+      lfs.chdir(current_dir)
+      file.output_files_made[final_output_file] = files.get_fileinfo(final_output_file, true)     -- never used?
+      lfs.chdir(file.absolute_dir)
       -- require 'pl.pretty'.dump(file)
     end
       
@@ -281,13 +287,13 @@ local function compile(file, compilers, compile_sequence, only_check)
     log:infof("Compilation of %s took %.1f seconds (%s: %.20s)", output_file, compilation_time, final_output_file, file.title or "") -- eg for pdf there is no file.title
     
     lfs.chdir(current_dir)
-
     log:tracef("Ended compilation %s, chdir back to %s", extension, current_dir)
+
     ::uptonextcompilation::
   end
 
   -- Update 'needs_compilation' ... (BADBAD: should probably be done in a better way ...)
-  files.update_output_files(file, compile_sequence, compilers)
+  files.update_output_files(file, output_formats)
   log:infof("Updated status of %s:%s uptodate", file.relative_path, file.needs_compilation and ' NOT' or '' )
 
   files.dump_fileinfo(file)     -- only for debugging

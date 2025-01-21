@@ -44,7 +44,8 @@ local function get_output_files(file, extension)
         log:tracef("Getting  %-14s entry: %s ", file.extension, entry.absolute_path)
 
         if entry.extension == extension then --and entry.info.type == targetType then
-            if extension == "make4ht.html" then
+
+            if extension == "make4ht.html" then    -- 20250121: does never occur ???
                 local file = files.get_fileinfo(entry.relative_dir .."/" .. entry.basenameshort..".html")
                 -- require 'pl.pretty'.dump(entry)
                 -- require 'pl.pretty'.dump(file)
@@ -101,22 +102,28 @@ local function frost(tex_files, to_be_compiled_files)
     local tex_xourses = {}
     for i, tex_file in ipairs(tex_files) do
         log:debugf("Getting output for %s (%s)", tex_file.absolute_path, tex_file.relative_path)
+        -- add the .tex file itself (might not always be needed/wanted... ? It typically shows all solutions ...)
         needing_publication[#needing_publication + 1] = tex_file.relative_path
         
+        -- note: .pdf's are added through ximera-downloads for now ... !
+
+        -- add a .css if present
         local css_file = tex_file.relative_path:gsub(".tex$",".css")
         if path.exists(css_file) then
             log:debugf("Added file-specific css file %s", css_file)
             needing_publication[#needing_publication + 1] = css_file
         end
 
-        local html_files = {}
+        -- add the .html
+        local html_file 
         if  tex_file.relative_path:match("_pdf.tex") or tex_file.relative_path:match("_beamer.tex")  then 
             log:tracef("No html output for _pdf or _beamer files: skipping %s", tex_file.relative_path)
         else
-            html_files = get_output_files(tex_file, "html")
-        end
+          if not tex_file.output_files_needed then
+                log:debugf("No output_files_needed for %s, and thus no HTML",tex_file.relative_path)
+          else
+            html_file = tex_file.output_files_needed.html
         
-        for i,html_file in ipairs(html_files) do
             log:debugf("Processing %s", html_file.relative_path)
             
             needing_publication[#needing_publication + 1] = html_file.relative_path
@@ -154,7 +161,7 @@ local function frost(tex_files, to_be_compiled_files)
                 log:info("Adding XOURSE "..tex_file.relative_path.." ("..html_file.title..")")
                 tex_xourses[html_file.relative_path:gsub(".html","")] = { title = html_file.title, abstract = html_file.abstract } 
             end
-
+          end
         end
     end
 

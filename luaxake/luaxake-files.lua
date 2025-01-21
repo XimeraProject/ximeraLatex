@@ -71,7 +71,7 @@ local function get_fileinfo(input_path, use_no_cache)
     return GLOB_files[input_path]
   end
   
-  log:tracef("Getting fileinfo for %s", input_path)
+  log:tracef("Getting fileinfo for %s (from folder %s)", input_path, lfs.currentdir())
 
   -- if root_folder and string.match(input_path, "^"..root_folder) then
   --   input_path = input_path:gsub("^"..root_folder, "")
@@ -354,7 +354,7 @@ end
 --- sets metadata.output_files and metadata.needs_compilation (for given extensions as html, pdf, ..)
 --- @param metadata metadata metadata of the TeX file
 --- @param extensions table list of extensions
-local function update_output_files(metadata, extensions, compilers)
+local function update_output_files(metadata, extensions)
   metadata.output_files_needed = {}
   local needs_compilation = false
   for _, extension in ipairs(extensions) do
@@ -364,8 +364,10 @@ local function update_output_files(metadata, extensions, compilers)
 
     -- for some extensions (like sagetex.sage), we need to check if the output file exists 
     -- and stop the compilation if it doesn't
-    local compiler = compilers[extension] or {}
-    if compiler.check_file and not path.exists(out_file.absolute_path) then
+    -- TODO: check sagetex.sage stuff; 
+    -- -- local compiler = compilers[extension] or {}
+    -- -- if compiler.check_file and not path.exists(out_file.absolute_path) then
+    if extension == "sagetex.sage" and not path.exists(out_file.absolute_path) then
       log:debug("Ignored output file doesn't exist: " .. out_file.absolute_path)
       status = false
     end
@@ -378,7 +380,7 @@ local function update_output_files(metadata, extensions, compilers)
     log:debugf("Marked output %-12s %-18s for %s",extension,  status and 'NEEDS_COMPILATIONS' or 'NO_COMPILATION', out_file.relative_path)
     
     -- output_files[#output_files+1] = out_file
-    metadata.output_files_needed[out_file.relative_path]  = out_file
+    metadata.output_files_needed[extension]  = out_file
   end
   metadata.needs_compilation = needs_compilation
 
@@ -476,7 +478,7 @@ function update_status_tex_file(metadata, output_formats, compilers)
     
     else
         -- check for the need compilation
-      update_output_files(metadata, output_formats, compilers)
+      update_output_files(metadata, output_formats)
       -- 20250109: SKIPPED finding config_file; now set above in update_output_files
     end
 

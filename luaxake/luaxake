@@ -511,7 +511,7 @@ function bake(to_be_compiled)
   for i, file in ipairs(to_be_compiled) do
     log:statusf("Compiling file %3d/%d: %s", i, #to_be_compiled, file.relative_path)
     
-    local statuses = compile.compile(file, config.compilers, config.compile_sequence, config.check)
+    local statuses = compile.compile(file, config.compilers, config.compile_sequence,  config.output_formats, config.check)
     
     table.insert(all_statuses,statuses)
     
