@@ -757,6 +757,9 @@ then
     git remote show ximera >/dev/null 2>&1 || xake_name
 
     $LUAXAKE ghaction $* || error "Exiting..."
+
+    # Add a summary to  github
+    echo "✅ Published to $XIMERA_URL$XIMERA_NAME " >> $GITHUB_STEP_SUMMARY
 else
     $LUAXAKE $*
 fi
