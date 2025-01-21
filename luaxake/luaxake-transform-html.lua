@@ -209,7 +209,7 @@ local function transform_xourse(dom, file)
       abstract = html_fileinfo.abstract
   
     else
-      log:warningf("File %s: no fileinfo yet for activity %30s; Getting it now.",  file.relative_path, relhtmlpath)
+      log:warningf("File %s: no fileinfo yet for activity %-30s; Getting it now.",  file.relative_path, relhtmlpath)
 
       local activity_dom, msg = load_html(abshtmlpath)
       if not activity_dom then

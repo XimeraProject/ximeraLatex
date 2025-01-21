@@ -317,6 +317,7 @@ xake_name() {
   [[ -z "$GPG"                   ]] && GPG="gpg --quiet" 
   
 
+    $CURL -sS -o /dev/null ${XIMERA_URL} || error "Problem with Ximera server $XIMERA_URL"
 
     if [[ -n "$DEBUG" ]]
     then
@@ -753,7 +754,7 @@ then
     shift
     
     # Unfortunately, 'name' can not (yet?) be integrated into luaxake ...
-    git remote show ximera 2>&1 >/dev/null || xake_name
+    git remote show ximera >/dev/null 2>&1 || xake_name
 
     $LUAXAKE ghaction $* || error "Exiting..."
 else
