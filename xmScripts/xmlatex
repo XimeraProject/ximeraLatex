@@ -213,7 +213,7 @@ export half_error_line=238
 : "${REPO_ROOT:=$(git rev-parse --show-toplevel 2>/dev/null)}"
 
 # Inside a container, the directory from which xmlatex was started is mounted in /code:
-[[ -z "$REPO_ROOT" ]] && error "This script should only be started from the root folder of a Ximera repo"
+[[ -z "$REPO_ROOT" ]] && error "This script should only be started from the root folder of a Ximera repo (Got $(git rev-parse --show-toplevel))"
 
 : "${XIMERA_NAME:=$(basename -s .git $(git config --get remote.origin.url) | tr '[:upper:]' '[:lower:]' | tr '-' '_')}"
 
@@ -273,6 +273,10 @@ shift $((OPTIND -1))
 COMMAND=$1
 
 debug "COMMAND=$COMMAND"
+
+# Should not occur ...
+[[ -z "$LUAXAKE" ]] && error "Mmm, luaxake command not found: $(type luaxake); $(type kpsewhich)"
+
 
 # After git clone, ALL files seem recent; try to reset them (to prevent baking all files all the time)
 #  (needed in gitlab CI/CD ...)
@@ -758,8 +762,6 @@ then
 
     $LUAXAKE ghaction $* || error "Exiting..."
 
-    # Add a summary to  github
-    echo "✅ Published to $XIMERA_URL$XIMERA_NAME " >> $GITHUB_STEP_SUMMARY
 else
     $LUAXAKE $*
 fi
