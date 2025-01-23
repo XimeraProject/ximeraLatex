@@ -23,7 +23,7 @@ Manual local installation of the Ximera LaTeX package is normally never needed, 
   generates ximera.cls, xourse.cls, and ximeraLaTeX.pdf, as well as a
   few other files.
 
-* In the `src` folder the ximareLatex source files (as used by ximera.dtx)
+* In the `src` folder the ximeraLatex source files (as used by ximera.dtx)
 
 * In the `luaxake` folder the LUA code of the `luaxake` build script. This has its own [README](luaxake/README.md).
 
@@ -31,7 +31,7 @@ Manual local installation of the Ximera LaTeX package is normally never needed, 
 
 * In the `docker` folder build files for docker images. Images are automatically build for each tag of this repo, and released versions are available from [github](https://github.com/orgs/XimeraProject/packages)
 
-# Building (local) docker images
+# Advanced: building (local) docker images
 
 Check out this repo and run (from the root folder)
 ```
@@ -42,9 +42,18 @@ and test or use the newly build image eg with
 ```
 XAKE_VERSION=latest  xmlatex bake mytestfile.tex
 ```
+To further develop, test or manipulate Ximera, you can work inside the container with
+```
+XAKE_VERSION=latest  xmlatex bash
+```
+It is possible to extract this package from the container into a .ximera_local folder, and develop from there with 
+```
+XAKE_VERSION=latest  xmlatex copySettingsLocal
+```
 
+The default XAKE_VERSION (and thus the container to be used) can also be set in xmScripts/config.txt.
 
-# Compiling the `ximera` LaTeX package
+# Advanced: compiling the `ximera` LaTeX package
 
 Running `make` generates the derived files README, ximera.pdf, ximera.cls, xourse.cls, ximera.cfg, ximera.4ht, xourse.4ht.
 

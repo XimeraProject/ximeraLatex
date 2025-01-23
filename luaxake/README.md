@@ -1,13 +1,13 @@
 # Luaxake
 
 `luaxake` is a reimplementation in LUA of Ximera's original `xake` program, that was written in GO.
+It provides a build tool for Ximera courses (`xake` should make you think of `make`).
 
-It is strongly suggested to ONLY RUN THIS COMMAND INSIDE A PROPERLY BUILD ximeralatex CONTAINER.
-If not working INSIDE such a container, you SHOULD use the `xmlatex` wrapper.
-Usage of `luaxake` is only tested and supported inside a container, e.g. in a Codespace or a container started with `xmlatex`. You can run `xmlatex bash` to get a shell inside such a container.
-`luaxake`should always be started from the root folder of your project. 
+It is strongly suggested to always run `luaxake` through the `xmlatex` wrapper script, and thus ONLY INSIDE A PROPERLY BUILD ximeralatex CONTAINER.
+Usage of `luaxake` is only tested and supported inside such a container, e.g. in a Codespace or a container started with `xmlatex`. You can run `xmlatex bash` to get a shell inside the container.
+`luaxake` should always be started from the root folder of your project. 
 
-The main part of the reimplementation was done by Michal Hoftich (summer 2024), and it was further completed by Wim Obbels (dec 2024).
+The main part of the reimplementation was done by Michal Hoftich (summer 2024), and it was further completed by Wim Obbels (jan 2025).
 
 The `luaxake` program builds and publishes a Ximera project through
 
@@ -22,7 +22,7 @@ The `luaxake` program builds and publishes a Ximera project through
 
 - `name`: setup a destination ximera-server. This currently needs a GPG key, and is (still) implemented in `xmlatex`. This could/should change in/with a new ximera server setup....
 
-- `frost`: create a git tag for publishing, containing the necessary output files and some metadata
+- `frost`: create a git tag for publishing, containing the necessary output files and setting tome metadata
  in the generated file `metadata.json`
 
 - `serve`: publish the (previously `frosted`) content to a (previously `named`) ximera server
@@ -30,7 +30,12 @@ The `luaxake` program builds and publishes a Ximera project through
 - `clean` : remove non-reused temporary files. This is done by default by `bake`.
 - `veryclean` : remove all reused temporary files, and all generated files (.pdf, .html, .aux, ...)
 
-There are currently (2025-01) also shorthands 'compile' and 'compilePdf' for respectively only-html and only-pdf generation. This could better be done with option though.
+- `ghaction` : adhoc command specifically for Github Actions integrations
+
+
+Note: there are currently (2025-01) also shorthands 'compile' and 'compilePdf' for respectively only-html and only-pdf generation. 
+They are deprecated, but used in some VSCode tasks. Use `bake --compile pdf` or `bake --compile draft.html`.
+
 
 
 # Usage:
@@ -43,6 +48,7 @@ There are currently (2025-01) also shorthands 'compile' and 'compilePdf' for res
 Possible commands are `bake`, `frost`, `serve` and a number of variants/alternatives/extensions.
 
 One or more directories and/or TeX files can be given as argument.
+
 
 ## Options
 
@@ -73,6 +79,10 @@ Extra options for developers or advanced use cases:
   config files for different projects, then in the current working directory,
   project root and local TEXMF tree.
 
+NOTE 2025-01: there is currently some confusion with passing options from `xmlatex` to `lualatex`:
+- general rule: options and commands that are not processed by `xmlatex` are passed to `luaxake`
+- use the standard linux `--` trick to explicitly pass things to `luaxake`: xmlatex -- -t bake test.tex`
+- suggest improvements via Issues/Pull requests.
 
 
 # Lua settings  (implementation to be documented/improved)
@@ -85,7 +95,7 @@ conversion, you can use the following settings file:
 compilers.html.command = "make4ht -c @{config_file} @{filename} 'options'"
 ```
 
-TODO: integrate this system with the (bash-syntax) config.txt of `xmlatex` !
+NOTE: this setup might still change, as it should be integrated with the (bash-syntax) config.txt of `xmlatex` !
 
 
 ## Available configuration settings
@@ -97,6 +107,8 @@ output_formats = {"html", "pdf", "sagetex.sage"},
 ```
 
 OBSOLETE: this is calculated by `luaxake` now, based on the `compile_sequence`
+
+NOTE 2025-01: there is currently NO sage support
 
 - `compile_sequence` -- sequence  of compilers to be called on each TeX file (cfr `--compile` option)
 
