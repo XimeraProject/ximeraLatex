@@ -397,6 +397,7 @@ local tex_fileinfos = {}
 
 for i,nextarg in ipairs(config.dirs) do 
   log:infof("Processing argument %d: %s", i,nextarg)
+  nextarg = nextarg:gsub("^.//*", "")    -- remove potential leading './' -- vscode-settings sometimes even add .//myfile.tex; it also might confuse skipping hidden .xxx files/folders
 
   --if path.isdir(nextarg) or path.isfile(nextarg) then
     
