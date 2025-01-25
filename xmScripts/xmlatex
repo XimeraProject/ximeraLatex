@@ -278,6 +278,19 @@ debug "COMMAND=$COMMAND"
 [[ -z "$LUAXAKE" ]] && error "Mmm, luaxake command not found: $(type luaxake); $(type kpsewhich)"
 
 
+if [[ "$XIMERA_NAME" =~ [^a-z0-9] ]]; then
+  XIMERA_NAME=${XIMERA_NAME,,}    # make lowercase
+  echo "WARNING: XIMERA_NAME contained non-lowercase characters; I'll use $XIMERA_NAME"
+fi
+if [[ "$XIMERA_NAME" =~ "_" ]]; then
+  XIMERA_NAME=${XIMERA_NAME//_/-}
+  echo "WARNING: XIMERA_NAME contained underscore; I'll use $XIMERA_NAME"
+fi
+if [[ "$XIMERA_NAME" =~ [^-0-9a-z\\*] ]]; then
+  error "WARNING: XIMERA_NAME contains characters that are not allowed. Only use [a-z0-9] and .*-" # see app.js, line 195 !
+fi
+
+
 # After git clone, ALL files seem recent; try to reset them (to prevent baking all files all the time)
 #  (needed in gitlab CI/CD ...)
 reset_file_times() {
@@ -320,6 +333,7 @@ xake_name() {
   [[ -z "$GPG"  && -n "$VERBOSE" ]] && GPG="gpg " 
   [[ -z "$GPG"                   ]] && GPG="gpg --quiet" 
   
+    XIMERA_URL="${XIMERA_URL%/}/"    # make sure there's a trainlg /  (needed to appen XIMERA_NAME)
 
     $CURL -sS -o /dev/null ${XIMERA_URL} || error "Problem with Ximera server $XIMERA_URL"
 
@@ -425,7 +439,7 @@ xake_name() {
 
     debug "Getting a temporary key from  ${XIMERA_URL}$XIMERA_NAME.git"
     HASHCASH=$(hashcash -b 20 -qm $XIMERA_NAME.git)
-    LKEYS=$($CURL --data brol -H "X-Hashcash: $HASHCASH" -H "Authorization: Bearer $TOKEN" ${XIMERA_URL}$XIMERA_NAME.git)
+    LKEYS=$($CURL --data brol -H "X-Hashcash: $HASHCASH" -H "Authorization: Bearer $TOKEN" $XIMERA_URL$XIMERA_NAME.git)
     # openssl rand -hex 48 | $GPG -e -a --always-trust --recipient 215FC33FAB44D5CCA31A04B2CC78CB561FDC49A8  | $GPG --decrypt
 
     if [[ "$LKEYS" == "You do not own the repository." ]]
@@ -438,7 +452,7 @@ xake_name() {
 
     if [[ -z "$KEYS" ]]
     then 
-       error "No keys received from $XIMERA_URL, the ximera server returned: $LKEYS"
+       error "No keys received for $XIMERA_URL$XIMERA_NAME, the ximera server returned: $LKEYS"
     fi
 
     export $(echo $KEYS | jq -r 'to_entries | map("\(.key | ascii_upcase)=\(.value)") | .[]')
