@@ -80,6 +80,7 @@ local function compile(file, compilers, compile_sequence, output_formats, only_c
   -- Start ALL compilations for this file, in the correct order; stop as soon as one fails...
   -- NOTE: extension is a bad name, it's rather  'compiler'
   for _, extension in ipairs(compile_sequence) do
+    log:tracef("Starting %s compilation of %s (%s)", extension, file.relative_path, file.tex_documentclass)
     local command_metadata = compilers[extension]
     local first_try = true
 
@@ -93,6 +94,10 @@ local function compile(file, compilers, compile_sequence, output_formats, only_c
     if not file.tex_documentclass then
       log:infof("Skipping %s compilation of non-tex-document %s",extension, file.relative_path)
       goto uptonextcompilation 
+    end
+    if file.tex_documentclass ~= "ximera" and file.tex_documentclass ~= "xourse" and extension == "draft.html"  then
+      log:infof("Compiling a non-ximera %s file %s ", file.tex_documentclass,  file.relative_path)
+      file.configfile = "xhtml"
     end
 
     if file.extension ~= "tex" then
