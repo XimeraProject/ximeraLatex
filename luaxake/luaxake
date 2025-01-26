@@ -39,6 +39,7 @@ Options:
 -f,--force                           Recompile anyway
 --check                              Only check, no actual compiling/cleaning
 --noclean                            Keep all temp files
+--nodependencies                     Do not (re-)compile potential dependencies
 --compile       (default none)       Compile sequence (default 'pdf,html', or as set in settings)
 --settingsfile  (default none)       Luaxake settings script
 --configfile    (default none)       TeX4ht config file
@@ -306,6 +307,7 @@ end
 
 config.check        = args.check        or os.getenv("XM_ONLY_CHECK")      or config.check
 config.noclean      = args.noclean      or os.getenv("XM_NOCLEAN")         or config.noclean
+config.nodependencies = args.nodependencies or os.getenv("XM_NODEPENDENCIES")  or config.nodependencies
 config.force        = args.force        or os.getenv("XM_FORCE")           or config.force
 
 if args.configfile ~= "none" then 
@@ -314,9 +316,10 @@ else
   config.configfile   =  os.getenv("XM_CONFIGFILE")   or "ximera.cfg"
 end
 
-if config.check   then log:info("Running only check") end
-if config.noclean then log:info("Running noclean")   end
-if config.force   then log:info("Running force")   end
+if config.check   then log:info("Running with (only) 'check'") end
+if config.noclean then log:info("Running with 'noclean'")   end
+if config.nodependencies then log:info("Running with 'nodependencies'")   end
+if config.force   then log:info("Running with 'force' (compile/serve)")   end
 
 if config.configfile ~= "ximera.cfg" then
   log:warning("Using non-default config file " .. config.configfile)
@@ -413,18 +416,45 @@ for i,nextarg in ipairs(config.dirs) do
     end
         
     -- some files might need compilation even if they are not in the args, e.g. _pdf.tex files, or other dependent .tex files
-    for fname, finfo in pairs(files.get_tex_files_with_status(nextarg, config.output_formats, config.compile_sequence)) do
-      log:tracef("Collecting into tex_fileinfos:  %s", fname)
-      tex_fileinfos[fname] = finfo
+    local all_involved_texfiles = files.get_tex_files_with_status(nextarg, config.output_formats, config.compile_sequence)
+
+    if path.isfile(nextarg) then
+      if config.force then
+        log:infof("Explicitly force (re-) compilation of %s", nextarg)
+        all_involved_texfiles[nextarg].needs_compilation = true
+      end
+
+      -- Function to filter key-value tables
+      local function filter_needs_compilation(tbl)
+        local filtered = {}
+        for key, entry in pairs(tbl) do
+            if entry.needs_compilation then filtered[key] = entry end
+        end
+        return filtered
+      end
+
+      local extra_need_compilation = filter_needs_compilation(all_involved_texfiles)
+      extra_need_compilation[nextarg] = nil
+
+      log:debugf("%d DEPENDENT file(s) need compilation: %s", tablex.size(extra_need_compilation), table.concat(tablex.keys(extra_need_compilation),', '))
+
+      if config.nodependencies and pl.tablex.size(extra_need_compilation) > 0 then
+          -- log:debugf("Compiling %s, without the %d dependencies", nextarg, pl.tablex.size(all_involved_texfiles) - 1)
+          log:infof("Compiling %s, without dependencies %s", nextarg, table.concat(tablex.keys(extra_need_compilation),', '))
+          tex_fileinfos[nextarg] = all_involved_texfiles[nextarg]
+      else
+        for fname, finfo in pairs(all_involved_texfiles) do
+          log:tracef("File %s: collecting %-30s into tex_fileinfos", nextarg, fname)
+          tex_fileinfos[fname] = finfo
+        end
+      end
+    else -- nextarg is a folder 
+      for fname, finfo in pairs(all_involved_texfiles) do
+        log:tracef("Dir  %s: collecting %-30s into tex_fileinfos", nextarg, fname)
+        tex_fileinfos[fname] = finfo
+      end
     end
 
-    if path.isfile(nextarg) and config.force then
-      log:debugf("Explicitly force (re-) compilation of %s", nextarg)
-      tex_fileinfos[nextarg].needs_compilation = true
-    end
-  -- else
-  --   log:warning("Argument "..nextarg.." not folder nor file: SKIPPING")    -- should not occur (socket, pipe, ...)
-  -- end
   ::nextarg::
 end
 
@@ -526,7 +556,8 @@ function bake(to_be_compiled)
 
   log:statusf("Finished compiling %d files in %.1f seconds", #to_be_compiled, end_time - start_time)
 
-  -- print all errors 
+
+  -- collect and print all errors 
   local failed_files = {}
   for _, entry in ipairs(all_statuses) do 
     for _, compile_info in ipairs(entry) do

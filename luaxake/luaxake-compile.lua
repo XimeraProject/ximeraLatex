@@ -104,7 +104,17 @@ local function compile(file, compilers, compile_sequence, output_formats, only_c
       log:errorf("Can't compile non-tex file %s; SKIPPING, SHOULD PROBABLY NOT HAVE HAPPENED",file.relative_path)
       goto uptonextcompilation 
     end
-    
+
+    -- check if dependencies are successfully compiled (unless you don't want to ...)
+    if not config.nodependencies then
+      for fname, ffile in pairs(file.depends_on_files) do
+        if ffile.needs_compilation then
+          log:errorf("SKIPPING %s: dependent file %s not (yet) compiled.", file.relative_path, fname)
+          goto uptonextcompilation 
+        end
+      end
+    end
+
     -- HACK: _pdf.tex and _beamer.tex files should by convention NOT generate HTML (as they typically would contain non-TeX4ht-compatible constructs)
     if extension:match("html$") and ( file.relative_path:match("_pdf.tex$") or file.relative_path:match("_beamer.tex$") ) then
       log:infof("Skipping HTML compilation of pdf-only file %s",file.relative_path) 
