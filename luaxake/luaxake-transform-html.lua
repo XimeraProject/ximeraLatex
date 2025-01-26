@@ -328,18 +328,19 @@ local function get_associated_files(dom, file)
   -- Add images 
   for _, img_el in ipairs(dom:query_selector("img") ) do
     local src = img_el:get_attribute("src")
-    --  log:tracef("Found img %s in %s (%s)", src, file.absolute_path, file.relative_path )
-    src = (file.relative_dir or ".").."/"..src
+    -- log:tracef("Found img %s in %s (%s)", src, file.relative_dir, file.relative_path )
+    -- src = (file.relative_dir or ".").."/"..src
+    src = path.join(file.relative_dir, src)
     log:debugf("Found img %s in %s", src, file.absolute_path )
 
-    if not path.exists(GLOB_root_dir .. "/" .. src) then    -- BADBAD: this might got processed after chdir in compile ....!
-      log:errorf("Image file %s does not exist (%s)", src, GLOB_root_dir .. "/" .. src)
+    if not path.exists(path.join(GLOB_root_dir, src)) then    -- BADBAD: this might got processed after chdir in compile ....!
+      log:errorf("Image file %s does not exist (%s)", src, path.join(GLOB_root_dir, src))
       ass_errors[#ass_errors+1] = src .. " does not exist"
       goto next_image
 
     end
-    if path.getsize(GLOB_root_dir .. "/" .. src) == 0 then
-      log:errorf("Image file %s has size zero", GLOB_root_dir .. "/" .. src)
+    if path.getsize(path.join(GLOB_root_dir, src)) == 0 then
+      log:errorf("Image file %s has size zero", path.join(GLOB_root_dir, src))
       ass_errors[#ass_errors+1] = src .. " has size zero"
       goto next_image
     end
