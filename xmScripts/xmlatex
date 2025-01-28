@@ -278,11 +278,11 @@ debug "COMMAND=$COMMAND"
 
 if [[ "$XIMERA_NAME" =~ [^a-z0-9] ]]; then
   XIMERA_NAME=${XIMERA_NAME,,}    # make lowercase
-  echo "WARNING: XIMERA_NAME contained non-lowercase characters; I'll use $XIMERA_NAME"
+  debug "WARNING: XIMERA_NAME contained non-lowercase characters; I'll use $XIMERA_NAME"
 fi
 if [[ "$XIMERA_NAME" =~ "_" ]]; then
   XIMERA_NAME=${XIMERA_NAME//_/-}
-  echo "WARNING: XIMERA_NAME contained underscore; I'll use $XIMERA_NAME"
+  debug "WARNING: XIMERA_NAME contained underscore; I'll use $XIMERA_NAME"
 fi
 if [[ "$XIMERA_NAME" =~ [^-0-9a-z\\*] ]]; then
   error "WARNING: XIMERA_NAME contains characters that are not allowed. Only use [a-z0-9] and .*-" # see app.js, line 195 !
