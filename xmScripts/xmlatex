@@ -223,7 +223,7 @@ export half_error_line=238
 : "${LUAXAKE:=$(kpsewhich luaxake)}"
 # : "${LUAXAKE:=texlua /root/texmf/tex/latex/luaxake/luaxake  -s config.lua}"
 
-while getopts ":hitvds" opt; do
+while getopts ":hitvd" opt; do
   case ${opt} in
     h ) 
        cat <<EOF
@@ -262,8 +262,6 @@ EOF
         XAKE="$XAKE -v"
         LUAXAKE="$LUAXAKE -v"
       ;;
-    s ) XAKE="$XAKE --skip-mathjax"
-      ;;      
     \? ) echo "Usage: build [-h] [-i] <commands>"
 	 exit 1
       ;;
