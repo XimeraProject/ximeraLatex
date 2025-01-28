@@ -1073,15 +1073,11 @@ Interactive
 
 
 %% Pre-202412: .jax file written in non-\HCode, and in a next run inserted by ximera.cfg in .html file
-%% Post-202412: .mjax file written in \HCode, and in luaxake post-processing inerted in .html file
-%% For backward-compatibility, the pre-202412 code is kept around for some time
-%% (and the extension .mjax was used to make both versions coexist...)
+%% Post-202501: .mjax file written only in \HCode, and in luaxake post-processing inserted in .html file
+%%   ( used luaxake rather than sed ...)
 \newwrite\myfile
 \ifdefined\HCode
 \immediate\openout\myfile=\jobname.xmjax
-\else
-\immediate\openout\myfile=\jobname.jax
-\fi
 
 %% From |only.dtx| we must also create |prompt| on the MathJax side.
 \immediate\write\myfile{\unexpanded{\newenvironment}{prompt}{}{}}
@@ -1096,6 +1092,8 @@ Interactive
 %% Same for \DeclareMathOperator
 \let\@OldDeclareMathOperator\DeclareMathOperator
 \renewcommand{\DeclareMathOperator}[2]{\@OldDeclareMathOperator{#1}{#2}\immediate\write\myfile{\unexpanded{\DeclareMathOperator}{\unexpanded{#1}}{\unexpanded{#2}}}}
+
+\fi
 
 
 \colorlet{textColor}{black} % since textColor is referenced below
