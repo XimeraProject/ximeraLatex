@@ -64,13 +64,12 @@ end
 --- @param input_path string filename
 --- @return fileinfo
 local function get_fileinfo(input_path, use_no_cache)
-
   -- caching
   if not use_no_cache and GLOB_files[input_path] then
     log:tracef("Getting cached fileinfo for %s", input_path)
     return GLOB_files[input_path]
   end
-  
+
   log:tracef("Getting fileinfo for %s (from folder %s)", input_path, lfs.currentdir())
 
   -- if root_folder and string.match(input_path, "^"..root_folder) then
@@ -99,7 +98,7 @@ local function get_fileinfo(input_path, use_no_cache)
   fileinfo.relative_path = relative_path
   fileinfo.absolute_path = abspath(relative_path)
   -- fileinfo.absolute_dir  = abspath(dir)
-  
+
   fileinfo.exists        = path.exists(relative_path)
   fileinfo.modified      = path.getmtime(relative_path)
   fileinfo.needs_compilation = false
@@ -117,7 +116,6 @@ local function get_fileinfo(input_path, use_no_cache)
   GLOB_files[fileinfo.relative_path] = fileinfo
   
   -- dump_fileinfo(fileinfo)   -- for debugging
-
   return fileinfo
 end
 
@@ -357,6 +355,7 @@ end
 local function update_output_files(metadata, extensions)
   metadata.output_files_needed = {}
   local needs_compilation = false
+
   for _, extension in ipairs(extensions) do
     local out_file = get_fileinfo(metadata.relative_path:gsub("tex$", extension), true)   -- do not use cached info
     -- detect if the HTML file needs recompilation

@@ -40,10 +40,12 @@ function post_process_pdf(src_filename, file, cmd_meta, root_dir)
   -- move the pdf to a corresponding folder under root_dir (presumably ximera-downloads, with different path/name!)
   --
   -- use absolute paths when running in chdir-context during compilation ....
+
   local absfolder = path.join(root_dir, cmd_meta.download_folder, file.relative_dir)
   local relfolder = path.join(          cmd_meta.download_folder, file.relative_dir)
   local abstgt    = path.join(absfolder, file.basename ..".pdf")
   local reltgt    = path.join(relfolder, file.basename ..".pdf")
+
   -- require 'pl.pretty'.dump(src)
   if not path.exists(src_filename) then
     log:warningf("Output file %s does not exists (for %s)",src_filename, file.relative_path)
@@ -71,6 +73,7 @@ end
 --- @param compile_sequence table sequence of keys from the compilers table to be executed
 --- @return [compile_info] statuses information from the commands
 local function compile(file, compilers, compile_sequence, output_formats, only_check)
+  print("starting compile")
   only_check = only_check or false
 
   if not file.output_files_made then file.output_files_made = {} end
@@ -79,13 +82,17 @@ local function compile(file, compilers, compile_sequence, output_formats, only_c
 
   -- Start ALL compilations for this file, in the correct order; stop as soon as one fails...
   -- NOTE: extension is a bad name, it's rather  'compiler'
+  print("going through extensions")
+  print("compile_sequence: " .. tostring(compile_sequence))
   for _, extension in ipairs(compile_sequence) do
+    print("extension")
     log:tracef("Starting %s compilation of %s (%s)", extension, file.relative_path, file.tex_documentclass)
     local command_metadata = compilers[extension]
+    print("got command data")
     local first_try = true
 
     ::another_try::     -- jump here to try compilation once more ... (eg to get title right !)
-
+    print("another_try")
     if not command_metadata then
       log:errorf("No compiler defined for %s (%s); SKIPPING",extension,file.relative_path)
       goto uptonextcompilation  -- nice: a goto-statement !!!
@@ -104,7 +111,7 @@ local function compile(file, compilers, compile_sequence, output_formats, only_c
       log:errorf("Can't compile non-tex file %s; SKIPPING, SHOULD PROBABLY NOT HAVE HAPPENED",file.relative_path)
       goto uptonextcompilation 
     end
-
+    print("about to check dependencies")
     -- check if dependencies are successfully compiled (unless you don't want to ...)
     if not config.nodependencies then
       for fname, ffile in pairs(file.depends_on_files) do
@@ -114,7 +121,7 @@ local function compile(file, compilers, compile_sequence, output_formats, only_c
         end
       end
     end
-
+    print("done checking dependencies")
     -- HACK: _pdf.tex and _beamer.tex files should by convention NOT generate HTML (as they typically would contain non-TeX4ht-compatible constructs)
     if extension:match("html$") and ( file.relative_path:match("_pdf.tex$") or file.relative_path:match("_beamer.tex$") ) then
       log:infof("Skipping HTML compilation of pdf-only file %s",file.relative_path) 
@@ -136,7 +143,7 @@ local function compile(file, compilers, compile_sequence, output_formats, only_c
       end
       goto uptonextcompilation 
     end
-  
+    print("idk doing some stuff I guess")
     --
     -- WARNING: (tex-)compilation HAS TO START IN THE SUBFOLDER !!!
     --   !!! CHDIR  might confuse all relative paths !!!!
@@ -154,7 +161,7 @@ local function compile(file, compilers, compile_sequence, output_formats, only_c
     local log_file      = file.filename:gsub("tex$", infix.."log")    -- hopefully this is where the logs go
     local final_output_file = output_file  -- potentially changed by post_processing (that could either change contents of output_file, or create a new copy!)
 
-
+    print("done doing the stuff")
     -- sometimes compiler wants to check for the output file (like for sagetex.sage),
     if command_metadata.check_file and not path.exists(output_file) then
       log:debugf("Skipping compilation because of 'check_file', and file %s does not exist",output_file)
@@ -260,8 +267,9 @@ local function compile(file, compilers, compile_sequence, output_formats, only_c
       local cmd = command_metadata.post_command
       log:infof("Postprocessing: %s", cmd)
       -- call the post_command
+
       final_output_file, msg = _G[cmd](output_file, file, command_metadata, current_dir)     -- lua way of calling the function whose name is in 'cmd'
-      
+
       if not final_output_file then
         -- post-processing failed
         -- This could typically be a missing title, and thus:
@@ -307,8 +315,10 @@ local function compile(file, compilers, compile_sequence, output_formats, only_c
     ::uptonextcompilation::
   end
 
+  print("done with extensions")
   -- Update 'needs_compilation' ... (BADBAD: should probably be done in a better way ...)
   files.update_output_files(file, output_formats)
+  print("done")
   log:infof("Updated status of %s:%s uptodate", file.relative_path, file.needs_compilation and ' NOT' or '' )
 
   files.dump_fileinfo(file)     -- only for debugging
