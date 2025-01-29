@@ -1,6 +1,11 @@
 
 kpse.set_program_name "luatex"
 
+local pl = require "penlight"
+local path = pl.path
+
+GLOB_root_dir = path.abspath(".") 
+
 logging = require("luaxake-logging")
 local compile = require "luaxake-compile"
 local socket = require "socket"
@@ -212,6 +217,8 @@ while arg[i] ~= nil do
   table.insert(config.output_formats, arg[i]:sub(2))
   i = i + 1
 end
+
+config.configfile = "ximera.cfg"
 print("calling bake")
 bake(file)
 
