@@ -569,7 +569,7 @@ function bake(to_be_compiled)
   end
   local i = 1
   for _, handle in pairs(process_handles) do
-    local output = handle:read("*all")
+    local output = handle:read("*all") -- look into socket select or coroutines
     log:info("natee output" .. tostring(i) .. ": " .. tostring(output))
     local rc =  {handle:close()}
     log:info("natee rc: " .. tostring(rc[3]))
