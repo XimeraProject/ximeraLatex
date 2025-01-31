@@ -513,7 +513,7 @@ then
     shift   # remove "genKey"
 
     [[ -z "$YOUR_EMAIL" && -n "$1" ]] && YOUR_EMAIL="$1"
-    [[ -z "$YOUR_NAME" && -n "$2" ]] && YOUR_EMAIL="$*"
+    [[ -z "$YOUR_NAME" && -n "$2" ]] && YOUR_NAME="$*"
 
     KEY_UID="$YOUR_NAME <$YOUR_EMAIL>"
 
@@ -562,9 +562,9 @@ EOF
         echo "You do NOT have a rule to gitignore a .xmKeyFile. I won't create one until you add a line '.XmKeyFile*' to your .gitignore file."
         echo "Note: you don't necessarily want to use a .xmKeyFile: it's eg typically not useful in Codespaces."
     elif [[ -f .xmKeyFile ]] then
-        echo "You do already have a .xmKeyFile. I will NOT overwrite it, so please remove the existing file if you want the key to be stored there"
+        echo "You already have a .xmKeyFile which I DIT NOT overwrite. Remove the existing file and regenenerate a key if you want it to be stored in .xmKeyFile"
     else
-        echo "Creating a .xmKeyFile with the newly generated key. PLEASE NO NOT PUBLISH THIS KEY. Some of your students WILL find it if you do."
+        echo "I create a .xmKeyFile with the newly generated key, which is convenient for quick testing. DO NOT PUBLISH THIS KEY. Some of your students WILL find it if you do."
 
         cat >.xmKeyFile <<EOF
 #
@@ -585,15 +585,16 @@ EOF
     # gpg --batch --yes --delete-secret-key "$FINGERPRINT"
     # gpg --batch --yes --delete-key "$FINGERPRINT"
 
-    echo "Immediately SAVE these values in a SAFE location."
+    echo "If you want to use this key for offical publication of a Ximera courses, please SAVE it in a SAFE location."
     echo "This could be as 'Secrets' under your personal 'Settings -> Codespaces' in Github."
     echo "           or as 'Secrets' under your personal 'Settings -> Actions' in Github."
+    echo "           or in a .xmKeyFile file in a temporary Codespace or on your own PC."
+    echo "In each case there are TWO 'secrets' to be saved:"
+    echo "   GPG_KEY_ID  with value $FINGERPRINT"
+    echo '   GPG_KEY     with value the private key that was printed above, between the  GPG_KEY=" and " lines'
     echo ""
-    echo "Add two secrets:"
-    echo "GPG_KEY_ID  with value $FINGERPRINT"
-    echo 'GPG_KEY     with value the private key that was printed above, between the  GPG_KEY=" and " lines'
-
-    echo "You'll not be able to recover the keys from here. Better keep them somewhere safe, thus NOT somewhere publicly available..."
+    echo "If you only want to test something on a local ximeraServer it's most convenient to use a temporary .xmKeyFile,"
+    echo "   and generate a new key next time."
 
     exit 0
 
@@ -624,7 +625,7 @@ then
     then
         # Change the ownership of all files in the current directory
         debug "Changing ownership of copied files to $owner_group."
-        chown -R "$owner_group" .ximera_local xmScripts
+        chown -R "$owner_group" .
     fi
 
     fi  # end reset-git-fileowner
@@ -667,7 +668,8 @@ then
     then
         # Change the ownership of all files in the current directory
         debug "Changing ownership of extracted files to $owner_group."
-        chown -R "$owner_group" .vscode .devcontainer .gitignore xmScripts
+        chown -R "$owner_group" .
+        # chown -R "$owner_group" .vscode .devcontainer .gitignore xmScripts
     fi
 
     fi  # end reset-git-fileowner
