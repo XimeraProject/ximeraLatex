@@ -565,7 +565,7 @@ function bake(to_be_compiled)
 
       if (compile_info.status or 0) > 0 then 
   --          require 'pl.pretty'.dump(compile_info)
-          failed_files[compile_info.log_file] = #(compile_info.errors)
+          failed_files[compile_info.source_file] = ( failed_files[compile_info.source_file] or 0 ) + #(compile_info.errors)
 
           for _, err in ipairs(compile_info.errors) do
             -- log:errorf("[%10s] %s:%s %s [%s]", compile_info.compiler, compile_info.source_file, err.line, err.context,err.error)
@@ -577,7 +577,7 @@ function bake(to_be_compiled)
         if compile_info.post_processing_error then
             log:errorf("[%-10s] %s: %s", "post_command", compile_info.source_file, compile_info.post_processing_error)
             local _, n_errors = compile_info.post_processing_error:gsub("\n", "")   -- HACK: number of lines equals number of errors ...
-            failed_files[compile_info.log_file] = n_errors + 1
+            failed_files[compile_info.source_file] = ( failed_files[compile_info.source_file] or 0 ) + n_errors + 1
         end
       end 
     end
@@ -592,7 +592,7 @@ function bake(to_be_compiled)
     log:warningf("Baked %d files, but %d compilation%s failed", #to_be_compiled, tablex.size(failed_files), tablex.size(failed_files) == 1 and "" or "s")
 
     for filename, errs in pairs(failed_files) do
-          log:errorf("See logfile %s for %d errors", filename, errs)
+          log:errorf("%2d errors in %s", errs, filename)
     end
     -- log:statusf("Baking resulted in %d errors", tablex.size(failed_files) )
     return 1, string.format("Baking resulted in %d errors", tablex.size(failed_files) )
