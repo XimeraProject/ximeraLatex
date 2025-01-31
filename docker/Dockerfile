@@ -10,7 +10,8 @@ RUN apt-get update -y;  \
     curl \
     wget  \
     dos2unix  \
-    vim-tiny strace less 
+    vim-tiny strace less \
+    nano file
 
 # hashcash needed for setting up communication to ximeraServer; seems unfortunately not (easily?) installable with apt..
 ADD docker/hashcash_1.22-1_amd64.deb .
@@ -53,6 +54,7 @@ RUN tlmgr update --self; \
         gettitlestring \
         # graphicx \
         hyperref \
+        hypdoc \ 
         # ifpdf \
         # ifthen \
         # ifxetex \
@@ -106,7 +108,8 @@ RUN tlmgr update --self; \
         tex4ht make4ht \
         luaxml \
         fontawesome stix  \
-        latexindent
+        latexindent \
+        wallpaper
 
 # make4ht is not in /usr/local/bin if installed with tlmgr!!!
 ENV PATH="$PATH:/usr/local/texlive/2024/bin/x86_64-linux"

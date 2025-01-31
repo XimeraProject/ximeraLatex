@@ -25,6 +25,7 @@ ADD . /root/texmf/tex/latex/ximeraLatex
 # Add some needed/convenience setup
 RUN ln -s /root/texmf/tex/latex/ximeraLatex/luaxake/luaxake /usr/local/bin/luaxake; \
     ln -s /root/texmf/tex/latex/ximeraLatex/xmScripts/xmlatex /usr/local/bin/xmlatex; \
-    git config --global --add safe.directory /code
+    git config --global --add safe.directory /code ; \
+    apt-get update && apt-get install -y nano file
 
 WORKDIR /code
