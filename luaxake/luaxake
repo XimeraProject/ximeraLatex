@@ -6,6 +6,7 @@ local utils = require "pl.utils"
 local tablex = require("pl.tablex")
 local path = pl.path
 local lapp = require "pl.lapp"
+local ffi = require "ffi"
 -- local lapp = require "lapp-mk4"   -- the above is 'better'?
 
 logging = require("luaxake-logging")
@@ -533,51 +534,130 @@ end
   end 
 
 
+-- POSIX system calls we need for non-blocking popen
+-- Note this makes us POSIX dependent, but we could add Windows system calls to support Windows if we ever needed
+ffi.cdef([[
+  void* popen(const char* cmd, const char* mode);
+  int pclose(void* stream);
+  int fileno(void* stream);
+  int fcntl(int fd, int cmd, int arg);
+  int *__errno_location ();
+  ssize_t read(int fd, void* buf, size_t count);
+]])
+  
+-- I think these are technically system dependent
+local F_SETFL = 4
+local O_NONBLOCK = 2048
+local EAGAIN = 11
+local max_workers = 2
 
 function bake(to_be_compiled)
-  log:info("natee about to bake")
-  local process_handles = {}
-  for i, file in ipairs(to_be_compiled) do
-    -- natee this is real ugly
-    local command = "luatex --luaonly /root/texmf/tex/latex/ximeraLatex/luaxake/test-bake.lua"
-    command = command .. " :" .. tostring(file.relative_path)
-    command = command .. " :" .. tostring(file.absolute_path)
-    command = command .. " :" .. tostring(file.absolute_dir)
-    command = command .. " :" .. tostring(file.relative_dir)
-    command = command .. " :" .. tostring(file.filename)
-    command = command .. " :" .. tostring(file.basename)
-    command = command .. " :" .. tostring(file.extension)
-    command = command .. " :" .. tostring(file.exists)
-    command = command .. " :" .. tostring(file.modified)
-    command = command .. " :" .. tostring(file.needs_compilation)
-    command = command .. " :" .. tostring(file.tex_documentclass)
+  log:debug("Baking")
 
-    for _, value in pairs(config.compile_sequence) do 
-      command = command .. " :" .. tostring(value)
-    end
+  local _errno = ffi.C.__errno_location() -- Get pointer to errno location
+  local current_processes = {}
+  local current_workers = 0
 
-    command = command .. " " .. "BREAK" -- and it only gets uglier
-
-    for _, value in pairs(config.output_formats) do
-      command = command .. " :" .. tostring(value)
-    end
-
-
-    log:info("natee command: " .. tostring(command))
-
-    table.insert(process_handles, io.popen(command))
-  end
   local i = 1
-  for _, handle in pairs(process_handles) do
-    local output = handle:read("*all") -- look into socket select or coroutines
-    log:info("natee output" .. tostring(i) .. ": " .. tostring(output))
-    local rc =  {handle:close()}
-    log:info("natee rc: " .. tostring(rc[3]))
-    i = i + 1
+  local total_to_compile = #to_be_compiled
+
+  while i <= total_to_compile or current_workers > 0 do -- TODO: Look into making this cleaner
+    if current_workers < max_workers and i <= total_to_compile then -- We're ready to start more compiling processes
+      local file = to_be_compiled[i]
+      -- Start ugly passing of info to test-bake.lua
+      local command = "luatex --luaonly /root/texmf/tex/latex/ximeraLatex/luaxake/test-bake.lua"
+      command = command .. " :" .. tostring(file.relative_path)
+      command = command .. " :" .. tostring(file.absolute_path)
+      command = command .. " :" .. tostring(file.absolute_dir)
+      command = command .. " :" .. tostring(file.relative_dir)
+      command = command .. " :" .. tostring(file.filename)
+      command = command .. " :" .. tostring(file.basename)
+      command = command .. " :" .. tostring(file.extension)
+      command = command .. " :" .. tostring(file.exists)
+      command = command .. " :" .. tostring(file.modified)
+      command = command .. " :" .. tostring(file.needs_compilation)
+      command = command .. " :" .. tostring(file.tex_documentclass)
+
+      for _, value in pairs(config.compile_sequence) do 
+        command = command .. " :" .. tostring(value)
+      end
+
+      command = command .. " " .. "BREAK" -- and it only gets uglier
+
+      for _, value in pairs(config.output_formats) do
+        command = command .. " :" .. tostring(value)
+      end
+
+      -- End ugly passing of info to test-bake.lua
+
+      log:info("Starting process with command: " .. tostring(command))
+      local process = {}
+      process.file_name = file.absolute_path
+
+      -- Start process with "command"
+      process.handle = ffi.C.popen(command, "r")
+      if process.handle == nil then
+        local err_code = _errno[0]
+        return tonumber(err_code), "Error trying to popen command: " .. tostring(command) .. "Error code: " .. tostring(err_code)
+      end
+
+      -- Get file descriptor of pipe
+      process.fd = ffi.C.fileno(process.handle)
+      if process.fd == -1 then
+        local err_code = _errno[0]
+        local err_msg = "Failed to get file descriptor for command: " .. tostring(command) .. ". Error code: " .. tostring(err_code)
+
+        local status_code = ffi.C.plcose(process.handle)
+        if status_code -1 then
+          err_code = _errno[0]
+          err_msg = err_msg .. ". Failed to pclose process. Error code: " .. tostring(err_code)
+        end
+
+        return tonumber(err_code), err_msg
+      end
+
+       -- Set non-blocking mode for pipe
+      local status_code = ffi.C.fcntl(process.fd, F_SETFL, O_NONBLOCK)
+      if status_code ~= 0 then
+        err_code = _errno(0)
+        log:info("failed fcntl. status_code: " .. tostring(status_code) .. ". error: " .. tostring(_errno[0]))
+        return tonumber(err_code), "Failed to set non-blocking reads for pipe to command: " .. tostring(command) .. ". Error code: " .. tostring(err_code)
+      end
+
+      table.insert(current_processes, process)
+      current_workers = current_workers + 1
+      i = i + 1
+
+    else -- Check to see if any processes have ended
+      for j, process in ipairs(current_processes) do
+        local read_buffer = ""
+        local bytes_read = ffi.C.read(process.fd, read_buffer, 2024) -- Read 2024 bytes at a time (We currently don't do anything with what we read)
+        if (bytes_read == -1) and (_errno[0] ~= EAGAIN) then -- There was some unexpected error
+
+          -- TODO: We might be able to handle some of these errors instead of just failing
+          return tonumber(_errno[0]), "Failed to read pipe for compilation process for file: " .. tostring(process.file_name) .. ". Error code: " .. tostring(_errno[0])
+
+        elseif bytes_read == 0 then -- End of file
+
+          local ret_code = ffi.C.pclose(process.handle)
+          if ret_code == -1 then -- TODO: Do we have to do anything more in this case?
+            log:error("Failed to get return code for compilation process for file: " .. tostring(process.file_name))
+          else 
+            ret_code = ret_code / 256 -- Discard last 8 bits
+          end
+          
+          -- TODO: add error handling based off of this return code
+          log:info("Return code for compilation process for file: " .. tostring(process.file_name) .. " is ret_code: " .. tostring(ret_code))
+
+          current_workers = current_workers - 1
+          table.remove(current_processes, j)
+        end 
+      end
+    end
   end
 
-  log:info("natee returning from bake")
-  return 0, "i guess it all went well"
+  -- If we make it here all went well
+  return 0, "Baking was successful"
 end
       
   -- TODO: fix commands (cfr xmlatex/xmlatex/lua)
