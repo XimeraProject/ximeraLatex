@@ -4,12 +4,10 @@ kpse.set_program_name "luatex"
 local pl = require "penlight"
 local path = pl.path
 
-GLOB_root_dir = path.abspath(".") 
-
 logging = require("luaxake-logging")
 local compile = require "luaxake-compile"
-local socket = require "socket"
-local log = logging.new("bake")
+
+GLOB_root_dir = path.abspath(".")
 
 -- Natee just copying this cause it's easier. Should pass needed stuff in through command line args probably
 config = {
@@ -149,39 +147,7 @@ config = {
   -- dump_fileinfo = "aFirstXourse.tex",
 }
 
-
-function bake(file)
-  print("starting bake")
-  local start_time =  socket.gettime()
-  print("calling compile")
-  local entry = compile.compile(file, config.compilers, config.compile_sequence,  config.output_formats, config.check)
-  print("done with compile")
-  if config.noclean then
-    log:debugf("Skipping cleaning temp files")
-  else
-    compile.clean(file, config.clean_extensions,config.clean_infixes)
-  end
-  local end_time =  socket.gettime()
-
-  log:statusf("Finished compiling 1 files in %.1f seconds", end_time - start_time)
-
-
-  -- print errors
-  for _, compile_info in ipairs(entry) do
-    log:debug("File "..(compile_info.output_file or "UNKNOWN??") .." got status " .. (compile_info.status or 'NIL??') )
-
-    if (compile_info.status or 0) > 0 then 
-        for _, err in ipairs(compile_info.errors) do
-          log:errorf("[%-10s] %s:%s", compile_info.compiler, compile_info.source_file, err.constructed_errormessage)
-        end
-    else
-      if compile_info.post_processing_error then
-          log:errorf("[%-10s] %s: %s", "post_command", compile_info.source_file, compile_info.post_processing_error)
-      end
-    end 
-  end
-end
-print("setting up file")
+-- Start reading command line arguments for needed data
 local file = {}
 file.depends_on_files = {} -- Natee we can worry about dependencies later. hassle to pass them in command line rn
 file.relative_path = arg[1]:sub(2)
@@ -189,6 +155,10 @@ file.absolute_path = arg[2]:sub(2)
 file.absolute_dir = arg[3]:sub(2)
 file.relative_dir = arg[4]:sub(2)
 file.filename = arg[5]:sub(2)
+
+logging.set_outfile(path.abspath("bake-" .. tostring(file.filename) .. ".log")) 
+local log = logging.new("bake-" .. tostring(file.filename))
+
 file.basename = arg[6]:sub(2)
 file.extension = arg[7]:sub(2)
 if arg[8] == ":true" then
@@ -203,7 +173,7 @@ else
   file.needs_compilation = false
 end
 file.tex_documentclass = arg[11]:sub(2)
-print("setting up configs")
+
 config.compile_sequence = {}
 local i = 12
 while arg[i] ~= "BREAK" do
@@ -211,7 +181,6 @@ while arg[i] ~= "BREAK" do
   i = i + 1
 end
 
-print("setting up second configs")
 config.output_formats = {}
 while arg[i] ~= nil do
   table.insert(config.output_formats, arg[i]:sub(2))
@@ -219,8 +188,41 @@ while arg[i] ~= nil do
 end
 
 config.configfile = "ximera.cfg"
-print("calling bake")
-bake(file)
+
+-- End reading command line arguments for needed data
+
+-- Start actual baking
+log:info("Starting compilation of file: " .. tostring(file.absolute_path))
+local start_time =  socket.gettime()
+local compile_infos = compile.compile(file, config.compilers, config.compile_sequence,  config.output_formats, config.check)
+
+if config.noclean then
+  log:info("Skipping cleaning temp files")
+else
+  compile.clean(file, config.clean_extensions,config.clean_infixes)
+end
+local end_time =  socket.gettime()
+
+log:statusf("Finished compiling " .. tostring(file.absolute_path) .. " in %.1f seconds", end_time - start_time)
+
+-- print errors
+for _, compile_info in ipairs(compile_infos) do
+  log:info("File "..(compile_info.output_file or "UNKNOWN??") .." got status " .. (compile_info.status or 'NIL??') )
+
+  if (compile_info.status or 0) > 0 then 
+      for _, err in ipairs(compile_info.errors) do
+        log:errorf("[%-10s] %s:%s", compile_info.compiler, compile_info.source_file, err.constructed_errormessage)
+      end
+  else
+    if compile_info.post_processing_error then
+        log:errorf("[%-10s] %s: %s", "post_command", compile_info.source_file, compile_info.post_processing_error)
+    end
+  end 
+end
+
+os.exit(0)
+
+
 
 
 
