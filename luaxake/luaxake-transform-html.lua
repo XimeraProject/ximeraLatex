@@ -488,7 +488,7 @@ local function post_process_html(src, file, cmd_meta, root_dir)
     local function filter_newcommands(text)
       local result = {}
       for line in text:gmatch("[^\r\n]+") do
-        if line:match("^\\newcommand") or line:match("^\\DeclareMathOperator") or line:match("^\\newenvironment") then
+        if line:match("^\\newcommand {") or line:match("^\\DeclareMathOperator") or line:match("^\\newenvironment") then
             table.insert(result, line)
         end
       end
@@ -496,8 +496,9 @@ local function post_process_html(src, file, cmd_meta, root_dir)
     end
 
     local filtered_cmds = cmds
-    filtered_cmds= filtered_cmds:gsub("[^\n]*[-:*@].-\n", "")      -- remove 'exotic' commands; _ must be kept...
+    filtered_cmds= filtered_cmds:gsub("[^\n]*[:*@].-\n", "")      -- remove all 'exotic' characters; _ must be kept...
     filtered_cmds= filtered_cmds:gsub("[^\n]\\_.-\n", "")          -- remove \_  (Mathax error)
+    filtered_cmds= filtered_cmds:gsub("[^\n]\\TU.-\n", "")          -- remove \_  (Mathax error)
     filtered_cmds= filter_newcommands(filtered_cmds)               -- only keep newcommands and declaremathoperator
     filtered_cmds= filtered_cmds:gsub("##(%d)", "#%1")             -- replace ##1 with #1
     
