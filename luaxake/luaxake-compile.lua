@@ -222,10 +222,6 @@ local function compile(file, compilers, compile_sequence, output_formats, only_c
         local err_context = ""
         local err_line = ""
         for i, err in ipairs(errors or {}) do
-          if i>10 then
-            log:errorf("... skipping further errorlog; %d errors found", #errors)
-            break
-          end
 
           -- Format errormessage a bit, and store it in err.constructed_errormessage
           err_context  = "at "..err.context
@@ -239,7 +235,12 @@ local function compile(file, compilers, compile_sequence, output_formats, only_c
           end
           
           err.constructed_errormessage =  string.format("%s %-30s %s", err_line,  err.error, err_context)
-          log:errorf("%-20s:%s", log_file, err.constructed_errormessage)
+
+          if i<10 then
+            log:errorf("%-20s:%s", log_file, err.constructed_errormessage)
+          elseif i == 10 then
+            log:warningf("... skipping further errorlog; %d errors found", #errors)
+          end          
         end
       end
 
