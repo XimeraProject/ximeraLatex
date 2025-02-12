@@ -209,7 +209,7 @@ local function transform_xourse(dom, file)
       abstract = html_fileinfo.abstract
   
     else
-      log:warningf("File %s: no fileinfo yet for activity %-30s; Getting it now.",  file.relative_path, relhtmlpath)
+      log:debugf("File %s: no fileinfo yet for activity %-30s; Getting it now.",  file.relative_path, relhtmlpath)
 
       local activity_dom, msg = load_html(abshtmlpath)
       if not activity_dom then
@@ -426,23 +426,43 @@ end
 
 
 --- Post-process HTML files
----@param file fileinfo 
+---@param cmd command
 ---@return string? name of post_processed file (could be same name/file is src, or not...)
 ---@return string? msg  (if error: name in nil)
-local function post_process_html(src, file, cmd_meta, root_dir)
+-- local function post_process_html(src, file, cmd_meta)
+local function post_process_html(cmd)
+  local file = cmd.file
+  local src= cmd.output_file
+  local extension = cmd.command_metadata.extension
+
   log:tracef("post_process_html %s (%s)",src, file.relative_path)
       
   local dom, msg = load_html(src)
-  if not dom then return nil, msg end
+  if not dom then 
+    cmd.status_post_command = "NO_HTML_DOM_FOUND"
+    cmd.error = msg
+    return cmd
+  end
   
 
   local ret, msg =  update_html_fileinfo(file, dom)     -- not really 'post-processing', but implicit checking-of-generated-images
   -- BADBAD: inconsistent error-conventions .... !
-  if ret then return nil, msg end
+  if ret then 
+    cmd.status_post_command = ret
+    cmd.error = msg
+    return cmd
+  end
 
   if file.has_title and ( not file.title or file.title == "" ) then
-    log:warningf("No title found in %s; recompiling once more might solve this ...", file.relative_path)
-    return nil, "RETRY_COMPILATION: No title generated for ".. file.relative_path
+    if not cmd.this_is_a_retry then
+      log:warningf("No title found in %s; recompiling once more might solve this ...", file.relative_path)
+      cmd.status_post_command = "RETRY_COMPILATION"
+      return cmd
+    -- else 
+    --   log:warningf("No title found in %s; recompiling did not work to solve this ...", file.relative_path)
+    --   cmd.status_post_command = "NO_TITLE_FOUND"
+    --   cmd.error = msg
+    end
   end
 
   remove_empty_paragraphs(dom)
@@ -488,7 +508,7 @@ local function post_process_html(src, file, cmd_meta, root_dir)
     local function filter_newcommands(text)
       local result = {}
       for line in text:gmatch("[^\r\n]+") do
-        if line:match("^\\newcommand") or line:match("^\\DeclareMathOperator") or line:match("^\\newenvironment") then
+        if line:match("^\\newcommand {") or line:match("^\\DeclareMathOperator") or line:match("^\\newenvironment") then
             table.insert(result, line)
         end
       end
@@ -496,7 +516,9 @@ local function post_process_html(src, file, cmd_meta, root_dir)
     end
 
     local filtered_cmds = cmds
-    filtered_cmds= filtered_cmds:gsub("[^\n]*[-:*@].-\n", "")      -- remove 'exotic' commands; _ must be kept...
+    filtered_cmds= filtered_cmds:gsub("[^\n]*[:*@].-\n", "")      -- remove all 'exotic' characters; _ must be kept...
+    filtered_cmds= filtered_cmds:gsub("[^\n]\\_.-\n", "")          -- remove \_  (Mathax error)
+    filtered_cmds= filtered_cmds:gsub("[^\n]\\TU.-\n", "")          -- remove \_  (Mathax error)
     filtered_cmds= filter_newcommands(filtered_cmds)               -- only keep newcommands and declaremathoperator
     filtered_cmds= filtered_cmds:gsub("##(%d)", "#%1")             -- replace ##1 with #1
     
@@ -540,15 +562,21 @@ local function post_process_html(src, file, cmd_meta, root_dir)
   end
 
   -- save with absolute path to be independent of chdir's in compilation-step ...
-  local abstgt = path.join(file.absolute_dir, file.basename ..".".. cmd_meta.extension)
-  local reltgt = path.join(file.relative_dir, file.basename ..".".. cmd_meta.extension)
+  local abstgt = path.join(file.absolute_dir, file.basename ..".".. extension)
+  local reltgt = path.join(file.relative_dir, file.basename ..".".. extension)
 
   log:infof("Adapted html being saved as %s (%s)", reltgt, abstgt)
   
-  local err = save_html(dom, abstgt)
-  if err then  return nil, err  end   -- return failure
+  local msg = save_html(dom, abstgt)
+  if err then  
+    cmd.status_post_command = "NO_COULD_NOT_SAVE"
+    cmd.error = msg
+    return cmd
+  end   -- return failure
 
-  return reltgt    -- return success: relative path of post_processed file
+  cmd.output_file_final = reltgt
+  cmd.status_post_command = "OK"
+  return cmd    -- return success: relative path of post_processed file
 end
 
 M.post_process_html = post_process_html
