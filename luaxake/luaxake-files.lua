@@ -64,13 +64,12 @@ end
 --- @param input_path string filename
 --- @return fileinfo
 local function get_fileinfo(input_path, use_no_cache)
-
   -- caching
   if not use_no_cache and GLOB_files[input_path] then
     log:tracef("Getting cached fileinfo for %s", input_path)
     return GLOB_files[input_path]
   end
-  
+
   log:tracef("Getting fileinfo for %s (from folder %s)", input_path, lfs.currentdir())
 
   -- if root_folder and string.match(input_path, "^"..root_folder) then
@@ -99,7 +98,7 @@ local function get_fileinfo(input_path, use_no_cache)
   fileinfo.relative_path = relative_path
   fileinfo.absolute_path = abspath(relative_path)
   -- fileinfo.absolute_dir  = abspath(dir)
-  
+
   fileinfo.exists        = path.exists(relative_path)
   fileinfo.modified      = path.getmtime(relative_path)
   fileinfo.needs_compilation = false
@@ -117,7 +116,6 @@ local function get_fileinfo(input_path, use_no_cache)
   GLOB_files[fileinfo.relative_path] = fileinfo
   
   -- dump_fileinfo(fileinfo)   -- for debugging
-
   return fileinfo
 end
 
@@ -277,6 +275,10 @@ local function update_depends_on_files(fileinfo)
       elseif fileinfo.tex_documentclass and config.input_commands[command] then   -- only process inputs AFTER the documentclass (and thus not INSIDE preambles etc) !!!
         -- log:tracef("Consider %s{%s}", command, argument)
         included_file = path.normpath(current_dir.."/"..argument)     -- make absolute dir, and remove potential ../ constructs
+        if string.match(included_file,"[#\\]") then
+          log:debugf("SKIPPING included file %s", included_file)  
+          included_file=nil
+        else
         wanted_extension = "html"    -- because the html will/might be read to get 
         if not path.isfile(included_file) then
           if not path.isfile(included_file..".tex") then
@@ -291,7 +293,65 @@ local function update_depends_on_files(fileinfo)
         end
         log:tracef("%-40s considering included file %s (from %s)", relfilename, path.relpath(included_file, GLOB_root_dir), included_file)
         included_file = path.relpath(included_file, GLOB_root_dir)      -- make relative path 
+      end
+      -- else
+        -- log:tracef("Skipping command %s (arg=%s)", command, argument)   -- would log all commands in the .tex file .... !!!
+      end
+      
 
+      if included_file then
+
+          local included_fileinfo = get_fileinfo(included_file)
+
+          log:debugf("%-40s depends on %s", relfilename, included_file)
+          fileinfo.depends_on_files[included_file] = included_fileinfo
+
+
+          -- log:tracef("Getting tex_file_with_status for included file %s", included_file)
+          update_status_tex_file(included_fileinfo, {wanted_extension}, {wanted_extension} )
+          for fname, finfo in pairs(included_fileinfo.depends_on_files) do
+            if finfo.exists then
+              log:debugf("%-40s indirectly depends on %s", relfilename, finfo.relative_path)
+              fileinfo.depends_on_files[finfo.relative_path] = finfo
+            else
+              log:warningf("%-40s indirectly depends on non-existing file %s (%s); NOT ADDED TO DEPENDENT FILES", relfilename, finfo.relative_path, finfo.absolute_path)
+            end  
+  
+          end
+      end  -- included_file
+    end  -- next command ...
+    
+    
+    -- TERRIBLE HACK, now just for \execrciseCollection which has TWO arguments...
+    for command, argument, argument2 in content:gmatch("\\(%w+)%s*{([^%}]+)}{([^%}]+)}") do
+
+      -- log:tracef("MATCHED  command=%s and argument=%s and argument2=%s.", command, argument, argument2)
+      -- add dependency if the current command is \input like
+      --- local metadata = nil    -- should be fileinfo ...
+      local included_file = nil
+      local wanted_extension = nil
+      if fileinfo.tex_documentclass and config.input2_commands[command] then   -- only process inputs AFTER the documentclass (and thus not INSIDE preambles etc) !!!
+        -- log:tracef("Consider %s{%s}", command, argument)
+        included_file = path.normpath(current_dir.."/"..argument..argument2)     -- make absolute dir, and remove potential ../ constructs
+        if string.match(included_file,"[#\\]") then
+          log:debugf("SKIPPING included file %s", included_file)  
+          included_file=nil
+        else
+        wanted_extension = "html"    -- because the html will/might be read to get 
+        if not path.isfile(included_file) then
+          if not path.isfile(included_file..".tex") then
+            if not path.isfile(included_file..".sty") then
+              log:warningf("%-40s includes %s, but this file nor variants with .sty or .tex seem to exits", relfilename, included_file)
+            else
+              included_file = included_file..".sty"
+            end
+          else
+            included_file = included_file..".tex"
+          end
+        end
+        log:tracef("%-40s considering included file %s (from %s)", relfilename, path.relpath(included_file, GLOB_root_dir), included_file)
+        included_file = path.relpath(included_file, GLOB_root_dir)      -- make relative path 
+      end
       -- else
         -- log:tracef("Skipping command %s (arg=%s)", command, argument)   -- would log all commands in the .tex file .... !!!
       end
@@ -357,6 +417,7 @@ end
 local function update_output_files(metadata, extensions)
   metadata.output_files_needed = {}
   local needs_compilation = false
+
   for _, extension in ipairs(extensions) do
     local out_file = get_fileinfo(metadata.relative_path:gsub("tex$", extension), true)   -- do not use cached info
     -- detect if the HTML file needs recompilation

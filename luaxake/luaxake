@@ -10,14 +10,14 @@ local lapp = require "pl.lapp"
 
 logging = require("luaxake-logging")
 -- better make a logfile per day ... ?
--- NOTE: after a chdir (as in compile...), the logfile would change without the abspath!!
+-- NOTE: after a chdir the logfile would change without the abspath!!
 logging.set_outfile(path.abspath("luaxake.log"))     
 
-local log = logging.new("luaxake")
+local log = logging.new("main")
 local version = "{{version}}"
 
 local files   = require "luaxake-files"
-local compile = require "luaxake-compile"
+local bake    = require "luaxake-bake"
 local frost   = require "luaxake-frost"
 local html    = require "luaxake-transform-html"
 
@@ -43,6 +43,7 @@ Options:
 --compile       (default none)       Compile sequence (default 'pdf,html', or as set in settings)
 --settingsfile  (default none)       Luaxake settings script
 --configfile    (default none)       TeX4ht config file
+-j,--jobs       (optional number)    Number of compile jobs to run in parallel
 
 Possible commands:
  bake
@@ -53,7 +54,6 @@ Possible commands:
  info               -- not yet very useful..
  ]]
 
--- REMOVED: <dir>  (table)                 Document root directory
 --- @class args
 --- @field config    string   TeX4ht config file
 --- @field help      boolean  Print help message
@@ -129,7 +129,7 @@ config = {
   -- compile_sequence = {"pdf", "sagetex.sage", "pdf", "html"},
   -- see infra --   default_dependencies = { "xmPreamble.tex" },     -- add here e.g. xmPreamble, ximera.cls, ...
   compilers = {
-    pdf = {
+    ["pdf"] = {
       -- this doesn't work well
       -- command = 'pdflatex -interaction=nonstopmode  -file-line-error -shell-escape  "\\PassOptionsToClass{tikzexport}{ximera}\\PassOptionsToClass{xake}{ximera}\\PassOptionsToClass{xake}{xourse}\\nonstopmode\\input{@{filename}}"',
       -- command = 'pdflatex -interaction=nonstopmode  -file-line-error -shell-escape  "\\PassOptionsToClass{xake}{ximera}\\PassOptionsToClass{xake}{xourse}\\input{@{filename}}"',
@@ -138,6 +138,7 @@ config = {
       status = 0,           -- check that the latex command return 0
       infix = "" ,          -- used for .handout, and .make4k4
       extension = "pdf",    -- not used ????
+      output_format = "pdf",-- the extension of the 'final' output file, that is eg checked for uptodate-ness
       post_command = 'post_process_pdf',
       download_folder = 'ximera-downloads/with-answers',
     },
@@ -145,27 +146,38 @@ config = {
       command = 'pdflatex -interaction=nonstopmode  -file-line-error -shell-escape  -jobname @{basename}.handout "\\PassOptionsToClass{handout}{ximera}\\PassOptionsToClass{handout}{xourse}\\input{@{filename}}"',
       check_log = true, -- check log
       status = 0, -- check that the latex command return 0
-      extension = "handout.pdf",
+      extension = "pdf",
+      output_format = "handout.pdf",-- the extension of the 'final' output file, that is eg checked for uptodate-ness
       infix = "handout" ,
       post_command = 'post_process_pdf',
       download_folder = 'ximera-downloads/handouts',
     },
-    -- 20241217: no longet use "html", but eg draft.html (this keeps logfiles etc from being overwritten ...)!
+    ["html"] = {
+      command = "make4ht -l -c @{configfile} -f html5+dvisvgm_hashes -m draft -j @{basename}.online -s @{make4ht_extraoptions} @{filename} 'svg,htex4ht,mathjax,-css' '' '' '--interaction=nonstopmode -shell-escape -file-line-error'",
+      check_log = true, -- check log
+      status = 0, -- check that the latex command return 0
+      post_command = 'post_process_html',
+      extension = "html",
+      output_format = "html",
+      infix = "online" ,
+    },    
+    -- alternatives, use at your own risk
     ["draft.html"] = {
       command = "make4ht -l -c @{configfile} -f html5+dvisvgm_hashes -m draft -j @{basename}.draft -s @{make4ht_extraoptions} @{filename} 'svg,htex4ht,mathjax,-css' '' '' '--interaction=nonstopmode -shell-escape -file-line-error'",
       check_log = true, -- check log
       status = 0, -- check that the latex command return 0
       post_command = 'post_process_html',
       extension = "html",
+      output_format = "html",
       infix = "draft" ,
     },    
-    -- alternatives, use at your own risk
     ["make4ht.html"] = {
       command = "make4ht -l -c @{configfile} -f html5+dvisvgm_hashes          -j @{basename}.make4ht -s @{make4ht_extraoptions} @{filename} 'svg,htex4ht,mathjax,-css' '' '' '--interaction=nonstopmode -shell-escape -file-line-error'",
       check_log = true, -- check log
       status = 0, -- check that the latex command return 0
       post_command = 'post_process_html',
       extension = "html",
+      output_format = "html",
       infix = "make4ht" ,
     },
     -- test: use 'tikz+' option (FAILS for some tikzpictures, eg with shading/patterns)
@@ -175,6 +187,7 @@ config = {
       status = 0, -- check that the latex command return 0
       post_command = 'post_process_html',
       extension = "html",
+      output_format = "html",
       infix = "draft" ,
     },
     ["test.html"] = {
@@ -185,6 +198,7 @@ config = {
       status = 0, -- check that the latex command return 0
       post_command = 'post_process_html',
       extension = "html",
+      output_format = "html",
       infix = "make4ht" ,
     },
 
@@ -203,6 +217,9 @@ config = {
     },
   },
   -- TeX macro's to use for dependency-checking in .tex files
+  input2_commands = {
+    exerciseCollection=true, 
+  },
   input_commands = {
     input=true, 
     include=true, 
@@ -258,8 +275,8 @@ config = {
   make4ht_extraoptions= "",
   -- number of lines in tex files where we should look for \documentclass
   -- dump_fileinfo = "aFirstXourse.tex",
+  jobs = 2,
 }
-
 
 
 -- first real argument is the command (bake/frost/serve/...)
@@ -272,7 +289,6 @@ end
 
 log:debug("command: "..command)
 
- 
 -- all further arguments are considered dirs/files to be processed
 local dirs = {}
 
@@ -309,6 +325,7 @@ config.check        = args.check        or os.getenv("XM_ONLY_CHECK")      or co
 config.noclean      = args.noclean      or os.getenv("XM_NOCLEAN")         or config.noclean
 config.nodependencies = args.nodependencies or os.getenv("XM_NODEPENDENCIES")  or config.nodependencies
 config.force        = args.force        or os.getenv("XM_FORCE")           or config.force
+config.jobs         = args.jobs         or os.getenv("XM_JOBS")            or config.jobs
 
 if args.configfile ~= "none" then 
   config.configfile   =  args.configfile
@@ -335,11 +352,11 @@ else
 end
 
 -- Function to get extensions for array of compilers
-local function get_extensions_for_compilers(tbl, kys)
+local function get_output_formats_for_compilers(tbl, kys)
   local extensions = {}
   for _, key in ipairs(kys) do
-      if tbl[key] and tbl[key].extension then
-          table.insert(extensions, tbl[key].extension)
+      if tbl[key] and tbl[key].output_format then
+          table.insert(extensions, tbl[key].output_format)
       end
   end
   return extensions
@@ -364,19 +381,19 @@ end
 if command == "compilePdf" then
   log:info("Compile only PDF")
   config.compile_sequence = { "pdf" }
-  config.output_formats   = get_extensions_for_compilers(config.compilers, config.compile_sequence)
+  config.output_formats   = get_output_formats_for_compilers(config.compilers, config.compile_sequence)
 end
 if command == "compile" then
   log:info("Compile only HTML")
-  config.compile_sequence = { "draft.html" }
-  config.output_formats   = get_extensions_for_compilers(config.compilers, config.compile_sequence)
+  config.compile_sequence = { "html" }
+  config.output_formats   = get_output_formats_for_compilers(config.compilers, config.compile_sequence)
 end
 
 
 if args.compile ~= "none" then
   config.compile_sequence = utils.split(args.compile,',')
 else 
-  local compileseq = os.getenv("XM_COMPILE_SEQUENCE") or "pdf,draft.html"
+  local compileseq = os.getenv("XM_COMPILE_SEQUENCE") or "pdf,html"
   config.compile_sequence = utils.split(compileseq,',')
 
 end
@@ -390,7 +407,7 @@ end
 
 
 config.clean_infixes    = get_infixes_for_compilers(config.compilers, config.compile_sequence)
-config.output_formats   = get_extensions_for_compilers(config.compilers, config.compile_sequence)
+config.output_formats   = get_output_formats_for_compilers(config.compilers, config.compile_sequence)
 log:infof("Set compile_sequence=%s (and output_formats=%s)", table.concat(config.compile_sequence,','), table.concat(config.output_formats,','))
 
 --
@@ -523,7 +540,7 @@ end
     
     for _,file in ipairs(tex_files) do
       log:tracef("Removing temp files for %s", file.relative_path)
-      n_files_deleted = n_files_deleted  + compile.clean(file, to_be_cleaned_extensions, to_be_cleaned_infixes, config.check)
+      n_files_deleted = n_files_deleted  + bake.clean(file, to_be_cleaned_extensions, to_be_cleaned_infixes, config.check)
     end
 
     -- require 'pl.pretty'.dump(config)
@@ -565,7 +582,7 @@ function bake(to_be_compiled)
 
       if (compile_info.status or 0) > 0 then 
   --          require 'pl.pretty'.dump(compile_info)
-          failed_files[compile_info.source_file] = ( failed_files[compile_info.source_file] or 0 ) + #(compile_info.errors)
+          failed_files[compile_info.log_file] = #(compile_info.errors)
 
           for _, err in ipairs(compile_info.errors) do
             -- log:errorf("[%10s] %s:%s %s [%s]", compile_info.compiler, compile_info.source_file, err.line, err.context,err.error)
@@ -577,7 +594,7 @@ function bake(to_be_compiled)
         if compile_info.post_processing_error then
             log:errorf("[%-10s] %s: %s", "post_command", compile_info.source_file, compile_info.post_processing_error)
             local _, n_errors = compile_info.post_processing_error:gsub("\n", "")   -- HACK: number of lines equals number of errors ...
-            failed_files[compile_info.source_file] = ( failed_files[compile_info.source_file] or 0 ) + n_errors + 1
+            failed_files[compile_info.log_file] = n_errors + 1
         end
       end 
     end
@@ -592,7 +609,7 @@ function bake(to_be_compiled)
     log:warningf("Baked %d files, but %d compilation%s failed", #to_be_compiled, tablex.size(failed_files), tablex.size(failed_files) == 1 and "" or "s")
 
     for filename, errs in pairs(failed_files) do
-          log:errorf("%2d errors in %s", errs, filename)
+          log:errorf("See logfile %s for %d errors", filename, errs)
     end
     -- log:statusf("Baking resulted in %d errors", tablex.size(failed_files) )
     return 1, string.format("Baking resulted in %d errors", tablex.size(failed_files) )
@@ -607,7 +624,7 @@ if command == "bake" or command == "compilePdf" or command ==  "compile" then
   if #to_be_compiled == 0 then
     ret, msg = 0, "Nothing to be baked"
   else
-    ret, msg = bake(to_be_compiled)
+    ret, msg = bake.bake(to_be_compiled, config.jobs)
   end    -- end baking
 
   if ret > 0 then
@@ -648,7 +665,7 @@ if command == "ghaction" then
     msg={}
   else
     log:status("Start bake")
-    ret, msg = bake(to_be_compiled)
+    ret, msg = bake.bake(to_be_compiled, config.jobs)
     
     if ret > 0 then
       log:error("Bake failed: " .. msg)

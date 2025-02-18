@@ -1,7 +1,9 @@
 # Luaxake
 
-`luaxake` is a reimplementation in LUA of Ximera's original `xake` program, that was written in GO.
-It provides a build tool for Ximera courses (`xake` should make you think of `make`).
+`luaxake` is a build tool for Ximera courses (`xake` should make you think of `make`).
+It is a reimplementation in LUA of Ximera's original `xake` program, that was written in GO.
+
+`luaxake`starts pdflatex and/or make4ht to compile a PDf or HTML version of a Ximera activity, course, folder or complete project. It adds dependency checking, parallelization and (IMPORTANTLY!) post-processing to the standard pdflatex/make4ht compilation.
 
 It is strongly suggested to always run `luaxake` through the `xmlatex` wrapper script, and thus ONLY INSIDE A PROPERLY BUILD ximeralatex CONTAINER.
 Usage of `luaxake` is only tested and supported inside such a container, e.g. in a Codespace or a container started with `xmlatex`. You can run `xmlatex bash` to get a shell inside the container.
@@ -12,10 +14,10 @@ The main part of the reimplementation was done by Michal Hoftich (summer 2024), 
 The `luaxake` program builds and publishes a Ximera project through
 
 - '`bake`: convert to PDF and/or HTML all standalone TeX files in directories given as argument
-  - find (interesting....) files, e.g .tex, .pdf, .html...
+  - find (relevant/interesting...) files, e.g .tex, .pdf, .html...
   - detect dependencies  (mainly relevant in the HTML case to get proper titles/abstracts for xourses out of .html files)
   - (re-)compile (only) if the files themselves or their dependencies have changed
-  - only 'standalone' files are compiled, ie files that contain a `\documentclass` command
+  - only complete tex-files are compiled, ie files that contain a `\documentclass` command
   - there are adhoc rules for files ending in _pdf.tex and _beamer.tex: 
     - for these files, no .html version is generated
     - for files XXX_pdf.tex files, an XXX_pdf.svg is generated, that can be included semi-automatically in a corresponding XXX.tex file. This has been used for cheatsheets.
@@ -34,8 +36,7 @@ The `luaxake` program builds and publishes a Ximera project through
 
 
 Note: there are currently (2025-01) also shorthands 'compile' and 'compilePdf' for respectively only-html and only-pdf generation. 
-They are deprecated, but used in some VSCode tasks. Use `bake --compile pdf` or `bake --compile draft.html`.
-
+They are deprecated, but used in some VSCode tasks. Use `bake --compile pdf` or `bake --compile html`.
 
 
 # Usage:
@@ -67,7 +68,7 @@ For a full list of options, see `luaxake -h` or the `luaxake` source code. Main 
 - `--check` : do not do the actual compilations. (But as of 2025-01, the POST-PROCESSING is done!)
 - `--noclean` : by deafult, temporary files that are not needed for subsequent compilations are automatically deleted. This option keeps them available.
 
-- `--compile` target_list: overwrite the compilations to be done. targetlist can be a list of `pdf`, `draft.html`, `handout.pdf`. E.g `--compile pdf,handout.pdf,draft.html` generates three output files.
+- `--compile` target_list: overwrite the compilations to be done. targetlist can be a list of `pdf`, `html`, `handout.pdf`. E.g `--compile pdf,handout.pdf,html` generates three output files.
 
 - `--settings` -- Lua script that can change Luaxake configuration settings.
 
@@ -128,9 +129,8 @@ clean = { "aux", "4ct", "4tc", "oc", "md5", "dpth", "out", "jax", "idv", "lg", "
 
 There are several available compilers, and more can be added in the settings:
 
-- `pdf` -- command used for the PDF generation
-- `html` -- (OBSOLETE) command used for the HTML generation
-- `draft.html` -- command used for the HTML generation
+- `pdf`        -- command used for the PDF generation
+- `html`       -- command used for the HTML generation
 - `sagetex.sage` -- command used for the `sagetex.sage` generation  (NOT YET IMPLEMENTED)
 
 ```Lua
