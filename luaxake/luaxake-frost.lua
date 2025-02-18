@@ -38,35 +38,6 @@ local function osExecute(cmd, no_warnings)
     return returnCode, commandOutput
 end
 
-local function get_output_files(file, extension)
-    local result = {}
-    for fname, entry in pairs(file.output_files_needed or {}) do
-        log:tracef("Getting  %-14s entry: %s ", file.extension, entry.absolute_path)
-
-        if entry.extension == extension then --and entry.info.type == targetType then
-
-            if extension == "make4ht.html" then    -- 20250121: does never occur ???
-                local file = files.get_fileinfo(entry.relative_dir .."/" .. entry.basenameshort..".html")
-                -- require 'pl.pretty'.dump(entry)
-                -- require 'pl.pretty'.dump(file)
-                table.insert(result, file)
-                log:debug(string.format("Hacking  %-14s outputfile: %s ", file.extension, file.absolute_path))
-            elseif extension == "draft.html" then
-                local file = files.get_fileinfo(entry.relative_dir .. "/" .. entry.basenameshort..".html")
-                -- require 'pl.pretty'.dump(entry)
-                -- require 'pl.pretty'.dump(file)
-                table.insert(result, file)
-                log:debug(string.format("Hacking  %-14s outputfile: %s ", file.extension, file.absolute_path))
-            else
-                table.insert(result, entry)
-                log:debug(string.format("Adding   %-14s outputfile: %s ", entry.extension, entry.absolute_path))
-            end
-        else
-            log:tracef("Skipping %-14s outputfile: %s ", entry.extension, entry.absolute_path)
-        end
-    end
-    return result
-end
 
 local function get_git_uncommitted_files()
     --  local ret, out = osExecute("git ls-files --modified --other  --exclude-standard")
