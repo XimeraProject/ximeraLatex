@@ -109,6 +109,7 @@ RUN tlmgr update --self; \
         luaxml \
         fontawesome stix  \
         latexindent \
+        wrapfig \
         wallpaper
 
 # make4ht is not in /usr/local/bin if installed with tlmgr!!!
