@@ -122,6 +122,18 @@ function logging.new(module)
         logging.print_msg(string.upper(name),  string.format("%-5s: %s", self.module, msg), color)
       end
     end
+    obj[name.."_table"] = function(self, tbl, indentation)
+      local indentation = indentation or ""
+
+      for key, value in pairs(tbl) do
+        if type(value) == "table" then
+          self[name](self, indentation .. tostring(key) .. " :")
+          self[name.."_table"](self, value, indentation .. "\t")
+        else
+          self[name](self, indentation .. tostring(key) .. " : " .. tostring(value))
+        end
+      end
+    end
   end
   return setmetatable({}, obj)
 
