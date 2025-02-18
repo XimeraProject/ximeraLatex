@@ -42,8 +42,8 @@ fi
 # Set some defaults
 #
 # default docker image to run; overwrite with 'export XAKE_IMAGE=myxake:0.1'
-: "${XAKE_BASE:=xake2024}"
-: "${XAKE_VERSION:=v2.5.5}"
+: "${XAKE_BASE:=ximeralatex}"
+: "${XAKE_VERSION:=v2.6.1}"
 # : "${XAKE_BASE:=xake2019}"
 # : "${XAKE_VERSION:=v2.1.1}"
 : "${XAKE_CONTAINER:=$XAKE_BASE:$XAKE_VERSION}"
@@ -52,6 +52,7 @@ fi
 # For historic compatibility, keep supporting XAKE_IMAGE
 : "${XAKE_IMAGE:=$DOCKER_REPO$XAKE_CONTAINER}"   # TO BE OBSOLETED
 : "${DOCKER_IMAGE:=$XAKE_IMAGE}"
+: "${DOCKER_DEFAULT_PLATFORM:=linux/amd64}"      # needed for MacOS ?
 
 : "${SERVER_PORT:=2000}"
 : "${SERVER_NAME:=ximeraserver}"
