@@ -8,11 +8,9 @@ local path = pl.path
 local lapp = require "pl.lapp"
 -- local lapp = require "lapp-mk4"   -- the above is 'better'?
 
-
-
 logging = require("luaxake-logging")
 -- better make a logfile per day ... ?
--- NOTE: after a chdir (as in bake...), the logfile would change without the abspath!!
+-- NOTE: after a chdir the logfile would change without the abspath!!
 logging.set_outfile(path.abspath("luaxake.log"))     
 
 local log = logging.new("main")
@@ -56,7 +54,6 @@ Possible commands:
  info               -- not yet very useful..
  ]]
 
--- REMOVED: <dir>  (table)                 Document root directory
 --- @class args
 --- @field config    string   TeX4ht config file
 --- @field help      boolean  Print help message
@@ -132,7 +129,7 @@ config = {
   -- compile_sequence = {"pdf", "sagetex.sage", "pdf", "html"},
   -- see infra --   default_dependencies = { "xmPreamble.tex" },     -- add here e.g. xmPreamble, ximera.cls, ...
   compilers = {
-    pdf = {
+    ["pdf"] = {
       -- this doesn't work well
       -- command = 'pdflatex -interaction=nonstopmode  -file-line-error -shell-escape  "\\PassOptionsToClass{tikzexport}{ximera}\\PassOptionsToClass{xake}{ximera}\\PassOptionsToClass{xake}{xourse}\\nonstopmode\\input{@{filename}}"',
       -- command = 'pdflatex -interaction=nonstopmode  -file-line-error -shell-escape  "\\PassOptionsToClass{xake}{ximera}\\PassOptionsToClass{xake}{xourse}\\input{@{filename}}"',
@@ -141,6 +138,7 @@ config = {
       status = 0,           -- check that the latex command return 0
       infix = "" ,          -- used for .handout, and .make4k4
       extension = "pdf",    -- not used ????
+      output_format = "pdf",-- the extension of the 'final' output file, that is eg checked for uptodate-ness
       post_command = 'post_process_pdf',
       download_folder = 'ximera-downloads/with-answers',
     },
@@ -148,27 +146,38 @@ config = {
       command = 'pdflatex -interaction=nonstopmode  -file-line-error -shell-escape  -jobname @{basename}.handout "\\PassOptionsToClass{handout}{ximera}\\PassOptionsToClass{handout}{xourse}\\input{@{filename}}"',
       check_log = true, -- check log
       status = 0, -- check that the latex command return 0
-      extension = "handout.pdf",
+      extension = "pdf",
+      output_format = "handout.pdf",-- the extension of the 'final' output file, that is eg checked for uptodate-ness
       infix = "handout" ,
       post_command = 'post_process_pdf',
       download_folder = 'ximera-downloads/handouts',
     },
-    -- 20241217: no longet use "html", but eg draft.html (this keeps logfiles etc from being overwritten ...)!
+    ["html"] = {
+      command = "make4ht -l -c @{configfile} -f html5+dvisvgm_hashes -m draft -j @{basename}.online -s @{make4ht_extraoptions} @{filename} 'svg,htex4ht,mathjax,-css' '' '' '--interaction=nonstopmode -shell-escape -file-line-error'",
+      check_log = true, -- check log
+      status = 0, -- check that the latex command return 0
+      post_command = 'post_process_html',
+      extension = "html",
+      output_format = "html",
+      infix = "online" ,
+    },    
+    -- alternatives, use at your own risk
     ["draft.html"] = {
       command = "make4ht -l -c @{configfile} -f html5+dvisvgm_hashes -m draft -j @{basename}.draft -s @{make4ht_extraoptions} @{filename} 'svg,htex4ht,mathjax,-css' '' '' '--interaction=nonstopmode -shell-escape -file-line-error'",
       check_log = true, -- check log
       status = 0, -- check that the latex command return 0
       post_command = 'post_process_html',
       extension = "html",
+      output_format = "html",
       infix = "draft" ,
     },    
-    -- alternatives, use at your own risk
     ["make4ht.html"] = {
       command = "make4ht -l -c @{configfile} -f html5+dvisvgm_hashes          -j @{basename}.make4ht -s @{make4ht_extraoptions} @{filename} 'svg,htex4ht,mathjax,-css' '' '' '--interaction=nonstopmode -shell-escape -file-line-error'",
       check_log = true, -- check log
       status = 0, -- check that the latex command return 0
       post_command = 'post_process_html',
       extension = "html",
+      output_format = "html",
       infix = "make4ht" ,
     },
     -- test: use 'tikz+' option (FAILS for some tikzpictures, eg with shading/patterns)
@@ -178,6 +187,7 @@ config = {
       status = 0, -- check that the latex command return 0
       post_command = 'post_process_html',
       extension = "html",
+      output_format = "html",
       infix = "draft" ,
     },
     ["test.html"] = {
@@ -188,6 +198,7 @@ config = {
       status = 0, -- check that the latex command return 0
       post_command = 'post_process_html',
       extension = "html",
+      output_format = "html",
       infix = "make4ht" ,
     },
 
@@ -341,11 +352,11 @@ else
 end
 
 -- Function to get extensions for array of compilers
-local function get_extensions_for_compilers(tbl, kys)
+local function get_output_formats_for_compilers(tbl, kys)
   local extensions = {}
   for _, key in ipairs(kys) do
-      if tbl[key] and tbl[key].extension then
-          table.insert(extensions, tbl[key].extension)
+      if tbl[key] and tbl[key].output_format then
+          table.insert(extensions, tbl[key].output_format)
       end
   end
   return extensions
@@ -370,19 +381,19 @@ end
 if command == "compilePdf" then
   log:info("Compile only PDF")
   config.compile_sequence = { "pdf" }
-  config.output_formats   = get_extensions_for_compilers(config.compilers, config.compile_sequence)
+  config.output_formats   = get_output_formats_for_compilers(config.compilers, config.compile_sequence)
 end
 if command == "compile" then
   log:info("Compile only HTML")
-  config.compile_sequence = { "draft.html" }
-  config.output_formats   = get_extensions_for_compilers(config.compilers, config.compile_sequence)
+  config.compile_sequence = { "html" }
+  config.output_formats   = get_output_formats_for_compilers(config.compilers, config.compile_sequence)
 end
 
 
 if args.compile ~= "none" then
   config.compile_sequence = utils.split(args.compile,',')
 else 
-  local compileseq = os.getenv("XM_COMPILE_SEQUENCE") or "pdf,draft.html"
+  local compileseq = os.getenv("XM_COMPILE_SEQUENCE") or "pdf,html"
   config.compile_sequence = utils.split(compileseq,',')
 
 end
@@ -396,7 +407,7 @@ end
 
 
 config.clean_infixes    = get_infixes_for_compilers(config.compilers, config.compile_sequence)
-config.output_formats   = get_extensions_for_compilers(config.compilers, config.compile_sequence)
+config.output_formats   = get_output_formats_for_compilers(config.compilers, config.compile_sequence)
 log:infof("Set compile_sequence=%s (and output_formats=%s)", table.concat(config.compile_sequence,','), table.concat(config.output_formats,','))
 
 --
