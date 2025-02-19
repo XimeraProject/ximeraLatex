@@ -358,7 +358,7 @@ function do_command_start(cmd)
     command = "echo SKIPPED " .. command
   end 
 
-  log:statusf("Command %3d started for %s", cmd.job_nr, cmd.id )
+  log:statusf("Command %3s started for %s", cmd.job_nr, cmd.id )
 
 
   -- Start process with "command"
@@ -403,11 +403,10 @@ end
 function cmd_can_run(cmd, commands_to_run, current_processes, commands_that_ran) 
 
   for command_id, _ in pairs(cmd.depends_on_cmds) do
-    -- Check to see if this dependency still needs ran
+    -- Check to see if this dependency still needs to run
     for _, command in ipairs(commands_to_run) do
       if command_id == command.id then
         log:infof("NXT? %s WAIT because %s must run first", cmd.id, command_id )
-     
         return "WAIT"
       end
     end
@@ -416,18 +415,21 @@ function cmd_can_run(cmd, commands_to_run, current_processes, commands_that_ran)
     for _, process in ipairs(current_processes) do
       if command_id == process.cmd.id then
         log:infof("NXT? %s WAIT because %s currently running", cmd.id, command_id )
-
         return "WAIT"
       end
     end
 
     -- Check to see if this dependency ran and failed
     for _, command in ipairs(commands_that_ran) do
-      if command_id == command.id and command.status ~= "OK" and tostring(command.status_post_command) ~= "RETRY_COMPILATION" then 
-        -- Note if we get here and have status of "RETRY_COMPILATION", then we expect the retried command to be in here later on
-        log:infof("NXT? %s SKIP because %s failed", cmd.id, command_id )
-        cmd.errors = command_id
-        return "SKIP"
+      if command_id == command.id and command.status ~= "OK" then
+        if tostring(command.status_post_command) == "RETRY_COMPILATION"  then
+            log:infof("NXT? %s WAIT because %s will be retried", cmd.id, command_id )
+            return "WAIT"
+        else
+          log:infof("NXT? %s SKIP because %s failed", cmd.id, command_id )
+          cmd.errors = command_id
+          return "SKIP"
+        end
       end
     end
   end
@@ -471,21 +473,26 @@ function bake(to_be_compiled, n_jobs)
   -- while there is work going on or work to be done 
   while #current_processes > 0 or #commands_to_run > 0 do
     
+    -- Start new processes ( if slots are available, and there are more jobs to process)
     local i = 1
-    
-    -- 
     while #current_processes <= n_jobs and i <= #commands_to_run do -- Start as many processes as we can
       -- Grab ith command
       local cmd = commands_to_run[i]
 
       local status = cmd_can_run(cmd, commands_to_run, current_processes, commands_that_ran)
       log:debugf("Status: %s. cmd.command: %s", tostring(status), tostring(cmd.command))
+
       if status == "OK" then 
         -- Remove command from list
         table.remove(commands_to_run, i)
         -- Give this command a 'job_nr' for logging/follow-up
-        cmd.job_nr = job_nr
-        job_nr = job_nr + 1
+        if cmd.job_nr then 
+           --- presumably a 'retry' !!!
+          cmd.job_nr = cmd.job_nr .. "r" 
+        else
+          cmd.job_nr = job_nr
+          job_nr = job_nr + 1
+        end  
         
         log:debugf("Starting process %d for command %s", current_workers, cmd.command)
         local ret, process = do_command_start(cmd)
@@ -508,10 +515,11 @@ function bake(to_be_compiled, n_jobs)
         
         i = i + 1
       else
-        log:errorf("Staus %s not implemented. Should not occur.", status)
+        log:errorf("Status %s not implemented. Should not occur.", status)
       end
     end
 
+    -- Check all running processes, and 'handle' the finished ones (check errrors/postporocess/resubmit)
     local j = 1
     while  j <= #current_processes do -- Check for processes that have ended
       local process = current_processes[j]
@@ -557,14 +565,14 @@ function bake(to_be_compiled, n_jobs)
 
         local cmd = do_command_handle(process.cmd)
 
-        log:statusf("Command %3d/%d returns %s (process %d, %.1f seconds) for %s of %s", process.cmd.job_nr, job_total, process.cmd.status, j, process.cmd.compilation_time, process.cmd.extension, process.cmd.file.relative_path)
+        log:statusf("Command %3s/%d returns %s (process %d, %.1f seconds) for %s of %s", process.cmd.job_nr, job_total, process.cmd.status, j, process.cmd.compilation_time, process.cmd.extension, process.cmd.file.relative_path)
     
         table.insert(commands_that_ran, cmd)
         
         -- Put the command back if we need to retry
         if cmd.status_post_command == "RETRY_COMPILATION" then
           cmd.this_is_a_retry = true
-          log:infof("Retrying %s (as command %d)", cmd.id, job_nr)
+          log:infof("Retrying %s (was job %s (%s))", cmd.id, cmd.job_nr , job_nr)
           table.insert(commands_to_run, 1, cmd) -- This could mess up the order a bit, but now that we check for dependencies this shouldn't be an issue
         end
       end
@@ -575,161 +583,8 @@ function bake(to_be_compiled, n_jobs)
     end
   end
 
- --[[ NOTE: I couldn't quite get the below flow/logic to work with our dependency checking (without essentially nesting the first while loop within the second while
- which was quite ugly). The main issue was handling the possibility of having a fluctuating number of processes running. For (possibly a quite rare) example, if we have 5 cmds 
- waiting on a single cmd (need to scale from 1 process back up to 5 (or whatever the max is))
-
-
-  local i = 1
-  while current_workers <= n_jobs and i <= #commands_to_run do
-    -- Grab ith command
-    local cmd = commands_to_run[i]
-
-    local status = cmd_can_run(cmd, commands_to_run, current_processes, commands_that_ran) -- commands_that_ran should be empty
-    log:debugf("Status: %s. cmd.command: %s", tostring(status), tostring(cmd.command))
-    if status == "OK" then 
-      -- Remove command from list
-      table.remove(commands_to_run, i)
-      -- Give this command a 'job_nr' for logging/follow-up
-      cmd.job_nr = job_nr
-      job_nr = job_nr + 1
-      
-      log:debugf("Starting process %d for command %s", current_workers, cmd.command)
-      local ret, process = do_command_start(cmd)
-
-      if ret > 0 then
-        return ret,process
-      else 
-        log:tracef("Added process %d to current_processes",current_workers)
-        table.insert(current_processes, process)
-        current_workers = current_workers + 1
-      end
-    elseif status == "WAIT" then
-      i = i + 1
-    else -- status == "SKIP" Probably shouldn't happen at this point
-      cmd.status = "SKIP"
-      -- TODO: look at do_command_handle and see if anything in there needs to run before we insert
-      table.insert(commands_that_ran, cmd)
-      i = i + 1
-    end
-  end
-  -- (at most) n_jobs processes have been started; now start collecting results, and restart processes as long as needed
-
-  log:tracef("Starting main processing loop (for %d processes)", #current_processes)
-  while #current_processes > 0 do
-    local j = 1
-    while  j <= #current_processes do
-        local process = current_processes[j]
-        log:tracef("Checking process %d of %s (fd=%d)", j , #current_processes, process.fd)
-        
-        -- log:tracef("Read up to 2024 bytes from fd %d",process.fd)
-        local bytes_read = ffi.C.read(process.fd, read_buffer, 2024) -- Read 2024 bytes at a time (We currently don't do anything with what we read)
-        -- log:tracef("ffi.read returns %s (%s)", bytes_read, read_buffer)
-
-        if (bytes_read == -1) and (_errno[0] ~= EAGAIN) then -- There was some unexpected error
-          log:errorf("Reading 2024 bytes from fd %d returns %s",process.fd, _errno[0])
-          -- TODO: We might be able to handle some of these errors instead of just failing
-          return tonumber(_errno[0]), "Failed to read pipe for compilation process for file: " .. tostring(process.file_name) .. ". Error code: " .. tostring(_errno[0])
-
-        elseif bytes_read == -1 then -- _errno[0] == EAGAIN
-          j = j+1     -- TODO: check ...!
-        elseif bytes_read > 0 then
-          local read_string = string.sub(string.gsub(ffi.string(read_buffer),"[\r\n]",""), 1, math.min(bytes_read,30)+1)
-          log:tracef("Read from fd %d returns %s: %s...",process.fd, bytes_read, read_string)
-          j = j+1
-        else  --  bytes_read == 0 then -- End of file
-          log:tracef("Zero bytes read from fd %d",process.fd)
-
-          local ret_code = ffi.C.pclose(process.handle)
-
-
-          if ret_code == -1 then -- TODO: Do we have to do anything more in this case?
-            log:error("Failed to get return code for compilation process for file: " .. tostring(process.file_name))
-          elseif ret_code == 0 then
-            log:tracef("Got returncode %s for file %s", ret_code, process.file_name)
-          else
-            log:warningf("Got returncode %s for file %s", ret_code, process.file_name)
-            -- ret_code = ret_code / 256 -- Discard last 8 bits
-          end
-          
-          process.cmd.status_command = ret_code
-
-          -- TODO: add error handling based off of this return code
-          log:trace("Return code for compilation process for file: " .. tostring(process.file_name) .. " is ret_code: " .. tostring(ret_code))
-
-          local compilation_time = socket.gettime() - process.start_time
-
-          process.cmd.compilation_time = compilation_time
-
-
-          local cmd = do_command_handle(process.cmd)
-
-          log:statusf("Command %3d/%d returns %s (process %d, %.1f seconds) for %s of %s", process.cmd.job_nr, job_total, process.cmd.status, j, process.cmd.compilation_time, process.cmd.extension, process.cmd.file.relative_path)
-    
-          table.insert(commands_that_ran, cmd)
-          
-          -- Now start the next command_to_run 
-          local next_cmd
-          if cmd.status_post_command == "RETRY_COMPILATION" then
-            next_cmd = cmd -- RETRY !!
-            next_cmd.this_is_a_retry = true
-            job_nr = job_nr - 1     -- otherwise you get job 25/13 ... !
-            log:infof("Restarting %s (as command %d)", next_cmd.id, job_nr)
-          else
-            -- Start the next compile, if there are any left
-            log:tracef("Selecting next command to run")
-            next_cmd = table.remove(commands_to_run,1)
-
-            -- -- TODO : check if dependencies are successfully compiled 
-            -- -- (unless you don't want to ...)
-            -- if not config.nodependencies then
-            --   for fname, ffile in pairs(next_cmd.file.depends_on_files) do
-            --     if ffile.needs_compilation then
-            --       log:errorf("SKIPPING %s: dependent file %s not (yet) compiled.", next_cmd.file.relative_path, fname)
-            --       goto uptonextcompilation 
-            --     end
-            --   end
-            -- end
-          end
-
-          if next_cmd then
-            log:debugf("Starting worker %d for %s", j, next_cmd.command)
-
-            next_cmd.job_nr = job_nr
-            job_nr = job_nr + 1
-            local ret, process = do_command_start(next_cmd)
-            
-            if ret > 0 then
-              log:errorf("Problem starting current_processes %d for %s: %s", j, next_cmd.id, process)
-              return ret,process
-            else 
-              log:debugf("Updating current_processes %d for %s", j, next_cmd.id)
-              current_processes[j] = process
-            end
-      
-            
-            j = j+1
-          else
-            log:debugf("No more work, removing worker %d", j)
-            table.remove(current_processes, j)   --  THIS SHIFTS THE REMAINING ELEMENTS, so no increase of j !!!                
-          end
-        end 
-    end
-    local sleep_time = 0.25
-    log:tracef("sleep %f", sleep_time)
-    socket.sleep(sleep_time)
-  end--]]
-
-
-    -- if config.noclean then
-    --   log:debugf("Skipping cleaning temp files")
-    -- else
-    --   compile.clean(file, config.clean_extensions,config.clean_infixes)
-    -- end
   local total_end_time =  socket.gettime()
-
   log:statusf("Finished compiling %d files in %.1f seconds", #to_be_compiled, total_end_time - total_start_time)
-
 
   -- collect and print all errors 
   local failed_commands = {}
