@@ -30,6 +30,9 @@
 #
 #
 
+# exit if we receive INT signal
+trap 'exit 130' INT
+
 : "${CONFIG_FILE:=./xmScripts/config.txt}"
 
 if [[ -f "$CONFIG_FILE" ]]

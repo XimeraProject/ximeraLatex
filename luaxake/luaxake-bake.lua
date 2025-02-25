@@ -399,7 +399,6 @@ function do_command_start(cmd)
   return 0, process
 end
 
--- TODO: possibly return dependency id from this
 function cmd_can_run(cmd, commands_to_run, current_processes, commands_that_ran) 
 
   for command_id, _ in pairs(cmd.depends_on_cmds) do
@@ -438,10 +437,14 @@ function cmd_can_run(cmd, commands_to_run, current_processes, commands_that_ran)
   return "OK"
 end
 
--- TODO: test the dependency stuff
 function bake(to_be_compiled, n_jobs)
   local commands_to_run = {}
   local commands_that_ran = {}
+
+  if n_jobs < 1 then
+    log:warning("n_jobs was less than 1. Setting to 1")
+    n_jobs = 1
+  end
 
 
   log:tracef("Collecting all needed compile commands for %s to be compiled files", #to_be_compiled)
@@ -455,7 +458,7 @@ function bake(to_be_compiled, n_jobs)
 
   local job_total = #commands_to_run
   log:statusf("There are %d commands to run for %d files", job_total, #to_be_compiled)
-  log:debug_table(commands_to_run)
+  log:trace_table(commands_to_run)
     
 
   local _errno = ffi.C.__errno_location() -- Get pointer to errno location
@@ -475,7 +478,7 @@ function bake(to_be_compiled, n_jobs)
     
     -- Start new processes ( if slots are available, and there are more jobs to process)
     local i = 1
-    while #current_processes <= n_jobs and i <= #commands_to_run do -- Start as many processes as we can
+    while #current_processes < n_jobs and i <= #commands_to_run do -- Start as many processes as we can
       -- Grab ith command
       local cmd = commands_to_run[i]
 
