@@ -263,7 +263,7 @@ EOF
         XAKE="$XAKE -v"
         LUAXAKE="$LUAXAKE -v"
       ;;
-    \? ) echo "Usage: build [-h] [-i] <commands>"
+    \? ) echo "Usage: xmlatex <command> <args...>"
 	 exit 1
       ;;
   esac
