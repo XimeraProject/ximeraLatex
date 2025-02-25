@@ -33,7 +33,7 @@ local function clean(basefile, extensions, infixes, only_check)
         log:debugf("%s %-14s file %s", (only_check and "Would remove" or "Removing") ,infix.."."..ext, filename)
         if not only_check then os.remove(filename); nfiles = nfiles + 1 end
       -- else
-      --   log:tracef("No file %s present", filename)
+      --    log:debugf("No file %s present", filename)
       end
     end
   end
@@ -294,7 +294,11 @@ local function do_command_handle(cmd)
     if config.noclean then
       log:debugf("Skipping cleaning temp files")
     else
-      clean(file, config.clean_extensions, config.clean_infixes)
+      local infix = ""
+      if cmd.command_metadata.infix and cmd.command_metadata.infix ~= "" then
+        infix = "."..cmd.command_metadata.infix
+      end
+      clean(file, config.clean_extensions, { infix })
     end    
       
     cmd.status = "OK" 
