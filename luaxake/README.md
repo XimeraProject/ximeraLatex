@@ -68,7 +68,7 @@ For a full list of options, see `luaxake -h` or the `luaxake` source code. Main 
 - `--check` : do not do the actual compilations. (But as of 2025-01, the POST-PROCESSING is done!)
 - `--noclean` : by deafult, temporary files that are not needed for subsequent compilations are automatically deleted. This option keeps them available.
 
-- `-j`, `--jobs` : set maximum number of compiler command processes to run at the same time. Possible values: Any integer greater than 0. Default value is 2
+- `-j`, `--jobs` : set maximum number of compiler command processes to run at the same time. Possible values: Any number between 1 and 1000 (inclusive). Default value is 2
 
 - `--compile` target_list: overwrite the compilations to be done. targetlist can be a list of `pdf`, `html`, `handout.pdf`. E.g `--compile pdf,handout.pdf,html` generates three output files.
 

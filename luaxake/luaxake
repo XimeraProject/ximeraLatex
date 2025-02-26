@@ -43,7 +43,7 @@ Options:
 --compile       (default none)       Compile sequence (default 'pdf,html', or as set in settings)
 --settingsfile  (default none)       Luaxake settings script
 --configfile    (default none)       TeX4ht config file
--j,--jobs       (optional number)    Number of compile jobs to run in parallel
+-j,--jobs       (optional 1..1000)    Number of compile jobs to run in parallel
 
 Possible commands:
  bake

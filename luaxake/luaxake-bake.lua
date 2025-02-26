@@ -441,9 +441,10 @@ function bake(to_be_compiled, n_jobs)
   local commands_to_run = {}
   local commands_that_ran = {}
 
-  if n_jobs < 1 then
-    log:warning("n_jobs was less than 1. Setting to 1")
-    n_jobs = 1
+  n_jobs = tonumber(n_jobs)
+  if n_jobs == nil or n_jobs < 1 then
+    log:warning("n_jobs was invalid. Setting to 2")
+    n_jobs = 2
   end
 
 
