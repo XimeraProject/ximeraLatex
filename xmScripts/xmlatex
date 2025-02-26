@@ -117,8 +117,8 @@ else
 
     echo "Restarting myself in docker (from image $DOCKER_IMAGE)"	
     [[ -n "$DEBUG" ]] && echo  \
-    docker run --env LOCAL_IP --env XIMERA_URL --env XIMERA_NAME --env GPG_KEY --env GPG_KEY_ID --env DEBUG --network host --rm $INTERACTIVE --mount type=bind,source=$MOUNTDIR,target=/code $DOCKER_IMAGE $COMMAND $*
-    docker run --env LOCAL_IP --env XIMERA_URL --env XIMERA_NAME --env GPG_KEY --env GPG_KEY_ID --env DEBUG --network host --rm $INTERACTIVE --mount type=bind,source=$MOUNTDIR,target=/code $DOCKER_IMAGE $COMMAND $*
+    docker run --env LOCAL_IP --env XIMERA_URL --env XIMERA_NAME --env GPG_KEY --env GPG_KEY_ID --env DEBUG --network host --rm $INTERACTIVE --mount --platform linux/amd64 type=bind,source=$MOUNTDIR,target=/code $DOCKER_IMAGE $COMMAND $*
+    docker run --env LOCAL_IP --env XIMERA_URL --env XIMERA_NAME --env GPG_KEY --env GPG_KEY_ID --env DEBUG --network host --rm $INTERACTIVE --mount --platform linux/amd64 type=bind,source=$MOUNTDIR,target=/code $DOCKER_IMAGE $COMMAND $*
     exit 
 fi
 
