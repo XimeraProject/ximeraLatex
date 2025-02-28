@@ -104,7 +104,7 @@ local function frost(tex_files, to_be_compiled_files)
                 log:debugf("Collecting extra fileinfo for  %s", html_file.relative_path)
                 local ret, msg =  html.update_html_fileinfo(html_file)     -- get labels etc
                 if ret then 
-                    log:errorf("FAILED to get associated files etc. for %s", html_file.relative_path)
+                    log:errorf("Can not add html file %s: %s", html_file.relative_path, msg)
                     return ret, msg 
                 end
             end

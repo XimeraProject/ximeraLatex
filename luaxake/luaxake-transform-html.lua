@@ -455,7 +455,7 @@ local function post_process_html(cmd)
 
   if file.has_title and ( not file.title or file.title == "" ) then
     if not cmd.this_is_a_retry then
-      log:warningf("No title found in %s; recompiling once more might solve this ...", file.relative_path)
+      log:debugf("No title found in %s; recompiling once more might solve this ...", file.relative_path)
       cmd.status_post_command = "RETRY_COMPILATION"
       return cmd
     -- else 
