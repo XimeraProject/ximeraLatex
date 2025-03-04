@@ -519,11 +519,16 @@ then
     [[ -z "$YOUR_EMAIL" && -n "$1" ]] && YOUR_EMAIL="$1"
     [[ -z "$YOUR_NAME" && -n "$2" ]] && YOUR_NAME="$*"
 
+
+    if [[ -z "$YOUR_EMAIL" ]] 
+    then
+        echo "Using dummy name for this key, which is OK for local testing"
+        echo "Please set YOUR_NAME and YOUR_EMAIL in config.txt for a permanent key"
+        YOUR_EMAIL="dummykey@xmlatex"
+        YOUR_NAME="TESTING_XIMERA"
+    fi
+
     KEY_UID="$YOUR_NAME <$YOUR_EMAIL>"
-
-    [[ -z "$YOUR_EMAIL" ]] && error "Please set YOUR_NAME and YOUR_EMAIL in config.txt"
-    [[ -z "$YOUR_NAME" ]]  && error "Please set YOUR_NAME and YOUR_EMAIL in config.txt"
-
 
     if [[ -f .keyconfig ]] then
         echo "WARNING: Using existing .keyconfig" 
@@ -564,15 +569,18 @@ EOF
     if [[ -z "$IS_XMKEYFILE_IGNORED" ]]
     then
         echo "You do NOT have a rule to gitignore a .xmKeyFile. I won't create one until you add a line '.XmKeyFile*' to your .gitignore file."
-        echo "Note: you don't necessarily want to use a .xmKeyFile: it's eg typically not useful in Codespaces."
+        echo "Note: you don't have to use a .xmKeyFile, eg when using 'secrets' in Codespaces or Actions."
     elif [[ -f .xmKeyFile ]] then
-        echo "You already have a .xmKeyFile which I DIT NOT overwrite. Remove the existing file and regenenerate a key if you want it to be stored in .xmKeyFile"
+        echo "You already have a .xmKeyFile which I DID NOT overwrite."
+        echo "Remove the existing file and rerun 'xmlatex genKey' if you want to store a new key in .xmKeyFile"
     else
-        echo "I create a .xmKeyFile with the newly generated key, which is convenient for quick testing. DO NOT PUBLISH THIS KEY. Some of your students WILL find it if you do."
+        echo "I create a .xmKeyFile for a newly generated key for $KEY_UID."
+        echo "This is convenient for quick testing, or in some cases while developing on your local PC."
+        echo "*** Do NEVER publish this key (eg by commit/push) ***"
 
         cat >.xmKeyFile <<EOF
 #
-# This file contains a private GPG key to publish Ximera courses.
+# This file contains a private GPG key for $KEY_UID to publish Ximera courses.
 #
 #  These settings will be overwritten by existing environment variables GPG_KEY_ID and GPG_KEY
 #
@@ -589,16 +597,21 @@ EOF
     # gpg --batch --yes --delete-secret-key "$FINGERPRINT"
     # gpg --batch --yes --delete-key "$FINGERPRINT"
 
-    echo "If you want to use this key for offical publication of a Ximera courses, please SAVE it in a SAFE location."
+ if [[ "$YOUR_EMAIL" == *dummy* || "$YOUR_EMAIL" == *here*your* ]]
+ then
+    echo "This is a dummy key $KEY_UID (thus: only for testing/local development)."
+ else
+    echo "If you want to use this key $KEY_UID for offical publication of a Ximera courses, please SAVE it in a SAFE location."
     echo "This could be as 'Secrets' under your personal 'Settings -> Codespaces' in Github."
     echo "           or as 'Secrets' under your personal 'Settings -> Actions' in Github."
-    echo "           or in a .xmKeyFile file in a temporary Codespace or on your own PC."
-    echo "In each case there are TWO 'secrets' to be saved:"
+    echo "           or in a .xmKeyFile file on your PC or in a Codespace."
+    echo "There are TWO 'secrets' to be saved:"
     echo "   GPG_KEY_ID  with value $FINGERPRINT"
     echo '   GPG_KEY     with value the private key that was printed above, between the  GPG_KEY=" and " lines'
     echo ""
     echo "If you only want to test something on a local ximeraServer it's most convenient to use a temporary .xmKeyFile,"
     echo "   and generate a new key next time."
+fi
 
     exit 0
 
@@ -641,15 +654,20 @@ then
     [[ -f "$DEVENV_TGZFILE" ]] && { debug "Removing old $DEVENV_TGZFILE"; rm -f "$DEVENV_TGZFILE"; }
 
     debug "Getting new file $DEVENV_TGZFILE from $DEVENV_URL"
-    wget -O "$DEVENV_TGZFILE" "$DEVENV_URL"
+    : "${WGET_OPTIONS:=-q}"
+    [[ -n "$DEBUG" ]] && WGET_OPTIONS="-v"
+    wget "$WGET_OPTIONS" -O  "$DEVENV_TGZFILE" "$DEVENV_URL"
 
     debug "Getting list of files in $DEVENV_TGZFILE"
     filelist=$(tar -ztf "$DEVENV_TGZFILE" | grep -v "/$")
 
-    if [[ -n $(git status --porcelain $filelist) ]]; 
+    if [[ -n $(git status --porcelain $filelist) && -z "$XM_DEVENV_FORCE_EXTRACT" ]]
     then
         echo "There are uncommitted changes:"
+        git status --porcelain $filelist
+        echo "Diffs:"
         git diff --stat $filelist
+        echo "I won't update the devenv (unless you set 'export XM_DEVENV_FORCE_EXTRACT=1' in config.txt )"
         exit 1
     else
         echo "No current changes"
@@ -671,7 +689,7 @@ then
     if [[ "$owner_group" != "0:0" ]]
     then
         # Change the ownership of all files in the current directory
-        debug "Changing ownership of extracted files to $owner_group."
+        echo  "Changing ownership of extracted files to $owner_group."
         chown -R "$owner_group" .
         # chown -R "$owner_group" .vscode .devcontainer .gitignore xmScripts
     fi
@@ -681,8 +699,11 @@ then
 
     if [[ -n $(git status --porcelain $filelist) ]]; 
     then
-        echo "Verify and commit/push following changes"
-        git diff $filelist
+        echo "Diffs:"
+        git --no-pager diff $filelist
+        echo "Diffs summary:"
+        git diff --stat $filelist
+        echo "Please verify and commit/push these changes"
     else
         echo "No changes. Your repo was already uptodate."
     fi
