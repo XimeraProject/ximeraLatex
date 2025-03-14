@@ -19,7 +19,8 @@ RUN dpkg -i hashcash_1.22-1_amd64.deb
 
 
 # Extra packages (on top of 'medium')
-RUN tlmgr update --self; \ 
+RUN tlmgr option repository http://ftp.math.utah.edu/pub/tex/historic/systems/texlive/2024/tlnet-final; \
+    tlmgr update --self; \
     tlmgr install \
         # afterpage \
         amsmath \
