@@ -325,6 +325,20 @@ local function get_associated_files(dom, file)
       log:warning(file.filename.." is not a ximera file (no meta[name='ximera' tag])")
   end
 
+  -- Add logo(s)
+  -- From    <meta content='logo.png' name='og:image' /> 
+  for _, meta_logo in ipairs(dom:query_selector("meta[name='og:image']") ) do
+    local logo = meta_logo:get_attribute("content");
+    logo = path.join(file.relative_dir, logo)
+
+    log:debugf("Found logo %s in %s", logo, file.absolute_path )
+
+    ass_files[#ass_files+1] = logo
+  end
+
+
+
+  
   -- Add images 
   for _, img_el in ipairs(dom:query_selector("img") ) do
     local src = img_el:get_attribute("src")
