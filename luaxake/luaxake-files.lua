@@ -283,7 +283,7 @@ local function update_depends_on_files(fileinfo)
         if not path.isfile(included_file) then
           if not path.isfile(included_file..".tex") then
             if not path.isfile(included_file..".sty") then
-              log:warningf("%-40s includes %s, but this file nor variants with .sty or .tex seem to exits", relfilename, included_file)
+              log:warningf("%-40s includes %s, but this file nor variants with .sty or .tex seem to exist", relfilename, included_file)
             else
               included_file = included_file..".sty"
             end
