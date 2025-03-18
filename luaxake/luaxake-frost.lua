@@ -141,12 +141,31 @@ local function frost(tex_files, to_be_compiled_files)
         needing_publication[#needing_publication + 1] = "global.css"
     end
 
+    local git_config = {};
+    
+    local ret, origin = osExecute("git remote get-url origin")
+
+    if ret > 0 then
+        log:warning("No 'origin' found. Not adding git info to metadata")
+    else
+        local owner, repo, server; 
+        server, owner, repo = origin:match("^https://([^/]+)/([^/]+)/([^/]+)%.git$")
+        log:debugf("Found origin %s (owner=%s, repo=%s)", origin, owner, repo)
+
+        local ret, branch = osExecute("git rev-parse --abbrev-ref HEAD");
+
+        git_config = { Owner= owner, 
+                       Repository= repo, 
+                       Branch= branch, 
+                       Server= server,
+                    };
+    end    
 
     -- TODO: check/fix use of 'github'; check use of labels
     local xmmetadata={
-        xakeVersion = "2.5",
+        xakeVersion = "2.6",
         labels = all_labels,
-        github = {},
+        github = git_config,
         xourses = tex_xourses,
     }
 
