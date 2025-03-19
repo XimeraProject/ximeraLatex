@@ -151,10 +151,22 @@ local function frost(tex_files, to_be_compiled_files)
         local owner, repo, server; 
         server, owner, repo = origin:match("^https://([^/]+)/([^/]+)/([^/]+)%.git$")
         log:debugf("Found origin %s (owner=%s, repo=%s)", origin, owner, repo)
-
+        
+        if not server
+        then
+            server, owner, repo = origin:match("^https://([^/]+)/([^/]+)/([^/]+)$")
+            log:debugf("Found origin %s (owner=%s, repo=%s (without .git))", origin, owner, repo)
+        end
+        
         local ret, branch = osExecute("git rev-parse --abbrev-ref HEAD");
+        log:debugf("Found branch %s", branch);
 
-        git_config = { Owner= owner, 
+        -- there are no good reasons for the capitalised keys, except that they are used in ximeraserver:v1.6a ...)
+        git_config = { owner= owner,
+                       repository= repo, 
+                       branch= branch, 
+                       server= server,
+                       Owner= owner, 
                        Repository= repo, 
                        Branch= branch, 
                        Server= server,
