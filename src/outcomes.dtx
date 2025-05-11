@@ -1,21 +1,74 @@
 % \subsubsection{Learning Outcomes}
-% \DescribeMacro{\outcome}{Specify a learning outcome, either at the level of a |problem| or an entire document in the preamble.}
+% \DescribeMacro{\outcome}{
+% The command \outcome will write to the outcome file (<currentfilename>.oc) the content of the outcome command, with some prebuilt style options
+%   So, the outcome command: \outcome{This is an outcome} in the file lessonOne.tex will write to the file lessonOne.oc the line:
+%     \preOutputLine This is an outcome \postOutputLine
+%   Where the \preOutputLine is a custom macro that can be user defined - by default it is "\item".
+%     and \postOutputLine is a custom macro that can be user defined - by default it is empty. 
+% Then, in a given .tex file you can use the command \displayOutcomes which loads the .oc file for that file, with some additional styling,
+%   So, using our above example, wherever you put \displayOutcomes it will output:
+%
+% \preOutputBlock
+%   \input{lessonOne.oc}
+% \postOutputBlock
+%
+% In this case, the \preOutputBlock can be (re)defined by the user for styling before the outcomes are listed. By default it has:
+%   "At the end of this section, students should be able to... \\ \begin{itemize}"
+% and \postOutputBlock can be (re)defined by the user for styling after the output block is written. By default it is:
+%   \end{itemize} So go forth and learn!
+%
+% The pre/post outputLine and outputBlock are implemented in a way as to (theoretically) allow fragile content - i.e. it doesn't expand its content
+%   so it shouldn't break if you put in content that breaks when expanding too early (e.g. sage commands). 
+%
+%%% For the online content %%%
+%%
+% For online content, the intention is to make the output a hover-over popup box, to make it less visually distracting and to allow for more 
+%   descriptive outcome information without taking up large portions of the actual page. 
+%
+%
+%}
 %    \begin{macrocode}
 %<*classXimera>
-\def\theoutcomes{}
+\newcommand{\preOutputLine}{\item }
+\newcommand{\postOutputLine}{}
+\newcommand{\preOutputBlock}{At the end of this section, students should be able to... \begin{itemize}}
+\newcommand{\postOutputBlock}{\end{itemize} So go forth and learn!}
 
-\ifdefined\HCode%
-  \newcommand{\outcome}[1]{}
-\else%
-  \newwrite\outcomefile
-  \immediate\openout\outcomefile=\jobname.oc
+\newcommand{\outcomeHeader}{Goals for this Section (Hover over me to see!)}
+\htmlOnly{
+  \newcommand{\outcomeBlock}{\ifvmode\IgnorePar\fi\EndP\HCode{<div class="outcomeHead">} \outcomeHeader \ifvmode\IgnorePar\fi\EndP\HCode{</div>} \ifvmode\IgnorePar\fi\EndP\HCode{<div class="outcomeContent">}}
+}
 
-  \newcommand{\outcome}[1]{
-      \outcomestrue% If we invoke |\outcome|, then we should have outcomes and thus we will flag it as true.
-      \edef\theoutcomes{\theoutcomes #1~}%
-      \immediate\write\outcomefile{\unexpanded{\outcome}{#1}}
+
+\newwrite\outcomefile
+\immediate\openout\outcomefile=\jobname.oc
+\newcommand{\outcome}[1]{%
+  \immediate\write\outcomefile{\expandafter\unexpanded\expandafter{\preOutputLine #1} \expandafter\unexpanded\expandafter{\postOutputLine}}
+}
+
+\newcommand{\displayOutcomes}[1][]{%
+  \immediate\closeout\outcomefile
+  \IfFileExists{\currfiledir\currfilebase.oc}{
+    \htmlOnly{\outcomeBlock}
+      \expandafter\preOutputBlock
+      \input{\currfiledir\currfilebase.oc}
+      \postOutputBlock
+      \htmlOnly{\ifvmode\IgnorePar\fi\EndP\HCode{</div>}}
+    }
+    {
+    \IfFileExists{\currfilebase.oc}{
+      \htmlOnly{\outcomeBlock}
+        \expandafter\preOutputBlock
+        \input{\currfilebase.oc}
+        \postOutputBlock
+        \htmlOnly{\ifvmode\IgnorePar\fi\EndP\HCode{</div>}}
       }
-  \fi%
+      {
+        No outcome file found.
+      }
+    }
+  }
+%
 %</classXimera>
 %    \end{macrocode}
 % These can appear in either the preamble or in problem environments.
