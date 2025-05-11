@@ -85,7 +85,6 @@
 {}% Start/End else result
 \ignorespaces%
 }%
-
 \newcommand{\inlinechoice}[2][]{%
 \setkeys{choice}{#1}%
 \iffirstinlinechoice
@@ -110,20 +109,15 @@
 %<*htXimera>
 \newcounter{choiceId}
 \renewcommand{\choice}[2][]{%
-    \setkeys{choice}{correct=false}% Set default to false
-    \setkeys{choice}{#1}% Load choice keys to set which are correct.
-    \stepcounter{choiceId}\IgnorePar% Step counter to get a unique choice ID.
-    \HCode{<span class="choice }%
-    \ifthenelse{\boolean{\choice@correct}}% Check to see if a choice is "correct"
-        {\HCode{correct}}% Notify html it is correct (if it is).
-        {}% Otherwise, do nothing.
-    \HCode{" }
-    \ifthenelse{\equal{\choice@value}{}}% If choice value is empty...
-        {}% Do nothing.
-        {\HCode{data-value="\choice@value" }}% Otherwise, load the data in choice value.
-    \HCode{id="choice\arabic{choiceId}">}% Set the choice ID.
-    #2\HCode{</span>}% End the choice div.
-    }
+\setkeys{choice}{correct=false}%
+\setkeys{choice}{#1}%
+\stepcounter{choiceId}\IgnorePar%
+\HCode{<span class="choice }%
+\ifthenelse{\boolean{\choice@correct}}{\HCode{correct}}{}
+\HCode{" }
+\ifthenelse{\equal{\choice@value}{}}{}{\HCode{data-value="\choice@value" }}
+\HCode{id="choice\arabic{choiceId}">}%
+#2\HCode{</span>}}
 \let\inlinechoice\choice
 %</htXimera>
 %    \end{macrocode}
@@ -138,7 +132,7 @@
 	\setkeys{multipleChoice}{#1}%
 	\recordvariable{\mc@id}%
 	\begin{trivlist}
-		\item[\hskip \labelsep\small\bfseries \name@multipleChoice:]\hfil
+		\item[\hskip \labelsep\small\bfseries \GetTranslation{Multiple Choice}:]\hfil
 		\begin{enumerate}
 	}% Note this means that \item has to be the first line after \begin{multipleChoice}.
 	{% Environment End Code
@@ -161,16 +155,11 @@
 %    \begin{macrocode}
 %<*htXimera>
 \renewenvironment{multipleChoice}[1][]
-    {
-        \setkeys{multipleChoice}{#1}%
-        \stepcounter{identification}\ifvmode \IgnorePar\fi \EndP\HCode{<div class="multiple-choice" }%
-        \ifthenelse{\equal{\mc@id}{}}{}{\HCode{data-id="\mc@id" }}%
-        \HCode{id="problem\arabic{identification}">}%
-    }
-    {
-        \HCode{</div>}\IgnoreIndent
-    }
-
+{\setkeys{multipleChoice}{#1}%
+\stepcounter{identification}\ifvmode \IgnorePar\fi \EndP\HCode{<div class="multiple-choice" }%
+\ifthenelse{\equal{\mc@id}{}}{}{\HCode{data-id="\mc@id" }}%
+\HCode{id="problem\arabic{identification}" titletext=" \GetTranslation{Multiple Choice}">}%
+}{\HCode{</div>}\IgnoreIndent}
 \ConfigureEnv{multipleChoice}{}{}{}{}
 %</htXimera>
 %    \end{macrocode}
@@ -213,7 +202,7 @@
 %    \begin{macrocode}
 %<*classXimera>
 \newenvironment{selectAll}[1][]
-{\begin{trivlist}\item[\hskip \labelsep\small\bfseries \name@selectAll:]\hfil\begin{enumerate}}
+{\begin{trivlist}\item[\hskip \labelsep\small\bfseries \GetTranslation{Select All Correct Answers}:]\hfil\begin{enumerate}}
     {\end{enumerate}\end{trivlist}}
 %</classXimera>
 %    \end{macrocode}
@@ -230,7 +219,7 @@
 %    \begin{macrocode}
 %<*htXimera>
 \renewenvironment{selectAll}{\refstepcounter{problem}}{}%
-\ConfigureEnv{selectAll}{\stepcounter{identification}\ifvmode \IgnorePar\fi \EndP\HCode{<div class="select-all" id="problem\arabic{identification}">}}{\HCode{</div>}\IgnoreIndent}{}{}
+\ConfigureEnv{selectAll}{\stepcounter{identification}\ifvmode \IgnorePar\fi \EndP\HCode{<div class="select-all" id="problem\arabic{identification}" titletext=" \GetTranslation{Select All}">}}{\HCode{</div>}\IgnoreIndent}{}{}
 %</htXimera>
 %    \end{macrocode}
 

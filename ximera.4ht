@@ -6,10 +6,12 @@
 %%
 %% ximera.dtx  (with options: `htXimera')
 %% src/pagesetup.dtx  (with options: `htXimera')
+%% src/abstract.dtx  (with options: `htXimera')
 %% src/title.dtx  (with options: `htXimera')
 %% src/problem.dtx  (with options: `htXimera')
 %% src/macros.dtx  (with options: `htXimera')
 %% src/theorems.dtx  (with options: `htXimera')
+%% src/proof.dtx  (with options: `htXimera')
 %% src/image.dtx  (with options: `htXimera')
 %% src/dialogue.dtx  (with options: `htXimera')
 %% src/foldable.dtx  (with options: `htXimera')
@@ -31,6 +33,7 @@
 %% src/interactives/sagemath.dtx  (with options: `htXimera')
 %% src/ungraded.dtx  (with options: `htXimera')
 %% src/footnotes.dtx  (with options: `htXimera')
+%% src/accordion.dtx  (with options: `htXimera')
 %% src/ending.dtx  (with options: `htXimera')
 %% ------------:| ------------------------------------------------------------
 %%       ximera:| Simultaneously writing print and online interactive materials
@@ -50,6 +53,7 @@
 \usepackage{microtype}
 \DisableLigatures[f]{encoding=*}
 \NewEnviron{html}{\HCode{\BODY}}
+\RenewEnviron{abstract}{\BODY}
 \Configure{@HEAD}{\HCode{<meta name="author" content="}\@author\HCode{" />\Hnewline}}
 \def\and{and }
 
@@ -112,19 +116,24 @@
         }{}{}%
 }
 
+
 \ConfigureQuestionEnv{problem}{Problem}
 \ConfigureQuestionEnv{exercise}{Exercise}
 \ConfigureQuestionEnv{question}{Question}
 \ConfigureQuestionEnv{exploration}{Exploration}
 \ConfigureQuestionEnv{task}{task}
-\ConfigureQuestionEnv{hint}{hint}
+
+\ifdefined\xmNotHintAsExpandable
+  \ConfigureQuestionEnv{hint}{hint}     % 2024: hint is no longer a 'question-environment'.
+\fi
+
 %%%%\ConfigureQuestionEnv{shuffle}{shuffle}
 \newcommand{\ConfigureTheoremEnv}[1]{%
 \renewenvironment{#1}[1][]{\refstepcounter{problem}%
 \ifthenelse{\equal{##1}{}}{}{%
   \HCode{<span class="theorem-like-title">}##1\HCode{</span>}%
 }}{}
-\ConfigureEnv{#1}{\stepcounter{identification}\ifvmode \IgnorePar\fi \EndP\HCode{<div class="theorem-like problem-environment #1" id="problem\arabic{identification}">}}{\HCode{</div>}\IgnoreIndent}{}{}%
+\ConfigureEnv{#1}{\stepcounter{identification}\ifvmode \IgnorePar\fi \EndP\HCode{<div class="theorem-like problem-environment #1" id="problem\arabic{identification}">}}{\ifvmode\IgnorePar\fi\EndP\HCode{</div>}\IgnoreIndent}{}{}%
 }
 
 
@@ -179,6 +188,11 @@
       \ConfigureTheoremEnv{template}
 
       \ConfigureTheoremEnv{warning}
+      % Mmm, (why) do we want/need this ...?
+      \ConfigureTheoremEnv{proof}
+\ConfigureEnv{proof}{\ifvmode\IgnorePar\fi\EndP\HCode{<div class="proof">}
+\ConfigureList{trivlist}{\ifvmode\IgnorePar\fi\EndP}{}{}{}
+}{\ifvmode\IgnorePar\fi\EndP\HCode{</div>}}{}{}
 
 \newcounter{imagealt}
 \setcounter{imagealt}{0}
@@ -187,7 +201,7 @@
   \HCode{<div class="image-environment" role="img" aria-labelledby="image-alt-\arabic{imagealt}">}%
 }{\HCode{</div>}}
 \renewcommand{\alt}[1]{\HCode{<div style="display: none;" id="image-alt-\arabic{imagealt}">}#1\HCode{</div>}}
-\newcommand{\pgfsyspdfmark}[3]{}
+\providecommand{\pgfsyspdfmark}[3]{}
 \renewenvironment{dialogue}{\begin{description}}{\end{description}}
 
 \ConfigureList{dialogue}%
@@ -201,12 +215,14 @@
    {\egroup\EndP\HCode{</dt><dd\Hnewline class="speech">}}
 \renewenvironment{foldable}{\stepcounter{identification}\ifvmode \IgnorePar\fi \EndP\HCode{<div id="foldable\arabic{identification}" class="foldable">}}{\HCode{</div>}\IgnoreIndent}
 
-\renewenvironment{expandable}{\stepcounter{identification}\ifvmode \IgnorePar\fi \EndP\HCode{<div data-original="expandable" id="foldable\arabic{identification}" class="foldable">}
-
-}{\HCode{</div>}\IgnoreIndent}
+\ifdefined\xmNotExpandableAsAccordion
+\renewenvironment{expandable}{\stepcounter{identification}\ifvmode \IgnorePar\fi \EndP\HCode{<div data-original="expandable" id="foldable\arabic{identification}" class="foldable">}}{\HCode{</div>}\IgnoreIndent}
+\fi
 
 \renewcommand{\unfoldable}[1]{\HCode{<span class="unfoldable">}#1\HCode{</span>}}
-\renewcommand{\youtube}[1]{\ifvmode \IgnorePar\fi \EndP\HCode{<div class="video youtube-player" data-youtube="#1">_</div>}}
+%% \renewcommand{\youtube}[1]{\ifvmode \IgnorePar\fi \EndP\HCode{<div class="video youtube-player" data-youtube="#1">_</div>}}
+\renewcommand{\youtube}[1]{\ifvmode \IgnorePar\fi \EndP\HCode{<iframe class="xmyoutube" src="https://www.youtube-nocookie.com/embed/#1" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>}}
+
 \renewcommand{\xkcd}[1]{\ifvmode \IgnorePar\fi \EndP\HCode{<img src="https://imgs.xkcd.com/comics/#1.png">}}
 
 \renewcommand*{\link}[2][]{%
@@ -291,7 +307,9 @@
 \renewcommand{\geogebra}[4][]{%
   \setkeys{geogebra}{#1}% Set new keys
   \HCode{<iframe scrolling="no" src="https://www.geogebra.org/material/iframe/id/#2/width/#3/height/#4/border/888888/rc/\geo@rc/ai/false/sdz/\geo@sdz/smb/\geo@smb/stb/\geo@stb/stbh/\geo@stbh/ld/\geo@ld/sri/\geo@sri/at/auto" width="#3px" height="#4px" style="border:0px"></iframe>}}
-\renewcommand{\desmos}[3]{\HCode{<iframe src="https://www.desmos.com/calculator/#1" width="100\%" height="#3px" style="border: 1px solid \#ccc" frameborder=0>This browser does not support embedded elements.</iframe>}}
+\catcode`\%=11
+\renewcommand{\desmos}[3]{\HCode{<iframe src="https://www.desmos.com/calculator/#1" width="100%" height="#3px" style="border: 1px solid \#ccc" frameborder=0>This browser does not support embedded elements.</iframe>}}
+\catcode`\%=14
 \renewcommand{\desmosThreeD}[3]{\HCode{<iframe src="https://www.desmos.com/3d/#1" width="#2px" height="#3px" style="border: 1px solid \#ccc" frameborder=0>This browser does not support embedded elements.</iframe>}}
 
 \renewcommand{\googleSheet}[5]{%
@@ -341,7 +359,9 @@
 \ScriptEnv{sageOutput}{\ifvmode \IgnorePar\fi \EndP\HCode{<div class="sageOutput"><script type="text/x-sage">}}{\HCode{\Hnewline</script></div>}}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\renewenvironment{sagesilent}{\NoFonts}{\EndNoFonts}
+\ifdefined\sagesilent
+  \renewenvironment{sagesilent}{\NoFonts}{\EndNoFonts}
+\fi
 \ScriptEnv{sagesilent}{\ifvmode \IgnorePar\fi \EndP\HCode{<script type="text/sagemath">}\HtmlParOff}{\HtmlParOn\HCode{</script></div>}}
 \renewenvironment{ungraded}{%
 \ifvmode \IgnorePar\fi \EndP\HCode{<div class="ungraded">}\IgnoreIndent%
@@ -403,6 +423,36 @@
             \textcolor{fncolor}{(#1)}% Display the actual footnote here with color `fncolor' and within ()'s.
         \HCode{</span></span>}
     }% End of footnote definition.
+
+\renewenvironment{accordion}{\ifvmode \IgnorePar\fi \EndP\HCode{<div class="accordion">}
+}{\HCode{</div>}\IgnoreIndent}
+
+\renewenvironment{accordion-item}[1][]{\stepcounter{identification}\ifvmode \IgnorePar\fi \EndP\HCode{<h3>}#1\HCode{</h3><div id="accordion-item\arabic{identification}" class="accordion-item">}
+}{\HCode{</div>}\IgnoreIndent}
+
+\ifdefined\xmNotHintAsExpandable\else
+\RenewEnviron{hint}{%
+ \begin{expandable}{xmhint}{}%
+   \BODY%
+ \end{expandable}%
+}
+\fi
+
+\ifdefined\xmNotExpandableAsAccordion\else
+%% re-implement expandable (04/2023)
+\let\expandable\relax
+\let\endexpandable\relax
+\newenvironment{expandable}[2]{%
+  \stepcounter{identification}%
+  \ifvmode \IgnorePar\fi \EndP%
+  \HCode{<div class="accordion">\Hnewline}%
+  \HCode{<h3 class="#1">}#2\HCode{</h3>\Hnewline}%
+  \HCode{<div id="accordion-item\arabic{identification}" class="accordion-item #1-content">\Hnewline}
+}%
+{%
+  \HCode{</div>\Hnewline</div>\Hnewline}\IgnoreIndent
+}
+\fi
 
 \Hinput{ximera}
 

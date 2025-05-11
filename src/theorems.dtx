@@ -7,7 +7,7 @@
 \ifthenelse{\equal{##1}{}}{}{%
   \HCode{<span class="theorem-like-title">}##1\HCode{</span>}%
 }}{}
-\ConfigureEnv{#1}{\stepcounter{identification}\ifvmode \IgnorePar\fi \EndP\HCode{<div class="theorem-like problem-environment #1" id="problem\arabic{identification}">}}{\HCode{</div>}\IgnoreIndent}{}{}%
+\ConfigureEnv{#1}{\stepcounter{identification}\ifvmode \IgnorePar\fi \EndP\HCode{<div class="theorem-like problem-environment #1" id="problem\arabic{identification}" titletext=" \GetTranslation{#1}">}}{\ifvmode\IgnorePar\fi\EndP\HCode{</div>}\IgnoreIndent}{}{}%
 }
 %</htXimera>
 %<classXimera>\theoremstyle{definition} % No italic (because this makes also text in TikZ italic !!!)
@@ -18,157 +18,156 @@
 
 % \DescribeEnv{theorem}{Theorem}
 %    \begin{macrocode}
-%<classXimera>      \newtheorem{theorem}{\name@Theorem}
+%<classXimera>      \newtheorem{theorem}{\GetTranslation{theorem}}
 %<htXimera>      \ConfigureTheoremEnv{theorem}
 %    \end{macrocode}
 
 % \DescribeEnv{algorithm}{Algorithm}
 %    \begin{macrocode}
-%<classXimera>      \newtheorem{algorithm}{\name@Algorithm}
+%<classXimera>      \newtheorem{algorithm}{\GetTranslation{algorithm}}
 %<htXimera>      \ConfigureTheoremEnv{algorithm}
 %    \end{macrocode}
 
 % \DescribeEnv{axiom}{Axiom}
 %    \begin{macrocode}
-%<classXimera>      \newtheorem{axiom}{\name@Axiom}
+%<classXimera>      \newtheorem{axiom}{\GetTranslation{axiom}}
 %<htXimera>      \ConfigureTheoremEnv{axiom}
 %    \end{macrocode}
 
 % \DescribeEnv{claim}{Claim}
 %    \begin{macrocode}
-%<classXimera>      \newtheorem{claim}{\name@Claim}
+%<classXimera>      \newtheorem{claim}{\GetTranslation{claim}}
 %<htXimera>      \ConfigureTheoremEnv{claim}
 %    \end{macrocode}
 
 % \DescribeEnv{conclusion}{Conclusion}
 %    \begin{macrocode}
-%<classXimera>      \newtheorem{conclusion}{\name@Conclusion}
+%<classXimera>      \newtheorem{conclusion}{\GetTranslation{conclusion}}
 %<htXimera>      \ConfigureTheoremEnv{conclusion}
 %    \end{macrocode}
 
 % \DescribeEnv{condition}{Condition}
 %    \begin{macrocode}
-%<classXimera>      \newtheorem{condition}{\name@Condition}
+%<classXimera>      \newtheorem{condition}{\GetTranslation{condition}}
 %<htXimera>      \ConfigureTheoremEnv{condition}
 %    \end{macrocode}
 
 % \DescribeEnv{conjecture}{Conjecture}
 %    \begin{macrocode}
-%<classXimera>      \newtheorem{conjecture}{\name@Conjecture}
+%<classXimera>      \newtheorem{conjecture}{\GetTranslation{conjecture}}
 %<htXimera>      \ConfigureTheoremEnv{conjecture}
 %    \end{macrocode}
 
 % \DescribeEnv{corollary}{Corollary}
 %    \begin{macrocode}
-%<classXimera>      \newtheorem{corollary}{\name@Corollary}
+%<classXimera>      \newtheorem{corollary}{\GetTranslation{corollary}}
 %<htXimera>      \ConfigureTheoremEnv{corollary}
 %    \end{macrocode}
 
 % \DescribeEnv{criterion}{Criterion}
 %    \begin{macrocode}
-%<classXimera>      \newtheorem{criterion}{\name@Criterion}
+%<classXimera>      \newtheorem{criterion}{\GetTranslation{criterion}}
 %<htXimera>      \ConfigureTheoremEnv{criterion}
 %    \end{macrocode}
 
 % \DescribeEnv{definition}{Definition}
 %    \begin{macrocode}
-%<classXimera>      \newtheorem{definition}{\name@Definition}
+%<classXimera>      \newtheorem{definition}{\GetTranslation{definition}}
 %<htXimera>      \ConfigureTheoremEnv{definition}
 %    \end{macrocode}
 
 % \DescribeEnv{example}{Example}
 %    \begin{macrocode}
-%<classXimera>      \newtheorem{example}{\name@Example}
+%<classXimera>      \newtheorem{example}{\GetTranslation{example}}
 %<htXimera>      \ConfigureTheoremEnv{example}
 %    \end{macrocode}
 
 % \DescribeEnv{explanation}{Explanation}
 %    \begin{macrocode}
-%<classXimera>      \newtheorem*{explanation}{\name@Explanation}
+%<classXimera>      \newtheorem*{explanation}{\GetTranslation{explanation}}
 %<htXimera>      \ConfigureTheoremEnv{explanation}
 %    \end{macrocode}
 
 % \DescribeEnv{fact}{Fact}
 %    \begin{macrocode}
-%<classXimera>      \newtheorem{fact}{\name@Fact}
+%<classXimera>      \newtheorem{fact}{\GetTranslation{fact}}
 %<htXimera>      \ConfigureTheoremEnv{fact}
 %    \end{macrocode}
 
 % \DescribeEnv{lemma}{Lemma}
 %    \begin{macrocode}
-%<classXimera>      \newtheorem{lemma}{\name@Lemma}
+%<classXimera>      \newtheorem{lemma}{\GetTranslation{lemma}}
 %<htXimera>      \ConfigureTheoremEnv{lemma}
 %    \end{macrocode}
 
 % \DescribeEnv{formula}{Formula}
 %    \begin{macrocode}
-%<classXimera>      \newtheorem{formula}{\name@Formula}
+%<classXimera>      \newtheorem{formula}{\GetTranslation{formula}}
 %<htXimera>      \ConfigureTheoremEnv{formula}
 %    \end{macrocode}
 
 % \DescribeEnv{idea}{Idea}
 %    \begin{macrocode}
-%<classXimera>      \newtheorem{idea}{\name@Idea}
+%<classXimera>      \newtheorem{idea}{\GetTranslation{idea}}
 %<htXimera>      \ConfigureTheoremEnv{idea}
 %    \end{macrocode}
 
 % \DescribeEnv{notation}{Notation}
 %    \begin{macrocode}
-%<classXimera>      \newtheorem{notation}{\name@Notation}
+%<classXimera>      \newtheorem{notation}{\GetTranslation{notation}}
 %<htXimera>      \ConfigureTheoremEnv{notation}
 %    \end{macrocode}
 
 % \DescribeEnv{model}{Model}
 %    \begin{macrocode}
-%<classXimera>      \newtheorem{model}{\name@Model}
+%<classXimera>      \newtheorem{model}{\GetTranslation{model}}
 %<htXimera>      \ConfigureTheoremEnv{model}
 %    \end{macrocode}
 
 % \DescribeEnv{observation}{Observation}
 %    \begin{macrocode}
-%<classXimera>      \newtheorem{observation}{\name@Observation}
+%<classXimera>      \newtheorem{observation}{\GetTranslation{observation}}
 %<htXimera>      \ConfigureTheoremEnv{observation}
 %    \end{macrocode}
 
 % \DescribeEnv{proposition}{Proposition}
 %    \begin{macrocode}
-%<classXimera>      \newtheorem{proposition}{\name@Proposition}
+%<classXimera>      \newtheorem{proposition}{\GetTranslation{proposition}}
 %<htXimera>      \ConfigureTheoremEnv{proposition}
 %    \end{macrocode}
 
 % \DescribeEnv{paradox}{Paradox}
 %    \begin{macrocode}
-%<classXimera>      \newtheorem{paradox}{\name@Paradox}
+%<classXimera>      \newtheorem{paradox}{\GetTranslation{paradox}}
 %<htXimera>      \ConfigureTheoremEnv{paradox}
 %    \end{macrocode}
 
 % \DescribeEnv{procedure}{Procedure}
 %    \begin{macrocode}
-%<classXimera>      \newtheorem{procedure}{\name@Procedure}
+%<classXimera>      \newtheorem{procedure}{\GetTranslation{procedure}}
 %<htXimera>      \ConfigureTheoremEnv{procedure}
 %    \end{macrocode}
 
 % \DescribeEnv{remark}{Remark}
 %    \begin{macrocode}
-%<classXimera>      \newtheorem{remark}{\name@Remark}
+%<classXimera>      \newtheorem{remark}{\GetTranslation{remark}}
 %<htXimera>      \ConfigureTheoremEnv{remark}
 %    \end{macrocode}
 
 % \DescribeEnv{summary}{Summary}
 %    \begin{macrocode}
-%<classXimera>      \newtheorem{summary}{\name@Summary}
+%<classXimera>      \newtheorem{summary}{\GetTranslation{summary}}
 %<htXimera>      \ConfigureTheoremEnv{summary}
 %    \end{macrocode}
 
 % \DescribeEnv{template}{Template}
 %    \begin{macrocode}
-%<classXimera>      \newtheorem{template}{\name@Template}
+%<classXimera>      \newtheorem{template}{\GetTranslation{template}}
 %<htXimera>      \ConfigureTheoremEnv{template}
 %    \end{macrocode}
 
 % \DescribeEnv{warning}{Warning}
 %    \begin{macrocode}
-%<classXimera>      \newtheorem{warning}{\name@Warning}
+%<classXimera>      \newtheorem{warning}{\GetTranslation{warning}}
 %<htXimera>      \ConfigureTheoremEnv{warning}
 %    \end{macrocode}
-

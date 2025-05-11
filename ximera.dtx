@@ -87,6 +87,7 @@ Running "make install" installs the files in the local TeX tree.
     \from{src/banner.dtx}{classXimera}    
     \from{src/options.dtx}{classXimera}
     \from{src/packages.dtx}{classXimera}
+    \from{src/localize.dtx}{classXimera}
     \from{src/tikzexport.dtx}{classXimera}
     \from{src/hyperref.dtx}{classXimera}
     \from{src/suppress.dtx}{classXimera}
@@ -125,6 +126,7 @@ Running "make install" installs the files in the local TeX tree.
     \from{src/leash.dtx}{classXimera}
     \from{src/interactives/sagemath.dtx}{classXimera}        
     \from{src/jax.dtx}{classXimera}
+    \from{src/accordion.dtx}{classXimera}
     \from{src/ungraded.dtx}{classXimera}
     \from{src/clearEnv.dtx}{classXimera}
     \from{src/hideEnv.dtx}{classXimera}
@@ -134,6 +136,7 @@ Running "make install" installs the files in the local TeX tree.
     \from{src/validators/factorCheck.dtx}{classXimera}
     \from{src/validators/multiAns.dtx}{classXimera}
     \from{src/validators/equalMatrix.dtx}{classXimera}
+    \from{src/preamble.dtx}{classXimera}    %% should be last ...?
   }
 }
 \generate{
@@ -167,10 +170,12 @@ Running "make install" installs the files in the local TeX tree.
   \file{ximera.4ht}{
     \from{ximera.dtx}{htXimera}
     \from{src/pagesetup.dtx}{htXimera}    
+    \from{src/abstract.dtx}{htXimera}    
     \from{src/title.dtx}{htXimera}
     \from{src/problem.dtx}{htXimera}
     \from{src/macros.dtx}{htXimera}
     \from{src/theorems.dtx}{htXimera}    
+    \from{src/proof.dtx}{htXimera}    
     \from{src/image.dtx}{htXimera}               
     \from{src/dialogue.dtx}{htXimera}
     \from{src/foldable.dtx}{htXimera}
@@ -192,6 +197,7 @@ Running "make install" installs the files in the local TeX tree.
     \from{src/interactives/sagemath.dtx}{htXimera}
     \from{src/ungraded.dtx}{htXimera}            
     \from{src/footnotes.dtx}{htXimera} 
+    \from{src/accordion.dtx}{htXimera}
     \from{src/ending.dtx}{htXimera}
   }
 }
@@ -234,7 +240,7 @@ Running "make install" installs the files in the local TeX tree.
 %<classXimera|classXourse>\NeedsTeXFormat{LaTeX2e}[1999/12/01]
 %<classXimera>\ProvidesClass{ximera}
 %<classXourse>\ProvidesClass{xourse}
-%<classXimera|classXourse> [2024/09/01 v1.6.0
+%<classXimera|classXourse> [2024/05/12 v1.5.1
 %<classXimera> Simultaneously write print and online interactive materials]
 %<classXourse> Combining Ximera activities into Xourses]
 %<*driver>
@@ -296,13 +302,6 @@ Running "make install" installs the files in the local TeX tree.
 \subsection{Support for the web}
 \DocInput{src/jax.dtx}
 \DocInput{src/html.dtx}
-\subsection{Validators}
-\DocInput{src/validators/validatorHook.dtx}
-\DocInput{src/validators/supplementalCommands.dtx}
-\DocInput{src/validators/sameDerivative.dtx}
-\DocInput{src/validators/factorCheck.dtx}
-\DocInput{src/validators/multiAns.dtx}
-\DocInput{src/validators/equalMatrix.dtx}
 \subsection{Tools}
 \DocInput{src/suppress.dtx}
 \DocInput{src/ending.dtx}
@@ -316,14 +315,14 @@ Running "make install" installs the files in the local TeX tree.
 %</driver>
 % \fi
 %
-%\def\fileversion{v1.6.0}
-%\def\filedate{2024/09/01}
+%\def\fileversion{v1.5.1}
+%\def\filedate{2024/05/12}
 % \DoNotIndex{\newcommand,\newenvironment}
 % 
 %\title{\textsf{ximera} --- Simultaneously write print and online interactive materials.\thanks{This file
 %   describes version \fileversion, last revised \filedate.}
 %}
-%\author{Jim Fowler \and Oscar Levin \and Jason Nowell \and Wim Obbels \and Hans Parshall \and Bart Snapp}
+%\author{Jim Fowler \and Jeramiah Hocutt \and Oscar Levin \and Jason Nowell \and Wim Obbels \and Hans Parshall \and Bart Snapp}
 %\date{Released \filedate}
 %
 %\maketitle
@@ -331,7 +330,6 @@ Running "make install" installs the files in the local TeX tree.
 %\changes{v1.0.0}{2018/05/25}{First public release}
 %\changes{v1.5.0}{2024/05/08}{Submitting to CTAN}
 %\changes{v1.5.1}{2024/05/12}{Fixed date bug}
-%\changes{v1.6.0}{2024/09/01}{Added hook to insert custom validator into source and many new validators}
 
 % \begin{abstract}
 %   ``\textsf{Ximera} begins where \TeX\ ends.''  The \textsf{ximera}

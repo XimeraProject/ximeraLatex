@@ -1,0 +1,42 @@
+% \subsection{localize}
+%% This section builds the meta commands that support the various language implementations.
+%% Each new language is added by adding a new file named (languageName).sty in the localization folder.
+%%   e.g. to add french you would add a french.sty file in the localization folder.
+%% This file is a list of translations of the relevant environment words.
+%%   The best way to do add a new language is to:
+%%       1) copy the english.sty file contents
+%%       2) replace the second entry in each \addTranslation command 
+%%           with the translation of the word in the first entry.
+%    \begin{macrocode}
+%<*classXimera>
+%    \end{macrocode}
+%    \begin{macrocode}
+\newcommand{\setLanguage}[1]{%
+    % Sets the translation language. This hijacks the internal \languagename macro used by babel and polyglossia, 
+    %   so users should be careful using this. However, they also shouldn't ever need to use this unless they want
+    %   specifically to switch languages in mid-text, since whatever language they load with babel or polyglossia
+    %   packages, will define this correctly and then load the relevant ximera file automatically.
+    % Note: This *also* will switch the language for other language packages, like babel and polyglossia, which should
+    %   be the desired behavior (I assume they wouldn't want just Ximera macros to be translated, but nothing else)
+    \edef\languagename{#1}
+    % Check if there is a localization (translation dictionary) file:
+    \IfFileExists{xmDictionary-#1.trsl}{%
+        % If it exists, load it.
+        %\LoadDictionary{xmDictionary}{#1}
+    }{% If it doesn't exist, report a warning
+        \PackageWarning{Localization}{I don't see a dictionary file anywhere for your language, it should be named: xmDictionary-#1.trsl}
+    }
+}
+%% Now we add in a hook to load all the dictionary files that define the Ximera Terms.
+%%  We could do this in the cls directly, but this allows users to provide their own dictionary
+%%  translations in their preamble - which will take precedence over the default dictionary. 
+\AddToHook{begindocument/before}{
+  \input{xmDictionary-brazil.trsl}
+  \input{xmDictionary-english.trsl}
+  \input{xmDictionary-french.trsl}
+  \input{xmDictionary-dutch.trsl}
+}
+%    \end{macrocode}
+%    \begin{macrocode}
+%</classXimera>
+%    \end{macrocode}

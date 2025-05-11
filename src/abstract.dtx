@@ -5,14 +5,20 @@
 \let\abstract\relax% We kill off abstract as we will want to remake it as an Environ to capture the BODY
 \let\endabstract\relax
 % Use of environ package, may want to find a better way.
-\NewEnviron{abstract}{\protected@xdef\theabstract{\BODY}}% Define abstract as an Environ and capture BODY
+% see the messing around with \theabstract in title.dtx ... Is this really needed/wanted?
+\NewEnviron{abstract}{\protected@xdef\theabstract{\BODY}}
 %</classXimera>
 %    \end{macrocode}
 % The abstract has been stored in |\theabstract| and should be emitted
 % as a div. The code below is required for the abstract to show online.
 %    \begin{macrocode}
 %<*cfgXimera>
-\let\abstract\relax
-\let\endabstract\relax
+\ifvmode\IgnorePar\fi\EndP
+\ConfigureEnv{abstract}{\ifvmode\IgnorePar\fi\EndP\HCode{\Hnewline<div class="abstract">}\par}{\ifvmode\IgnorePar\fi\EndP\HCode{\Hnewline</div>}\par}{}{}
 %</cfgXimera>
+%    \end{macrocode}
+%    \begin{macrocode}
+%<*htXimera>
+\RenewEnviron{abstract}{\BODY}
+%<*htXimera>
 %    \end{macrocode}
