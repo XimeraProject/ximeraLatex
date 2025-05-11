@@ -1,3 +1,4 @@
 \glossaryentry{v1.0.0> =General:>First public release|hdpindex{}}{1}
 \glossaryentry{v1.5.0> =General:>Submitting to CTAN|hdpindex{}}{1}
 \glossaryentry{v1.5.1> =General:>Fixed date bug|hdpindex{}}{1}
+\glossaryentry{v1.6.0> =General:>Added hook to insert custom validator into source and many new validators|hdpindex{}}{1}

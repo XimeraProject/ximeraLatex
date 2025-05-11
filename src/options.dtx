@@ -77,6 +77,16 @@
 %    \end{macrocode}
 % \end{macro}
 %
+% \begin{macro}{onlineProblemNumbers}
+%    This option enables online numbering for problems up to a depth of 5 nested problems. 
+%    If you are nesting more than 5 deep, you should probably rethink what you are doing.
+%    \begin{macrocode}
+\newif\ifnumberedProblems
+\numberedProblemsfalse% Default to no numbers, as that was previous behavior.
+\DeclareOption{onlineProblemNumbers}{\numberedProblemstrue}
+%    \end{macrocode}
+% \end{macro}
+%
 % \begin{macro}{wordchoicegiven}
 %    This option will replace the choices shown by \texttt{wordChoice} with the correct choice. No indication of the \texttt{wordChoice} environment will be shown.
 %    \begin{macrocode}
@@ -87,10 +97,28 @@
 \firstinlinechoicetrue
 %    \end{macrocode}
 % \end{macro}
+% \subsubsection{Localization Options}
+% \begin{macro}{english}
+%    Force English translation file to get loaded - note this should be the default behavior - as such it is superfluous, but included here mostly for debugging and in case a different default is redefined by an author.
 %    \begin{macrocode}
+\input{xmEnglish.sty}%% This should go first, so it is default and any other language that is loaded comes after and loads a new package that then overwrites the names with translated versions.
+\DeclareOption{english}{\input{xmEnglish.sty}}
+%    \end{macrocode}
+% \end{macro}
+% \begin{macro}{french}
+%    Load french translation file.
+%    \begin{macrocode}
+\DeclareOption{french}{\input{xmFrench.sty}}
+%    \end{macrocode}
+% \end{macro}
+% \begin{macro}{portuguese}
+%    Load french translation file.
+%    \begin{macrocode}
+\DeclareOption{portuguese}{\input{xmPortuguese.sty}}
+%    \end{macrocode}
+% \end{macro}
 
-\newif\ifnumberedProblems
-    \numberedProblemsfalse%                             Default to no numbers, as that was previous behavior.
+%    \begin{macrocode}
     
 \newif\ifxake
 \xakefalse

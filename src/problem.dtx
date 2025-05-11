@@ -105,7 +105,7 @@
 \item%
   [%
     \hskip\labelsep\sffamily\bfseries
-    #2 \problemNumber% Determine the correct number of the problem, and the format of that number.
+    \csname name@#2\endcsname{} \problemNumber% Determine the correct number of the problem, and the format of that number.
 	]%
 \slshape
 }
@@ -137,45 +137,62 @@
 \end{trivlist}
 }
 
-
+\newcommand{\createProblemEnv}[2]{% This is a nice command to define a new problem-like environment for a content-author.
+    %% First, define a new translation schema for the problem - in case we need to do some translation.
+    \expandafter\edef\csname name@ #1\endcsname{#2}
+    \newenvironment{#1}[1][2in]%
+    {%Env start code
+        \problemEnvironmentStart{#1}{\csname name@#1\endcsname}
+    }
+    {%Env end code
+        \problemEnvironmentEnd
+    }
+}
 
 %%%% Now populate the old environment names
 %
 % Old environments were "problem", "exercise", "exploration", and "question".
 % Note that you can add content to the start/end code on top of these base code pieces if you want.
 
+\createProblemEnv{problem}{Problem}
 
-\newenvironment{problem}[1][2in]%
-{%Env start code
-\problemEnvironmentStart{#1}{Problem}
-}
-{%Env end code
-\problemEnvironmentEnd
-}
+%\newenvironment{problem}[1][2in]%
+%{%Env start code
+%\problemEnvironmentStart{#1}{Problem}
+%}
+%{%Env end code
+%\problemEnvironmentEnd
+%}
 
-\newenvironment{exercise}[1][2in]%
-{%Env start code
-\problemEnvironmentStart{#1}{Exercise}
-}
-{%Env end code
-\problemEnvironmentEnd
-}
+\createProblemEnv{exercise}{Exercise}
 
-\newenvironment{exploration}[1][2in]%
-{%Env start code
-\problemEnvironmentStart{#1}{Exploration}
-}
-{%Env end code
-\problemEnvironmentEnd
-}
+%\newenvironment{exercise}[1][2in]%
+%{%Env start code
+%\problemEnvironmentStart{#1}{Exercise}
+%}
+%{%Env end code
+%\problemEnvironmentEnd
+%}
 
-\newenvironment{question}[1][2in]%
-{%Env start code
-\problemEnvironmentStart{#1}{Question}
-}
-{%Env end code
-\problemEnvironmentEnd
-}
+\createProblemEnv{exploration}{Exploration}
+
+%\newenvironment{exploration}[1][2in]%
+%{%Env start code
+%\problemEnvironmentStart{#1}{Exploration}
+%}
+%{%Env end code
+%\problemEnvironmentEnd
+%}
+
+\createProblemEnv{question}{Question}
+
+%\newenvironment{question}[1][2in]%
+%{%Env start code
+%\problemEnvironmentStart{#1}{Question}
+%}
+%{%Env end code
+%\problemEnvironmentEnd
+%}
 %</classXimera>
 %    \end{macrocode}
 
@@ -215,7 +232,7 @@
                 \fi\fi\fi\fi
                 }
             \else
-                \def\problemNumDisp{.}% Otherwise just make it the normal period.
+                \def\problemNumDisp{}% Otherwise just make it the normal period.
             \fi
             \stepcounter{identification}
             \ifvmode 
