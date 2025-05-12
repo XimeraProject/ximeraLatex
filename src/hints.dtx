@@ -17,13 +17,13 @@
 % some parts as non-handout.  renewing the environment on the fly is a
 % bit hacky.
 %    \begin{macrocode}
-\renewenvironment{hint}
+	\renewenvironment{hint}
 	{
 	\ifhandout
-		\setbox0\vbox\bgroup
+	\setbox0\vbox\bgroup
 	\else
-		\begin{trivlist}\item[\hskip \labelsep\small\slshape\bfseries Hint:\hspace{2ex}]
-		\small\slshape
+	\begin{trivlist}\item[\hskip \labelsep\small\slshape\bfseries \GetTranslation{hint}:\hspace{2ex}]
+	\small\slshape
 	\fi
 %    \end{macrocode}
 % Step up hint level to track the nested level of the hint. This will be used for problem numbering.
@@ -32,9 +32,9 @@
 	}
 	{
 	\ifhandout
-		\egroup\ignorespacesafterend
+	\egroup\ignorespacesafterend
 	\else
-		\end{trivlist}
+	\end{trivlist}
 	\fi
 %    \end{macrocode}
 % Detract from hint level counter to track hint nested level
@@ -44,7 +44,7 @@
 
 \ifhints
 	\renewenvironment{hint}{
-	\begin{trivlist}\item[\hskip \labelsep\small\slshape\bfseries Hint:\hspace{2ex}]
+	\begin{trivlist}\item[\hskip \labelsep\small\slshape\bfseries \GetTranslation{hint}:\hspace{2ex}]
 	\small\slshape}
 	{\end{trivlist}}
 \fi

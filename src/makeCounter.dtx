@@ -13,8 +13,9 @@
 		\newcounter{#1}
 		\setcounter{#1}{0}
 		}
-		{%If so, reset to 0.
+		{%If so, reset to 0, but throw a warning.
 		\setcounter{#1}{0}
+        \PackageWarning{MakeCounter}{The Counter #1 already existed so we reset it to zero. Hope this doesn't break anything!}
 		}
 }
 
@@ -25,8 +26,9 @@
 		\newcounter{#1}
 		\setcounter{#1}{0}
 		}
-		{%If so, reset to 0.
+		{%If so, reset to 0, but throw a warning.
 		\setcounter{#1}{0}
+        \PackageWarning{MakeCounter}{The Counter #1 already existed so we reset it to zero. Hope this doesn't break anything!}
 		}
 }
 %    \end{macrocode}

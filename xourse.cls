@@ -19,7 +19,7 @@
 %% 
 \NeedsTeXFormat{LaTeX2e}[1999/12/01]
 \ProvidesClass{xourse}
- [2024/05/12 v1.5.1
+ [2024/09/01 v1.6.0
  Combining Ximera activities into Xourses]
 
 
@@ -100,7 +100,7 @@
 \newcommand{\practice}[2][]{\texttt{\detokenize{#2}}%% gives file name for practice
 \setkeys{practice}{#1}%!!!!!
   \renewcommand{\input}[1]{}
-  \begingroup\skip@preamble\otherinput{#2}\endgroup
+  \begingroup\skip@preamble\otherinput{#2}\endgroup\clearpage
   \let\input\otherinput}
 \fi
 \relax

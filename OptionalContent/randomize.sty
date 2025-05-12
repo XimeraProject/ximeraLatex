@@ -1,0 +1,272 @@
+% Randomize Commands
+\ProvidesPackage{randomize}
+
+
+%%%%% Changelog
+%   V1.0        5/16/2018   First Release into Optional Packages
+%   V1.1        10/8/2019    Overhauled code to streamline and comment. 
+%                               Added and improved the far more robust ``genRandoms'' for content author use.
+%                               Authors should depreciate RandMe command in favor of genRandoms.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%		  Randomize Commands		%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% This section loads and defines all the commands needed for randomizing content. Hacked together by Jason Nowell
+
+\RequirePackage{tikz, pgfplots}% Using the pgf system to do the actual random generation bit.
+\pgfmathsetseed{\number\pdfrandomseed}
+\RequirePackage{forloop}%   Needed to create pools of numbers at once.
+\RequirePackage{calc}%      Using calc to increase efficiency on generating numbers
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%  Random Permutation Command  %%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\MakeCounter{randomize@RndQuant}%     Tracks the number of desired counters
+\MakeCounter{randomize@Temp@Hold}%    Temp counter to hold the command value because tex is weird.
+\MakeCounter{randomize@Temp@RandMe}%	Temp counter like previous.
+\MakeCounter{randomize@TEMP}%   Used to increase efficency of random number generation
+\MakeCounter{randomize@InternalTEMP}
+
+\newcommand*\smartSetCounter[2]{% Function checks if a counter named #1 exists. If not it creates it. After existance is confirmed (or implemented), set the counter to #2.
+    \MakeCounter{#1}
+    \setcounter{#1}{#2}
+}
+
+\newif\ifInner@Shuffle
+\newif\ifInner@OrderForward
+\newif\ifInner@OrderReverse
+\newif\ifVerbose
+\Verbosefalse
+
+%% Basic randomization tool. Should probably be depreciated for the far more robust ``\genRandoms'' below.
+\newcommand{\RandMe}[3][]{% 
+%   #1 is how many random numbers you want to generate. It is an optional parameter and defaults to generating all of the numbers in a randomized list. 
+%   #2 is the max (possible) value of the numbers generated.
+%   #3 is the name of the counters that will hold the generated numbers.
+%       Thus \RandMe{100}{TEMP} will generate all 100 counters (since no optional parameter was given), named \TEMPI, \TEMPII, \TEMPIII, \TEMPIV, \TEMPV, ... 
+%       Each of which will have a (unique) number between 1 and 100 in randomized order.
+% In contrast, \RandMe[5]{100}{TEMP} would only generate 5 counters, each with a random number between 1 and 100, and named \TEMPI, \TEMPII, ..., \TEMPV.
+
+
+    \if\relax\detokenize{#1}\relax
+        #2% If the optional argument isn't given, then use the #2 as default.
+    \fi
+
+%   Assign a maximum on how many numbers to pick. 
+    \setcounter{randomize@RndQuant}{#1 + 1}% We add one to offset the fact that the forloop doesn't like using \leq type conditions.
+    
+%%%%%   For most applications we will be calling a few counters out of a large pool, which means there will be very low chance of collision. Easier to do that case quickly on it's own, then default to the rigorous method if needed.    
+    
+    \setcounter{randomize@TEMP}{5*\arabic{randomize@RndQuant}}
+    \ifthenelse{\arabic{randomize@TEMP} < #2}{% If the max is at least 5 times higher than the number of things we want, then collision is low chance.
+        \forloop{randomize@Iteration1}{1}{\arabic{randomize@Iteration1} < #1}{
+            \@genrand{#3\Roman{randomize@Iteration1}}{1}{#2}% Generate the random number and assign it to the given counter name.
+            \forloop{randomize@Iteration1}{1}{\arabic{Iteration2} < \arabic{randomize@Iteration1}}{% Now we check to see if we got a collision
+                \ifnum\value{#3\Roman{randomize@Iteration1}}=\value{#3\Roman{Iteration2}}
+                    \addtocounter{randomize@Iteration1}{-1}% If we got a collision, we need to redo this counter, so step back the iteration.
+                \fi% If we didn't get a collision, no harm done.
+            }
+        }
+        
+        }{% Otherwise, we will just go ahead and ue the Knuth Algorithm to get a decent randomization.
+        
+%       Generate a starting list of numbers 1 to maximum number given - There should be a better way to do this?
+        \forloop{randomize@Iteration1}{1}{\arabic{randomize@Iteration1} < #2}{
+            \smartSetCounter{randomize@InternalTEMP\Roman{randomize@Iteration1}}{\arabic{randomize@Iteration1}}% Using a fixed counter value so we can keep overwriting it as we keep calling this command, to avoid unnecessarily large number of counters floating around.
+        }
+        
+        
+%       Permute using Knuth method
+        \forloop{randomize@Iteration1}{1}{\arabic{randomize@Iteration1} < \arabic{randomize@RndQuant}}{
+            \@genrand{TempRandMe}{\arabic{randomize@Iteration1}}{#2}
+        
+            \smartSetCounter{randomize@Temp@RandMe}{\TempRandMe}
+            \smartSetCounter{randomize@Temp@Hold}{\arabic{#3\Roman{randomize@Temp@RandMe}}}
+            
+            \smartSetCounter{#3\Roman{randomize@Temp@RandMe}}{\arabic{#3\Roman{randomize@Iteration1}}}
+            \smartSetCounter{#3\Roman{randomize@Iteration1}}{\arabic{randomize@Temp@Hold}}
+        }
+    }
+}
+
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%  Random Permutation Command  %%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+\newcommand{\@genrand}[3] %\@genrand{NAME}{MIN}{MAX} generates a random number between MIN and MAX and stores it in the command \NAME.
+{
+%\stepcounter{LogicChecks}
+\expandafter\pgfmathrandominteger\csname #1\endcsname{#2}{#3}
+\setcounter{#1}{\csname #1\endcsname}
+}
+
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%  		Make Vector is used to generate most random lists		%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\MakeCounter{randomize@Temp@1}
+\MakeCounter{randomize@Temp@2}
+\MakeCounter{randomize@Temp@3}
+\MakeCounter{randomize@Iteration1}
+\MakeCounter{randomize@Iteration2}
+\MakeCounter{randomize@Iteration3}
+\MakeCounter{randomize@Iteration4}
+\MakeCounter{randomize@Placement@1}
+\setcounter{randomize@Placement@1}{1}
+
+
+
+%%%%%%%% Internal Keys
+%% These are to use for internal flags only.
+\newcommand{\inner@SetKeys}[1]{
+    \setkeys{key@Inner}{InnerShuffle={}, OrderDirection={},#1}
+}
+
+
+\define@key{key@Inner}{InnerShuffle}{% This flag is for shuffling questions.
+\ifthenelse{\equal{#1}{true}}
+	{
+	   \Inner@Shuffletrue
+	}
+	{
+	   \Inner@Shufflefalse
+	}
+}
+
+\define@key{key@Inner}{OrderDirection}{% This flag gives the order in which vectors are saved.
+\ifthenelse{\equal{#1}{forward}}
+	{
+	   \Inner@OrderForwardtrue
+	}
+	{
+	   \Inner@OrderForwardfalse
+	}
+\ifthenelse{\equal{#1}{reverse}}
+	{
+	   \Inner@OrderReversetrue
+	}
+	{
+	   \Inner@OrderReversefalse
+	}
+}
+
+
+
+\newcommand{\genRandoms}[5][InnerShuffle=false, OrderDirection=forward]{% This is to make either an ordered or a shuffled list of values
+	% #1 is optional and is for internal flags. 
+	% #2 is the name of the output counters
+	% #3 is the minimum counter value
+	% #4 is the maximum counter value
+	% #5 is the number of desired counters.
+	% Counters will be saved as #2\Roman{#}
+	
+	\inner@SetKeys{#1}% Set any given keys
+	% Possible flags:
+		% InnerShuffle flag "true" will shuffle, "false" won't
+		% OrderDirection; "forward" will list questions in increasing order. 
+        % "reverse" will list the questions in decreasing order. Superceded by InnerShuffle.
+		% 
+	
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%  		First we will choose and order the initial values		%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+	\setcounter{randomize@Temp@1}{#4}
+	\addtocounter{randomize@Temp@1}{-#3}
+	\ifnum #5 = \value{randomize@Temp@1}% The special case where we want all the values. Randomizing into a full list just to order it is silly so we deal with this case separately.
+		\forloop{randomize@Iteration1}{1}{\arabic{randomize@Iteration1} < \arabic{randomize@Temp@1}}
+			{% Start of forloop
+			\MakeCounter{Ordered@\Roman{randomize@Iteration1}}	% Check to see if counter exists
+			\MakeCounter{C@Shuffle\Roman{randomize@Iteration1}}
+			\setcounter{Ordered@\Roman{randomize@Iteration1}}{\arabic{randomize@Iteration1}}
+			\setcounter{C@Shuffle\Roman{randomize@Iteration1}}{\arabic{randomize@Iteration1}}
+			}
+	\else
+		\setcounter{randomize@Temp@1}{#5}% Track how many numbers we want.
+		\stepcounter{randomize@Temp@1}% Step for the < sign
+		\forloop{randomize@Iteration1}{1}{\arabic{randomize@Iteration1} < \arabic{randomize@Temp@1}}
+			{% Start of forloop
+	
+			\MakeCounter{Ordered@\Roman{randomize@Iteration1}}	% Check to see if counter exists
+			\MakeCounter{CTemp\Roman{randomize@Iteration1}}	% Check to see if counter exists
+			\MakeCounter{C@Shuffle\Roman{randomize@Iteration1}}
+		
+			\@genrand{randomize@Temp@2}{#3}{#4}
+			\ifVerbose{Your first choice for the question number is \arabic{randomize@Temp@2}}\\ \fi
+			\forloop{randomize@Iteration2}{1}{\arabic{randomize@Iteration2} < \arabic{randomize@Iteration1}}
+				{% Start of inner forloop. This loop checks for uniqueness of counter value.
+				\ifnum\value{randomize@Temp@2}=\value{CTemp\Roman{randomize@Iteration2}}% Check to see if the counter matches any previous counter
+				\@genrand{randomize@Temp@2}{#3}{#4}% If so, fix it.
+				\setcounter{randomize@Iteration2}{0}% Reset the check counter so we can check if the new number is used.
+				\ifVerbose Your revised choice for the number is \arabic{randomize@Temp@2} \\ \fi
+				\fi
+	%			\arabic{randomize@Iteration2}, \arabic{CTemp\Roman{randomize@Iteration2}}\\
+				}% 
+			
+			\setcounter{CTemp\Roman{randomize@Iteration1}}{\arabic{randomize@Temp@2}}% Save (unsorted) unique value in a temp list of variables.
+			\setcounter{C@Shuffle\Roman{randomize@Iteration1}}{\arabic{randomize@Temp@2}}% Save (unsorted) unique value in a temp list of variables. This one is to be used in the case we want shuffled values at the end.
+		
+			\ifVerbose (Unordered) We want questions number \arabic{randomize@Temp@2} \fi
+		
+			}
+		% Now we want to sort the list	
+	
+		\forloop{randomize@Iteration3}{1}{\arabic{randomize@Iteration3}<\arabic{randomize@Temp@1}}
+			{% For each variable
+				\setcounter{randomize@Placement@1}{1}% Default the placeholder counter to some gigantic number so I can proceed to find the smallest possible number.
+			
+				\forloop{randomize@Iteration4}{1}{\arabic{randomize@Iteration4}<\arabic{randomize@Temp@1}}
+					{
+					\ifnum\value{CTemp\Roman{randomize@Iteration4}}<\value{CTemp\Roman{randomize@Placement@1}}
+						\setcounter{randomize@Placement@1}{\arabic{randomize@Iteration4}}% Keep track of which counter was the largest so far
+					\fi
+					}
+	
+				\setcounter{Ordered@\Roman{randomize@Iteration3}}{\arabic{CTemp\Roman{randomize@Placement@1}}}% Set the final counter.
+				\setcounter{CTemp\Roman{randomize@Placement@1}}{999999}% Now remove that place as a viable option for next run.
+				\ifVerbose (Ordered) We want question number \arabic{Ordered@\Roman{randomize@Iteration3}} \fi
+			}
+	\fi	
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%	
+%%%%%%%%%%%		Finished Choosing and ordering initial values		%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%   		Now reorder and assign final names				%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+	
+	
+	\ifInner@OrderReverse
+		\setcounter{randomize@Temp@3}{#5}
+		\forloop{randomize@Iteration1}{1}{\arabic{randomize@Iteration1} < \arabic{randomize@Temp@1}}
+			{
+			\MakeCounter{#2\Roman{randomize@Iteration1}}% Make the counter if it doesn't exist.
+			\setcounter{#2\Roman{randomize@Iteration1}}{\arabic{Ordered@\Roman{randomize@Temp@3}}}% Set the final counter version to the current "last" unused value.
+			\addtocounter{randomize@Temp@3}{-1}% Decrement the counter for next assignment
+			}
+	\else% If we aren't doing it in reverse, assume we want forward order. This is default.
+		\forloop{randomize@Iteration1}{1}{\arabic{randomize@Iteration1} < \arabic{randomize@Temp@1}}
+			{
+			\MakeCounter{#2\Roman{randomize@Iteration1}}% Make the counter if it doesn't exist.
+			\setcounter{#2\Roman{randomize@Iteration1}}{\arabic{Ordered@\Roman{randomize@Iteration1}}}% Set the final counter version to the next value.
+			}
+	
+	\fi% End of forward/reverse order version
+
+	\ifInner@Shuffle
+		\forloop{randomize@Iteration1}{1}{\arabic{randomize@Iteration1} < \arabic{randomize@Temp@1}}
+			{
+			\MakeCounter{#2\Roman{randomize@Iteration1}}% Make the counter if it doesn't exist.
+			\setcounter{#2\Roman{randomize@Iteration1}}{\arabic{C@Shuffle\Roman{randomize@Iteration1}}}% Set the counter to the next value.
+			}
+
+	\fi% End of Shuffle order version
+	
+}

@@ -1,0 +1,29 @@
+\documentclass{ximera}
+\title{Footnotes}
+
+
+\begin{document}
+\begin{abstract}
+    Show that footnotes work without anything special.
+\end{abstract}
+\maketitle
+
+Footnotes are used frequently in math text, but it isn't clear how they should be dealt with in an online format. Eventually I aim to build out footnotes to work more like \href{https://what-if.xkcd.com/}{the xkcd what-if footnotes}. For now though, footnotes \textit{do} work, and they work by expanding in-line in a different color font.
+
+So, you can use something like:
+
+\begin{verbatim}
+    We love to have footnotes in math texts%
+    \footnote{Or, at least, they seem to keep getting used...}
+    even though they make you go look elsewhere to see what is happening.
+\end{verbatim}
+
+Becomes:
+
+We love to have footnotes in math texts%
+\footnote{Or, at least, they seem to keep getting used...}
+even though they make you go look elsewhere to see what is happening.
+
+Thus there is nothing special about the syntax or usage to let you use footnotes. It is worth a note here though that you may need to update your ximera.cls, ximera.4ht, and possibly a few other files to make this work - but if you are interested in doing so it's a simple matter of copy/pasting the files, just contact the Xronos dev and they will send you updated files.
+
+\end{document}

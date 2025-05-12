@@ -1,0 +1,122 @@
+\documentclass{ximera}
+\title{Randomized Multiple Choice}
+\input{../preamble}
+
+\begin{abstract}
+    Workaround for Multiple Choice randomization
+\end{abstract}
+\begin{document}%
+
+\maketitle
+
+
+
+
+As was noted in the section on multiple choice answer types, because multiple choice is a LaTeX level environment, it can't really deal with randomization very well. Indeed, you can randomize the content, but which answer is marked as ``correct'' is inevitably the same because it is flagged at the LaTeX level.
+
+\subsection*{Randomizing multipleChoice}
+
+Instead, we can design the problem by listing the possibilities, and then asking for which numbered entry is the correct one. For example:
+
+
+
+\begin{sagesilent}
+def RandInt(a,b):
+    """ Returns a random integer in [`a`,`b`]. Note that `a` and `b` should be integers themselves to avoid unexpected behavior.
+    """
+    return QQ(randint(int(a),int(b)))
+    # return choice(range(a,b+1))
+
+def NonZeroInt(b,c, avoid = [0]):
+    """ Returns a random integer in [`b`,`c`] which is not in `av`. 
+        If `av` is not specified, defaults to a non-zero integer.
+    """
+    while True:
+        a = RandInt(b,c)
+        if a not in avoid:
+            return a
+
+p1c1 = RandInt(-10,10)
+p1c2 = NonZeroInt(-10,10,[p1c1])
+p1c3 = NonZeroInt(-10,10,[p1c1,p1c2])
+p1c4 = NonZeroInt(-10,10,[p1c1,p1c2,p1c3])
+p1c5 = NonZeroInt(-10,10,[p1c1,p1c2,p1c3,p1c4])
+
+p1ansvec = [p1c1,p1c2,p1c3,p1c4,p1c5]
+shuffle(p1ansvec)
+
+p1ans1 = p1ansvec.index(p1c1) + 1
+
+p1ans2 = 2^5-1-2^(p1ansvec.index(p1c1))
+
+p1ansvecalpha=[LatexExpr(r"a"),LatexExpr(r"b"),LatexExpr(r"c"),LatexExpr(r"d"),LatexExpr(r"e")]
+
+p1ans3 = p1ansvecalpha[p1ansvec.index(p1c2)]+p1ansvecalpha[p1ansvec.index(p1c3)]
+
+\end{sagesilent}
+
+
+\begin{problem}
+    Which of the following choices is $\sage{p1c1}$?
+    
+    \begin{enumerate}
+        \item[1:] $\sage{p1ansvec[0]}$
+        \item[2:] $\sage{p1ansvec[1]}$
+        \item[3:] $\sage{p1ansvec[2]}$
+        \item[4:] $\sage{p1ansvec[3]}$
+        \item[5:] $\sage{p1ansvec[4]}$
+    \end{enumerate}
+    $\answer{\sage{p1ans1}}$
+    
+    \begin{feedback}[attempt]
+        Now hit the ``Try Another'' button in the top right corner and see how things move around, but it still works! Remember you can append ``.tex'' to the end of the url to get the code for the page, which you can use for a template if you want.
+    \end{feedback}
+    
+\end{problem}
+
+
+\subsection*{Randomizing Select All}
+
+You can also randomize select all in two ways. The first is to just do the same as above, but use the powers of 2 (or any base larger than 2) for the enumeration and ask for the sum, which would sum to a unique value. For example:
+
+
+\begin{problem}
+    Which of the following choices is \textbf{not} $\sage{p1c1}$?
+    
+    \begin{enumerate}
+        \item[1:] $\sage{p1ansvec[0]}$
+        \item[2:] $\sage{p1ansvec[1]}$
+        \item[4:] $\sage{p1ansvec[2]}$
+        \item[8:] $\sage{p1ansvec[3]}$
+        \item[16:] $\sage{p1ansvec[4]}$
+    \end{enumerate}
+    Add up the numbers that correspond to the correct answers, and enter that sum into the box:
+    $\answer{\sage{p1ans2}}$
+    
+    \begin{feedback}[attempt]
+        Now hit the ``Try Another'' button in the top right corner and see how things move around, but it still works! Remember you can append ``.tex'' to the end of the url to get the code for the page, which you can use for a template if you want. Although the answer is computed by cheating and using geometric series formulas...
+    \end{feedback}
+\end{problem}
+
+Perhaps a more natural (and less prone to error) option however, is to use letters as the enumeration and then have students type in the string of those letters as so:
+
+\begin{problem}
+    Which of the following choices is $\sage{p1c2}$ and $\sage{p1c3}$? 
+    
+    \begin{enumerate}
+        \item[a] $\sage{p1ansvec[0]}$
+        \item[b] $\sage{p1ansvec[1]}$
+        \item[c] $\sage{p1ansvec[2]}$
+        \item[d] $\sage{p1ansvec[3]}$
+        \item[e] $\sage{p1ansvec[4]}$
+    \end{enumerate}
+    Type in the letters that correspond to the answer - remember to just give the letters, no white space or commas or anything of the like.
+    $\answer{\sage{p1ans3}}$
+    
+    \begin{feedback}[attempt]
+        Now hit the ``Try Another'' button in the top right corner and see how things move around, but it still works! Remember you can append ``.tex'' to the end of the url to get the code for the page, which you can use for a template if you want. Hopefully the sage code isn't totally opaque as to how this works. Note that there is a very unintuitive requirement here to bypass how sage likes to make strings unreadable when called with the \textbackslash sage command. In particular, instead of using something like 'a' as the string 'a' when generating the correct answer, you need to use: ``LatexExpr(r"a")''. Check the end of the sagesilent block by appending .tex to the url and see how it was generated to see how it is done.
+    \end{feedback}
+\end{problem}
+
+
+\end{document}

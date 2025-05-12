@@ -1,0 +1,59 @@
+\documentclass{ximera}
+\title{Xourse and Ximera File Layout}
+
+
+\begin{document}
+\begin{abstract}
+    How to write and layout the xourse and ximera documentClass file to build an assignment.
+\end{abstract}
+\maketitle
+
+There are two document classes for making a Xronos assignment. The 'xourse' type is the file that turns into the page with all the tiles on it that students click on to load the page with the actual content on it. The tiles with the actual content are 'ximera' documentClass. We discuss the xourse documentClass here, whereas the rest of this documentation is largely for the content that goes into the ximera documentClass files.
+
+\subsection*{Preambles}
+    The preamble is handled rather... oddly for a variety of highly technical reasons beyond the scope of even this documentation. The takeaway however is that best-practice is to create a preamble file and input that file wherever you need a preamble - including the xourse file and any ximera files. 
+    
+    It's important to know that any preamble you include in any ximera documentClass document will be obliterated as part of the publishing process - instead it will pull the preamble from the xourse documentClass, so it's important to make sure you put everything for every preamble you need into the one file that is loaded in the xourse documentClass file - although in order to compile via pdflatex locally, you will also want to input that same preamble file into most of your ximera documentClass files as well.
+    
+    The only exception to the previous preamble being obliterated is the title command and its content.
+
+\subsection*{Title, Subtitle, and making them appear}
+    The \verb|\title| command is what generates the title of the tile, and the subtitle for a tile is generated using the `abstract' environment - the content of that environment is what gets put as the subtitle/description. The title command should be placed before the \verb|\begin{document}| command, whereas the abstract should be placed \textit{after} the \verb|\begin{document}| command. Finally, in order to make the title and subtitle to appear on the tile, you must use the \verb|\maketitle| command. This is especially important, since otherwise the tile is blank and remarkably difficult to see on some devices.
+    
+\subsection*{Xourse File Content}
+    The xourse documentClass contains the links to the tiles, and the nature of those tiles is determined by the command used to load them. There are two options, the \verb|\activity| command creates a full sized tile, with a title and description displayed, and the \verb|\practice| command creates a thin tile that shows only the progress bar, without a title or description. These commands are effectively an \verb|\include| command, so they should point to a ximera documentClass file (note that the file itself doesn't need any special configuration to be an activity versus practice).
+    
+    You can also use the \verb|\part| command to make a darker tile that is not clickable, which can be useful to divide up your content. Moreover, there is also a \verb|\chapterstyle| and \verb|\sectionstyle| command, which make all activities after those commands have slightly different coloring - e.g. chapterstyle makes the tile slightly darker than section style, which is the default. Thus you could have a xourse file that looks something like:
+    
+    \begin{verbatim}
+        \documentClass{xourse}
+        \input{./preamble}
+        \title{Example Assignment}% Title of the tile
+        \begin{document}
+            \begin{abstract}% Write the description
+                This is an example assignment containing a few tiles of problems.
+            \end{abstract}
+            \maketitle% Make sure to display the title and description
+            
+            \part{First Assignment Type}% Declare first assignment block via a large darker tile
+                \activity{./folderOne/assignmentOne}% Load assignmentOne.tex in the subfolder folderOne
+                \practice{./folderOne/practice/practiceOne}% Make a thin practice tile out of the file ``practiceOne'' contained in the subfolder ``practice'' in the subfolder ``folderTwo''.
+            
+            \part{Second Assignment Type}% Declare second assignment block via a large darker tile
+                \chapterstyle% Acitivities are going to be shaded darker until we reset to styletype
+                    \activity{./folderTwo/assignmentOneLeadIn}% a lead-in for the assignments, so it gets special coloring
+                \sectionstyle% Return to normal tile coloring.
+                    \activity{./folderTwo/assignmentOne}% Load assignmentOne.tex from the subfolder: folderTwo
+                    \practice{./folderTwo/practice/practiceOne}% Make a thin practice tile out of the file contained in the subfolder ``practice'' in the subfolder ``folderTwo''.
+        \end{document}
+    \end{verbatim}
+
+    Note that you can go to the xourse file for this documentation by going back to the page with all the tiles, then append ``.tex'' to the end of the url and see the xourse file that generated this page to get a real-life example.
+\end{document}
+
+
+
+
+
+
+
