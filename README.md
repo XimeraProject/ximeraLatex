@@ -1,6 +1,3 @@
-Greetings!
-==========
-
 
 This repository contains the source for the `ximera` LaTeX package. 
 

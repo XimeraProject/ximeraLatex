@@ -1,39 +1,40 @@
+%    \begin{macrocode}
+%<*classXimera>
+%    \end{macrocode}
+%    \begin{macrocode}
+\newif\ifnumberedProblems
+\numberedProblemsfalse% Default to no numbers, as that was previous behavior.
+\DeclareOption{onlineProblemNumbers}{\numberedProblemstrue}
+%    \end{macrocode}
+%    \begin{macrocode}
+%</classXimera>
+%    \end{macrocode}
 % \subsection{Options for the class}
 %    We start by listing the options for the \textsf{ximera} document class. Note, since the \textsf{xourse} class is based on the \textsf{ximera} class, all listed options are available there too.
 %
 %    \begin{macrocode}
 %<*classXimera>
 %    \end{macrocode}
-% \begin{macro}{handout}
 %    The default behavior of the class is to display \textbf{all} content. This means that if any questions are asked, all answers are shown. Moreover, some content will only have a meaningful presentation when displayed online. When compiled without any options, this content will be shown too. This option will supress such content and generate a reasonable printiable ``handout.''
 %    \begin{macrocode}
 \newif\ifhandout
 \handoutfalse
 \DeclareOption{handout}{\handouttrue}
 %    \end{macrocode}
-% \end{macro}
 %
-% \begin{macro}{noauthor}
 %    By default, authors are listed at the bottom of the first page of a document. This option will supress the listing of the authors.
 %    \begin{macrocode}
-\newif\ifauthor%                                        Flag for whether or not any author is given
-    \authorfalse%                                       Defaults to false.
-\newif\ifsuppressAuthorDisplay%                         A flag for deliberately suppressing author even if it is given.
-    \suppressAuthorDisplayfalse%                        Default to not suppressing the display of the author.
-\DeclareOption{noauthor}{\suppressAuthorDisplaytrue}
+\newif\ifnoauthor
+\noauthorfalse
+\DeclareOption{noauthor}{\noauthortrue}
 %    \end{macrocode}
-% \end{macro}
 %
-% \begin{macro}{nooutcomes}
 %    By default, learning outcomes are listed at the bottom of the first page of a document. This option will supress the listing of the learning outcomes.
 %    \begin{macrocode}
-\newif\ifoutcomes%                                      Flag for whether or not outcomes are given.
-    \outcomesfalse%                                     Default to false.
-\newif\ifsuppressOutcomesDisplay%                       Flag for if outcome displays should be suppressed, even if given.
-    \suppressOutcomesDisplayfalse%                      Default to not supressing the display of outcomes
-\DeclareOption{nooutcomes}{\suppressOutcomesDisplaytrue}
+\newif\ifnooutcomes
+\nooutcomesfalse
+\DeclareOption{nooutcomes}{\nooutcomestrue}
 %    \end{macrocode}
-% \end{macro}
 %
 % \begin{macro}{instructornotes}
 %    This option will turn on (and off) notes written for the instructor.
@@ -77,16 +78,6 @@
 %    \end{macrocode}
 % \end{macro}
 %
-% \begin{macro}{onlineProblemNumbers}
-%    This option enables online numbering for problems up to a depth of 5 nested problems. 
-%    If you are nesting more than 5 deep, you should probably rethink what you are doing.
-%    \begin{macrocode}
-\newif\ifnumberedProblems
-\numberedProblemsfalse% Default to no numbers, as that was previous behavior.
-\DeclareOption{onlineProblemNumbers}{\numberedProblemstrue}
-%    \end{macrocode}
-% \end{macro}
-%
 % \begin{macro}{wordchoicegiven}
 %    This option will replace the choices shown by \texttt{wordChoice} with the correct choice. No indication of the \texttt{wordChoice} environment will be shown.
 %    \begin{macrocode}
@@ -97,29 +88,8 @@
 \firstinlinechoicetrue
 %    \end{macrocode}
 % \end{macro}
-% \subsubsection{Localization Options}
-% \begin{macro}{english}
-%    Force English translation file to get loaded - note this should be the default behavior - as such it is superfluous, but included here mostly for debugging and in case a different default is redefined by an author.
 %    \begin{macrocode}
-\input{xmEnglish.sty}%% This should go first, so it is default and any other language that is loaded comes after and loads a new package that then overwrites the names with translated versions.
-\DeclareOption{english}{\input{xmEnglish.sty}}
-%    \end{macrocode}
-% \end{macro}
-% \begin{macro}{french}
-%    Load french translation file.
-%    \begin{macrocode}
-\DeclareOption{french}{\input{xmFrench.sty}}
-%    \end{macrocode}
-% \end{macro}
-% \begin{macro}{portuguese}
-%    Load french translation file.
-%    \begin{macrocode}
-\DeclareOption{portuguese}{\input{xmPortuguese.sty}}
-%    \end{macrocode}
-% \end{macro}
 
-%    \begin{macrocode}
-    
 \newif\ifxake
 \xakefalse
 \DeclareOption{xake}{\xaketrue}
@@ -132,7 +102,7 @@
   \numbersfalse%
   \newpagefalse%
   \hintsfalse%
-  \outcomestrue%
+  \nooutcomesfalse%
 }
 
 \DeclareOption*{%
@@ -148,9 +118,10 @@
   \numbersfalse%
   \newpagefalse%
   \hintsfalse%
-  \outcomestrue%
+  \nooutcomesfalse%
 \fi
-
+%    \end{macrocode}
+%    \begin{macrocode}
 %</classXimera>
 %    \end{macrocode}
 

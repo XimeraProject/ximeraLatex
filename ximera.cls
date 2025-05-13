@@ -50,14 +50,7 @@
 %% src/ungraded.dtx  (with options: `classXimera')
 %% src/clearEnv.dtx  (with options: `classXimera')
 %% src/hideEnv.dtx  (with options: `classXimera')
-%% src/validators/validatorHook.dtx  (with options: `classXimera')
-%% src/validators/supplementalCommands.dtx  (with options: `classXimera')
-%% src/validators/sameDerivative.dtx  (with options: `classXimera')
-%% src/validators/factorCheck.dtx  (with options: `classXimera')
-%% src/validators/multiAns.dtx  (with options: `classXimera')
-%% src/validators/equalMatrix.dtx  (with options: `classXimera')
 %% src/preamble.dtx  (with options: `classXimera')
-
 %% ------------:| ------------------------------------------------------------
 %%       ximera:| Simultaneously writing print and online interactive materials
 %%       Author:| Jim Fowler and Oscar Levin and Jason Nowell and Wim Obbels and Hans Parshall and Bart Snapp
@@ -67,7 +60,7 @@
 %% 
 \NeedsTeXFormat{LaTeX2e}[1999/12/01]
 \ProvidesClass{ximera}
- [2024/09/01 v1.6.0
+ [2024/05/12 v1.5.1
  Simultaneously write print and online interactive materials]
 
 
@@ -96,47 +89,13 @@
 \let\m\undefined
 \newif\ifhandout
 \handoutfalse
-
-% Add word to the dictionary
-\providecommand{\setLanguage}[1]{%
-    % Sets the translation language
-    \edef\currentLanguage{xm#1}
-    % Check if there is a localization (translation dictionary) file:
-    \IfFileExists{xm#1.sty}{%
-        % If it exists, load it.
-        %Loading file xm#1.sty !
-        \input{xm#1.sty}
-    }{% If it doesn't exist, report a warning
-        %Didn't load file xm#1.sty !
-        %\PackageWarning{Localization}{I don't see a dictionary file anywhere for your language: xm#1}
-    }
-}
-
-\providecommand{\addTranslation}[2]{%
-    % #1 should be the english word we are translating.
-    % #2 should be the translation.
-    \expandafter\gdef\csname dictionary@\currentLanguage @#1\endcsname{%
-        #2%
-    }%
-}
-
-% Retrieve a value from the dictionary by key
-\providecommand{\xmTranslate}[1]{%
-    \csname dictionary@\currentLanguage @#1\endcsname
-}%
-\setLanguage{English}
-
 \DeclareOption{handout}{\handouttrue}
-\newif\ifauthor%                                        Flag for whether or not any author is given
-    \authorfalse%                                       Defaults to false.
-\newif\ifsuppressAuthorDisplay%                         A flag for deliberately suppressing author even if it is given.
-    \suppressAuthorDisplayfalse%                        Default to not suppressing the display of the author.
-\DeclareOption{noauthor}{\suppressAuthorDisplaytrue}
-\newif\ifoutcomes%                                      Flag for whether or not outcomes are given.
-    \outcomesfalse%                                     Default to false.
-\newif\ifsuppressOutcomesDisplay%                       Flag for if outcome displays should be suppressed, even if given.
-    \suppressOutcomesDisplayfalse%                      Default to not supressing the display of outcomes
-\DeclareOption{nooutcomes}{\suppressOutcomesDisplaytrue}
+\newif\ifnoauthor
+\noauthorfalse
+\DeclareOption{noauthor}{\noauthortrue}
+\newif\ifnooutcomes
+\nooutcomesfalse
+\DeclareOption{nooutcomes}{\nooutcomestrue}
 \newif\ifinstructornotes
 \instructornotesfalse
 \DeclareOption{instructornotes}{\instructornotestrue}
@@ -150,17 +109,11 @@
 \newif\ifnumbers
 \numbersfalse
 \DeclareOption{numbers}{\numberstrue}
-\newif\ifnumberedProblems
-\numberedProblemsfalse% Default to no numbers, as that was previous behavior.
-\DeclareOption{onlineProblemNumbers}{\numberedProblemstrue}
 \newif\ifwordchoicegiven
 \wordchoicegivenfalse
 \DeclareOption{wordchoicegiven}{\wordchoicegiventrue}
 \newif\iffirstinlinechoice% Support for other wordchoice command contents.
 \firstinlinechoicetrue
-\DeclareOption{english}{\setLanguage{English}}
-\DeclareOption{french}{\setLanguage{French}}
-\DeclareOption{portuguese}{\setLanguage{Portuguese}}
 
 \newif\ifxake
 \xakefalse
@@ -174,7 +127,7 @@
   \numbersfalse%
   \newpagefalse%
   \hintsfalse%
-  \outcomestrue%
+  \nooutcomesfalse%
 }
 
 \DeclareOption*{%
@@ -190,7 +143,7 @@
   \numbersfalse%
   \newpagefalse%
   \hintsfalse%
-  \outcomestrue%
+  \nooutcomesfalse%
 \fi
 
 
@@ -218,6 +171,7 @@
 \RequirePackage{xkeyval}
 
 \RequirePackage{comment}
+\RequirePackage{currfile}
 \RequirePackage{gettitlestring}
 \RequirePackage{nameref}
 \RequirePackage{epstopdf}
@@ -288,9 +242,8 @@
 \newcounter{#1}
 \setcounter{#1}{0}
 }
-{%If so, reset to 0, but throw a warning.
+{%If so, reset to 0.
 \setcounter{#1}{0}
-        \PackageWarning{MakeCounter}{The Counter #1 already existed so we reset it to zero. Hope this doesn't break anything!}
 }
 }
 
@@ -300,9 +253,8 @@
 \newcounter{#1}
 \setcounter{#1}{0}
 }
-{%If so, reset to 0, but throw a warning.
+{%If so, reset to 0.
 \setcounter{#1}{0}
-        \PackageWarning{MakeCounter}{The Counter #1 already existed so we reset it to zero. Hope this doesn't break anything!}
 }
 }
 
@@ -318,82 +270,103 @@
 \newcommand{\acknowledgement}{\excludecomment}
 
 \renewcommand{\tag}{\excludecomment}
-\def\theoutcomes{}
+%%% For the online content %%%
+%%
+\newcommand{\preOutputLine}{\item }
+\newcommand{\postOutputLine}{}
+\newcommand{\preOutputBlock}{At the end of this section, students should be able to... \begin{itemize}}
+\newcommand{\postOutputBlock}{\end{itemize} So go forth and learn!}
 
-\ifdefined\HCode%
-  \newcommand{\outcome}[1]{}
-\else%
-  \newwrite\outcomefile
-  \immediate\openout\outcomefile=\jobname.oc
+\newcommand{\outcomeHeader}{Goals for this Section (Hover over me to see!)}
+\htmlOnly{
+  \newcommand{\outcomeBlock}{\ifvmode\IgnorePar\fi\EndP\HCode{<div class="outcomeHead">} \outcomeHeader \ifvmode\IgnorePar\fi\EndP\HCode{</div>} \ifvmode\IgnorePar\fi\EndP\HCode{<div class="outcomeContent">}}
+}
 
-  \newcommand{\outcome}[1]{
-      \outcomestrue% If we invoke |\outcome|, then we should have outcomes and thus we will flag it as true.
-      \edef\theoutcomes{\theoutcomes #1~}%
-      \immediate\write\outcomefile{\unexpanded{\outcome}{#1}}
+\newwrite\outcomefile
+\immediate\openout\outcomefile=\jobname.oc
+\newcommand{\outcome}[1]{%
+  \immediate\write\outcomefile{\expandafter\unexpanded\expandafter{\preOutputLine #1} \expandafter\unexpanded\expandafter{\postOutputLine}}
+}
+
+\newcommand{\displayOutcomes}[1][]{%
+  \immediate\closeout\outcomefile
+  \IfFileExists{\currfiledir\currfilebase.oc}{
+    \htmlOnly{\outcomeBlock}
+      \expandafter\preOutputBlock
+      \input{\currfiledir\currfilebase.oc}
+      \postOutputBlock
+      \htmlOnly{\ifvmode\IgnorePar\fi\EndP\HCode{</div>}}
+    }
+    {
+    \IfFileExists{\currfilebase.oc}{
+      \htmlOnly{\outcomeBlock}
+        \expandafter\preOutputBlock
+        \input{\currfilebase.oc}
+        \postOutputBlock
+        \htmlOnly{\ifvmode\IgnorePar\fi\EndP\HCode{</div>}}
       }
-  \fi%
+      {
+        No outcome file found.
+      }
+    }
+  }
 \everymath{\displaystyle}
 \let\prelim\lim
 \renewcommand{\lim}{\displaystyle\prelim}
 \theoremstyle{definition} % No italic (because this makes also text in TikZ italic !!!)
 
 
-      \newtheorem{theorem}{\name@Theorem}
+      \newtheorem{theorem}{Theorem}
 
-      \newtheorem{algorithm}{\name@Algorithm}
+      \newtheorem{algorithm}{Algorithm}
 
-      \newtheorem{axiom}{\name@Axiom}
+      \newtheorem{axiom}{Axiom}
 
-      \newtheorem{claim}{\name@Claim}
+      \newtheorem{claim}{Claim}
 
-      \newtheorem{conclusion}{\name@Conclusion}
+      \newtheorem{conclusion}{Conclusion}
 
-      \newtheorem{condition}{\name@Condition}
+      \newtheorem{condition}{Condition}
 
-      \newtheorem{conjecture}{\name@Conjecture}
+      \newtheorem{conjecture}{Conjecture}
 
-      \newtheorem{corollary}{\name@Corollary}
+      \newtheorem{corollary}{Corollary}
 
-      \newtheorem{criterion}{\name@Criterion}
+      \newtheorem{criterion}{Criterion}
 
-      \newtheorem{definition}{\name@Definition}
+      \newtheorem{definition}{Definition}
 
-      \newtheorem{example}{\name@Example}
+      \newtheorem{example}{Example}
 
-      \newtheorem*{explanation}{\name@Explanation}
+      \newtheorem*{explanation}{Explanation}
 
-      \newtheorem{fact}{\name@Fact}
+      \newtheorem{fact}{Fact}
 
-      \newtheorem{lemma}{\name@Lemma}
+      \newtheorem{lemma}{Lemma}
 
-      \newtheorem{formula}{\name@Formula}
+      \newtheorem{formula}{Formula}
 
-      \newtheorem{idea}{\name@Idea}
+      \newtheorem{idea}{Idea}
 
-      \newtheorem{notation}{\name@Notation}
+      \newtheorem{notation}{Notation}
 
-      \newtheorem{model}{\name@Model}
+      \newtheorem{model}{Model}
 
-      \newtheorem{observation}{\name@Observation}
+      \newtheorem{observation}{Observation}
 
-      \newtheorem{proposition}{\name@Proposition}
+      \newtheorem{proposition}{Proposition}
 
-      \newtheorem{paradox}{\name@Paradox}
+      \newtheorem{paradox}{Paradox}
 
-      \newtheorem{procedure}{\name@Procedure}
+      \newtheorem{procedure}{Procedure}
 
-      \newtheorem{remark}{\name@Remark}
+      \newtheorem{remark}{Remark}
 
-      \newtheorem{summary}{\name@Summary}
+      \newtheorem{summary}{Summary}
 
-      \newtheorem{template}{\name@Template}
+      \newtheorem{template}{Template}
 
-<<<<<<< HEAD
-      \newtheorem{warning}{\name@Warning}
-
-=======
       \newtheorem{warning}{Warning}
->>>>>>> 84c6db20c3e4220b4e6dd6a5605fd8a3150bc90b
 \renewcommand{\theenumi}{\textup{(\alph{enumi})}}
 \renewcommand{\labelenumi}{\theenumi}
 \renewcommand{\theenumii}{\textup{(\roman{enumii})}}
@@ -485,7 +458,6 @@
     \end{picture}%
   \endgroup%
 }%
-
 \MakeCounter{problem}
 \newcommand{\problemNumber}{
 \ifcsname c@depth\Roman{problem@Depth}Count\endcsname% Check to see if counter exists
@@ -515,7 +487,7 @@
 \item%
   [%
     \hskip\labelsep\sffamily\bfseries
-    \xmTranslate{#2} \problemNumber% Determine the correct number of the problem, and the format of that number.
+    #2 \problemNumber% Determine the correct number of the problem, and the format of that number.
 ]%
 \slshape
 }
@@ -541,33 +513,39 @@
 \end{trivlist}
 }
 
-\newcommand{\createProblemEnv}[2]{% This is a nice command to define a new problem-like environment for a content-author.
-    %% First, define a new translation schema for the problem - in case we need to do some translation.
-    %\expandafter\edef\csname name@ #2\endcsname{#2}
-    \newenvironment{#1}[1][2in]%
-    {%Env start code
-        \problemEnvironmentStart{#1}{#2}
-    }
-    {%Env end code
-        \problemEnvironmentEnd
-    }
-}
-
 %%%% Now populate the old environment names
 
-\createProblemEnv{problem}{Problem}
+\newenvironment{problem}[1][2in]%
+{%Env start code
+\problemEnvironmentStart{#1}{Problem}
+}
+{%Env end code
+\problemEnvironmentEnd
+}
 
+\newenvironment{exercise}[1][2in]%
+{%Env start code
+\problemEnvironmentStart{#1}{Exercise}
+}
+{%Env end code
+\problemEnvironmentEnd
+}
 
-\createProblemEnv{exercise}{Exercise}
+\newenvironment{exploration}[1][2in]%
+{%Env start code
+\problemEnvironmentStart{#1}{Exploration}
+}
+{%Env end code
+\problemEnvironmentEnd
+}
 
-
-\createProblemEnv{exploration}{Exploration}
-
-
-\createProblemEnv{question}{Question}
-
-\createProblemEnv{task}{}
-
+\newenvironment{question}[1][2in]%
+{%Env start code
+\problemEnvironmentStart{#1}{Question}
+}
+{%Env end code
+\problemEnvironmentEnd
+}
 
 \newcounter{hintLevel}
 \setcounter{hintLevel}{0}
@@ -577,7 +555,7 @@
 \ifhandout
 \setbox0\vbox\bgroup
 \else
-\begin{trivlist}\item[\hskip \labelsep\small\slshape\bfseries \name@hint:\hspace{2ex}]
+\begin{trivlist}\item[\hskip \labelsep\small\slshape\bfseries Hint:\hspace{2ex}]
 \small\slshape
 \fi
 \stepcounter{hintLevel}
@@ -593,19 +571,16 @@
 
 \ifhints
 \renewenvironment{hint}{
-\begin{trivlist}\item[\hskip \labelsep\small\slshape\bfseries \name@hint:\hspace{2ex}]
+\begin{trivlist}\item[\hskip \labelsep\small\slshape\bfseries Hint:\hspace{2ex}]
 \small\slshape}
 {\end{trivlist}}
 \fi
 
-\let\abstract\relax% We kill off abstract as we will want to remake it as an Environ to capture the BODY
+\let\abstract\relax
 \let\endabstract\relax
-\NewEnviron{abstract}{\protected@xdef\theabstract{\BODY}}% Define abstract as an Environ and capture BODY
+\NewEnviron{abstract}{\protected@xdef\theabstract{\BODY}}
 \let\@emptyauthor\@author
-\def\author#1{
-    \gdef\@author{#1}% Defines activity author
-    \authortrue% Flags author as given.
-    }
+\def\author#1{\gdef\@author{#1}}
 \def\@author{\@latex@warning@no@line{No \noexpand\author given}}
 \def\and{and }
 
@@ -626,36 +601,14 @@
 }
 \pagestyle{main}
 \renewcommand\maketitle{%
-    \addtocounter{titlenumber}{1}%
-    {\flushleft\large\bfseries \@pretitle\par\vspace{-1em}}
-    {\flushleft\LARGE\bfseries {\ifnumbers\thetitlenumber\fi}{\ifnumbers\hspace{1em}\else\hspace{0em}\fi}\@title \par }
-    \phantomsection%
-    \ifnumbers\addcontentsline{toc}{section}{\thetitlenumber~\@title}\else\addcontentsline{toc}{section}{\@title}\fi
-    \@ifundefined{theabstract}{% Only include the abstract if it is defined.
-            \relax% if the abstract is not included, then we throw in a dummy command to make sure that followup actions don't throw errors
-            %           due to expecting something to happen from the abstract.
-        }
-        {% If the abstract is defined, then we can print it with some formatting.
-            \vskip .6em\noindent\textit\theabstract
-        }
-    \setcounter{problem}{0}\setcounter{section}{0}\setcounter{subsection}{0}\par\vspace{2em}
-  %%% Design Question:
-  % Would it make more sense to have author/outcomes in the header and reserve footer for footnotes?
-  % Or some other method to distinguish between the two now that footnotes are viable?
-  \ifoutcomes%                                          If we have learning outcomes, we should display them.
-      \bgroup
-          \let\thefootnote\relax%                       Kills off the symbol of the footnote
-          \footnote{Learning outcomes: \theoutcomes}
-          \setcounter{footnote}{0}%                     Reset the footnote to zero to fix numberings.
-      \egroup
-      \fi
-  \ifauthor%                                            If we have an author, we should display it.
-      \bgroup
-          \let\thefootnote\relax%                       Kills off the symbol of the footnote
-          \footnote{Author(s):~\@author}
-          \setcounter{footnote}{0}%                     Reset the footnote to zero to fix numberings.
-      \egroup
-      \fi
+  \addtocounter{titlenumber}{1}%
+  {\flushleft\large\bfseries \@pretitle\par\vspace{-1em}}
+  {\flushleft\LARGE\bfseries {\ifnumbers\thetitlenumber\fi}{\ifnumbers\hspace{1em}\else\hspace{0em}\fi}\@title \par }
+  \phantomsection%
+  \ifnumbers\addcontentsline{toc}{section}{\thetitlenumber~\@title}\else\addcontentsline{toc}{section}{\@title}\fi
+  \vskip .6em\noindent\textit\theabstract\setcounter{problem}{0}\setcounter{section}{0}\setcounter{subsection}{0}\par\vspace{2em}
+  \ifnooutcomes\else\let\thefootnote\relax\footnote{Learning outcomes: \theoutcomes}\fi
+  \ifnoauthor\else\let\thefootnote\relax\footnote{Author(s):~\@author}\fi
   \aftergroup\@afterindentfalse
   \aftergroup\@afterheading}
 
@@ -809,7 +762,7 @@ Interactive
 \fi
 }% End else statement
 \else%
-\GenericError{\space\space\space\space}% Throw an error if the \answer command is not in mathmode -- Jason
+\GenericError{\space\space\space\space}% Throw an error based on... something? -- Jason
 {Attempt to use \@backslashchar answer outside of math mode}
 {See https://github.com/ximeraProject/ximeraLatex for explanation.}
 {Need to use either inline or display math.}%
@@ -859,7 +812,6 @@ Interactive
 {}% Start/End else result
 \ignorespaces%
 }%
-
 \newcommand{\inlinechoice}[2][]{%
 \setkeys{choice}{#1}%
 \iffirstinlinechoice
@@ -883,7 +835,7 @@ Interactive
 \setkeys{multipleChoice}{#1}%
 \recordvariable{\mc@id}%
 \begin{trivlist}
-\item[\hskip \labelsep\small\bfseries \name@multipleChoice:]\hfil
+\item[\hskip \labelsep\small\bfseries Multiple Choice:]\hfil
 \begin{enumerate}
 }% Note this means that \item has to be the first line after \begin{multipleChoice}.
 {% Environment End Code
@@ -910,7 +862,7 @@ Interactive
 
 
 \newenvironment{selectAll}[1][]
-{\begin{trivlist}\item[\hskip \labelsep\small\bfseries \name@selectAll:]\hfil\begin{enumerate}}
+{\begin{trivlist}\item[\hskip \labelsep\small\bfseries Select All Correct Answers:]\hfil\begin{enumerate}}
     {\end{enumerate}\end{trivlist}}
 
 
@@ -928,7 +880,7 @@ Interactive
 \newenvironment{solution}%
        {%
  \begin{trivlist}
- \item[\hskip \labelsep\bfseries \name@solution:\hspace{2ex}]
+ \item[\hskip \labelsep\bfseries Solution:\hspace{2ex}]
        }
        % %% line at the bottom}
        {
@@ -938,28 +890,25 @@ Interactive
 \fi
 
 \newcommand{\PH@Command}{}
-\newenvironment{validator}[1][]
-    {% Start env code.
-   \def\PH@Command{#1}% Use PH@Command to hold the content and be a target for "\expandafter" to expand once.
-   \mbox{\texttt{\detokenize\expandafter{\PH@Command}}}% Now expand PH@Command once and then detokenize.
-}
-    {% End env code.
-    }
+\newenvironment{validator}[1][]{
+\def\PH@Command{#1}% Use PH@Command to hold the content and be a target for "\expandafter" to expand once.
+\mbox{\texttt{\detokenize\expandafter{\PH@Command}}}% Now expand PH@Command once and then detokenize.
+}{}
 \ifhandout%
 \newenvironment{feedback}
-    {% Start env code.
-        \setbox0\vbox\bgroup
-    }
-    {% End env code.
-        \egroup
-    }
+               {%
+ \setbox0\vbox\bgroup
+       }
+               {%
+ \egroup
+       }
 \else
 \newenvironment{feedback}[1][attempt]{
 
 \def\PH@Command{#1}% Use PH@Command to hold the content and be a target for "\expandafter" to expand once.
 
 \begin{trivlist}% Begin the trivlist to use formating of the "Feedback" label.
-\item[\hskip \labelsep\small\slshape\bfseries \name@feedback% Format the "Feedback" label. Don't forget the space.
+\item[\hskip \labelsep\small\slshape\bfseries Feedback% Format the "Feedback" label. Don't forget the space.
 (\texttt{\detokenize\expandafter{\PH@Command}}):% Format (and detokenize) the condition for feedback to trigger
 \hspace{2ex}]\small\slshape% Insert some space before the actual feedback given.
 }{
@@ -998,11 +947,11 @@ Interactive
   \ifthenelse{\boolean{#1}}%% Could probably change this with just putting the (given) in the boolean?-- Jason
    {% Begin then result
    \begin{trivlist}
-   \item[\hskip \labelsep\bfseries \name@freeResponseGiven:\hspace{2ex}]
+   \item[\hskip \labelsep\bfseries Free Response (Given):\hspace{2ex}]
    }% End then result
 {% Begin else result
 \begin{trivlist}
-\item[\hskip \labelsep\bfseries \name@freeResponse:\hspace{2ex}]
+\item[\hskip \labelsep\bfseries Free Response:\hspace{2ex}]
 }% End else result
 }
 {% Environment Ending Code
@@ -1036,7 +985,7 @@ Interactive
 \newenvironment{instructorIntro}%
        {%
  \begin{trivlist}
- \item[\hskip \labelsep\bfseries \name@instructorIntro:\hspace{2ex}]
+ \item[\hskip \labelsep\bfseries Instructor Introduction:\hspace{2ex}]
 }
        % %% line at the bottom}
        {
@@ -1066,7 +1015,7 @@ Interactive
         \newenvironment{instructorIntro}%
 {%
   \begin{trivlist}
-  \item[\hskip \labelsep\bfseries \name@instructorIntro:\hspace{2ex}]
+  \item[\hskip \labelsep\bfseries Instructor Introduction:\hspace{2ex}]
 }
 {
   \end{trivlist}
@@ -1081,7 +1030,7 @@ Interactive
 \newenvironment{instructorNotes}%
        {%
  \begin{trivlist}
- \item[\hskip \labelsep\bfseries \name@instructorNotes:\hspace{2ex}]
+ \item[\hskip \labelsep\bfseries Instructor Notes:\hspace{2ex}]
        }
        % %% line at the bottom}
        {
@@ -1110,7 +1059,7 @@ Interactive
        \newenvironment{instructorNotes}%
               {%
         \begin{trivlist}
-        \item[\hskip \labelsep\bfseries \name@instructorNotes:\hspace{2ex}]
+        \item[\hskip \labelsep\bfseries Instructor Notes:\hspace{2ex}]
               }
               % %% line at the bottom}
               {
@@ -1230,725 +1179,6 @@ Interactive
     }
     }
 
-<<<<<<< HEAD
-%%======================Code for \UDcollectverbarg=============================
-%% \UDcollectverbarg{<non-optional 1>}{<non-optional 2>}|<verbatim arg>|
-%%
-%% reads <verbatim arg> under verbatim-catcode-regime and delivers:
-%%
-%%    <non-optional 1>{<non-optional 2>{<verbatim arg>}}
-%%-----------------------------------------------------------------------------
-%% \UDcollectverbarg*{<non-optional 1>}{<non-optional 2>}|<verbatim arg>|
-%%
-%% reads <verbatim arg> under verbatim-catcode-regime and delivers:
-%%
-%%    <non-optional 1>{<non-optional 2>{|<verbatim arg>|}}
-%%-----------------------------------------------------------------------------
-%% Instead of using verbatim-delimiter | or the like the <verbatim arg> can
-%% be nested in braces.
-%%
-%% You cannot use percent or spaces or horizontal tab as verbatim-delimiter.
-%%
-%% You can use <non-optional 1> for nesting calls to \UDcollectverbarg.
-%%
-%% The unstarred variant removes the verbatim-delimiters/braces that surround
-%% <verbatim arg>.
-%% The starred variant keeps the verbatim-delimiters/braces that surround
-%% <verbatim arg>.
-%% Reason: When you feed things to \scantokens you don't need the verbatim-
-%%         delimiters.
-%%         When you use things for writing to temporary files and reading back
-%%         verbatimized, you may need them.
-%%=============================================================================
-\@ifdefinable\UDcollectverbarg{%
-  \DeclareRobustCommand\UDcollectverbarg{%
-    \@ifstar{\UD@collectverbarg{\@secondoftwo}}{\UD@collectverbarg{\@firstoftwo}}%
-  }%
-}%
-\newcommand\UD@collectverbarg[3]{%
-  % #1 - indicator whether to remove/keep the verb-delimiter (\@firstoftwo/\@secondoftwo)
-  % #2 - non-optional 1
-  % #3 - non-optional 2
-  \begingroup
-  \let\do\@makeother % <- this and the next line switch to
-  \dospecials        %    verbatim-category-code-régime.
-  \catcode`\{=1      % <- give opening curly brace the usual catcode so a
-                     %    curly-brace-balanced argument can be gathered in
-                     %    case of the first thing of the verbatimized-argument
-                     %    being a curly opening brace.
-  \catcode`\ =10     % <- give space and horizontal tab the usual catcode so \UD@@collectverbarg
-  \catcode`\^^I=10   %    cannot catch a space or a horizontal tab as its 4th undelimited argument.
-                     %    (Its 4th undelimited argument denotes the verbatim-
-                     %     syntax-delimiter in case of not gathering a
-                     %     curly-brace-nested argument.)
-  \catcode`\%=14     % <- make percent comment.
-  \kernel@ifnextchar\bgroup
-  {% seems a curly-brace-nested argument is to be picked:
-    \catcode`\}=2    % <- give closing curly brace the usual catcode also.
-    \UD@@collectverbarg{#1}{\@firstoftwo}{#2}{#3}{}%
-  }{% seems an argument with verbatim-syntax-delimiter is to be picked:
-    \do\{% <- give opening curly brace the verbatim-catcode again.
-    \UD@@collectverbarg{#1}{\@secondoftwo}{#2}{#3}%
-  }%
-}%
-\newcommand\UD@@collectverbarg[5]{%
-  % #1 - indicator whether to remove/keep the verb-delimiter (\@firstoftwo/\@secondoftwo)
-  % #2 - indicator whether braces or verb-delimiter (\@firstoftwo/\@secondoftwo)
-  % #3 - non-optional 1
-  % #4 - non-optional 2
-  % #5 - verb-delimiter or emptiness
-  \do\ %   <- Now that \UD@@collectverbarg has the delimiter or
-  \do\^^I%    emptiness in its 4th arg, give space and horizontal tab
-         %    the verbatim-catcode again.
-  \do\^^M% <- Give the carriage-return-character the verbatim-catcode.
-  \do\%%   <- Give the percent-character the verbatim-catcode.
-  \long\def\@tempb##1#5{%
-    #1{\def\@tempb{##1}}{#2{\def\@tempb{{##1}}}{\def\@tempb{#5##1#5}}}%
-    \@onelevel@sanitize\@tempb % <- Turn characters into their "12/other"-pendants.
-                               %    This may be important with things like the
-                               %    inputenc-package which may make characters
-                               %    active/which give them catcode 13(active).
-    \expandafter\UD@@@collectverbarg\expandafter{\@tempb}{#3}{#4}% <- this "spits out the result.
-  }%
-  \@tempb
-}%
-\newcommand\UD@@@collectverbarg[3]{\endgroup#2{#3{#1}}}%
-%%================= End of code for \UDcollectverbarg =========================
-
-\RequirePackage{trimclip}
-
-\newbox\MYverbbox
-\newtoks\MYverbtoks
-\global\MYverbtoks={}%
-\newcommand\exchange[2]{#2#1}%
-\@ifdefinable\stopromannumeral{\chardef\stopromannumeral=`\^^00}%
-\begingroup
-\catcode`\^^M=12\relax%
-\@firstofone{%
-  \endgroup%
-  \newcommand\@@appendtoverbtoks[1]{\global\MYverbtoks=\expandafter{\the\MYverbtoks#1^^M}\@esphack}%
-  \newcommand\@@prependtoverbtoks[1]{%
-    \global\MYverbtoks=%
-    \expandafter\expandafter\expandafter{\expandafter\exchange\expandafter{\the\MYverbtoks}{#1^^M}}%
-    \@esphack%
-  }%
-}%
-\newcommand\appendtoverbtoks{\@bsphack\UDcollectverbarg{\@firstofone}{\@@appendtoverbtoks}}%
-\newcommand\prependtoverbtoks{\@bsphack\UDcollectverbarg{\@firstofone}{\@@prependtoverbtoks}}%
-\newcommand\scantokenssetvbox[4]{%
-  \setbox#2=\vbox{%
-    \begingroup\newlinechar=\endlinechar\relax\scantokens{\endgroup#3#1#4}%
-  }%
-  %---------------------------------------------------------------------------
-  %Just in case - who knows what else already is in the \AtEndDocument-hook...
-  \ifhmode\@bsphack\clipbox*{0pt 0pt 0pt 0pt}{\box#2}\@esphack
-  \else\clipbox*{0pt 0pt 0pt 0pt}{\box#2}\fi
-  %---------------------------------------------------------------------------
-  %Uncomment to typeset the box:
-  %\ifvmode\else\par\fi\box#2%
-  %You may wish to check for restricted horizontal mode and raise an error...
-}%
-
-\UDcollectverbarg{%
-  \UDcollectverbarg{\AtEndDocument}%
-}{\expandafter\scantokenssetvbox\expandafter{\the\MYverbtoks}{\MYverbbox}}_\begin{javascript}
-__\end{javascript}_%
-
-%% Apend code via \@addToValidators
-
-\appendtoverbtoks?
-var debugInfo = false;
-
-function debugText(debugMsg) {
-    if (debugInfo) {
-    console.log(debugMsg);
-    }
-}
-
-function debugArray(array) {
-    if (debugInfo) {
-    console.log(array);
-    }
-}
-?
-%% Since this isn't a real validation command, just subroutines for debugging validators, we don't need to instantiate them via a command.
-%% Apend code via \@addToValidators
-
-\appendtoverbtoks?
-function compSubTree(f, treeOne,treeTwo) {
-    /*
-        We assume that the input f is the full matrix expressions object we will need for cloning,
-        treeOne is a level of the tree that is used as the subtree to compare
-        treeTwo is a level of another tree that is used as the subtree to compare.
-        We want to see if f.treeOne = f.treeTwo in the Ximera sense of equality.
-    */
-    // First we duplicate the object structure so the equals command can be used without pitching a fit.
-    let fTemp=Object.create(f);
-    let gTemp=Object.create(f);
-
-    // Now we assign the subtrees as the full tree of the objects.
-    fTemp.tree = treeOne;
-    gTemp.tree = treeTwo;
-
-    // Now we return the validity of their equality using Ximera equality validation.
-    return (fTemp.equals(gTemp))
-}
-?
-%% Since this isn't a real validation command, just subroutines for debugging validators, we don't need to instantiate them via a command.
-%% Apend code via \@addToValidators
-
-\appendtoverbtoks?
-// NOTE: The below are intended to be used inside an \answer optional argument with the validator key, NOT in a validator environment.
-
-// sameDerivative checks to see if the derivative with respect to x and c are equal.
-// Because of how they are loaded, I need to currently manually check each variable letter, so we do a full comparison
-// Currently not checking e, f, g, h, or i as variables because they are special reserve letters in math.
-  sameDerivative = function(a,b) {
-    return (
-    a.derivative('a').equals( b.derivative('a') ) &&
-    a.derivative('b').equals( b.derivative('b') ) &&
-    a.derivative('c').equals( b.derivative('c') ) &&
-    a.derivative('d').equals( b.derivative('d') ) &&
-    a.derivative('j').equals( b.derivative('j') ) &&
-    a.derivative('k').equals( b.derivative('k') ) &&
-    a.derivative('l').equals( b.derivative('l') ) &&
-    a.derivative('m').equals( b.derivative('m') ) &&
-    a.derivative('n').equals( b.derivative('n') ) &&
-    a.derivative('o').equals( b.derivative('o') ) &&
-    a.derivative('p').equals( b.derivative('p') ) &&
-    a.derivative('q').equals( b.derivative('q') ) &&
-    a.derivative('r').equals( b.derivative('r') ) &&
-    a.derivative('s').equals( b.derivative('s') ) &&
-    a.derivative('t').equals( b.derivative('t') ) &&
-    a.derivative('u').equals( b.derivative('u') ) &&
-    a.derivative('v').equals( b.derivative('v') ) &&
-    a.derivative('w').equals( b.derivative('w') ) &&
-    a.derivative('x').equals( b.derivative('x') ) &&
-    a.derivative('y').equals( b.derivative('y') ) &&
-    a.derivative('z').equals( b.derivative('z') ) &&
-    a.derivative('A').equals( b.derivative('A') ) &&
-    a.derivative('B').equals( b.derivative('B') ) &&
-    a.derivative('C').equals( b.derivative('C') ) &&
-    a.derivative('D').equals( b.derivative('D') ) &&
-    a.derivative('J').equals( b.derivative('J') ) &&
-    a.derivative('K').equals( b.derivative('K') ) &&
-    a.derivative('L').equals( b.derivative('L') ) &&
-    a.derivative('M').equals( b.derivative('M') ) &&
-    a.derivative('N').equals( b.derivative('N') ) &&
-    a.derivative('O').equals( b.derivative('O') ) &&
-    a.derivative('P').equals( b.derivative('P') ) &&
-    a.derivative('Q').equals( b.derivative('Q') ) &&
-    a.derivative('R').equals( b.derivative('R') ) &&
-    a.derivative('S').equals( b.derivative('S') ) &&
-    a.derivative('T').equals( b.derivative('T') ) &&
-    a.derivative('U').equals( b.derivative('U') ) &&
-    a.derivative('V').equals( b.derivative('V') ) &&
-    a.derivative('W').equals( b.derivative('W') ) &&
-    a.derivative('X').equals( b.derivative('X') ) &&
-    a.derivative('Y').equals( b.derivative('Y') ) &&
-    a.derivative('Z').equals( b.derivative('Z') )
-  }
-?
-%% Now we add a prompt in the answer command to trigger this validator. In particular, we add "validator=sameDerivative" to trigger this validator.
-
-%% Apend code via \@addToValidators
-
-\appendtoverbtoks?
-/*
-HOW THIS SHOULD WORK:
-    Initially check to make sure the submitted answer (and proposed answer) are at least in some kind of theoretically factored form.
-
-    Next duplicate the raw trees so we can mess with them without worrying about changing the original.
-
-    Fold up any exponents on both trees so that our root node is of the form: ['*',factor1,factor2,factor3,...].
-        This includes killing off any leading negative signs (again we'll compare for equality using the original raw string)
-
-    Now call a recursive function to deep-dive into each factor to find what degree that factor actually is.
-        Will also identify if the factor isn't even a factor, in which case we will return a negative value to negate the answer.
-
-    Once we have the degree for each factor, now we can compare the instructor degree list and student degree list as intended.
-*/
-
-// Subfunction to identify if something is a number:
-
-function isNum(numb) {
-    if ((typeof numb === 'number')||(numb=='e')||(numb=='pi'))
-    {return true} else {return false}
-}
-
-// Subfunction to identify if something is a non-negative integer:
-
-function isPosInt(numb) {
-    if ((isNum(numb))&&((numb>=0)&&(numb%1==0)))
-    {return true} else {return false}
-}
-
-// This does a recursion through a factor to eventually find it's degree - assuming it's a polynomial.
-
-function degreeHunt(tree,position,curDeg) {
-    //(Re)set curDeg just in case:
-    var curDeg=0;
-
-    // First, let's figure out what to do about negative signs, since they can be annoying.
-    //  I think there's three possibilities, it's a negative array, a negative x, or a negative number.
-
-    if (tree[position][0]=='-') {
-        debugText('Processing a minus sign.');
-        if (tree[position][1]=='x') {
-            // We found a ``-x'' term within our factor, so that's degree 1 I guess!
-
-            debugText('Found a -x term!');
-            curDeg = Math.max(curDeg,1);
-
-        } else if (Array.isArray(tree[position][1])) {
-            // Else if there's a negative outside of an array, just bypass the negative and keep digging for an exponent sign.
-
-            debugText('Found a negative Array term!');
-            let tempVal = degreeHunt(tree[position],1)
-            if (tempVal<0) { return (-1)} else {
-                curDeg = Math.max(curDeg,tempVal);
-            }
-
-        }// Note that, if it's a negative number, I don't care about it, so no need for an ``else''.
-    } else if (tree[position][0]=='apply') {
-        debugText('Processing an apply symbol.');
-        // any 'apply' is inevitably a function that isn't a polynomial.
-        //  Although, only if it actually has an 'x' in there - so I need to fix/update that at some point.
-
-        // To find out if the apply is actually just a number or not, we need to recurs through every sub-node looking for an 'x'.
-        //  If the degree ends up positive, then we have a variable inside the apply function it's not a polynomial.
-        //  If the degree ends up zero, then it's ultimately some bizarre number formation and we're fine.
-
-        var tempDeg = 0;
-
-        for (var j = 1; j < tree[position].length; ++j) {
-            // Walk the array to find any powers of x.
-            if (tree[position][j]=='x') {
-                // If the entry is just x, then we have pos deg and we are done.
-                debugText('Found an x inside an apply function that suggests the factor is not actually a polynomial!');
-                return (-1);
-            } else if (Array.isArray(tree[position][j])) {
-                // If the term is an array, then we need to recurs to find the degree.
-                let tempVal=degreeHunt(tree[position],j,0);
-                if (tempVal!==0) {
-                    debugText('Found an issue inside an apply function that suggests the factor is not actually a polynomial!');
-                    return (-1)
-                }
-            }// Any other option is degree 0, so no need for an else.
-        }// End of for loop and end up 'apply' function
-    } else if (tree[position][0]=='^') {
-        // Now we process the exponent sign case, but be careful cause students do crazy shit,
-        //  So it might be a x^N situation, but it might be some other shenanigans.
-
-        debugText('Processing an exponential sign.');
-
-        if ((tree[position][1]=='x')&&(isPosInt(tree[position][2]))) {
-            // We have something like x^N
-
-            debugText('We have x^N');
-
-            curDeg = Math.max(curDeg,tree[position][2]);
-
-        } else if (tree[position][1]=='x') {
-            // If the base is x but it's not being raised to an integer power, then it's not a proper monomial.
-            //  Note that we are assuming here that students won't put shit like ``1+1'' as the power, if so, it will be marked wrong.
-
-            debugText('We have x^(g(x)) but g(x) is not a positive integer.');
-
-            return -1;
-
-        } else if ((isNum(tree[position][1]))&&(isNum(tree[position][2]))) {
-            // This means we have a^b which is still just a number, so it's fine... but doesn't give a degree.
-
-            debugText('We have a^b');
-
-        } else if ((Array.isArray(tree[position][1]))&&(isPosInt(tree[position][2]))) {
-            // We have something of the form (f(x))^N which might be a part of a factor.
-            //  We recurse on the array, and multiply the result by the N.
-
-            debugText('We have f(x)^N');
-            let tempVal = tree[position][2]*degreeHunt(tree[position],1,curDeg);
-            if (tempVal<0) { return (-1)} else {
-                curDeg = Math.max(curDeg,tempVal);
-            }
-
-        } else {
-            // All other situations are inevitably not polynomials.
-
-            return (-1);
-        }
-    } else if (tree[position][0]=='/') {
-        // This is problematic, because the only way we can allow a division is if the denominator is just a number.
-        //  But if the denominator has an 'x' anywhere in it, then we have a problem...
-
-        debugText('Processing a division sign.');
-
-        if (tree[position][2]=='x') {
-            // We're dividing by x, which is bad.
-
-            debugText('Dividing by x, naughty naughty!');
-
-            return (-1);
-        } else if (Array.isArray(tree[position][2])) {
-            //  Let's try doing a recurs, and if we get a result that isn't 0, then that means there's an 'x' so we return -1.
-            if (degreeHunt(tree[position],2,0)!==0) {
-                // If it's not 0, then we found an 'x' or something that invalidates the polynomial.
-                return (-1)
-            } // otherwise we have some kind of 'dividing by a number' situation, so it's fine, and doesn't impact degree.
-
-        }
-
-        // Now that we've dealt with the possibilities that cause a non-polynomial function, we can proceed assuming it is just division by a number.
-
-        debugText('The denominator is just a number, so we need to check the numerator.');
-
-        if (tree[position][1]=='x') {
-            // If we've made it past the first two hurtles, then the bottom is just a number of some form.
-            //  So if the top is 'x', then we have something like ``x/a'' which is still a degree 1 factor.
-            var curDeg = Math.max(curDeg,1);
-            debugText('We found a fraction with just x in the top.');
-        } else if (Array.isArray(tree[position][1])) {
-            // If the top of the fraction is an array - but we've already reduced to case where denominator is a number.
-            //  So we need to figure out if there is a degree in the top to count.
-
-            debugText('We found a fraction with an array for the numerator.')
-            var tempVal = degreeHunt(tree[position],1,0)
-            debugText('I think the numerator degree from the array is: '+tempVal);
-            if (tempVal<0) { return (-1)} else {
-                 var curDeg = Math.max(curDeg,tempVal);
-            }
-
-        }// Note that if none of the above, then it's just a/b, which is fine and doesn't impact degree.
-
-    } else if (tree[position][0]=='*') {
-        // If we are multiplying, we could be multiplying a bunch of terms - maybe a bunch of x terms.
-
-        debugText('Processing a product sign.');
-
-        var tempDeg = 0;
-        for (var j = 0; j < tree[position].length; ++j) {
-            // Add the degree of each thing being multiplied, even though most are probably zero.
-            if (tree[position][j]=='x') {
-                // If the entry is just x, then we have deg 1.
-                debugText('Found a solo x term inside the product sign, degree is at least 1.')
-                tempDeg = Math.max(tempDeg,1);
-            } else if (Array.isArray(tree[position][j])) {
-                // If the term is an array, then we need to recurs to find the degree.
-                // let tempVal=degreeHunt(tree[position],j,0);
-                if (degreeHunt(tree[position],j,0)<0) {
-                    return (-1)
-                } else if (degreeHunt(tree[position],j,0)==0){
-                    debugText('No degree term found inside product sign, so we stay at degree: '+tempDeg);
-                } else {
-                    debugText('found a higher degree term inside the product sign, degree is at least: '+tempDeg);
-                    tempDeg = Math.max(tempDeg,degreeHunt(tree[position],j,0));
-                }
-            }// Any other option is degree 0, so no need for an else.
-        }
-        // Once the for loop finishes, we convert the temp deg to the current deg.
-        var curDeg = Math.max(curDeg,tempDeg);
-        debugText('Inside the product sign we found the degree is: '+tempDeg);
-        debugText('So we set the curDeg to: '+curDeg);
-    } else {
-        // If it's none of the above, then we should just recurs on any arrays we find.
-
-        debugText('Processing an unknown sign... Specifically: '+tree[position][0]);
-
-        for (var j = 0; j < tree[position].length; ++j) {
-            // Walk the array to find any powers of x.
-            if (tree[position][j]=='x') {
-                // If the entry is just x, then we have deg 1.
-                curDeg = Math.max(curDeg,1);
-            } else if (Array.isArray(tree[position][j])) {
-                // If the term is an array, then we need to recurs to find the degree.
-                let tempVal=degreeHunt(tree[position],j,0);
-                if (tempVal<0) { return (-1)} else {
-                    curDeg = Math.max(curDeg,tempVal);
-                }
-            }// Any other option is degree 0, so no need for an else.
-        }
-
-    }
-    debugText('Made it to the end of the degreeHunt function, which means we need to return a curDeg variable, which is: '+curDeg);
-    return curDeg
-}
-
-// Subfunction just to make sure that the submitted function is in a legitimately factored form.
-
-function JNFisFactored(factorTree) {
-
-    // First we check to see if we have a negative factored out, which messes everything up in the tree.
-    if ((factorTree[0]=='-')||(factorTree[0]=='*')||((factorTree[0]=='/')&&(isNum(JNFoperation[1])))
-    ) {return true} else {return false}
-}
-
-function factorCheck(f,g) {
-    // This validator is designed to check that a student is submitting a factored polynomial. It works by:
-    //  Checking that the degree of each factor matches between student submitted and instructor submitted answers (NOT order sensitive),
-    //  Checking that the submitted answer and the expected answer are the same via real Ximera evaluation,
-    //  Checking that the outer most (last to be computed when following order of operations) operation is multiplication.
-    //  It ignores degree 0 terms for degree check, and now can ignore factored out negative signs.
-
-    debugText(f.tree);
-    debugText(g.tree);
-
-    if (JNFisFactored(g.tree)==false) {
-        console.log('Answer rejected, instructor answer not in a factored form. Bad instructor, no donut.');
-        return false
-    }
-
-    // First we check to make sure it is in *a* factored form:
-    if (JNFisFactored(f.tree)==true) {
-        console.log('The student answer is at least in *a* factored form.');
-
-    } else {
-        console.log('Answer rejected, student answer not in a factored form.');
-        return false
-    }
-
-    // Let's duplicate the trees to manipulate, so we keep the original correctly.
-    var studentAns=f.tree
-    var instructorAns=g.tree
-
-    // Also, if there is a factored out negative, let's just kill that, since we aren't doing a funtion comparison on this part:
-    while (studentAns[0]=='-'){studentAns = studentAns[1];};
-    while (instructorAns[0]=='-'){instructorAns = instructorAns[1];};
-
-    // Now we want to fold up any root-level exponents into duplicate children of the master tree,
-    //  This lets us assume the top-level node has 1 child per factor.
-    debugText('folding up external exponents of studentTree  so factors do not have exponents');
-    for (var i = 0; i < studentAns.length; ++i) {
-        if ((studentAns[i][0] == '^')&&(isPosInt(studentAns[i][2]))) {
-            studentAns=studentAns.concat(Array(studentAns[i][2]).fill(studentAns[i][1]));
-            studentAns.splice(i,1);// This should theoretically remove the original term now that we've duplicated it.
-            i=i-1;// since we shortened our array by 1, we should move the iteration value down 1 too.
-            debugText('Ok, I folded up a term, so hopefully our student vector still makes sense. It is now: '+studentAns);
-        } else if (studentAns[i][0] == '^') {
-            //if we have a power, but not a positive integer power, then we have a non-polynomial factor, so we're done.
-            console.log('I think I found a non-polynomial term, specifically some root term has a non natural number (or zero) power.');
-            return false;
-        }
-    }
-    debugText('After all preprocessing my studentAns vector is:');
-    debugText(studentAns);
-
-    // Now re repeat with instructor tree:
-    debugText('folding up external exponents of instructorTree so factors do not have exponents')
-    for (var i = 0; i < instructorAns.length; ++i) {
-        if ((instructorAns[i][0] == '^')&&(isPosInt(instructorAns[i][2]))) {
-            instructorAns=instructorAns.concat(Array(instructorAns[i][2]).fill(instructorAns[i][1]));
-            instructorAns.splice(i,1);// This should theoretically remove the original term now that we've duplicated it.
-            i=i-1;// since we shortened our array by 1, we should move the iteration value down 1 too.
-            debugText('Ok, I folded up a term, so hopefully our student vector still makes sense. It is now: '+instructorAns);
-        } else if (instructorAns[i][0] == '^') {
-            //if we have a power, but not a positive integer power, then we have a non-polynomial factor, so we're done.
-            return false;
-            console.log('Found a non-polynomial term in the instructor answer... huh... Check the code!');
-        }
-    }
-    debugText('After all preprocessing my instructorAns vector is: '+instructorAns);
-
-    /*
-        ::NOW LETS PROCESS THE STUDENT ANSWER::
-    */
-
-    var studentDegList=[0]
-    for (var i = 0; i < studentAns.length; ++i) {
-        if (studentAns[i] == 'x') {
-            // If the factor is simply 'x', then it's a degree 1 factor... yay...
-            studentDegList.push(1);
-            debugText('Found another factors degree, so now studentDegList is: '+studentDegList);
-        } else if (Array.isArray(studentAns[i])) {
-            // Otherwise, if it is an array, we have something to go hunting in.
-            studentDegList.push(degreeHunt(studentAns,i,0));
-            debugText('Found another factors degree, so now studentDegList is: '+studentDegList);
-        }// Note that the only other possibility is it being a number, which we don't care about.
-    }
-    studentDegList = studentDegList.filter(x => x!==0);// Remove all zeros from the array to avoid stupid padded constant multipliers.
-    studentDegList.sort();// Sort the result so that we can later compare it to the instructor version.
-    debugText('The final List of Factor Degrees given by the student is: ' + studentDegList);
-
-    if (studentDegList.some(elem => elem<0)) {
-        console.log('I think one of the student factors is NOT a polynomial. So I am rejecting the answer.');
-        return false
-        }
-
-    /*
-        ::NOW LETS PROCESS THE INSTRUCTOR ANSWER::
-    */
-
-    var instructorDegList=[0]
-    for (var i = 0; i < instructorAns.length; ++i) {
-        if (instructorAns[i] == 'x') {
-            // If the factor is simply 'x', then it's a degree 1 factor... yay...
-            instructorDegList.push(1);
-            debugText('Found another factors degree, so now instructorDegList is: '+instructorDegList);
-        } else if (Array.isArray(instructorAns[i])) {
-            // Otherwise, if it is an array, we have something to go hunting in.
-            instructorDegList.push(degreeHunt(instructorAns,i,0));
-            debugText('Found another factors degree, so now instructorDegList is: '+instructorDegList);
-        }// Note that the only other possibility is it being a number, which we don't care about.
-    }
-    instructorDegList = instructorDegList.filter(x => x!==0);// Remove all zeros from the array to avoid stupid padded constant multipliers.
-    instructorDegList.sort();// Sort the result so that we can later compare it to the instructor version.
-    debugText('The final List of Factor Degrees given by the instructor is: ' + instructorDegList);
-
-    if (instructorDegList.some(elem => elem<0)) {
-        console.log('I think one of the instructor factors is NOT a polynomial. So I am rejecting the answer.');
-        return false
-        }
-
-   /*
-        ::NOW WE COMPARE::
-   */
-
-    if (studentDegList.length!=instructorDegList.length){
-        console.log('Ans Rejected: Wrong number of factors.');
-        return false;
-        }
-
-    for (var i = 0; i < studentDegList.length; ++i) {
-        if (studentDegList[i] !== instructorDegList[i]) {
-        console.log('Ans Rejected: At least one factor is the wrong degree.');
-        return false;
-        }
-    }
-
-    if (f.equals(g)){
-        } else {
-        console.log('Ans Rejected: Factors do not expand to original Polynomial.');
-        }
-
-    return (f.equals(g));
-}
-?
-%% Now we add a prompt in the answer command to trigger this validator. In particular, we add "validator=factorCheck" to trigger this validator.
-
-%% Apend code via \@addToValidators
-
-\appendtoverbtoks?
-// We want to define a validator that allows us to check against a list of possibilities.
-function multiAns(f,g) {
-    // We expect that f is a single function provided by the student,
-    // We expect that g is a vector of possible acceptable (function) answers provided by the instructor.
-    //      The answers should be entered in as a list, using square brackets,
-    //      eg [ans1, ans2, ans3]
-    //
-
-    // Start out by duplicating the vector of answers to use later.
-    instructorAnsbkup = JSON.parse(JSON.stringify(g.tree));
-
-    /* //   Debug Code - commented out now that it is working.
-    console.log('Here is the student ans.');
-    console.log(f);
-
-    console.log('Here is the instructor ans.');
-    console.log(g);
-    */
-
-    for (var i = 1; i <= instructorAnsbkup.length; ++i) {
-        g.tree = instructorAnsbkup[i];
-        console.log('inside the forloop for checking...');
-        console.log(g);
-        if (f.equals(g)){
-            return true
-        }
-    }
-return false
-}
-?
-%% Now we add a prompt in the answer command to trigger this validator. In particular, we add "validator=multiAns" to trigger this validator.
-
-%% Apend code via \@addToValidators
-
-\appendtoverbtoks?
-// We want to define a validator that allows us to check a matrix.
-function equalMatrix(f,g) {
-    /* We expect that f is a matrix provided by the student in the format:
-            [ [r1c1,r1c2,r1c3],[r2c1,r2c2,r2c3],[r3c1,r3c2,r3c3] ]
-       We expect that g is a matrix provided by the instructor in the format:
-            [ [r1c1,r1c2,r1c3],[r2c1,r2c2,r2c3],[r3c1,r3c2,r3c3] ]
-    */
-
-    debugText('Here is the student ans.');
-
-    debugArray(f);
-
-    debugText('Here is the instructor ans.');
-
-    debugArray(g);
-
-    //  Now we want to make a dummy form of the given variables so we can manipulate them without the original getting recked.
-
-    var fTree = JSON.parse(JSON.stringify(f.tree));
-    var gTree = JSON.parse(JSON.stringify(g.tree));
-
-    // Start out by making sure that the format was entered correctly
-    //  in particular, that each sub-list is the same length.
-    //instructorAnsbkup = JSON.parse(JSON.stringify(g.tree));
-
-    // Santize the instructor's entry.
-
-    for (var i = 1; i < g.tree.length; ++i) {
-        if (g.tree[1].length==g.tree[i].length) {
-        } else {
-            console.log('Looks like the format for the instructors answer is off, [at least] one of the rows has the wrong number of columns!');
-            return false
-        }
-    }
-
-    // Santize the student entry.
-    for (var i = 1; i < f.tree.length; ++i) {
-        if (f.tree[1].length==f.tree[i].length) {
-        } else {
-            console.log('Looks like the format for the students answer is off, [at least] one of the rows has the wrong number of columns!');
-            return false
-        }
-    }
-
-    // Now that we have santized the column/rows so that we know we have an actual rectangle, we'll check that the dimensions match.
-
-    if (f.tree.length!==g.tree.length) {
-        // If the dimensions aren't the same, then the answer definitely doesn't match the instructors.
-        debugText('Looks like the matrix submitted by the student does not have the same dimension as the matrix we expect.');
-        return false;
-    }
-
-    for (var i = 1; i < f.tree.length; ++i) {
-        if (f.tree[i].length==g.tree[i].length) {
-        } else {
-            debugText('Looks like the matrix submitted by the student does not have the same dimension as the matrix we expect.');
-            return false
-        }
-    }
-
-    // Finally, we check the actual entries.
-    // We assume that the matrix is a two dimensional array, i.e. no matrix entries inside our matrix. Tensors can bite me.
-
-    for (var i = 1; i < f.tree.length; ++i) {
-        for (var j = 1; j < f.tree[i].length; ++j) {
-            debugText('Checking equality of entries in: row ' + i +', column ' + j);
-
-            if ( compSubTree(f,fTree[i][j],gTree[i][j]) ) {
-                debugText('They appear equal in student and instructors matricies.');
-            } else {
-                console.log('Looks like [at least one] of the entries are wrong!');
-                debugText('The students answers [raw ans then copied obj ans]')
-                debugArray(f.tree[i][j]);
-                debugArray(fTree);
-                debugText('The students answers [raw ans then copied obj ans]')
-                debugArray(g.tree[i][j]);
-                debugArray(gTree);
-                return false
-            }
-        }
-    }
-
-return true
-}
-?
-%% Now we add a prompt in the answer command to trigger this validator. In particular, we add "validator=equalMatrix" to trigger this validator.
-=======
 \def\input@path{{./}{../}{../../}{../../../}}    % Mmm, do we need to reset it to the previous value ?
 \providecommand{\xmDefaultPreamble}{xmPreamble.tex}
     \IfFileExists{\xmDefaultPreamble}
@@ -1969,7 +1199,6 @@ return true
     }
 \fi
 
->>>>>>> 84c6db20c3e4220b4e6dd6a5605fd8a3150bc90b
 
 %% 
 %% Copyright (C) 2024 by Bart Snapp <bart.snapp@gmail.com> and Jim Fowler <kisonecat@gmail.com>
