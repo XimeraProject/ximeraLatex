@@ -46,9 +46,11 @@
 %% src/leash.dtx  (with options: `classXimera')
 %% src/interactives/sagemath.dtx  (with options: `classXimera')
 %% src/jax.dtx  (with options: `classXimera')
+%% src/accordion.dtx  (with options: `classXimera')
 %% src/ungraded.dtx  (with options: `classXimera')
 %% src/clearEnv.dtx  (with options: `classXimera')
 %% src/hideEnv.dtx  (with options: `classXimera')
+%% src/preamble.dtx  (with options: `classXimera')
 %% ------------:| ------------------------------------------------------------
 %%       ximera:| Simultaneously writing print and online interactive materials
 %%       Author:| Jim Fowler and Oscar Levin and Jason Nowell and Wim Obbels and Hans Parshall and Bart Snapp
@@ -172,6 +174,8 @@
 \RequirePackage{gettitlestring}
 \RequirePackage{nameref}
 \RequirePackage{epstopdf}
+\ifdefined\reallyneverever
+
 \ifdefined\HCode
   \tikzexporttrue
 \fi
@@ -201,7 +205,7 @@
   \fi
 
   \fi
-
+\fi
 \ifdefined\HCode
 \RequirePackage{hyperref}
 \else
@@ -333,7 +337,6 @@
       \newtheorem{template}{Template}
 
       \newtheorem{warning}{Warning}
-
 \renewcommand{\theenumi}{\textup{(\alph{enumi})}}
 \renewcommand{\labelenumi}{\theenumi}
 \renewcommand{\theenumii}{\textup{(\roman{enumii})}}
@@ -343,32 +346,54 @@
   {\begin{trivlist}\item[\hskip \labelsep \itshape \bfseries #1{}\hspace{2ex}]}
 {\qed\end{trivlist}}
 
+
 \ifxake
         \newenvironment{prompt}{}{}
 \else
 \ifhandout
 \NewEnviron{prompt}{}
+    % Breaks when put in mathmode ?
+    % \newenvironment{prompt}{\suppress}{\endsuppress}
 \else
-\newenvironment{prompt}
-     {\bgroup\color{gray!50!black}}
-        {\egroup}
+\newenvironment{prompt}{\bgroup\color{gray!50!black}}{\egroup}
+\fi
+\fi
+\ifdefined\HCode
+\newenvironment{onlyPdf}{\setbox0\vbox\bgroup}{\egroup}
+\newenvironment{onlyHtml}{\bgroup}{\egroup}
+\newenvironment{onlineOnly}{\bgroup}{\egroup}
+\else
+\newenvironment{onlyPdf}{\bgroup}{\egroup}
+\ifdefined\xmPrintHtmlOnlyAlsoInPdf
+\newenvironment{onlyHtml}{\bgroup\color{red!50!black}}{\egroup}
+\newenvironment{onlineOnly}{\bgroup\color{red!50!black}}{\egroup}
+\else
+\newenvironment{onlyHtml}{\setbox0\vbox\bgroup}{\egroup}
+\newenvironment{onlineOnly}{\setbox0\vbox\bgroup}{\egroup}
 \fi
 \fi
 
-\ifhandout
-\NewEnviron{onlineOnly}{
-\iftikzexport
-\BODY
+
+\ifdefined\HCode
+\newcommand{\pdfOnly}[1]{}
+\newcommand{\htmlOnly}[1]{#1}
 \else
+\ifdefined\xmPrintHtmlOnlyAlsoInPdf
+\newcommand{\pdfOnly}[1]{#1}
+\newcommand{\htmlOnly}[1]{\bgroup\color{red!50!black}#1\egroup}
+\else
+\newcommand{\pdfOnly}[1]{#1}
+\newcommand{\htmlOnly}[1]{}
 \fi
-}
-\else
-\newenvironment{onlineOnly}
-     {\bgroup\color{red!50!black}}
-{\egroup}
 \fi
 
-\newcommand{\pdfOnly}[1]{\iftikzexport\else #1\fi}
+\providecommand{\ifonlineTF}[2]{\htmlOnly{#1}\pdfOnly{#2}}
+\newif{\ifonline}
+\ifdefined\HCode
+\onlinetrue
+\else
+\onlinefalse
+\fi
 
 
 \providecommand{\latexProblemContent}[1]{#1}
@@ -449,7 +474,6 @@
 
 \addtocounter{problem@Depth}{-2}% Exited a problem so we've exited a problem layer. Need -2 because we steppped once at the start to check for needing a depth-level count reset.
 
-\par\addvspace{.5ex}\nobreak\noindent\hung %% line at the bottom
 
 \ifhandout
 \ifnewpage
@@ -609,6 +633,14 @@
 \else
 \fi
 
+\providecommand{\xmDefaultGraphicsPath}{/xmPictures}
+\graphicspath{  %% When looking for images,
+{./}            %% look here first,
+{.\xmDefaultGraphicsPath/}   %% then look for a pictures folder,
+{..\xmDefaultGraphicsPath/}   %% then look for a pictures folder,
+{../..\xmDefaultGraphicsPath/}   %% then look for a pictures folder,
+{../../..\xmDefaultGraphicsPath/}   %% then look for a pictures folder,
+}
 \NewEnviron{image}[1][3in]{%
   \begin{center}\resizebox{#1}{!}{\BODY}\end{center}% resize and center
 }
@@ -629,7 +661,7 @@
 Interactive
 }
 
-\newcommand{\geogebra}[3]{Geogebra link: \url{https://www.geogebra.org/m/#1}}
+\newcommand{\geogebra}[3]{GeoGebra link: \url{https://www.geogebra.org/m/#1}}
 \newcommand{\desmos}[3]{Desmos link: \url{https://www.desmos.com/calculator/#1}}
 \newcommand{\desmosThreeD}[3]{Desmos3D link: \url{https://www.desmos.com/3d/#1}}
 \newcommand{\googleSheet}[5]{%
@@ -823,7 +855,7 @@ Interactive
        % %% line at the bottom}
        {
 \end{trivlist}
- \par\addvspace{.5ex}\nobreak\noindent\hung
+ % (202410: no longer \par\addvspace{.5ex}\nobreak\noindent\hung
        }
 \fi
 
@@ -901,6 +933,14 @@ Interactive
 \DefineVerbatimEnvironment{code}{Verbatim}{numbers=left,frame=lines,label=Code,labelposition=topline}
 \DefineVerbatimEnvironment{python}{Verbatim}{numbers=left,frame=lines,label=Python,labelposition=topline}
 \DefineVerbatimEnvironment{javascriptCode}{Verbatim}{numbers=left,frame=lines,label=JavaScript,labelposition=topline}
+%%% On the web, translate verbatim and lstlisting blocks into |<pre>|
+%%% elements.
+%%%    \begin{macrocode}
+%%%<*cfgXimera>
+%%\ConfigureEnv{verbatim}{\ifvmode\IgnorePar\fi\EndP\HCode{<pre style="white-space: pre; background-color: lightgray;" >}}{\ifvmode\IgnorePar\fi\EndP\HCode{</pre>}}{}{}
+%%\ConfigureEnv{lstlisting}{\ifvmode\IgnorePar\fi\EndP\HCode{<pre>}}{\ifvmode\IgnorePar\fi\EndP\HCode{</pre>}}{}{}
+%%%</cfgXimera>
+%%%    \end{macrocode}
 \newenvironment{dialogue}{%
    \renewcommand\descriptionlabel[1]{\hspace{\labelsep}\textbf{##1:}}
    \begin{description}%
@@ -1010,9 +1050,12 @@ Interactive
 }
 
 %% pretty-expandable
-\newenvironment{expandable}{%
-}{%
-}
+%% Overwritten in .4ht, but probably also in accordion!
+\ifdefined\xmNotExpandableAsAccordion
+\newenvironment{expandable}{}{}
+\else
+\newenvironment{expandable}[2]{}{}
+\fi
 
 \newcommand{\unfoldable}[1]{#1}
 
@@ -1029,27 +1072,49 @@ Interactive
 \DefineVerbatimEnvironment{sageOutput}{Verbatim}{numbers=left,frame=lines,label=SAGE-Output,labelposition=topline}
 
 
+%% Pre-202412: .jax file written in non-\HCode, and in a next run inserted by ximera.cfg in .html file
+%% Post-202501: .mjax file written only in \HCode, and in luaxake post-processing inserted in .html file
+%%   ( used luaxake rather than sed ...)
+\newwrite\myfile
 \ifdefined\HCode
-  \else
-    \newwrite\myfile
-    \immediate\openout\myfile=\jobname.jax
-\fi
-\ifdefined\HCode
-  \else
-    \immediate\write\myfile{\unexpanded{\newenvironment}{prompt}{}{}}
-\fi
-\ifdefined\HCode
-  \else
+\immediate\openout\myfile=\jobname.xmjax
+
+%% From |only.dtx| we must also create |prompt| on the MathJax side.
+\immediate\write\myfile{\unexpanded{\newenvironment}{prompt}{}{}}
+
+%% Write all newcommands to .xmjax file, that will be included in the .html via luaxake
 \let\@oldargdef\@argdef
 \long\def\@argdef#1[#2]#3{%
 \immediate\write\myfile{\unexpanded{\newcommand}{\unexpanded{#1}}[\unexpanded{#2}]{\unexpanded{#3}}}%
 \@oldargdef#1[#2]{#3}%
 }
 
+%% Same for \DeclareMathOperator
 \let\@OldDeclareMathOperator\DeclareMathOperator
 \renewcommand{\DeclareMathOperator}[2]{\@OldDeclareMathOperator{#1}{#2}\immediate\write\myfile{\unexpanded{\DeclareMathOperator}{\unexpanded{#1}}{\unexpanded{#2}}}}
 
 \fi
+
+
+\colorlet{textColor}{black} % since textColor is referenced below
+\colorlet{background}{white} % since background is referenced below
+
+%% accordion container
+\newenvironment{accordion}{%
+}{%
+}
+%% pretty-accordion
+\iftikzexport
+  \newenvironment{accordion-item}[1][]{%
+  }{%
+  }
+\else
+  \newenvironment{accordion-item}[1][]{%
+  \paragraph{#1}
+  }{%
+  }
+\fi
+
 \newenvironment{ungraded}{}{}
 \newcommand{\clearEnv}[1]{
     %% Syntax: \clearEnv{envName}
@@ -1083,6 +1148,27 @@ Interactive
     \noexpand{#1}
     }
     }
+
+\def\input@path{{./}{../}{../../}{../../../}}    % Mmm, do we need to reset it to the previous value ?
+\providecommand{\xmDefaultPreamble}{xmPreamble.tex}
+    \IfFileExists{\xmDefaultPreamble}
+    {
+        \typeout{Loading Ximera defaultPreamble \xmDefaultPreamble}
+        \input{\xmDefaultPreamble}
+    }{
+        \typeout{Info: No default preamble loaded (\xmDefaultPreamble)}
+    }
+\providecommand{\xmDefaultPrintstyle}{xmPrintstyle.sty}
+\iftikzexport\else   % only in PDF
+    \IfFileExists{\xmDefaultPrintstyle}
+    {
+        \typeout{Loading Ximera defaultPrintstyle \xmDefaultPrintstyle}
+        \input{\xmDefaultPrintstyle}
+    }{
+        \typeout{Info: No default printstyle loaded (\xmDefaultPrintstyle)}
+    }
+\fi
+
 
 %% 
 %% Copyright (C) 2024 by Bart Snapp <bart.snapp@gmail.com> and Jim Fowler <kisonecat@gmail.com>

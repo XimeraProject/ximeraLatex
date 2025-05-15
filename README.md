@@ -1,30 +1,19 @@
-Greetings! [![Build Status](https://travis-ci.org/XimeraProject/ximeraLatex.svg?branch=master)](https://travis-ci.org/XimeraProject/ximeraLatex)
-==========
 
-In this repository, we develop the Ximera LaTeX document class. As of summer of 2024, the Ximera document class is available in [CTAN](https://ctan.org/pkg/ximera?lang=en).
+This repository contains the source for the `ximera` LaTeX package. 
 
-However, if a user should wish to install locally at this point (not recommended) see: 
-
-[Installing Locally](./installingLocally.md)
-
-For a list of different Ximera commands, see: 
-
-[Examples of Ximera Envrionments](https://go.osu.edu/ximera-examples)
+Since  the summer of 2024, the Ximera document class is available in [CTAN](https://ctan.org/pkg/ximera?lang=en). Moreover it is strongly advised to use Ximera with [docker](https://github.com/XimeraProject/ximeraFirstSteps). 
+This repo should therefore not be directly relevant for (prospective) Ximera authors or endusers.
+They should consult the [Ximera Manual](https://ximera.osu.edu/xman) or [Example Ximera Xourse](https://go.osu.edu/ximera-examples) for more info on Ximera.
 
 
-Since Ximera is built on LaTeX source, we want to use LaTeX as a
-method of validating the code authors write. Hence, if you want to
-write a Ximera online activity, the first step is constructing LaTeX
-documents.
+This repo also contains the optional (but strongly recommended) build (lua-) script `luaxake` and a wrapper (bash-) script `xmlatex` with some extra functionality but espaccially to transparently run `luaxake` in a docker container.
 
-Once you have the LaTeX documents, and you have checked them for
-typos, accuracy, etc, the fact that they compile should be reasonable
-evidence that they will display correctly in Ximera.
+This repo also contain the `Dockerfile(s)` to build docker images which provide the most typical way to use Ximera.
+
+Manual local installation of the Ximera LaTeX package is normally never needed, but (somewhat old) documentation remains [available](./installingLocally.md).
 
 
-
-Contents of the repository
----------------------------
+# Contents of the repository
 
 * This README.md file. 
 
@@ -34,39 +23,54 @@ Contents of the repository
   generates ximera.cls, xourse.cls, and ximeraLaTeX.pdf, as well as a
   few other files.
 
+* In the `src` folder the ximeraLatex source files (as used by ximera.dtx)
 
-Compiling the files
--------------------
+* In the `luaxake` folder the LUA code of the `luaxake` build script. This has its own [README](luaxake/README.md).
+
+* In the `xmScripts` folder, the (wrapper-) script `xmlatex`. One version goes into the docker image, a simplified 'header' part should go in each ximera-repo (or just once somewhere in the PATH) oo your PC.
+
+* In the `docker` folder build files for docker images. Images are automatically build for each tag of this repo, and released versions are available from [github](https://github.com/orgs/XimeraProject/packages)
+
+# Advanced: building (local) docker images
+
+Check out this repo and run (from the root folder)
+```
+docker buildx build --tag ghcr.io/ximeraproject/ximeralatex:latest --file docker/Dockerfile.full .
+```
+
+and test or use the newly build image eg with 
+```
+XAKE_VERSION=latest  xmlatex bake mytestfile.tex
+```
+To further develop, test or manipulate Ximera, you can work inside the container with
+```
+XAKE_VERSION=latest  xmlatex bash
+```
+It is possible to extract this package from the container into a .ximera_local folder, and develop from there with 
+```
+XAKE_VERSION=latest  xmlatex copySettingsLocal
+```
+
+The default XAKE_VERSION (and thus the container to be used) can also be set in xmScripts/config.txt.
+
+# Advanced: compiling the `ximera` LaTeX package
 
 Running `make` generates the derived files README, ximera.pdf, ximera.cls, xourse.cls, ximera.cfg, ximera.4ht, xourse.4ht.
 
 Running `make ctan` generates a submission suitable for CTAN
 
-Running `make inst` installs the files in the user's TeX tree.
+(OBSOLETE) Running `make inst` installs the files in the user's TeX tree.
 
-Running `make install` installs the files in the local TeX tree.
+(OBSOLETE) Running `make install` installs the files in the local TeX tree.
 
-Staying up-to-date
-------------------
-
-While we hope to solidify the ximera.cls file, at this point we are
-still in development stages.
-
-To keep your file up-to-date, you may need to periodically sync or
-pull the the ximera.cls within the ximeraLatex directory.
-
-`ximeraLatex$ git fetch --all`
-
-`ximeraLatex$ git reset --hard origin/master`
-
-will reset your ximeraLatex directory. Note it will also overwrite
-*any* modifications you have made in this directory. You should not be
-building your activities in this directory.
+All this can (optionally) done INSIDE a ximeralatex docker container, ie after running
+```
+xmlatex bash
+```
+in the root folder of this repo.
 
 
-
-Future Features
----------------
+# A Non-Official List Of Possible Future Features
 
 - Ability to include \activities and \practice within a ximera document
   - when adding Xourses, the path to the xourse/file needs to be given
@@ -74,6 +78,4 @@ in some way. We have an example of this in the preamble of
 examples/exerciseCollection/exerciseCollection.tex This enables an
 author to print the file and know where to find the parts.
   - Perhaps by default, all Xourse files appear on the top page, but if modified with `\documentclass[hidden]{xourse}, they would no longer appear
-  - We'd like a separate, perhaps password protected page with ALL content on it.
-- Perhaps xourse as an option for ximera documents
-- \xsection \xsubsection (for formatting mixed xourses)
+  - A separate, perhaps password protected page with ALL content on it.

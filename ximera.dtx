@@ -125,9 +125,11 @@ Running "make install" installs the files in the local TeX tree.
     \from{src/leash.dtx}{classXimera}
     \from{src/interactives/sagemath.dtx}{classXimera}        
     \from{src/jax.dtx}{classXimera}
+    \from{src/accordion.dtx}{classXimera}
     \from{src/ungraded.dtx}{classXimera}
     \from{src/clearEnv.dtx}{classXimera}
     \from{src/hideEnv.dtx}{classXimera}
+    \from{src/preamble.dtx}{classXimera}    %% should be last ...?
   }
 }
 \generate{
@@ -161,10 +163,12 @@ Running "make install" installs the files in the local TeX tree.
   \file{ximera.4ht}{
     \from{ximera.dtx}{htXimera}
     \from{src/pagesetup.dtx}{htXimera}    
+    \from{src/abstract.dtx}{htXimera}    
     \from{src/title.dtx}{htXimera}
     \from{src/problem.dtx}{htXimera}
     \from{src/macros.dtx}{htXimera}
     \from{src/theorems.dtx}{htXimera}    
+    \from{src/proof.dtx}{htXimera}    
     \from{src/image.dtx}{htXimera}               
     \from{src/dialogue.dtx}{htXimera}
     \from{src/foldable.dtx}{htXimera}
@@ -186,6 +190,7 @@ Running "make install" installs the files in the local TeX tree.
     \from{src/interactives/sagemath.dtx}{htXimera}
     \from{src/ungraded.dtx}{htXimera}            
     \from{src/footnotes.dtx}{htXimera} 
+    \from{src/accordion.dtx}{htXimera}
     \from{src/ending.dtx}{htXimera}
   }
 }
