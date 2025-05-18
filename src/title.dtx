@@ -54,7 +54,7 @@
   \phantomsection%
   \ifnumbers\addcontentsline{toc}{section}{\thetitlenumber~\@title}\else\addcontentsline{toc}{section}{\@title}\fi
   \vskip .6em\noindent\textit\theabstract\setcounter{problem}{0}\setcounter{section}{0}\setcounter{subsection}{0}\par\vspace{2em}
-  \ifnooutcomes\else\let\thefootnote\relax\footnote{Learning outcomes: \theoutcomes}\fi
+  %\ifnooutcomes\else\let\thefootnote\relax\footnote{Learning outcomes: \theoutcomes}\fi% Depreciated with new outcome mechanism.
   \ifnoauthor\else\let\thefootnote\relax\footnote{Author(s):~\@author}\fi
   \aftergroup\@afterindentfalse
   \aftergroup\@afterheading}
