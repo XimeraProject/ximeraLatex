@@ -15,12 +15,12 @@
 %% src/makeCounter.dtx  (with options: `classXimera')
 %% src/pagesetup.dtx  (with options: `classXimera')
 %% src/metadata.dtx  (with options: `classXimera')
-%% src/outcomes.dtx  (with options: `classXimera')
 %% src/macros.dtx  (with options: `classXimera')
 %% src/theorems.dtx  (with options: `classXimera')
 %% src/enumerate.dtx  (with options: `classXimera')
 %% src/proof.dtx  (with options: `classXimera')
 %% src/only.dtx  (with options: `classXimera')
+%% src/outcomes.dtx  (with options: `classXimera')
 %% src/problem.dtx  (with options: `classXimera')
 %% src/hints.dtx  (with options: `classXimera')
 %% src/abstract.dtx  (with options: `classXimera')
@@ -179,6 +179,7 @@
 
 \RequirePackage{xkeyval}
 
+\RequirePackage{currfile}
 \RequirePackage{comment}
 \RequirePackage{gettitlestring}
 \RequirePackage{nameref}
@@ -312,17 +313,6 @@
 \newcommand{\acknowledgement}{\excludecomment}
 
 \renewcommand{\tag}{\excludecomment}
-\def\theoutcomes{}
-
-\ifdefined\HCode%
-  \newcommand{\outcome}[1]{}
-\else%
-  \newwrite\outcomefile
-  \immediate\openout\outcomefile=\jobname.oc
-
-  \newcommand{\outcome}[1]{\edef\theoutcomes{\theoutcomes #1~}%
-  \immediate\write\outcomefile{\unexpanded{\outcome}{#1}}}
-  \fi%
 \everymath{\displaystyle}
 \let\prelim\lim
 \renewcommand{\lim}{\displaystyle\prelim}
@@ -437,6 +427,44 @@
 \else
 \onlinefalse
 \fi
+\newcommand{\preOutputLine}{\item }
+\newcommand{\postOutputLine}{}
+\newcommand{\preOutputBlock}{At the end of this section, students should be able to... \begin{itemize}}
+\newcommand{\postOutputBlock}{\end{itemize} So go forth and learn!}
+
+\newcommand{\outcomeHeader}{Goals for this Section (Hover over me to see!)}
+\htmlOnly{
+  \newcommand{\outcomeBlock}{\ifvmode\IgnorePar\fi\EndP\HCode{<div class="outcomeHead">} \outcomeHeader \ifvmode\IgnorePar\fi\EndP\HCode{</div>} \ifvmode\IgnorePar\fi\EndP\HCode{<div class="outcomeContent">}}
+}
+
+\newwrite\outcomefile
+\immediate\openout\outcomefile=\jobname.oc
+\newcommand{\outcome}[1]{%
+  \immediate\write\outcomefile{\expandafter\unexpanded\expandafter{\preOutputLine #1} \expandafter\unexpanded\expandafter{\postOutputLine}}
+}
+
+\newcommand{\displayOutcomes}[1][]{%
+  \immediate\closeout\outcomefile
+  \IfFileExists{\currfiledir\currfilebase.oc}{
+    \htmlOnly{\outcomeBlock}
+      \expandafter\preOutputBlock
+      \input{\currfiledir\currfilebase.oc}
+      \postOutputBlock
+      \htmlOnly{\ifvmode\IgnorePar\fi\EndP\HCode{</div>}}
+    }
+    {
+    \IfFileExists{\currfilebase.oc}{
+      \htmlOnly{\outcomeBlock}
+        \expandafter\preOutputBlock
+        \input{\currfilebase.oc}
+        \postOutputBlock
+        \htmlOnly{\ifvmode\IgnorePar\fi\EndP\HCode{</div>}}
+      }
+      {
+        No outcome file found.
+      }
+    }
+  }
 
 \newcommand{\hang}{% top theorem decoration
   \begingroup%
@@ -586,7 +614,7 @@
   \phantomsection%
   \ifnumbers\addcontentsline{toc}{section}{\thetitlenumber~\@title}\else\addcontentsline{toc}{section}{\@title}\fi
   \vskip .6em\noindent\textit\theabstract\setcounter{problem}{0}\setcounter{section}{0}\setcounter{subsection}{0}\par\vspace{2em}
-  \ifnooutcomes\else\let\thefootnote\relax\footnote{Learning outcomes: \theoutcomes}\fi
+  %\ifnooutcomes\else\let\thefootnote\relax\footnote{Learning outcomes: \theoutcomes}\fi% Depreciated with new outcome mechanism.
   \ifnoauthor\else\let\thefootnote\relax\footnote{Author(s):~\@author}\fi
   \aftergroup\@afterindentfalse
   \aftergroup\@afterheading}
@@ -1376,6 +1404,7 @@ function compSubTree(f, treeOne,treeTwo) {
     a.derivative('X').equals( b.derivative('X') ) &&
     a.derivative('Y').equals( b.derivative('Y') ) &&
     a.derivative('Z').equals( b.derivative('Z') )
+    )
   }
 ?
 %% Now we add a prompt in the answer command to trigger this validator. In particular, we add "validator=sameDerivative" to trigger this validator.
