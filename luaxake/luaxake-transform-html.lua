@@ -483,13 +483,16 @@ local function post_process_html(cmd)
   --add_dependencies(dom, file)    -- IS THIS NEEDED???
 
   log:debug("Remove blanks in '\\begin {' if present")
-  for _, mjax in ipairs(dom:query_selector(".mathjax-inline, .mathjax-block")) do
+  for _, mjax in ipairs(dom:query_selector(".mathjax-inline, .mathjax-block, .mathjax-env")) do
     local mtext = mjax:get_text()
     mtext = mtext:gsub("\\begin%s*{", "\\begin{")
+
     mtext = mtext:gsub("\\end%s*{", "\\end{")
     if mtext ~= mjax:get_text() then
       log:tracef("Set mtext to %30.30s.", mtext:gsub("[\n \t]+"," "))
-      mjax.textContent = mtext
+      -- BADBAD: to be done properly ...?!
+      mjax._children[1]._text = mtext
+      -- print(require('pl.pretty').write(mjax))
     end
   end
 
