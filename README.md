@@ -35,6 +35,17 @@ Manual local installation of the Ximera LaTeX package is normally never needed, 
 
 * In the `docker` folder build files for docker images. Images are automatically build for each tag of this repo, and released versions are available from [github](https://github.com/orgs/XimeraProject/packages)
 
+# Contributing
+For developers, we suggest the following workflow:
+1) Make a Template of a testing repository like: https://github.com/XimeraProject/ximeraFirstSteps
+2) Clone your template, or work on your template in a GitHub Codespace
+3) Fork XimeraLatex
+4) Clone your for of XimeraLatex into your template, and rename the folder `ximeraLatex` to be `.ximera_latex`
+5) Make your edits, we find either directly editing a preamble file or the `ximera.cls` directly to be good for development
+6) Make your changes in the `*.dtx` files. If you developed in `ximera.cls` directly, change it's name to `ximeradev.cls`. It is best to make **small commits**, and give detailed descriptions
+7) run `make` and a new `ximera.cls`, `xourse.cls`, `ximera.4ht` and `xourse.4ht` will be generated, **overwriting** any existing files in `.ximera_local`.
+8) Push changes to your fork of `ximeraLatex`, and when ready, submit a pull request from your fork
+
 
 # A Non-Official Changelog
 * 5/2025: Merge the 'luaxake' branch into master. This obsoleted the older 'xake' program (written in GO), and was already used for quite some time by the dockerimages v2.6.x.
