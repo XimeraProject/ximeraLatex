@@ -483,13 +483,16 @@ local function post_process_html(cmd)
   --add_dependencies(dom, file)    -- IS THIS NEEDED???
 
   log:debug("Remove blanks in '\\begin {' if present")
-  for _, mjax in ipairs(dom:query_selector(".mathjax-inline, .mathjax-block")) do
+  for _, mjax in ipairs(dom:query_selector(".mathjax-inline, .mathjax-block, .mathjax-env")) do
     local mtext = mjax:get_text()
     mtext = mtext:gsub("\\begin%s*{", "\\begin{")
+
     mtext = mtext:gsub("\\end%s*{", "\\end{")
     if mtext ~= mjax:get_text() then
       log:tracef("Set mtext to %30.30s.", mtext:gsub("[\n \t]+"," "))
-      mjax.textContent = mtext
+      -- BADBAD: to be done properly ...?!
+      mjax._children[1]._text = mtext
+      -- print(require('pl.pretty').write(mjax))
     end
   end
 
@@ -533,6 +536,7 @@ local function post_process_html(cmd)
     filtered_cmds= filtered_cmds:gsub("[^\n]*[:*@].-\n", "")      -- remove all 'exotic' characters; _ must be kept...
     filtered_cmds= filtered_cmds:gsub("[^\n]\\_.-\n", "")          -- remove \_  (Mathax error)
     filtered_cmds= filtered_cmds:gsub("[^\n]\\TU.-\n", "")          -- remove \_  (Mathax error)
+    filtered_cmds= filtered_cmds:gsub("[^\n]\\label.-\n", "")      -- remove \label  (Mathax error)
     filtered_cmds= filter_newcommands(filtered_cmds)               -- only keep newcommands and declaremathoperator
     filtered_cmds= filtered_cmds:gsub("##(%d)", "#%1")             -- replace ##1 with #1
     
