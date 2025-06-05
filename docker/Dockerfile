@@ -23,6 +23,7 @@ RUN tlmgr option repository http://ftp.math.utah.edu/pub/tex/historic/systems/te
     tlmgr update --self; \
     tlmgr install \
         # afterpage \
+        adjustbox \
         amsmath \
         # amssymb \
         # amsthm \
