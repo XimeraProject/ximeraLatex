@@ -10,7 +10,6 @@ OUTPUT ./ximera.cls
 INPUT src/banner.dtx
 INPUT src/options.dtx
 INPUT src/packages.dtx
-INPUT src/localize.dtx
 INPUT src/tikzexport.dtx
 INPUT src/hyperref.dtx
 INPUT src/suppress.dtx
@@ -53,12 +52,7 @@ INPUT src/accordion.dtx
 INPUT src/ungraded.dtx
 INPUT src/clearEnv.dtx
 INPUT src/hideEnv.dtx
-INPUT src/validators/validatorHook.dtx
-INPUT src/validators/supplementalCommands.dtx
-INPUT src/validators/sameDerivative.dtx
-INPUT src/validators/factorCheck.dtx
-INPUT src/validators/multiAns.dtx
-INPUT src/validators/equalMatrix.dtx
+INPUT src/localize.dtx
 INPUT src/preamble.dtx
 INPUT ximera.dtx
 OUTPUT ./xourse.cls
