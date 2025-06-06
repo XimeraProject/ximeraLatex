@@ -60,7 +60,7 @@
 \arabic{depthICount}% The first problem depth, what use to be |\theproblem|.
 
 \forloop{Iteration@probCnt}{2}{\arabic{Iteration@probCnt} < \numexpr \value{problem@Depth} + 1 \relax}{%
-.\expandafter\arabic{depth\Roman{Iteration@probCnt}Count}% Get the problem number of the next depth level and append it with a ".".
+  .\expandafter\arabic{depth\Roman{Iteration@probCnt}Count}% Get the problem number of the next depth level and append it with a ".".
 }
 }
 %%%%%% Configure various problem environment commands
