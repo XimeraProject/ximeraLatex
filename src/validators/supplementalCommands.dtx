@@ -1,13 +1,11 @@
-% \subsubsection{debugCommands}
-%   This initialized a number of debug/verbose functions to be used during the validation process for custom validators.
-%       Currently we have two main debug commands, debugText and debugArray.
-%       debugText takes in a string and displays that string when debugInfo = true.
-%       debugArray takes in an array and displays that array when debugInfo = true.
-%
+% \subsubsection{supplementalCommands}
+%%%   This initialized a number of debug/verbose functions to be used during the validation process for custom validators.
+%%%       Currently we have two main debug commands, debugText and debugArray.
+%%%       debugText takes in a string and displays that string when debugInfo = true.
+%%%       debugArray takes in an array and displays that array when debugInfo = true.
+%%%
 %    \begin{macrocode}
 %<*classXimera>
-%% Apend code via \@addToValidators
-
 \appendtoverbtoks?
 var debugInfo = false;
 
@@ -22,23 +20,7 @@ function debugArray(array) {
     console.log(array);
     }
 }
-?
-%
-%
-%% Since this isn't a real validation command, just subroutines for debugging validators, we don't need to instantiate them via a command.
-%    \end{macrocode}
-% \subsubsection{compSubTree}
-%   function allows us to compare two subtrees of a function tree for equality without messing up the original trees.
-%   The function is: compSubTree(f, treeOne,treeTwo)
-%            The input f should be the full math expressions object of a function that we will need for cloning,
-%            treeOne is a subtree of a function tree that we want to compare 
-%            treeTwo is another subtree of a function tree (possibly the same, or different from the function tree generating treeOne) that we want to compare 
-%            This determines if f.treeOne = f.treeTwo in the Ximera sense of equality, and returns true or false (equal or not equal).
-%   Importantly the scope is such that the original function trees *shouldn't* be impacted by this process.
-%    \begin{macrocode}
-%% Apend code via \@addToValidators
 
-\appendtoverbtoks?
 function compSubTree(f, treeOne,treeTwo) {
     /* 
         We assume that the input f is the full matrix expressions object we will need for cloning,
@@ -58,8 +40,5 @@ function compSubTree(f, treeOne,treeTwo) {
     return (fTemp.equals(gTemp))
 }
 ?
-%
-%
-%% Since this isn't a real validation command, just subroutines for debugging validators, we don't need to instantiate them via a command.
 %</classXimera>
 %    \end{macrocode}

@@ -1,21 +1,21 @@
 % \subsubsection{equalMatrix}
-%   This validator implements a way for students to enter in a matrix answer, 
-%       and have that compared against an instructor's matrix answer entry-by-entry
-%       using the ximera equality algorithm (so this supports algebraic entries).
-%   It expects a matrix to be defined using the following formatting:
-%       [ [r1c1,r1c2,r1c3],[r2c1,r2c2,r2c3],[r3c1,r3c2,r3c3] ]
-%       Where "rXcY" is the "row X, column Y" entry of the matrix.
-%   Thus both the instructor and the student should input this format for the matrix.
-%       So the instructor would write something like:
-%           $\answer{[ [1,2,3],[4,5,6],[7,8,9] ]}$
-%       And the student would click into the answer box and enter in:
-%           [ [1,2,3],[4,5,6],[7,8,9] ]
-%       This has the (somewhat advantage) of being parsed into something visible by mathjax,
-%           rather than the 'invalid symbol' or 'unexpected token' or other error, which is nice.
-%
+%%%   This validator implements a way for students to enter in a matrix answer, 
+%%%       and have that compared against an instructor's matrix answer entry-by-entry
+%%%       using the ximera equality algorithm (so this supports algebraic entries).
+%%%   It expects a matrix to be defined using the following formatting:
+%%%       [ [r1c1,r1c2,r1c3],[r2c1,r2c2,r2c3],[r3c1,r3c2,r3c3] ]
+%%%       Where 'rXcY' is the 'row X, column Y' entry of the matrix.
+%%%   Thus both the instructor and the student should input this format for the matrix.
+%%%       So the instructor would write something like:
+%%%           \verb|$\answer{[ [1,2,3],[4,5,6],[7,8,9] ]}$|
+%%%       And the student would click into the answer box and enter in:
+%%%           [ [1,2,3],[4,5,6],[7,8,9] ]
+%%%       This has the (somewhat advantage) of being parsed into something visible by mathjax,
+%%%           rather than the 'invalid symbol' or 'unexpected token' or other error, which is nice.
+%%%
 %    \begin{macrocode}
 %<*classXimera>
-%% Apend code via \@addToValidators
+%%% Apend code via \appendtoverbtoks
 
 \appendtoverbtoks?
 // We want to define a validator that allows us to check a matrix.
@@ -105,9 +105,6 @@ function equalMatrix(f,g) {
 return true
 }
 ?
-%
-%
-%% Now we add a prompt in the answer command to trigger this validator. In particular, we add "validator=equalMatrix" to trigger this validator.
 %</classXimera>
 %    \end{macrocode}
 

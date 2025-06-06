@@ -1,14 +1,14 @@
 % \subsubsection{multiAns}
-%   This validators allows the instructor to provide a comma-separated list of acceptable answers.
-%   The validator expects an answer in the form:
-%       \answer[validator=multiAns]{[ans1,ans2,ans3]} for an arbitrary number of answers.
-%       Note that the "[" and "]" are necessary for answers to be parsed correctly. 
-%       This also helps prevent accidental syntax clashing, as it will throw errors when answers
-%           contain square brackets (which doesn't work with this validator)
-%
+%%%   This validators allows the instructor to provide a comma-separated list of acceptable answers.
+%%%   The validator expects an answer in the form:
+%%%       \verb|\answer[validator=multiAns]{[ans1,ans2,ans3]}| for an arbitrary number of answers.
+%%%       Note that the '[' and ']' are necessary for answers to be parsed correctly. 
+%%%       This also helps prevent accidental syntax clashing, as it will throw errors when answers
+%%%           contain square brackets (which doesn't work with this validator)
+%%%
 %    \begin{macrocode}
 %<*classXimera>
-%% Apend code via \@addToValidators
+%%% Apend code via \appendtoverbtoks
 
 \appendtoverbtoks?
 // We want to define a validator that allows us to check against a list of possibilities.
@@ -41,9 +41,6 @@ function multiAns(f,g) {
 return false
 }
 ?
-%
-%
-%% Now we add a prompt in the answer command to trigger this validator. In particular, we add "validator=multiAns" to trigger this validator.
 %</classXimera>
 %    \end{macrocode}
 

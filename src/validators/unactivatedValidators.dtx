@@ -1,28 +1,26 @@
 % \subsection{unactivatedValidators}
-%   This section contains a bunch of example validators that aren't actually implemented/used, but
-%       contain code that may be of use/interest to future developers or may be useful to authors.
-%   To activate any of the below validators, simply uncomment
-%       from the "\appendtoverbtoks?" to the "?" at the end and then rebuild the cls file.
-%   Note that the "?" at the beginning and end IS NECESSARY, 
-%       this isn't a comment, it is a token for verbatim content.
-%       Even though it looks weird, make sure you uncomment it, and do NOT remove or change it.
-%
-%
-%
+%%%   This section contains a bunch of example validators that aren't actually implemented/used, but
+%%%       contain code that may be of use/interest to future developers or may be useful to authors.
+%%%   To activate any of the below validators, simply uncomment
+%%%       from the \verb|\appendtoverbtoks| to the questionmark at the end and then rebuild the cls file.
+%%%   Note that the questionmark at the beginning and end IS NECESSARY, 
+%%%       this isn't a comment, it is a token for verbatim content.
+%%%       Even though it looks weird, make sure you uncomment it, and do NOT remove or change it.
+%%%
 % \subsubsection{sameParity}
-%
-%   sameParity validator compares the number supplied by instructor and student to see if they
-%       are both even or both odd. It validates as correct if the two answers are the same (even/odd)
-%
-%   To use this validator (once activated), use \answer[validator=sameParity]{instructorAns} where
-%       a number is supplied as the instructorAns.
-%
+%%%
+%%%   sameParity validator compares the number supplied by instructor and student to see if they
+%%%       are both even or both odd. It validates as correct if the two answers are the same (even/odd)
+%%%
+%%%   To use this validator (once activated), use \verb|\answer[validator=sameParity]{instructorAns}| where
+%%%       a number is supplied as the instructorAns.
+%%%
 %    \begin{macrocode}
 %<*classXimera>
-%% Apend code via \@addToValidators
+%%% Apend code via \verb|\appendtoverbtoks|
 
 %\appendtoverbtoks?
-%// NOTE: The below are intended to be used inside an \answer optional argument with the validator key, NOT in a validator environment.
+%%%// NOTE: The below are intended to be used inside an \verb|\answer| optional argument with the validator key, NOT in a validator environment.
 %
 %// Check to see if two inputs are the same parity in terms of even/odd.
 %  function sameParity(a,b) {
@@ -35,15 +33,15 @@
 %%%%
 %%%%
 % \subsubsection{isPositive}
-%
-%   isPositive validates if a number supplied by the student is positive. No instructor answer is necessary.
-%
-%   To use this validator (once activated), use \answer[validator=isPositive]{instructorAns} where
-%       the 'instructorAns' code isn't used in any way, so it can actually be left blank.
-%
+%%%
+%%%   isPositive validates if a number supplied by the student is positive. No instructor answer is necessary.
+%%%
+%%%   To use this validator (once activated), use \verb|\answer[validator=isPositive]{instructorAns}| where
+%%%       the 'instructorAns' code isn't used in any way, so it can actually be left blank.
+%%%
 %    \begin{macrocode}
 %<*classXimera>
-%% Apend code via \@addToValidators
+%%% Apend code via \verb|\appendtoverbtoks|
 
 %\appendtoverbtoks?
 %var x
@@ -59,18 +57,18 @@
 %%%%
 % \subsubsection{caseInsensitive}
 %
-%   caseInsensitive validator compares the answer supplied by instructor and student to see if they
-%       are the same as strings, ignoring case sensitivity.
-%   Thus if the instructor supplies "Correct" as the desired string, then
-%       the following student answers would be validated as correct answers:
-%       1) CORRECT , 2) correct , 3) CoRReCT , 4) cOrrEct
-%
-%   To use this validator (once activated), use \answer[validator=caseInsensitive]{instructorAns} where
-%       the instructorAns (and student's input) are both parsed as strings and compared.
-%
+%%%   caseInsensitive validator compares the answer supplied by instructor and student to see if they
+%%%       are the same as strings, ignoring case sensitivity.
+%%%   Thus if the instructor supplies 'Correct' as the desired string, then
+%%%       the following student answers would be validated as correct answers:
+%%%       1) CORRECT , 2) correct , 3) CoRReCT , 4) cOrrEct
+%%%
+%%%   To use this validator (once activated), use \verb|\answer[validator=caseInsensitive]{instructorAns}| where
+%%%       the instructorAns (and student's input) are both parsed as strings and compared.
+%%%
 %    \begin{macrocode}
 %<*classXimera>
-%% Apend code via \@addToValidators
+%%% Apend code via \verb|\appendtoverbtoks|
 
 %\appendtoverbtoks?
 %// NOTE: The below are intended to be used inside an \answer optional argument with the validator key, NOT in a validator environment.
