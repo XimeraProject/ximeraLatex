@@ -467,25 +467,21 @@
 \arabic{depthICount}% The first problem depth, what use to be |\theproblem|.
 
 \forloop{Iteration@probCnt}{2}{\arabic{Iteration@probCnt} < \numexpr \value{problem@Depth} + 1 \relax}{%
-  .\expandafter\arabic{depth\Roman{Iteration@probCnt}Count}% Get the problem number of the next depth level and append it with a ".".
+.\expandafter\arabic{depth\Roman{Iteration@probCnt}Count}% Get the problem number of the next depth level and append it with a ".".
 }
 }
 %%%%%% Configure various problem environment commands
 \Make@Counter{problem@Depth}
 %%%% Configure environments start content
 \newcommand{\problemEnvironmentStart}[2]{%
-
 \stepcounter{problem@Depth}% Started a problem, so we've sunk another problem layer.
 \def\spaceatend{#1}%
 \begin{trivlist}%
-\item%
-  [%
-    \hskip\labelsep\sffamily\bfseries
-    #2 \problemNumber% Determine the correct number of the problem, and the format of that number.
+\item[\hskip\labelsep\sffamily\bfseries\GetTranslation{#2} \problemNumber% Determine the correct number of the problem, and the format of that number.
 ]%
 \slshape
 }
-%%%%% Configure environments end content
+%%%%% Configure environments end content %%%%%%
 \newcommand{\problemEnvironmentEnd}{%This configures all the end content for a problem.
 \stepcounter{problem@Depth}
 \ifcsname c@depth\Roman{problem@Depth}Count\endcsname
@@ -501,40 +497,23 @@
 \fi
 \end{trivlist}
 }
+%% Add a simple command that handles all the problem creation aspects:
+\newcommand{\createProblemEnv}[2]{% This is a nice command to define a new problem-like environment for a content-author.
+\newenvironment{#1}[1][2in]%
+{%Env start code
+\problemEnvironmentStart{#1}{#2}
+}
+{%Env end code
+\problemEnvironmentEnd
+}
+}
 
 %%%% Now populate the old environment names
 
-\newenvironment{problem}[1][2in]%
-{%Env start code
-\problemEnvironmentStart{#1}{Problem}
-}
-{%Env end code
-\problemEnvironmentEnd
-}
-
-\newenvironment{exercise}[1][2in]%
-{%Env start code
-\problemEnvironmentStart{#1}{Exercise}
-}
-{%Env end code
-\problemEnvironmentEnd
-}
-
-\newenvironment{exploration}[1][2in]%
-{%Env start code
-\problemEnvironmentStart{#1}{Exploration}
-}
-{%Env end code
-\problemEnvironmentEnd
-}
-
-\newenvironment{question}[1][2in]%
-{%Env start code
-\problemEnvironmentStart{#1}{Question}
-}
-{%Env end code
-\problemEnvironmentEnd
-}
+\createProblemEnv{problem}{Problem}
+\createProblemEnv{exercise}{Exercise}
+\createProblemEnv{exploration}{Exploration}
+\createProblemEnv{question}{Question}
 \newcounter{hintLevel}
 \setcounter{hintLevel}{0}
 \newenvironment{hint}{}{}

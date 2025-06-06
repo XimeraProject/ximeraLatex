@@ -62,19 +62,44 @@
 \newcounter{identification}
 \setcounter{identification}{0}
 \newcommand{\ConfigureQuestionEnv}[2]{%
-\renewenvironment{#1}{\refstepcounter{problem}}{}%
-\ConfigureEnv{#1}{\stepcounter{identification}\ifvmode \IgnorePar\fi \EndP\HCode{<div role="article" class="problem-environment #2" id="problem\arabic{identification}">}}{\ifvmode \IgnorePar\fi \EndP\HCode{</div>}\IgnoreIndent}{}{}%
+\renewenvironment{#1}{
+  }
+  {
+  }%
+  \ConfigureEnv{#1}
+  {
+    \def\problemNumDisp{}% Otherwise don't display a problem number.
+  \stepcounter{identification}
+  \ifvmode
+  \IgnorePar
+  \fi
+\EndP
+\HCode{<div role="article" class="problem-environment #1" id="problem\arabic{identification}" numbered=" \problemNumDisp" titletext=" \GetTranslation{#2}">}
+}
+{
+\stepcounter{problem@Depth}
+\ifcsname c@depth\Roman{problem@Depth}Count\endcsname
+\expandafter\ifnum\expandafter\value{depth\Roman{problem@Depth}Count}>0
+\expandafter\setcounter{depth\Roman{problem@Depth}Count}{0}
+\fi
+\fi
+\addtocounter{problem@Depth}{-2}% Exited a problem so we've exited a problem layer. Need -2 because we steppped once at the start to check for needing a depth-level count reset.
+\ifvmode
+\IgnorePar
+\fi
+\EndP
+\HCode{</div>}\IgnoreIndent
+}{}{}%
 }
 
-\ConfigureQuestionEnv{problem}{problem}
-\ConfigureQuestionEnv{exercise}{exercise}
-\ConfigureQuestionEnv{question}{question}
-\ConfigureQuestionEnv{exploration}{exploration}
+\ConfigureQuestionEnv{problem}{Problem}
+\ConfigureQuestionEnv{exercise}{Exercise}
+\ConfigureQuestionEnv{question}{Question}
+\ConfigureQuestionEnv{exploration}{Exploration}
 
 \ifdefined\xmNotHintAsExpandable
   \ConfigureQuestionEnv{hint}{hint} % 2024: hint is no longer a 'question-environment'.
 \fi
-%%%%\ConfigureQuestionEnv{shuffle}{shuffle}
 \newcommand{\ConfigureTheoremEnv}[1]{%
 \renewenvironment{#1}[1][]{\refstepcounter{problem}%
 \ifthenelse{\equal{##1}{}}{}{%
