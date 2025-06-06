@@ -1,0 +1,66 @@
+% \subsubsection{sameDerivative}
+%%%   This validator takes the derivative of the instructor's answer and the student submission and ensure they match.
+%%%       It checks upper and lower case of roman-alphabet letters (except 'e', 'f', 'g', 'h', and 'i') as they may
+%%%       not be used as variables despite appearing in a given function.
+%%%       This doesn't check other letters/alphabets other than what is listed above.
+%%%
+%    \begin{macrocode}
+%<*classXimera>
+%%% Apend code via \@addToValidators
+
+\appendtoverbtoks?
+// NOTE: The below are intended to be used inside an \answer optional argument with the validator key, NOT in a validator environment.
+
+// sameDerivative checks to see if the derivative with respect to x and c are equal.
+// Because of how they are loaded, I need to currently manually check each variable letter, so we do a full comparison
+// Currently not checking e, f, g, h, or i as variables because they are special reserve letters in math.
+  sameDerivative = function(a,b) {
+    return (
+    a.derivative('a').equals( b.derivative('a') ) *
+    a.derivative('b').equals( b.derivative('b') ) *
+    a.derivative('c').equals( b.derivative('c') ) *
+    a.derivative('d').equals( b.derivative('d') ) *
+    a.derivative('j').equals( b.derivative('j') ) *
+    a.derivative('k').equals( b.derivative('k') ) *
+    a.derivative('l').equals( b.derivative('l') ) *
+    a.derivative('m').equals( b.derivative('m') ) *
+    a.derivative('n').equals( b.derivative('n') ) *
+    a.derivative('o').equals( b.derivative('o') ) *
+    a.derivative('p').equals( b.derivative('p') ) *
+    a.derivative('q').equals( b.derivative('q') ) *
+    a.derivative('r').equals( b.derivative('r') ) *
+    a.derivative('s').equals( b.derivative('s') ) *
+    a.derivative('t').equals( b.derivative('t') ) *
+    a.derivative('u').equals( b.derivative('u') ) *
+    a.derivative('v').equals( b.derivative('v') ) *
+    a.derivative('w').equals( b.derivative('w') ) *
+    a.derivative('x').equals( b.derivative('x') ) * 
+    a.derivative('y').equals( b.derivative('y') ) *
+    a.derivative('z').equals( b.derivative('z') ) *
+    a.derivative('A').equals( b.derivative('A') ) *
+    a.derivative('B').equals( b.derivative('B') ) *
+    a.derivative('C').equals( b.derivative('C') ) *
+    a.derivative('D').equals( b.derivative('D') ) *
+    a.derivative('J').equals( b.derivative('J') ) *
+    a.derivative('K').equals( b.derivative('K') ) *
+    a.derivative('L').equals( b.derivative('L') ) *
+    a.derivative('M').equals( b.derivative('M') ) *
+    a.derivative('N').equals( b.derivative('N') ) *
+    a.derivative('O').equals( b.derivative('O') ) *
+    a.derivative('P').equals( b.derivative('P') ) *
+    a.derivative('Q').equals( b.derivative('Q') ) *
+    a.derivative('R').equals( b.derivative('R') ) *
+    a.derivative('S').equals( b.derivative('S') ) *
+    a.derivative('T').equals( b.derivative('T') ) *
+    a.derivative('U').equals( b.derivative('U') ) *
+    a.derivative('V').equals( b.derivative('V') ) *
+    a.derivative('W').equals( b.derivative('W') ) *
+    a.derivative('X').equals( b.derivative('X') ) * 
+    a.derivative('Y').equals( b.derivative('Y') ) *
+    a.derivative('Z').equals( b.derivative('Z') )
+    )
+  }
+?
+%</classXimera>
+%    \end{macrocode}
+

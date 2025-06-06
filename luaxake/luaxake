@@ -250,7 +250,7 @@ config = {
     -- "aux",
     "4ct",
     "4tc",
-    "oc",
+    -- "oc",
     "md5",
     "dpth",
     "out",

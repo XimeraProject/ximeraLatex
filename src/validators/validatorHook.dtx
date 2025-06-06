@@ -1,0 +1,149 @@
+% \subsection{Validators}
+%   This code is for devs to add new stable validators to basecode.
+%   In general, it works by building a hook that inserts the javascript code inside a 
+%       javascript environment into the \end{document} command, 
+%       to be added into the document at the very end.
+%   It will be parsed as Verbatim (as normal in the javascript environment) and 
+%       suppressed from the actual pdf/output, so it won't show or take up space.
+%
+%   This code is almost entirely courtesy of Ulrich Diez via stack exchange:
+%       Source: https://tex.stackexchange.com/questions/724519/hook-that-executes-a-verbatim-environment-from-fancyvrb
+%
+%   IMPORTANT NOTE:: Due to verbatim being wierd, we had to pick a character to deliniate the verbatim section.
+%       So we chose "?" (the standard questionmark), so don't use a questionmark in any of your validator code.
+%       Hopefully this isn't a problem, but it isn't too hard to change if necessary.
+%
+% \DescribeMacro{\appendtoverbtoks}{The command for devs to append new (stable/permanent) validator code to stable validator code list. 
+%   IMPORTANT NOTE:: that you should use the question mark " ? " in place of the braces in order to encase the verbatim argument - otherwise it is likely to end the verbatim environment prematurely and error.}
+%    \begin{macrocode}
+%<*classXimera>
+%
+%%======================Code for \UDcollectverbarg=============================
+%% \UDcollectverbarg{<non-optional 1>}{<non-optional 2>}|<verbatim arg>|
+%% 
+%% reads <verbatim arg> under verbatim-catcode-regime and delivers:
+%%
+%%    <non-optional 1>{<non-optional 2>{<verbatim arg>}}
+%%-----------------------------------------------------------------------------
+%% \UDcollectverbarg*{<non-optional 1>}{<non-optional 2>}|<verbatim arg>|
+%% 
+%% reads <verbatim arg> under verbatim-catcode-regime and delivers:
+%%
+%%    <non-optional 1>{<non-optional 2>{|<verbatim arg>|}}
+%%-----------------------------------------------------------------------------
+%% Instead of using verbatim-delimiter | or the like the <verbatim arg> can 
+%% be nested in braces.
+%%
+%% You cannot use percent or spaces or horizontal tab as verbatim-delimiter.
+%%
+%% You can use <non-optional 1> for nesting calls to \UDcollectverbarg.
+%%
+%% The unstarred variant removes the verbatim-delimiters/braces that surround
+%% <verbatim arg>.
+%% The starred variant keeps the verbatim-delimiters/braces that surround
+%% <verbatim arg>.
+%% Reason: When you feed things to \scantokens you don't need the verbatim-
+%%         delimiters.
+%%         When you use things for writing to temporary files and reading back
+%%         verbatimized, you may need them.
+%%=============================================================================
+\@ifdefinable\UDcollectverbarg{%
+  \DeclareRobustCommand\UDcollectverbarg{%
+    \@ifstar{\UD@collectverbarg{\@secondoftwo}}{\UD@collectverbarg{\@firstoftwo}}%
+  }%
+}%
+\newcommand\UD@collectverbarg[3]{%
+  % #1 - indicator whether to remove/keep the verb-delimiter (\@firstoftwo/\@secondoftwo)
+  % #2 - non-optional 1
+  % #3 - non-optional 2
+  \begingroup
+  \let\do\@makeother % <- this and the next line switch to
+  \dospecials        %    verbatim-category-code-régime.
+  \catcode`\{=1      % <- give opening curly brace the usual catcode so a 
+                     %    curly-brace-balanced argument can be gathered in
+                     %    case of the first thing of the verbatimized-argument 
+                     %    being a curly opening brace.
+  \catcode`\ =10     % <- give space and horizontal tab the usual catcode so \UD@@collectverbarg
+  \catcode`\^^I=10   %    cannot catch a space or a horizontal tab as its 4th undelimited argument.
+                     %    (Its 4th undelimited argument denotes the verbatim-
+                     %     syntax-delimiter in case of not gathering a
+                     %     curly-brace-nested argument.)
+  \catcode`\%=14     % <- make percent comment.
+  \kernel@ifnextchar\bgroup
+  {% seems a curly-brace-nested argument is to be picked:
+    \catcode`\}=2    % <- give closing curly brace the usual catcode also.
+    \UD@@collectverbarg{#1}{\@firstoftwo}{#2}{#3}{}%
+  }{% seems an argument with verbatim-syntax-delimiter is to be picked:
+    \do\{% <- give opening curly brace the verbatim-catcode again.
+    \UD@@collectverbarg{#1}{\@secondoftwo}{#2}{#3}%
+  }%
+}%
+\newcommand\UD@@collectverbarg[5]{%
+  % #1 - indicator whether to remove/keep the verb-delimiter (\@firstoftwo/\@secondoftwo)
+  % #2 - indicator whether braces or verb-delimiter (\@firstoftwo/\@secondoftwo)
+  % #3 - non-optional 1
+  % #4 - non-optional 2
+  % #5 - verb-delimiter or emptiness
+  \do\ %   <- Now that \UD@@collectverbarg has the delimiter or
+  \do\^^I%    emptiness in its 4th arg, give space and horizontal tab
+         %    the verbatim-catcode again.
+  \do\^^M% <- Give the carriage-return-character the verbatim-catcode.
+  \do\%%   <- Give the percent-character the verbatim-catcode.
+  \long\def\@tempb##1#5{%
+    #1{\def\@tempb{##1}}{#2{\def\@tempb{{##1}}}{\def\@tempb{#5##1#5}}}%
+    \@onelevel@sanitize\@tempb % <- Turn characters into their "12/other"-pendants.
+                               %    This may be important with things like the 
+                               %    inputenc-package which may make characters 
+                               %    active/which give them catcode 13(active).
+    \expandafter\UD@@@collectverbarg\expandafter{\@tempb}{#3}{#4}% <- this "spits out the result.
+  }%
+  \@tempb
+}%
+\newcommand\UD@@@collectverbarg[3]{\endgroup#2{#3{#1}}}%
+%%================= End of code for \UDcollectverbarg =========================
+
+\RequirePackage{trimclip}
+
+\newbox\MYverbbox
+\newtoks\MYverbtoks
+\global\MYverbtoks={}%
+\newcommand\exchange[2]{#2#1}%
+\@ifdefinable\stopromannumeral{\chardef\stopromannumeral=`\^^00}%
+\begingroup
+\catcode`\^^M=12\relax%
+\@firstofone{%
+  \endgroup%
+  \newcommand\@@appendtoverbtoks[1]{\global\MYverbtoks=\expandafter{\the\MYverbtoks#1^^M}\@esphack}%
+  \newcommand\@@prependtoverbtoks[1]{%
+    \global\MYverbtoks=%
+    \expandafter\expandafter\expandafter{\expandafter\exchange\expandafter{\the\MYverbtoks}{#1^^M}}%
+    \@esphack%
+  }%
+}%
+\newcommand\appendtoverbtoks{\@bsphack\UDcollectverbarg{\@firstofone}{\@@appendtoverbtoks}}%
+\newcommand\prependtoverbtoks{\@bsphack\UDcollectverbarg{\@firstofone}{\@@prependtoverbtoks}}%
+\newcommand\scantokenssetvbox[4]{%
+  \setbox#2=\vbox{%
+    \begingroup\newlinechar=\endlinechar\relax\scantokens{\endgroup#3#1#4}%
+  }%
+  %---------------------------------------------------------------------------
+  %Just in case - who knows what else already is in the \AtEndDocument-hook...
+  \ifhmode\@bsphack\clipbox*{0pt 0pt 0pt 0pt}{\box#2}\@esphack
+  \else\clipbox*{0pt 0pt 0pt 0pt}{\box#2}\fi
+  %---------------------------------------------------------------------------
+  %Uncomment to typeset the box:
+  %\ifvmode\else\par\fi\box#2%
+  %You may wish to check for restricted horizontal mode and raise an error...
+}%
+
+\UDcollectverbarg{%
+  \UDcollectverbarg{\AtEndDocument}%
+}{\expandafter\scantokenssetvbox\expandafter{\the\MYverbtoks}{\MYverbbox}}_\begin{javascript}
+__\end{javascript}_%
+% The " _ " underscores are actually very important here, don't touch them. 
+%   They encase verbatim characters in order to avoid character-code clashes. 
+%   If you don't know how catcodes work in LaTeX *Extremely well* 
+%   you shouldn't mess with the characters here at all, as there is deep magic happening here.
+%
+%
+

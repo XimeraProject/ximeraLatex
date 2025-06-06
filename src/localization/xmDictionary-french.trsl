@@ -1,0 +1,58 @@
+%%%%%%
+%%% This Content is additional translations for Ximera Specific Content
+%%%     Specifically added to the relevant translations.sty package dictionaries. 
+%%% NOTE: If you want to change a translation, and changing it here doesn't work,
+%%%     You should use \DeclareTranslation{language}{Key}{Value} instead of
+%%%     \addtranslation{language}{Key}{Value} to force the update.
+%%%%%%
+
+\addtranslation{French}{Problem}{Problème}% Used in problem.dtx
+\addtranslation{French}{Exercise}{Exercice}% Used in problem.dtx
+\addtranslation{French}{Exploration}{Exploration}% Used in problem.dtx
+\addtranslation{French}{Question}{Question}% Used in problem.dtx
+
+\addtranslation{French}{Multiple Choice}{Choix multiples}% Used in choice.dtx
+\addtranslation{French}{Select All Correct Answers}{Sélectionnez toutes les bonnes réponses}% Used in choice.dtx
+
+\addtranslation{French}{hint}{Indice}% Used in hints.dtx
+
+\addtranslation{French}{Free Response}{Réponse gratuite}% Used in freeresponse.dtx
+\addtranslation{French}{Free Response (Given)}{Réponse libre (donnée)}% Used in freeresponse.dtx
+
+\addtranslation{French}{feedback}{Retour}% Used in feedback.dtx
+\addtranslation{French}{attempt}{tentative}% Used as part of feedback environment indirectly, inside the \PH@Command
+\addtranslation{French}{correct}{correcte}% Used as part of feedback environment indirectly, inside the \PH@Command
+
+\addtranslation{French}{Instructor Introduction}{Présentation de l'instructeur}% Used in instructornotes.dtx
+\addtranslation{French}{Instructor Notes}{Notes de l'instructeur}% Used in instructornotes.dtx
+
+\addtranslation{French}{theorem}{Théorème}% Used in theorems.dtx
+\addtranslation{French}{algorithm}{Algorithme}% Used in theorems.dtx
+\addtranslation{French}{axiom}{Axiome}% Used in theorems.dtx
+\addtranslation{French}{claim}{Réclamer}% Used in theorems.dtx
+\addtranslation{French}{conclusion}{Conclusion}% Used in theorems.dtx
+\addtranslation{French}{condition}{Condition}% Used in theorems.dtx
+\addtranslation{French}{conjecture}{Conjecture}% Used in theorems.dtx
+\addtranslation{French}{corollary}{Corollaire}% Used in theorems.dtx
+\addtranslation{French}{criterion}{Critère}% Used in theorems.dtx
+\addtranslation{French}{definition}{Définition}% Used in theorems.dtx
+\addtranslation{French}{example}{Exemple}% Used in theorems.dtx
+\addtranslation{French}{explanation}{Explication}% Used in theorems.dtx
+\addtranslation{French}{fact}{Fait}% Used in theorems.dtx
+\addtranslation{French}{lemma}{Lemme}% Used in theorems.dtx
+\addtranslation{French}{formula}{Formule}% Used in theorems.dtx
+\addtranslation{French}{idea}{Idée}% Used in theorems.dtx
+\addtranslation{French}{notation}{Notation}% Used in theorems.dtx
+\addtranslation{French}{model}{Modèle}% Used in theorems.dtx
+\addtranslation{French}{observation}{Observation}% Used in theorems.dtx
+\addtranslation{French}{proposition}{Proposition}% Used in theorems.dtx
+\addtranslation{French}{paradox}{Paradoxe}% Used in theorems.dtx
+\addtranslation{French}{procedure}{Procédure}% Used in theorems.dtx
+\addtranslation{French}{remark}{Remarque}% Used in theorems.dtx
+\addtranslation{French}{summary}{Résumé}% Used in theorems.dtx
+\addtranslation{French}{template}{Modèle}% Used in theorems.dtx
+\addtranslation{French}{warning}{Avertissement}% Used in theorems.dtx
+
+\addtranslation{French}{Solution}{Solution}% Used in solution.dtx
+
+

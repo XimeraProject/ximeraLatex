@@ -1,0 +1,56 @@
+%%%%%%
+%%% This Content is additional translations for Ximera Specific Content
+%%%     Specifically added to the relevant translations.sty package dictionaries. 
+%%% NOTE: If you want to change a translation, and changing it here doesn't work,
+%%%     You should use \DeclareTranslation{language}{Key}{Value} instead of
+%%%     \addtranslation{language}{Key}{Value} to force the update.
+%%%%%%
+
+\addtranslation{Brazil}{Problem}{Problema}% Used in problem.dtx
+\addtranslation{Brazil}{Exercise}{Exercício}% Used in problem.dtx
+\addtranslation{Brazil}{Exploration}{Exploração}% Used in problem.dtx
+\addtranslation{Brazil}{Question}{Pergunta}% Used in problem.dtx
+
+\addtranslation{Brazil}{Multiple Choice}{Múltipla escolha}% Used in choice.dtx
+\addtranslation{Brazil}{Select All Correct Answers}{Selecione todas as respostas corretas}% Used in choice.dtx
+
+\addtranslation{Brazil}{hint}{Dica}% Used in hints.dtx
+
+\addtranslation{Brazil}{Free Response}{Resposta Gratuita}% Used in freeresponse.dtx
+\addtranslation{Brazil}{Free Response (Given)}{Resposta gratuita (dada)}% Used in freeresponse.dtx
+
+\addtranslation{Brazil}{feedback}{Opinião}% Used in feedback.dtx
+\addtranslation{Brazil}{attempt}{tentar}% Used as part of feedback environment indirectly, inside the \PH@Command
+\addtranslation{Brazil}{correct}{correto}% Used as part of feedback environment indirectly, inside the \PH@Command
+
+\addtranslation{Brazil}{Instructor Introduction}{Introdução ao instrutor}% Used in instructornotes.dtx
+\addtranslation{Brazil}{Instructor Notes}{Notas do instrutor}% Used in instructornotes.dtx
+
+\addtranslation{Brazil}{theorem}{Teorema}% Used in theorems.dtx
+\addtranslation{Brazil}{algorithm}{Algoritmo}% Used in theorems.dtx
+\addtranslation{Brazil}{axiom}{Axioma}% Used in theorems.dtx
+\addtranslation{Brazil}{claim}{Claim}% Used in theorems.dtx
+\addtranslation{Brazil}{conclusion}{Alegar}% Used in theorems.dtx
+\addtranslation{Brazil}{condition}{Doença}% Used in theorems.dtx
+\addtranslation{Brazil}{conjecture}{Conjectura}% Used in theorems.dtx
+\addtranslation{Brazil}{corollary}{Corolário}% Used in theorems.dtx
+\addtranslation{Brazil}{criterion}{Critério}% Used in theorems.dtx
+\addtranslation{Brazil}{definition}{Definição}% Used in theorems.dtx
+\addtranslation{Brazil}{example}{Exemplo}% Used in theorems.dtx
+\addtranslation{Brazil}{explanation}{Explicação}% Used in theorems.dtx
+\addtranslation{Brazil}{fact}{Fato}% Used in theorems.dtx
+\addtranslation{Brazil}{lemma}{Lema}% Used in theorems.dtx
+\addtranslation{Brazil}{formula}{Fórmula}% Used in theorems.dtx
+\addtranslation{Brazil}{idea}{Ideia}% Used in theorems.dtx
+\addtranslation{Brazil}{notation}{Notação}% Used in theorems.dtx
+\addtranslation{Brazil}{model}{Modelo}% Used in theorems.dtx
+\addtranslation{Brazil}{observation}{Observação}% Used in theorems.dtx
+\addtranslation{Brazil}{proposition}{Proposição}% Used in theorems.dtx
+\addtranslation{Brazil}{paradox}{Paradoxo}% Used in theorems.dtx
+\addtranslation{Brazil}{procedure}{Procedimento}% Used in theorems.dtx
+\addtranslation{Brazil}{remark}{Observação}% Used in theorems.dtx
+\addtranslation{Brazil}{summary}{Resumo}% Used in theorems.dtx
+\addtranslation{Brazil}{template}{Modelo}% Used in theorems.dtx
+\addtranslation{Brazil}{warning}{Aviso}% Used in theorems.dtx
+
+\addtranslation{Brazil}{Solution}{Solução}% Used in solution.dtx

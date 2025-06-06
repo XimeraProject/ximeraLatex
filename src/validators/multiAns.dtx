@@ -1,0 +1,46 @@
+% \subsubsection{multiAns}
+%%%   This validators allows the instructor to provide a comma-separated list of acceptable answers.
+%%%   The validator expects an answer in the form:
+%%%       \verb|\answer[validator=multiAns]{[ans1,ans2,ans3]}| for an arbitrary number of answers.
+%%%       Note that the '[' and ']' are necessary for answers to be parsed correctly. 
+%%%       This also helps prevent accidental syntax clashing, as it will throw errors when answers
+%%%           contain square brackets (which doesn't work with this validator)
+%%%
+%    \begin{macrocode}
+%<*classXimera>
+%%% Apend code via \appendtoverbtoks
+
+\appendtoverbtoks?
+// We want to define a validator that allows us to check against a list of possibilities.
+function multiAns(f,g) {
+    // We expect that f is a single function provided by the student,
+    // We expect that g is a vector of possible acceptable (function) answers provided by the instructor.
+    //      The answers should be entered in as a list, using square brackets,
+    //      eg [ans1, ans2, ans3]
+    //
+    
+    // Start out by duplicating the vector of answers to use later.
+    instructorAnsbkup = JSON.parse(JSON.stringify(g.tree));
+    
+    /* //   Debug Code - commented out now that it is working.
+    console.log('Here is the student ans.');
+    console.log(f);
+    
+    console.log('Here is the instructor ans.');
+    console.log(g);
+    */
+    
+    for (var i = 1; i <= instructorAnsbkup.length; ++i) {
+        g.tree = instructorAnsbkup[i];
+        console.log('inside the forloop for checking...');
+        console.log(g);
+        if (f.equals(g)){
+            return true
+        }
+    }
+return false
+}
+?
+%</classXimera>
+%    \end{macrocode}
+
