@@ -10,7 +10,7 @@
 \addtranslation{Dutch}{Problem}{Probleem}% Used in problem.dtx
 \addtranslation{Dutch}{Exercise}{Oefening}% Used in problem.dtx
 \addtranslation{Dutch}{Exploration}{Exploratie}% Used in problem.dtx
-\addtranslation{Dutch}{Question}{QVraag}% Used in problem.dtx
+\addtranslation{Dutch}{Question}{Vraag}% Used in problem.dtx
 
 \addtranslation{Dutch}{Multiple Choice}{Meerkeuze}% Used in choice.dtx
 \addtranslation{Dutch}{Select All Correct Answers}{Selecteer alle juiste antwoorden}% Used in choice.dtx
@@ -24,8 +24,8 @@
 \addtranslation{Dutch}{attempt}{poging}% Used as part of feedback environment indirectly, inside the \PH@Command
 \addtranslation{Dutch}{correct}{juist}% Used as part of feedback environment indirectly, inside the \PH@Command
 
-\addtranslation{Dutch}{Instructor Introduction}{Inleiding voor Lesgevers}% Used in instructornotes.dtx
-\addtranslation{Dutch}{Instructor Notes}{Nota's voor Lesgevers}% Used in instructornotes.dtx
+\addtranslation{Dutch}{Instructor Introduction}{Inleiding voor lesgevers}% Used in instructornotes.dtx
+\addtranslation{Dutch}{Instructor Notes}{Nota's voor lesgevers}% Used in instructornotes.dtx
 
 \addtranslation{Dutch}{theorem}{Stelling}% Used in theorems.dtx
 \addtranslation{Dutch}{algorithm}{Algoritme}% Used in theorems.dtx
