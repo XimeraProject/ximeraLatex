@@ -1169,7 +1169,7 @@ Interactive
 
 \let\selectlanguageOLD\selectlanguage
 \renewcommand{\selectlanguage}[1]{
-    \selectlanguageOLD
+    \selectlanguageOLD{#1}
     \IfFileExists{xmDictionary-#1.trsl}{%
         % If it exists, load it on babel.
         \input{xmDictionary-\localename.trsl}
