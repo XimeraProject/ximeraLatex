@@ -50,7 +50,7 @@
 %% src/ungraded.dtx  (with options: `classXimera')
 %% src/clearEnv.dtx  (with options: `classXimera')
 %% src/hideEnv.dtx  (with options: `classXimera')
-%% src/localize.dtx  (with options: `classXimera')
+%% src/localization.dtx  (with options: `classXimera')
 %% src/preamble.dtx  (with options: `classXimera')
 %% ------------:| ------------------------------------------------------------
 %%       ximera:| Simultaneously writing print and online interactive materials
@@ -387,10 +387,10 @@
 \else
 \onlinefalse
 \fi
-\newcommand{\preOutputLine}{\item }
-\newcommand{\postOutputLine}{}
-\newcommand{\preOutputBlock}{After completing this content, students should be able to: \begin{itemize}}
-\newcommand{\postOutputBlock}{\end{itemize} So go forth and learn!}
+\newcommand{\preOutcomeLine}{\item }
+\newcommand{\postOutcomeLine}{}
+\newcommand{\preOutcomeBlock}{After completing this content, students should be able to: \begin{itemize}}
+\newcommand{\postOutcomeBlock}{\end{itemize} So go forth and learn!}
 
 \newcommand{\outcomeHeader}{Goals for this Section}
 \htmlOnly{
@@ -400,24 +400,24 @@
 \newwrite\outcomefile
 \immediate\openout\outcomefile=\jobname.oc
 \newcommand{\outcome}[1]{%
-  \immediate\write\outcomefile{\expandafter\unexpanded\expandafter{\preOutputLine #1} \expandafter\unexpanded\expandafter{\postOutputLine}}
+  \immediate\write\outcomefile{\expandafter\unexpanded\expandafter{\preOutcomeLine #1} \expandafter\unexpanded\expandafter{\postOutcomeLine}}
 }
 
 \newcommand{\displayOutcomes}[1][]{%
   \immediate\closeout\outcomefile
   \IfFileExists{\currfiledir\currfilebase.oc}{
     \htmlOnly{\outcomeBlock}
-      \expandafter\preOutputBlock
+      \expandafter\preOutcomeBlock
       \input{\currfiledir\currfilebase.oc}
-      \postOutputBlock
+      \postOutcomeBlock
       \htmlOnly{\ifvmode\IgnorePar\fi\EndP\HCode{</div>}}
     }
     {
     \IfFileExists{\currfilebase.oc}{
       \htmlOnly{\outcomeBlock}
-        \expandafter\preOutputBlock
+        \expandafter\preOutcomeBlock
         \input{\currfilebase.oc}
-        \postOutputBlock
+        \postOutcomeBlock
         \htmlOnly{\ifvmode\IgnorePar\fi\EndP\HCode{</div>}}
       }
       {
@@ -1159,32 +1159,35 @@ Interactive
 %%%           with the translation of the word in the first entry.
 \AddToHook{begindocument/before}{\@ifpackageloaded{babel}{% Only load the translations package if babel is actually loaded.
 \RequirePackage{translations}
-\newcommand{\setLanguage}[1]{%
-    % Sets the translation language. This hijacks the internal \languagename macro used by babel and polyglossia,
-    %   so users should be careful using this. However, they also shouldn't ever need to use this unless they want
-    %   specifically to switch languages in mid-text, since whatever language they load with babel or polyglossia
-    %   packages, will define this correctly and then load the relevant ximera file automatically.
-    % Note: This *also* will switch the language for other language packages, like babel and polyglossia, which should
-    %   be the desired behavior (I assume they wouldn't want just Ximera macros to be translated, but nothing else)
-    \edef\languagename{#1}
-    % Check if there is a localization (translation dictionary) file:
+%%% Now load the relevant dictionary file;
+\IfFileExists{xmDictionary-\localename.trsl}{%
+    % If it exists, load it on babel.
+    \input{xmDictionary-\localename.trsl}
+}{% If it doesn't exist, report a warning
+    \PackageWarning{Localization}{I don't see a dictionary file anywhere for your language, it should be named: xmDictionary-\localename.trsl}
+}
+
+\let\selectlanguageOLD\selectlanguage
+\renewcommand{\selectlanguage}[1]{
+    \selectlanguageOLD
     \IfFileExists{xmDictionary-#1.trsl}{%
-        % If it exists, load it.
-        %\LoadDictionary{xmDictionary}{#1}
+        % If it exists, load it on babel.
+        \input{xmDictionary-\localename.trsl}
     }{% If it doesn't exist, report a warning
         \PackageWarning{Localization}{I don't see a dictionary file anywhere for your language, it should be named: xmDictionary-#1.trsl}
     }
 }
+
 %%% Now we add in a hook to load all the dictionary files that define the Ximera Terms.
 %%%  We could do this in the cls directly, but this allows users to provide their own dictionary
 %%%  translations in their preamble - which will take precedence over the default dictionary.
-  \input{xmDictionary-brazil.trsl}
-  \input{xmDictionary-english.trsl}
-  \input{xmDictionary-french.trsl}
-  \input{xmDictionary-dutch.trsl}
+  %\input{xmDictionary-brazil.trsl}
+%%%  \input{xmDictionary-english.trsl}
+  %\input{xmDictionary-french.trsl}
+  %\input{xmDictionary-dutch.trsl}
 }% End of 'if babel package loaded' section.
 {% If babel package isn't loaded, we don't need any of the translation support, just make the '\GetTranslation' return the default.
-\providecommand{\GetTranslation}[1]{#1}
+\providecommand{\GetTranslation}[1]{\expandafter\uppercase#1}% A little hacky to make sure the theorem environments are actually capitalized correctly.
 }
 }% End of 'do this right before begin document' hook.
 \def\input@path{{./}{../}{../../}{../../../}}    % Mmm, do we need to reset it to the previous value ?
