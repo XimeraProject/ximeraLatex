@@ -31,17 +31,9 @@
         \PackageWarning{Localization}{I don't see a dictionary file anywhere for your language, it should be named: xmDictionary-#1.trsl}
     }
 }
-
-%%% Now we add in a hook to load all the dictionary files that define the Ximera Terms.
-%%%  We could do this in the cls directly, but this allows users to provide their own dictionary
-%%%  translations in their preamble - which will take precedence over the default dictionary. 
-  %\input{xmDictionary-brazil.trsl}
-%%%  \input{xmDictionary-english.trsl}
-  %\input{xmDictionary-french.trsl}
-  %\input{xmDictionary-dutch.trsl}
 }% End of 'if babel package loaded' section.
 {% If babel package isn't loaded, we don't need any of the translation support, just make the '\GetTranslation' return the default.
-\providecommand{\GetTranslation}[1]{\expandafter\uppercase#1}% A little hacky to make sure the theorem environments are actually capitalized correctly.
+\providecommand{\GetTranslation}[1]{#1}% A little hacky to make sure the theorem environments are actually capitalized correctly.
 }
 }% End of 'do this right before begin document' hook.
 %    \end{macrocode}
