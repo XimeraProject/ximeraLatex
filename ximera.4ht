@@ -287,9 +287,9 @@
 \def\@feedbackattempt{\@feedbackcode[attempt]}
 \def\@feedbackcode[#1]{\stepcounter{identification}%
 \ifvmode \IgnorePar\fi \EndP%
-\ifthenelse{\equal{#1}{attempt}}{\HCode{<div class="feedback" data-feedback="attempt" id="feedback\arabic{identification}" titletext=" \GetTranslation{feedback}">}}%
-{\ifthenelse{\equal{#1}{correct}}{\HCode{<div class="feedback" data-feedback="correct" id="feedback\arabic{identification}" titletext=" \GetTranslation{feedback}">}}%
-{\HCode{<div class="feedback" data-feedback="script" id="feedback\arabic{identification}" titletext=" \GetTranslation{feedback}"><script type="text/javascript">function feedback\arabic{identification}() }\{\HCode{ return \detokenize{#1}; }\}\HCode{</script>}}}}
+\ifthenelse{\equal{#1}{attempt}}{\HCode{<div class="feedback" data-feedback="attempt" id="feedback\arabic{identification}" titletext=" \GetTranslation{Feedback}">}}%
+{\ifthenelse{\equal{#1}{correct}}{\HCode{<div class="feedback" data-feedback="correct" id="feedback\arabic{identification}" titletext=" \GetTranslation{Feedback}">}}%
+{\HCode{<div class="feedback" data-feedback="script" id="feedback\arabic{identification}" titletext=" \GetTranslation{Feedback}"><script type="text/javascript">function feedback\arabic{identification}() }\{\HCode{ return \detokenize{#1}; }\}\HCode{</script>}}}}
 \def\endfeedback{\HCode{</div>}\IgnoreIndent}
 
 \renewenvironment{leash}[1]{\ifvmode \IgnorePar\fi \EndP\HCode{<div style="overflow: auto; height: #1px">}}{\HCode{</div>}\IgnoreIndent}

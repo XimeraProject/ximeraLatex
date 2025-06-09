@@ -279,57 +279,57 @@
 \theoremstyle{definition} % No italic (because this makes also text in TikZ italic !!!)
 
 
-      \newtheorem{theorem}{\GetTranslation{theorem}}
+      \newtheorem{theorem}{\GetTranslation{Theorem}}
 
-      \newtheorem{algorithm}{\GetTranslation{algorithm}}
+      \newtheorem{algorithm}{\GetTranslation{Algorithm}}
 
-      \newtheorem{axiom}{\GetTranslation{axiom}}
+      \newtheorem{axiom}{\GetTranslation{Axiom}}
 
-      \newtheorem{claim}{\GetTranslation{claim}}
+      \newtheorem{claim}{\GetTranslation{Claim}}
 
-      \newtheorem{conclusion}{\GetTranslation{conclusion}}
+      \newtheorem{conclusion}{\GetTranslation{Conclusion}}
 
-      \newtheorem{condition}{\GetTranslation{condition}}
+      \newtheorem{condition}{\GetTranslation{Condition}}
 
-      \newtheorem{conjecture}{\GetTranslation{conjecture}}
+      \newtheorem{conjecture}{\GetTranslation{Conjecture}}
 
-      \newtheorem{corollary}{\GetTranslation{corollary}}
+      \newtheorem{corollary}{\GetTranslation{Corollary}}
 
-      \newtheorem{criterion}{\GetTranslation{criterion}}
+      \newtheorem{criterion}{\GetTranslation{Criterion}}
 
-      \newtheorem{definition}{\GetTranslation{definition}}
+      \newtheorem{definition}{\GetTranslation{Definition}}
 
-      \newtheorem{example}{\GetTranslation{example}}
+      \newtheorem{example}{\GetTranslation{Example}}
 
-      \newtheorem*{explanation}{\GetTranslation{explanation}}
+      \newtheorem*{explanation}{\GetTranslation{Explanation}}
 
-      \newtheorem{fact}{\GetTranslation{fact}}
+      \newtheorem{fact}{\GetTranslation{Fact}}
 
-      \newtheorem{lemma}{\GetTranslation{lemma}}
+      \newtheorem{lemma}{\GetTranslation{Lemma}}
 
-      \newtheorem{formula}{\GetTranslation{formula}}
+      \newtheorem{formula}{\GetTranslation{Formula}}
 
-      \newtheorem{idea}{\GetTranslation{idea}}
+      \newtheorem{idea}{\GetTranslation{Idea}}
 
-      \newtheorem{notation}{\GetTranslation{notation}}
+      \newtheorem{notation}{\GetTranslation{Notation}}
 
-      \newtheorem{model}{\GetTranslation{model}}
+      \newtheorem{model}{\GetTranslation{Model}}
 
-      \newtheorem{observation}{\GetTranslation{observation}}
+      \newtheorem{observation}{\GetTranslation{Observation}}
 
-      \newtheorem{proposition}{\GetTranslation{proposition}}
+      \newtheorem{proposition}{\GetTranslation{Proposition}}
 
-      \newtheorem{paradox}{\GetTranslation{paradox}}
+      \newtheorem{paradox}{\GetTranslation{Paradox}}
 
-      \newtheorem{procedure}{\GetTranslation{procedure}}
+      \newtheorem{procedure}{\GetTranslation{Procedure}}
 
-      \newtheorem{remark}{\GetTranslation{remark}}
+      \newtheorem{remark}{\GetTranslation{Remark}}
 
-      \newtheorem{summary}{\GetTranslation{summary}}
+      \newtheorem{summary}{\GetTranslation{Summary}}
 
-      \newtheorem{template}{\GetTranslation{template}}
+      \newtheorem{template}{\GetTranslation{Template}}
 
-      \newtheorem{warning}{\GetTranslation{warning}}
+      \newtheorem{warning}{\GetTranslation{Warning}}
 \renewcommand{\theenumi}{\textup{(\alph{enumi})}}
 \renewcommand{\labelenumi}{\theenumi}
 \renewcommand{\theenumii}{\textup{(\roman{enumii})}}
@@ -522,7 +522,7 @@
 \ifhandout
 \setbox0\vbox\bgroup
 \else
-\begin{trivlist}\item[\hskip \labelsep\small\slshape\bfseries \GetTranslation{hint}:\hspace{2ex}]
+\begin{trivlist}\item[\hskip \labelsep\small\slshape\bfseries \GetTranslation{Hint}:\hspace{2ex}]
 \small\slshape
 \fi
 \stepcounter{hintLevel}
@@ -538,7 +538,7 @@
 
 \ifhints
 \renewenvironment{hint}{
-\begin{trivlist}\item[\hskip \labelsep\small\slshape\bfseries \GetTranslation{hint}:\hspace{2ex}]
+\begin{trivlist}\item[\hskip \labelsep\small\slshape\bfseries \GetTranslation{Hint}:\hspace{2ex}]
 \small\slshape
 }
 {
@@ -878,7 +878,7 @@ Interactive
 \edef\PH@Command{\GetTranslation{#1}}% Use PH@Command to hold the content and be a target for "\expandafter" to expand once.
 
 \begin{trivlist}% Begin the trivlist to use formating of the "Feedback" label.
-\item[\hskip \labelsep\small\slshape\bfseries \GetTranslation{feedback}% Format the "Feedback" label. Don't forget the space.
+\item[\hskip \labelsep\small\slshape\bfseries \GetTranslation{Feedback}% Format the "Feedback" label. Don't forget the space.
 (\texttt{\expandafter\detokenize\expandafter{\PH@Command}}):% Format (and detokenize) the condition for feedback to trigger
 \hspace{2ex}]\small\slshape% Insert some space before the actual feedback given.
 }{
