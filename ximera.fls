@@ -52,7 +52,7 @@ INPUT src/accordion.dtx
 INPUT src/ungraded.dtx
 INPUT src/clearEnv.dtx
 INPUT src/hideEnv.dtx
-INPUT src/localize.dtx
+INPUT src/localization.dtx
 INPUT src/preamble.dtx
 INPUT ximera.dtx
 OUTPUT ./xourse.cls
