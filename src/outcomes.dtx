@@ -1,10 +1,10 @@
 % \subsubsection{Learning Outcomes}
 %    \begin{macrocode}
 %<*classXimera>
-\newcommand{\preOutputLine}{\item }
-\newcommand{\postOutputLine}{}
-\newcommand{\preOutputBlock}{After completing this content, students should be able to: \begin{itemize}}
-\newcommand{\postOutputBlock}{\end{itemize} So go forth and learn!}
+\newcommand{\preOutcomeLine}{\item }
+\newcommand{\postOutcomeLine}{}
+\newcommand{\preOutcomeBlock}{After completing this content, students should be able to: \begin{itemize}}
+\newcommand{\postOutcomeBlock}{\end{itemize} So go forth and learn!}
 
 \newcommand{\outcomeHeader}{Goals for this Section}
 \htmlOnly{
@@ -15,24 +15,24 @@
 \newwrite\outcomefile
 \immediate\openout\outcomefile=\jobname.oc
 \newcommand{\outcome}[1]{%
-  \immediate\write\outcomefile{\expandafter\unexpanded\expandafter{\preOutputLine #1} \expandafter\unexpanded\expandafter{\postOutputLine}}
+  \immediate\write\outcomefile{\expandafter\unexpanded\expandafter{\preOutcomeLine #1} \expandafter\unexpanded\expandafter{\postOutcomeLine}}
 }
 
 \newcommand{\displayOutcomes}[1][]{%
   \immediate\closeout\outcomefile
   \IfFileExists{\currfiledir\currfilebase.oc}{
     \htmlOnly{\outcomeBlock}
-      \expandafter\preOutputBlock
+      \expandafter\preOutcomeBlock
       \input{\currfiledir\currfilebase.oc}
-      \postOutputBlock
+      \postOutcomeBlock
       \htmlOnly{\ifvmode\IgnorePar\fi\EndP\HCode{</div>}}
     }
     {
     \IfFileExists{\currfilebase.oc}{
       \htmlOnly{\outcomeBlock}
-        \expandafter\preOutputBlock
+        \expandafter\preOutcomeBlock
         \input{\currfilebase.oc}
-        \postOutputBlock
+        \postOutcomeBlock
         \htmlOnly{\ifvmode\IgnorePar\fi\EndP\HCode{</div>}}
       }
       {
