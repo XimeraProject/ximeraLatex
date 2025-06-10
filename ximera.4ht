@@ -59,30 +59,53 @@
 
 \renewcommand{\maketitle}{}
 
-
 \newcounter{identification}
 \setcounter{identification}{0}
-
 \newcommand{\ConfigureQuestionEnv}[2]{%
-\renewenvironment{#1}{\refstepcounter{problem}}{}%
-\ConfigureEnv{#1}{\stepcounter{identification}\ifvmode \IgnorePar\fi \EndP\HCode{<div role="article" class="problem-environment #2" id="problem\arabic{identification}">}}{\ifvmode \IgnorePar\fi \EndP\HCode{</div>}\IgnoreIndent}{}{}%
+\renewenvironment{#1}{
+  }
+  {
+  }%
+  \ConfigureEnv{#1}
+  {
+    \def\problemNumDisp{}% Otherwise don't display a problem number.
+  \stepcounter{identification}
+  \ifvmode
+  \IgnorePar
+  \fi
+\EndP
+\HCode{<div role="article" class="problem-environment #1" id="problem\arabic{identification}" numbered=" \problemNumDisp" titletext=" \GetTranslation{#2}">}
+}
+{
+\stepcounter{problem@Depth}
+\ifcsname c@depth\Roman{problem@Depth}Count\endcsname
+\expandafter\ifnum\expandafter\value{depth\Roman{problem@Depth}Count}>0
+\expandafter\setcounter{depth\Roman{problem@Depth}Count}{0}
+\fi
+\fi
+\addtocounter{problem@Depth}{-2}% Exited a problem so we've exited a problem layer. Need -2 because we steppped once at the start to check for needing a depth-level count reset.
+\ifvmode
+\IgnorePar
+\fi
+\EndP
+\HCode{</div>}\IgnoreIndent
+}{}{}%
 }
 
-\ConfigureQuestionEnv{problem}{problem}
-\ConfigureQuestionEnv{exercise}{exercise}
-\ConfigureQuestionEnv{question}{question}
-\ConfigureQuestionEnv{exploration}{exploration}
+\ConfigureQuestionEnv{problem}{Problem}
+\ConfigureQuestionEnv{exercise}{Exercise}
+\ConfigureQuestionEnv{question}{Question}
+\ConfigureQuestionEnv{exploration}{Exploration}
 
 \ifdefined\xmNotHintAsExpandable
-  \ConfigureQuestionEnv{hint}{hint}     % 2024: hint is no longer a 'question-environment'.
+  \ConfigureQuestionEnv{hint}{hint} % 2024: hint is no longer a 'question-environment'.
 \fi
-%%%%\ConfigureQuestionEnv{shuffle}{shuffle}
 \newcommand{\ConfigureTheoremEnv}[1]{%
 \renewenvironment{#1}[1][]{\refstepcounter{problem}%
 \ifthenelse{\equal{##1}{}}{}{%
   \HCode{<span class="theorem-like-title">}##1\HCode{</span>}%
 }}{}
-\ConfigureEnv{#1}{\stepcounter{identification}\ifvmode \IgnorePar\fi \EndP\HCode{<div class="theorem-like problem-environment #1" id="problem\arabic{identification}">}}{\ifvmode\IgnorePar\fi\EndP\HCode{</div>}\IgnoreIndent}{}{}%
+\ConfigureEnv{#1}{\stepcounter{identification}\ifvmode \IgnorePar\fi \EndP\HCode{<div class="theorem-like problem-environment #1" id="problem\arabic{identification}" titletext=" \GetTranslation{#1}">}}{\ifvmode\IgnorePar\fi\EndP\HCode{</div>}\IgnoreIndent}{}{}%
 }
 
 
@@ -207,7 +230,7 @@
 {\setkeys{multipleChoice}{#1}%
 \stepcounter{identification}\ifvmode \IgnorePar\fi \EndP\HCode{<div class="multiple-choice" }%
 \ifthenelse{\equal{\mc@id}{}}{}{\HCode{data-id="\mc@id" }}%
-\HCode{id="problem\arabic{identification}">}%
+\HCode{id="problem\arabic{identification}" titletext=" \GetTranslation{Multiple Choice}">}%
 }{\HCode{</div>}\IgnoreIndent}
 \ConfigureEnv{multipleChoice}{}{}{}{}
 
@@ -217,12 +240,12 @@
 
 
 \renewenvironment{selectAll}{\refstepcounter{problem}}{}%
-\ConfigureEnv{selectAll}{\stepcounter{identification}\ifvmode \IgnorePar\fi \EndP\HCode{<div class="select-all" id="problem\arabic{identification}">}}{\HCode{</div>}\IgnoreIndent}{}{}
+\ConfigureEnv{selectAll}{\stepcounter{identification}\ifvmode \IgnorePar\fi \EndP\HCode{<div class="select-all" id="problem\arabic{identification}" titletext=" \GetTranslation{Select All}">}}{\HCode{</div>}\IgnoreIndent}{}{}
 
 
 
 \renewenvironment{freeResponse}{\refstepcounter{problem}}{}%
-\ConfigureEnv{freeResponse}{\stepcounter{identification}\ifvmode \IgnorePar\fi \EndP\HCode{<div class="free-response" id="problem\arabic{identification}">}}{\HCode{</div>}\IgnoreIndent}{}{}%
+\ConfigureEnv{freeResponse}{\stepcounter{identification}\ifvmode \IgnorePar\fi \EndP\HCode{<div class="free-response" id="problem\arabic{identification}"  titletext=" \GetTranslation{Free Response}">}}{\HCode{</div>}\IgnoreIndent}{}{}%
 
 
 
@@ -264,9 +287,9 @@
 \def\@feedbackattempt{\@feedbackcode[attempt]}
 \def\@feedbackcode[#1]{\stepcounter{identification}%
 \ifvmode \IgnorePar\fi \EndP%
-\ifthenelse{\equal{#1}{attempt}}{\HCode{<div class="feedback" data-feedback="attempt" id="feedback\arabic{identification}">}}%
-{\ifthenelse{\equal{#1}{correct}}{\HCode{<div class="feedback" data-feedback="correct" id="feedback\arabic{identification}">}}%
-{\HCode{<div class="feedback" data-feedback="script" id="feedback\arabic{identification}"><script type="text/javascript">function feedback\arabic{identification}() }\{\HCode{ return \detokenize{#1}; }\}\HCode{</script>}}}}
+\ifthenelse{\equal{#1}{attempt}}{\HCode{<div class="feedback" data-feedback="attempt" id="feedback\arabic{identification}" titletext=" \GetTranslation{Feedback}">}}%
+{\ifthenelse{\equal{#1}{correct}}{\HCode{<div class="feedback" data-feedback="correct" id="feedback\arabic{identification}" titletext=" \GetTranslation{Feedback}">}}%
+{\HCode{<div class="feedback" data-feedback="script" id="feedback\arabic{identification}" titletext=" \GetTranslation{Feedback}"><script type="text/javascript">function feedback\arabic{identification}() }\{\HCode{ return \detokenize{#1}; }\}\HCode{</script>}}}}
 \def\endfeedback{\HCode{</div>}\IgnoreIndent}
 
 \renewenvironment{leash}[1]{\ifvmode \IgnorePar\fi \EndP\HCode{<div style="overflow: auto; height: #1px">}}{\HCode{</div>}\IgnoreIndent}

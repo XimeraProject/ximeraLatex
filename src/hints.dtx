@@ -17,36 +17,33 @@
 % some parts as non-handout.  renewing the environment on the fly is a
 % bit hacky.
 %    \begin{macrocode}
-\renewenvironment{hint}
+	\renewenvironment{hint}
 	{
-	\ifhandout
-		\setbox0\vbox\bgroup
-	\else
-		\begin{trivlist}\item[\hskip \labelsep\small\slshape\bfseries Hint:\hspace{2ex}]
-		\small\slshape
-	\fi
-%    \end{macrocode}
-% Step up hint level to track the nested level of the hint. This will be used for problem numbering.
-%    \begin{macrocode}
-	\stepcounter{hintLevel}
+		\ifhandout
+			\setbox0\vbox\bgroup
+		\else
+			\begin{trivlist}\item[\hskip \labelsep\small\slshape\bfseries \GetTranslation{Hint}:\hspace{2ex}]
+			\small\slshape
+		\fi
+		\stepcounter{hintLevel}
 	}
 	{
-	\ifhandout
-		\egroup\ignorespacesafterend
-	\else
-		\end{trivlist}
-	\fi
-%    \end{macrocode}
-% Detract from hint level counter to track hint nested level
-%    \begin{macrocode}
-	\addtocounter{hintLevel}{-1}
+		\ifhandout
+			\egroup\ignorespacesafterend
+		\else
+			\end{trivlist}
+		\fi
+		\addtocounter{hintLevel}{-1}
 	}
 
 \ifhints
 	\renewenvironment{hint}{
-	\begin{trivlist}\item[\hskip \labelsep\small\slshape\bfseries Hint:\hspace{2ex}]
-	\small\slshape}
-	{\end{trivlist}}
+		\begin{trivlist}\item[\hskip \labelsep\small\slshape\bfseries \GetTranslation{Hint}:\hspace{2ex}]
+	\small\slshape
+	}
+	{
+		\end{trivlist}
+	}
 \fi
 
 %</classXimera>

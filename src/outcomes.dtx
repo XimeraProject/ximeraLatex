@@ -1,18 +1,46 @@
 % \subsubsection{Learning Outcomes}
-% \DescribeMacro{\outcome}{Specify a learning outcome, either at the level of a |problem| or an entire document in the preamble.}
 %    \begin{macrocode}
 %<*classXimera>
-\def\theoutcomes{}
+\newcommand{\preOutcomeLine}{\item }
+\newcommand{\postOutcomeLine}{}
+\newcommand{\preOutcomeBlock}{After completing this content, students should be able to: \begin{itemize}}
+\newcommand{\postOutcomeBlock}{\end{itemize} So go forth and learn!}
 
-\ifdefined\HCode%
-  \newcommand{\outcome}[1]{}
-\else%
-  \newwrite\outcomefile
-  \immediate\openout\outcomefile=\jobname.oc
+\newcommand{\outcomeHeader}{Goals for this Section}
+\htmlOnly{
+  \newcommand{\outcomeBlock}{\ifvmode\IgnorePar\fi\EndP\HCode{<div class="outcomeHead">} \outcomeHeader \ifvmode\IgnorePar\fi\EndP\HCode{</div>} \ifvmode\IgnorePar\fi\EndP\HCode{<div class="outcomeContent">}}
+}
 
-  \newcommand{\outcome}[1]{\edef\theoutcomes{\theoutcomes #1~}%
-  \immediate\write\outcomefile{\unexpanded{\outcome}{#1}}}
-  \fi%
+
+\newwrite\outcomefile
+\immediate\openout\outcomefile=\jobname.oc
+\newcommand{\outcome}[1]{%
+  \immediate\write\outcomefile{\expandafter\unexpanded\expandafter{\preOutcomeLine #1} \expandafter\unexpanded\expandafter{\postOutcomeLine}}
+}
+
+\newcommand{\displayOutcomes}[1][]{%
+  \immediate\closeout\outcomefile
+  \IfFileExists{\currfiledir\currfilebase.oc}{
+    \htmlOnly{\outcomeBlock}
+      \expandafter\preOutcomeBlock
+      \input{\currfiledir\currfilebase.oc}
+      \postOutcomeBlock
+      \htmlOnly{\ifvmode\IgnorePar\fi\EndP\HCode{</div>}}
+    }
+    {
+    \IfFileExists{\currfilebase.oc}{
+      \htmlOnly{\outcomeBlock}
+        \expandafter\preOutcomeBlock
+        \input{\currfilebase.oc}
+        \postOutcomeBlock
+        \htmlOnly{\ifvmode\IgnorePar\fi\EndP\HCode{</div>}}
+      }
+      {
+        No outcome file found.
+      }
+    }
+  }
+%
 %</classXimera>
 %    \end{macrocode}
 % These can appear in either the preamble or in problem environments.

@@ -1,0 +1,57 @@
+%%%%%%
+%%% This Content is additional translations for Ximera Specific Content
+%%%     Specifically added to the relevant translations.sty package dictionaries. 
+%%% NOTE: If you want to change a translation, and changing it here doesn't work,
+%%%     You should use \DeclareTranslation{language}{Key}{Value} instead of
+%%%     \addtranslation{language}{Key}{Value} to force the update.
+%%%%%%
+
+
+\addtranslation{Dutch}{Problem}{Probleem}% Used in problem.dtx
+\addtranslation{Dutch}{Exercise}{Oefening}% Used in problem.dtx
+\addtranslation{Dutch}{Exploration}{Exploratie}% Used in problem.dtx
+\addtranslation{Dutch}{Question}{Vraag}% Used in problem.dtx
+
+\addtranslation{Dutch}{Multiple Choice}{Meerkeuze}% Used in choice.dtx
+\addtranslation{Dutch}{Select All Correct Answers}{Selecteer alle juiste antwoorden}% Used in choice.dtx
+
+\addtranslation{Dutch}{hint}{Hint}% Used in hints.dtx
+
+\addtranslation{Dutch}{Free Response}{Open antwoord}% Used in freeresponse.dtx
+\addtranslation{Dutch}{Free Response (Given)}{Open antwoord (Given)}% Used in freeresponse.dtx
+
+\addtranslation{Dutch}{feedback}{Feedback}% Used in feedback.dtx
+\addtranslation{Dutch}{attempt}{poging}% Used as part of feedback environment indirectly, inside the \PH@Command
+\addtranslation{Dutch}{correct}{juist}% Used as part of feedback environment indirectly, inside the \PH@Command
+
+\addtranslation{Dutch}{Instructor Introduction}{Inleiding voor lesgevers}% Used in instructornotes.dtx
+\addtranslation{Dutch}{Instructor Notes}{Nota's voor lesgevers}% Used in instructornotes.dtx
+
+\addtranslation{Dutch}{theorem}{Stelling}% Used in theorems.dtx
+\addtranslation{Dutch}{algorithm}{Algoritme}% Used in theorems.dtx
+\addtranslation{Dutch}{axiom}{Axioma}% Used in theorems.dtx
+\addtranslation{Dutch}{claim}{Bewering}% Used in theorems.dtx
+\addtranslation{Dutch}{conclusion}{Conclusie}% Used in theorems.dtx
+\addtranslation{Dutch}{condition}{Voorwaarde}% Used in theorems.dtx
+\addtranslation{Dutch}{conjecture}{Conjectuur}% Used in theorems.dtx
+\addtranslation{Dutch}{corollary}{Gevolg}% Used in theorems.dtx
+\addtranslation{Dutch}{criterion}{Criteriium}% Used in theorems.dtx
+\addtranslation{Dutch}{definition}{Definitie}% Used in theorems.dtx
+\addtranslation{Dutch}{example}{Voorbeeld}% Used in theorems.dtx
+\addtranslation{Dutch}{explanation}{Uitleg}% Used in theorems.dtx
+\addtranslation{Dutch}{fact}{Feit}% Used in theorems.dtx
+\addtranslation{Dutch}{lemma}{Lemma}% Used in theorems.dtx
+\addtranslation{Dutch}{formula}{Formule}% Used in theorems.dtx
+\addtranslation{Dutch}{idea}{Idee}% Used in theorems.dtx
+\addtranslation{Dutch}{notation}{Notatie}% Used in theorems.dtx
+\addtranslation{Dutch}{model}{Model}% Used in theorems.dtx
+\addtranslation{Dutch}{observation}{Observering}% Used in theorems.dtx
+\addtranslation{Dutch}{proposition}{Eigenschap}% Used in theorems.dtx
+\addtranslation{Dutch}{paradox}{Paradox}% Used in theorems.dtx
+\addtranslation{Dutch}{procedure}{Procedure}% Used in theorems.dtx
+\addtranslation{Dutch}{remark}{Opmerking}% Used in theorems.dtx
+\addtranslation{Dutch}{summary}{Samenvatting}% Used in theorems.dtx
+\addtranslation{Dutch}{template}{Template}% Used in theorems.dtx
+\addtranslation{Dutch}{warning}{Waarschuwing}% Used in theorems.dtx
+
+\addtranslation{Dutch}{Solution}{Oplossing}% Used in solution.dtx

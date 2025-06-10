@@ -536,6 +536,8 @@ local function post_process_html(cmd)
     filtered_cmds= filtered_cmds:gsub("[^\n]*[:*@].-\n", "")      -- remove all 'exotic' characters; _ must be kept...
     filtered_cmds= filtered_cmds:gsub("[^\n]\\_.-\n", "")          -- remove \_  (Mathax error)
     filtered_cmds= filtered_cmds:gsub("[^\n]\\TU.-\n", "")          -- remove \_  (Mathax error)
+    filtered_cmds= filtered_cmds:gsub("[^\n]\\T1.-\n", "")         -- remove \T1  (Mathax error, babel)
+    filtered_cmds= filtered_cmds:gsub("[^\n]\\%?.-\n", "")         -- remove \?   (Mathax error, babel)
     filtered_cmds= filtered_cmds:gsub("[^\n]\\label.-\n", "")      -- remove \label  (Mathax error)
     filtered_cmds= filter_newcommands(filtered_cmds)               -- only keep newcommands and declaremathoperator
     filtered_cmds= filtered_cmds:gsub("##(%d)", "#%1")             -- replace ##1 with #1

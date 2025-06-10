@@ -14,12 +14,12 @@
 %% src/makeCounter.dtx  (with options: `classXimera')
 %% src/pagesetup.dtx  (with options: `classXimera')
 %% src/metadata.dtx  (with options: `classXimera')
-%% src/outcomes.dtx  (with options: `classXimera')
 %% src/macros.dtx  (with options: `classXimera')
 %% src/theorems.dtx  (with options: `classXimera')
 %% src/enumerate.dtx  (with options: `classXimera')
 %% src/proof.dtx  (with options: `classXimera')
 %% src/only.dtx  (with options: `classXimera')
+%% src/outcomes.dtx  (with options: `classXimera')
 %% src/problem.dtx  (with options: `classXimera')
 %% src/hints.dtx  (with options: `classXimera')
 %% src/abstract.dtx  (with options: `classXimera')
@@ -50,6 +50,7 @@
 %% src/ungraded.dtx  (with options: `classXimera')
 %% src/clearEnv.dtx  (with options: `classXimera')
 %% src/hideEnv.dtx  (with options: `classXimera')
+%% src/localization.dtx  (with options: `classXimera')
 %% src/preamble.dtx  (with options: `classXimera')
 %% ------------:| ------------------------------------------------------------
 %%       ximera:| Simultaneously writing print and online interactive materials
@@ -87,6 +88,9 @@
 \let\d\undefined
 \let\v\undefined
 \let\m\undefined
+\newif\ifnumberedProblems
+\numberedProblemsfalse% Default to no numbers, as that was previous behavior.
+\DeclareOption{onlineProblemNumbers}{\numberedProblemstrue}
 \newif\ifhandout
 \handoutfalse
 \DeclareOption{handout}{\handouttrue}
@@ -146,7 +150,6 @@
   \nooutcomesfalse%
 \fi
 
-
 \RequirePackage[makeroom]{cancel}
 \RequirePackage[inline]{enumitem}
 \RequirePackage[pagestyles]{titlesec}
@@ -170,6 +173,7 @@
 
 \RequirePackage{xkeyval}
 
+\RequirePackage{currfile}
 \RequirePackage{comment}
 \RequirePackage{gettitlestring}
 \RequirePackage{nameref}
@@ -269,74 +273,63 @@
 \newcommand{\acknowledgement}{\excludecomment}
 
 \renewcommand{\tag}{\excludecomment}
-\def\theoutcomes{}
-
-\ifdefined\HCode%
-  \newcommand{\outcome}[1]{}
-\else%
-  \newwrite\outcomefile
-  \immediate\openout\outcomefile=\jobname.oc
-
-  \newcommand{\outcome}[1]{\edef\theoutcomes{\theoutcomes #1~}%
-  \immediate\write\outcomefile{\unexpanded{\outcome}{#1}}}
-  \fi%
 \everymath{\displaystyle}
 \let\prelim\lim
 \renewcommand{\lim}{\displaystyle\prelim}
 \theoremstyle{definition} % No italic (because this makes also text in TikZ italic !!!)
 
 
-      \newtheorem{theorem}{Theorem}
+      \newtheorem{theorem}{\GetTranslation{Theorem}}
 
-      \newtheorem{algorithm}{Algorithm}
+      \newtheorem{algorithm}{\GetTranslation{Algorithm}}
 
-      \newtheorem{axiom}{Axiom}
+      \newtheorem{axiom}{\GetTranslation{Axiom}}
 
-      \newtheorem{claim}{Claim}
+      \newtheorem{claim}{\GetTranslation{Claim}}
 
-      \newtheorem{conclusion}{Conclusion}
+      \newtheorem{conclusion}{\GetTranslation{Conclusion}}
 
-      \newtheorem{condition}{Condition}
+      \newtheorem{condition}{\GetTranslation{Condition}}
 
-      \newtheorem{conjecture}{Conjecture}
+      \newtheorem{conjecture}{\GetTranslation{Conjecture}}
 
-      \newtheorem{corollary}{Corollary}
+      \newtheorem{corollary}{\GetTranslation{Corollary}}
 
-      \newtheorem{criterion}{Criterion}
+      \newtheorem{criterion}{\GetTranslation{Criterion}}
 
-      \newtheorem{definition}{Definition}
+      \newtheorem{definition}{\GetTranslation{Definition}}
 
-      \newtheorem{example}{Example}
+      \newtheorem{example}{\GetTranslation{Example}}
 
-      \newtheorem*{explanation}{Explanation}
+      \newtheorem*{explanation}{\GetTranslation{Explanation}}
 
-      \newtheorem{fact}{Fact}
+      \newtheorem{fact}{\GetTranslation{Fact}}
 
-      \newtheorem{lemma}{Lemma}
+      \newtheorem{lemma}{\GetTranslation{Lemma}}
 
-      \newtheorem{formula}{Formula}
+      \newtheorem{formula}{\GetTranslation{Formula}}
 
-      \newtheorem{idea}{Idea}
+      \newtheorem{idea}{\GetTranslation{Idea}}
 
-      \newtheorem{notation}{Notation}
+      \newtheorem{notation}{\GetTranslation{Notation}}
 
-      \newtheorem{model}{Model}
+      \newtheorem{model}{\GetTranslation{Model}}
 
-      \newtheorem{observation}{Observation}
+      \newtheorem{observation}{\GetTranslation{Observation}}
 
-      \newtheorem{proposition}{Proposition}
+      \newtheorem{proposition}{\GetTranslation{Proposition}}
 
-      \newtheorem{paradox}{Paradox}
+      \newtheorem{paradox}{\GetTranslation{Paradox}}
 
-      \newtheorem{procedure}{Procedure}
+      \newtheorem{procedure}{\GetTranslation{Procedure}}
 
-      \newtheorem{remark}{Remark}
+      \newtheorem{remark}{\GetTranslation{Remark}}
 
-      \newtheorem{summary}{Summary}
+      \newtheorem{summary}{\GetTranslation{Summary}}
 
-      \newtheorem{template}{Template}
+      \newtheorem{template}{\GetTranslation{Template}}
 
-      \newtheorem{warning}{Warning}
+      \newtheorem{warning}{\GetTranslation{Warning}}
 \renewcommand{\theenumi}{\textup{(\alph{enumi})}}
 \renewcommand{\labelenumi}{\theenumi}
 \renewcommand{\theenumii}{\textup{(\roman{enumii})}}
@@ -394,40 +387,74 @@
 \else
 \onlinefalse
 \fi
+\newcommand{\preOutcomeLine}{\item }
+\newcommand{\postOutcomeLine}{}
+\newcommand{\preOutcomeBlock}{After completing this content, students should be able to: \begin{itemize}}
+\newcommand{\postOutcomeBlock}{\end{itemize} So go forth and learn!}
 
+\newcommand{\outcomeHeader}{Goals for this Section}
+\htmlOnly{
+  \newcommand{\outcomeBlock}{\ifvmode\IgnorePar\fi\EndP\HCode{<div class="outcomeHead">} \outcomeHeader \ifvmode\IgnorePar\fi\EndP\HCode{</div>} \ifvmode\IgnorePar\fi\EndP\HCode{<div class="outcomeContent">}}
+}
 
-\providecommand{\latexProblemContent}[1]{#1}
-\Make@Counter{Iteration@probCnt}
+\newwrite\outcomefile
+\immediate\openout\outcomefile=\jobname.oc
+\newcommand{\outcome}[1]{%
+  \immediate\write\outcomefile{\expandafter\unexpanded\expandafter{\preOutcomeLine #1} \expandafter\unexpanded\expandafter{\postOutcomeLine}}
+}
+
+\newcommand{\displayOutcomes}[1][]{%
+  \immediate\closeout\outcomefile
+  \IfFileExists{\currfiledir\currfilebase.oc}{
+    \htmlOnly{\outcomeBlock}
+      \expandafter\preOutcomeBlock
+      \input{\currfiledir\currfilebase.oc}
+      \postOutcomeBlock
+      \htmlOnly{\ifvmode\IgnorePar\fi\EndP\HCode{</div>}}
+    }
+    {
+    \IfFileExists{\currfilebase.oc}{
+      \htmlOnly{\outcomeBlock}
+        \expandafter\preOutcomeBlock
+        \input{\currfilebase.oc}
+        \postOutcomeBlock
+        \htmlOnly{\ifvmode\IgnorePar\fi\EndP\HCode{</div>}}
+      }
+      {
+        No outcome file found.
+      }
+    }
+  }
+
 \newcommand{\hang}{% top theorem decoration
   \begingroup%
   \setlength{\unitlength}{.005\linewidth}% \linewidth/200
-    \begin{picture}(0,0)(1.5,0)%
-      \linethickness{1pt} \color{black!50}%
-      \put(-3,2){\line(1,0){206}}% Top line
-      \multido{\iA=2+-1,\iB=50+-10}{5}{% Top hangs
-        \color{black!\iB}%
-        \put(-3,\iA){\line(0,-1){1}}% Top left hang
-        %\put(203,\iA){\line(0,-1){1}}% Top right hang
-      }%
-    \end{picture}%
+\begin{picture}(0,0)(1.5,0)%
+  \linethickness{1pt} \color{black!50}%
+  \put(-3,2){\line(1,0){206}}% Top line
+  \multido{\iA=2+-1,\iB=50+-10}{5}{% Top hangs
+\color{black!\iB}%
+\put(-3,\iA){\line(0,-1){1}}% Top left hang
+  }%
+\end{picture}%
   \endgroup%
 }%
 \newcommand{\hung}{% bottom theorem decoration
   \nobreak
   \begingroup%
-    \setlength{\unitlength}{.005\linewidth}% \linewidth/200
-    \begin{picture}(0,0)(1.5,0)%
-      \linethickness{1pt} \color{black!50}%
-      \put(60,0){\line(1,0){143}}% Bottom line
-      \multido{\iA=0+1,\iB=50+-10}{5}{% Bottom hangs
-        \color{black!\iB}%
-        %\put(-3,\iA){\line(0,1){1}}% Bottom left hang
-        \put(203,\iA){\line(0,1){1}}% Bottom right hang
-        \put(\iB,0){\line(60,0){10}}% Left fade out
-      }%
-    \end{picture}%
+\setlength{\unitlength}{.005\linewidth}% \linewidth/200
+\begin{picture}(0,0)(1.5,0)%
+  \linethickness{1pt} \color{black!50}%
+  \put(60,0){\line(1,0){143}}% Bottom line
+  \multido{\iA=0+1,\iB=50+-10}{5}{% Bottom hangs
+\color{black!\iB}%
+\put(203,\iA){\line(0,1){1}}% Bottom right hang
+\put(\iB,0){\line(60,0){10}}% Left fade out
+  }%
+\end{picture}%
   \endgroup%
 }%
+\MakeCounter{Iteration@probCnt}
 \MakeCounter{problem}
 \newcommand{\problemNumber}{
 \ifcsname c@depth\Roman{problem@Depth}Count\endcsname% Check to see if counter exists
@@ -440,30 +467,21 @@
 \arabic{depthICount}% The first problem depth, what use to be |\theproblem|.
 
 \forloop{Iteration@probCnt}{2}{\arabic{Iteration@probCnt} < \numexpr \value{problem@Depth} + 1 \relax}{%
-    .\expandafter\arabic{depth\Roman{Iteration@probCnt}Count}% Get the problem number of the next depth level and append it with a ".".
+.\expandafter\arabic{depth\Roman{Iteration@probCnt}Count}% Get the problem number of the next depth level and append it with a ".".
 }
 }
-
 %%%%%% Configure various problem environment commands
 \Make@Counter{problem@Depth}
-
 %%%% Configure environments start content
-
 \newcommand{\problemEnvironmentStart}[2]{%
-
 \stepcounter{problem@Depth}% Started a problem, so we've sunk another problem layer.
 \def\spaceatend{#1}%
 \begin{trivlist}%
-\item%
-  [%
-    \hskip\labelsep\sffamily\bfseries
-    #2 \problemNumber% Determine the correct number of the problem, and the format of that number.
+\item[\hskip\labelsep\sffamily\bfseries\GetTranslation{#2} \problemNumber% Determine the correct number of the problem, and the format of that number.
 ]%
 \slshape
 }
-
-%%%%% Configure environments end content
-
+%%%%% Configure environments end content %%%%%%
 \newcommand{\problemEnvironmentEnd}{%This configures all the end content for a problem.
 \stepcounter{problem@Depth}
 \ifcsname c@depth\Roman{problem@Depth}Count\endcsname
@@ -471,10 +489,7 @@
 \expandafter\setcounter{depth\Roman{problem@Depth}Count}{0}
 \fi
 \fi
-
 \addtocounter{problem@Depth}{-2}% Exited a problem so we've exited a problem layer. Need -2 because we steppped once at the start to check for needing a depth-level count reset.
-
-
 \ifhandout
 \ifnewpage
 \newpage
@@ -482,41 +497,23 @@
 \fi
 \end{trivlist}
 }
+%% Add a simple command that handles all the problem creation aspects:
+\newcommand{\createProblemEnv}[2]{% This is a nice command to define a new problem-like environment for a content-author.
+\newenvironment{#1}[1][2in]%
+{%Env start code
+\problemEnvironmentStart{#1}{#2}
+}
+{%Env end code
+\problemEnvironmentEnd
+}
+}
 
 %%%% Now populate the old environment names
 
-\newenvironment{problem}[1][2in]%
-{%Env start code
-\problemEnvironmentStart{#1}{Problem}
-}
-{%Env end code
-\problemEnvironmentEnd
-}
-
-\newenvironment{exercise}[1][2in]%
-{%Env start code
-\problemEnvironmentStart{#1}{Exercise}
-}
-{%Env end code
-\problemEnvironmentEnd
-}
-
-\newenvironment{exploration}[1][2in]%
-{%Env start code
-\problemEnvironmentStart{#1}{Exploration}
-}
-{%Env end code
-\problemEnvironmentEnd
-}
-
-\newenvironment{question}[1][2in]%
-{%Env start code
-\problemEnvironmentStart{#1}{Question}
-}
-{%Env end code
-\problemEnvironmentEnd
-}
-
+\createProblemEnv{problem}{Problem}
+\createProblemEnv{exercise}{Exercise}
+\createProblemEnv{exploration}{Exploration}
+\createProblemEnv{question}{Question}
 \newcounter{hintLevel}
 \setcounter{hintLevel}{0}
 \newenvironment{hint}{}{}
@@ -525,7 +522,7 @@
 \ifhandout
 \setbox0\vbox\bgroup
 \else
-\begin{trivlist}\item[\hskip \labelsep\small\slshape\bfseries Hint:\hspace{2ex}]
+\begin{trivlist}\item[\hskip \labelsep\small\slshape\bfseries \GetTranslation{Hint}:\hspace{2ex}]
 \small\slshape
 \fi
 \stepcounter{hintLevel}
@@ -541,9 +538,12 @@
 
 \ifhints
 \renewenvironment{hint}{
-\begin{trivlist}\item[\hskip \labelsep\small\slshape\bfseries Hint:\hspace{2ex}]
-\small\slshape}
-{\end{trivlist}}
+\begin{trivlist}\item[\hskip \labelsep\small\slshape\bfseries \GetTranslation{Hint}:\hspace{2ex}]
+\small\slshape
+}
+{
+\end{trivlist}
+}
 \fi
 
 \let\abstract\relax
@@ -577,7 +577,7 @@
   \phantomsection%
   \ifnumbers\addcontentsline{toc}{section}{\thetitlenumber~\@title}\else\addcontentsline{toc}{section}{\@title}\fi
   \vskip .6em\noindent\textit\theabstract\setcounter{problem}{0}\setcounter{section}{0}\setcounter{subsection}{0}\par\vspace{2em}
-  \ifnooutcomes\else\let\thefootnote\relax\footnote{Learning outcomes: \theoutcomes}\fi
+  %\ifnooutcomes\else\let\thefootnote\relax\footnote{Learning outcomes: \theoutcomes}\fi% Depreciated with new outcome mechanism.
   \ifnoauthor\else\let\thefootnote\relax\footnote{Author(s):~\@author}\fi
   \aftergroup\@afterindentfalse
   \aftergroup\@afterheading}
@@ -805,7 +805,7 @@ Interactive
 \setkeys{multipleChoice}{#1}%
 \recordvariable{\mc@id}%
 \begin{trivlist}
-\item[\hskip \labelsep\small\bfseries Multiple Choice:]\hfil
+\item[\hskip \labelsep\small\bfseries \GetTranslation{Multiple Choice}:]\hfil
 \begin{enumerate}
 }% Note this means that \item has to be the first line after \begin{multipleChoice}.
 {% Environment End Code
@@ -832,7 +832,7 @@ Interactive
 
 
 \newenvironment{selectAll}[1][]
-{\begin{trivlist}\item[\hskip \labelsep\small\bfseries Select All Correct Answers:]\hfil\begin{enumerate}}
+{\begin{trivlist}\item[\hskip \labelsep\small\bfseries \GetTranslation{Select All Correct Answers}:]\hfil\begin{enumerate}}
     {\end{enumerate}\end{trivlist}}
 
 
@@ -850,7 +850,7 @@ Interactive
 \newenvironment{solution}%
        {%
  \begin{trivlist}
- \item[\hskip \labelsep\bfseries Solution:\hspace{2ex}]
+ \item[\hskip \labelsep\bfseries \GetTranslation{Solution}:\hspace{2ex}]
        }
        % %% line at the bottom}
        {
@@ -875,14 +875,14 @@ Interactive
 \else
 \newenvironment{feedback}[1][attempt]{
 
-\def\PH@Command{#1}% Use PH@Command to hold the content and be a target for "\expandafter" to expand once.
+\edef\PH@Command{\GetTranslation{#1}}% Use PH@Command to hold the content and be a target for "\expandafter" to expand once.
 
 \begin{trivlist}% Begin the trivlist to use formating of the "Feedback" label.
-\item[\hskip \labelsep\small\slshape\bfseries Feedback% Format the "Feedback" label. Don't forget the space.
-(\texttt{\detokenize\expandafter{\PH@Command}}):% Format (and detokenize) the condition for feedback to trigger
+\item[\hskip \labelsep\small\slshape\bfseries \GetTranslation{Feedback}% Format the "Feedback" label. Don't forget the space.
+(\texttt{\expandafter\detokenize\expandafter{\PH@Command}}):% Format (and detokenize) the condition for feedback to trigger
 \hspace{2ex}]\small\slshape% Insert some space before the actual feedback given.
 }{
-\end{trivlist} 
+\end{trivlist}
 }
 
 \fi
@@ -917,11 +917,11 @@ Interactive
   \ifthenelse{\boolean{#1}}%% Could probably change this with just putting the (given) in the boolean?-- Jason
    {% Begin then result
    \begin{trivlist}
-   \item[\hskip \labelsep\bfseries Free Response (Given):\hspace{2ex}]
+   \item[\hskip \labelsep\bfseries \GetTranslation{Free Response (Given)}:\hspace{2ex}]
    }% End then result
 {% Begin else result
 \begin{trivlist}
-\item[\hskip \labelsep\bfseries Free Response:\hspace{2ex}]
+\item[\hskip \labelsep\bfseries \GetTranslation{Free Response}:\hspace{2ex}]
 }% End else result
 }
 {% Environment Ending Code
@@ -955,7 +955,7 @@ Interactive
 \newenvironment{instructorIntro}%
        {%
  \begin{trivlist}
- \item[\hskip \labelsep\bfseries Instructor Introduction:\hspace{2ex}]
+ \item[\hskip \labelsep\bfseries \GetTranslation{Instructor Introduction}:\hspace{2ex}]
 }
        % %% line at the bottom}
        {
@@ -985,7 +985,7 @@ Interactive
         \newenvironment{instructorIntro}%
 {%
   \begin{trivlist}
-  \item[\hskip \labelsep\bfseries Instructor Introduction:\hspace{2ex}]
+  \item[\hskip \labelsep\bfseries \GetTranslation{Instructor Introduction}:\hspace{2ex}]
 }
 {
   \end{trivlist}
@@ -1000,7 +1000,7 @@ Interactive
 \newenvironment{instructorNotes}%
        {%
  \begin{trivlist}
- \item[\hskip \labelsep\bfseries Instructor Notes:\hspace{2ex}]
+ \item[\hskip \labelsep\bfseries \GetTranslation{Instructor Notes}:\hspace{2ex}]
        }
        % %% line at the bottom}
        {
@@ -1029,7 +1029,7 @@ Interactive
        \newenvironment{instructorNotes}%
               {%
         \begin{trivlist}
-        \item[\hskip \labelsep\bfseries Instructor Notes:\hspace{2ex}]
+        \item[\hskip \labelsep\bfseries \GetTranslation{Instructor Notes}:\hspace{2ex}]
               }
               % %% line at the bottom}
               {
@@ -1149,6 +1149,39 @@ Interactive
     }
     }
 
+%%% This section builds the meta commands that support the various language implementations.
+%%% Each new language is added by adding a new file named (languageName).sty in the localization folder.
+%%%   e.g. to add french you would add a french.sty file in the localization folder.
+%%% This file is a list of translations of the relevant environment words.
+%%%   The best way to do add a new language is to:
+%%%       1) copy the english.sty file contents
+%%%       2) replace the second entry in each \addTranslation command
+%%%           with the translation of the word in the first entry.
+\AddToHook{begindocument/before}{\@ifpackageloaded{babel}{% Only load the translations package if babel is actually loaded.
+\RequirePackage{translations}
+%%% Now load the relevant dictionary file;
+\IfFileExists{xmDictionary-\localename.trsl}{%
+    % If it exists, load it on babel.
+    \input{xmDictionary-\localename.trsl}
+}{% If it doesn't exist, report a warning
+    \PackageWarning{Localization}{I don't see a dictionary file anywhere for your language, it should be named: xmDictionary-\localename.trsl}
+}
+
+\let\selectlanguageOLD\selectlanguage
+\renewcommand{\selectlanguage}[1]{
+    \selectlanguageOLD{#1}
+    \IfFileExists{xmDictionary-#1.trsl}{%
+        % If it exists, load it on babel.
+        \input{xmDictionary-\localename.trsl}
+    }{% If it doesn't exist, report a warning
+        \PackageWarning{Localization}{I don't see a dictionary file anywhere for your language, it should be named: xmDictionary-#1.trsl}
+    }
+}
+}% End of 'if babel package loaded' section.
+{% If babel package isn't loaded, we don't need any of the translation support, just make the '\GetTranslation' return the default.
+\providecommand{\GetTranslation}[1]{#1}% A little hacky to make sure the theorem environments are actually capitalized correctly.
+}
+}% End of 'do this right before begin document' hook.
 \def\input@path{{./}{../}{../../}{../../../}}    % Mmm, do we need to reset it to the previous value ?
 \providecommand{\xmDefaultPreamble}{xmPreamble.tex}
     \IfFileExists{\xmDefaultPreamble}
