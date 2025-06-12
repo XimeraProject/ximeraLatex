@@ -33,7 +33,7 @@
 }
 }% End of 'if babel package loaded' section.
 {% If babel package isn't loaded, we don't need any of the translation support, just make the '\GetTranslation' return the default.
-\providecommand{\GetTranslation}[1]{#1}% A little hacky to make sure the theorem environments are actually capitalized correctly.
+\providecommand{\GetTranslation}[1]{\MakeUppercase #1}% A little hacky to make sure the theorem environments are actually capitalized correctly.
 }
 }% End of 'do this right before begin document' hook.
 %    \end{macrocode}
