@@ -672,10 +672,10 @@ Interactive
 \newcommand{\graph}[2][]{\text{Graph of $#2$}}
 
 
-\newcommand*{\link}[2][]{#1%
-\ifthenelse{\equal{#1}{}}%
-{\footnote{Link: \url{#2}}}%
-{\footnote{See #1 at \url{#2}}}
+\newcommand*{\link}[2][]{%
+  \ifstrempty{#1}%
+    {\url{#2}}%
+    {#1\footnote{See #1 at \url{#2}}}%
 }
 
 \newcommand{\youtube}[1]{YouTube link: \url{https://www.youtube.com/watch?v=#1}}
