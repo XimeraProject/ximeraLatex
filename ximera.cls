@@ -674,7 +674,7 @@ Interactive
 
 \newcommand*{\link}[2][]{%
   \ifstrempty{#1}%
-    {\footnote{Link: \url{#2}}}%
+    {\url{#2}}%
     {#1\footnote{See #1 at \url{#2}}}%
 }
 
