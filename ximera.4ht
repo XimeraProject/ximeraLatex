@@ -287,8 +287,8 @@
 \def\@feedbackattempt{\@feedbackcode[attempt]}
 \def\@feedbackcode[#1]{\stepcounter{identification}%
 \ifvmode \IgnorePar\fi \EndP%
-\ifthenelse{\equal{#1}{attempt}}{\HCode{<div class="feedback" data-feedback="attempt" id="feedback\arabic{identification}" titletext=" \GetTranslation{Feedback}">}}%
-{\ifthenelse{\equal{#1}{correct}}{\HCode{<div class="feedback" data-feedback="correct" id="feedback\arabic{identification}" titletext=" \GetTranslation{Feedback}">}}%
+\ifthenelse{\equal{#1}{attempt}}{\HCode{<div class="feedback" data-feedback="attempt" id="feedback\arabic{identification}" titletext=" \GetTranslation{Feedback} (\GetTranslation{attempt})">}}%
+{\ifthenelse{\equal{#1}{correct}}{\HCode{<div class="feedback" data-feedback="correct" id="feedback\arabic{identification}" titletext=" \GetTranslation{Feedback} (\GetTranslation{correct})">}}%
 {\HCode{<div class="feedback" data-feedback="script" id="feedback\arabic{identification}" titletext=" \GetTranslation{Feedback}"><script type="text/javascript">function feedback\arabic{identification}() }\{\HCode{ return \detokenize{#1}; }\}\HCode{</script>}}}}
 \def\endfeedback{\HCode{</div>}\IgnoreIndent}
 
