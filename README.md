@@ -46,7 +46,9 @@ For developers, we suggest the following workflow:
 7) Once your changes work, make your changes in the `*.dtx` files. If you developed in `ximera.cls` directly, change its name to `ximeradev.cls`. 
 8) run `make` and a new `ximera.cls`, `xourse.cls`, `ximera.4ht` and `xourse.4ht` will be generated, **overwriting** any existing files in `.ximera_local`.
 9) Push changes to your fork of `ximeraLatex`. It is best to make **small commits**, and give detailed descriptions
-10) When ready, submit a pull request from your fork
+10) When ready, submit a pull-request from your fork
+
+Once your changes have been accepted via a pull-request, Ximera developers will update the branch `master` from the branch `development`. 
 
 
 # A Non-Official Changelog
