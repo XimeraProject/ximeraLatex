@@ -4,7 +4,7 @@ This repository contains the source for the `ximera` LaTeX package, and some sup
 This repo is *not* directly relevant for (prospective) Ximera authors or endusers.
 They should consult 
 * an [Example Ximera Xourse](https://go.osu.edu/ximera-examples) to see what Ximera is and can do.
-* the [https://github.com/XimeraProject/ximeraFirstSteps] repo to get a hands-on introduction, or
+* the [https://github.com/XimeraProject/ximeraFirstSteps](Ximera First Steps) repo to get a hands-on introduction, or
 * the [Ximera Manual](https://ximera.osu.edu/xman) the get a more detailed introduction and overview.
 
 
