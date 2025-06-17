@@ -1,11 +1,11 @@
 
 This repository contains the source for the `ximera` LaTeX package, and some supporting scripts. 
 
-This repo is *not* directly relevant for (prospective) Ximera authors or endusers.
-They should consult 
-* an [Example Ximera Xourse](https://go.osu.edu/ximera-examples) to see what Ximera is and can do.
-* the [https://github.com/XimeraProject/ximeraFirstSteps](Ximera First Steps) repo to get a hands-on introduction, or
-* the [Ximera Manual](https://ximera.osu.edu/xman) the get a more detailed introduction and overview.
+This repo is *not* directly relevant for (prospective) Ximera authors.
+Authors should consult 
+* [Ximera First Steps](https://github.com/XimeraProject/ximeraFirstSteps) repo to get a hands-on introduction, or
+* [Ximera Manual](https://ximera.osu.edu/xman) the get a more detailed introduction and overview.
+* [Ximera Examples](https://go.osu.edu/ximera-examples) to see what Ximera is and can do.
 
 
 The Ximera document class is available in [CTAN](https://ctan.org/pkg/ximera?lang=en), but it is strongly advised to use Ximera with [Codespaces or docker](https://github.com/XimeraProject/ximeraFirstSteps). 
