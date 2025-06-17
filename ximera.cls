@@ -522,7 +522,7 @@
 \ifhandout
 \setbox0\vbox\bgroup
 \else
-\begin{trivlist}\item[\hskip \labelsep\small\slshape\bfseries \GetTranslation{Hint}:\hspace{2ex}]
+\begin{trivlist}\item[\hskip \labelsep\small\slshape\bfseries \GetTranslation{hint}:\hspace{2ex}]
 \small\slshape
 \fi
 \stepcounter{hintLevel}
@@ -538,7 +538,7 @@
 
 \ifhints
 \renewenvironment{hint}{
-\begin{trivlist}\item[\hskip \labelsep\small\slshape\bfseries \GetTranslation{Hint}:\hspace{2ex}]
+\begin{trivlist}\item[\hskip \labelsep\small\slshape\bfseries \GetTranslation{hint}:\hspace{2ex}]
 \small\slshape
 }
 {
@@ -879,7 +879,9 @@ Interactive
 
 \begin{trivlist}% Begin the trivlist to use formating of the "Feedback" label.
 \item[\hskip \labelsep\small\slshape\bfseries \GetTranslation{Feedback}% Format the "Feedback" label. Don't forget the space.
-(\texttt{\expandafter\detokenize\expandafter{\PH@Command}}):% Format (and detokenize) the condition for feedback to trigger
+\ifonlineTF{% If the feedback is on a pdf, we don't need to detokenize - which messes with the \MakeUppercase command anyway.
+(\texttt{\expandafter\detokenize\expandafter{\PH@Command}})}% Keep the online version the same as before.
+{(\expandafter\texttt{\PH@Command})}:% No need for detokenize in the pdf version
 \hspace{2ex}]\small\slshape% Insert some space before the actual feedback given.
 }{
 \end{trivlist}
