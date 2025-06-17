@@ -40,11 +40,13 @@ For developers, we suggest the following workflow:
 1) Make a **Template** of a testing repository like: https://github.com/XimeraProject/ximeraFirstSteps
 2) **Clone your template**, or work on your template in a GitHub Codespace
 3) **Fork** XimeraLatex
-4) **Clone your fork** of XimeraLatex into your template, and rename the folder `ximeraLatex` to be `.ximera_local`
-5) Make your edits, we find either directly editing **a preamble file** (that overwrites the current `ximeraLatex`) or the `ximera.cls` directly to be good for development
-6) Make your changes in the `*.dtx` files. If you developed in `ximera.cls` directly, change its name to `ximeradev.cls`. It is best to make **small commits**, and give detailed descriptions
-7) run `make` and a new `ximera.cls`, `xourse.cls`, `ximera.4ht` and `xourse.4ht` will be generated, **overwriting** any existing files in `.ximera_local`.
-8) Push changes to your fork of `ximeraLatex`, and when ready, submit a pull request from your fork
+4) **Clone your fork** of XimeraLatex **into your template**, and switch to the `Development` branch (this should be up-to-date with the `master` branch)
+5) **In your template**, rename the folder `ximeraLatex` to `.ximera_local`. Now your template will use this version of Ximera LaTeX
+6) Make your edits by either directly editing **a preamble file** (that overrides the current `ximeraLatex`) or within `ximera.cls` found within `.ximera_local` directly
+7) Once your changes work, make your changes in the `*.dtx` files. If you developed in `ximera.cls` directly, change its name to `ximeradev.cls`. 
+8) run `make` and a new `ximera.cls`, `xourse.cls`, `ximera.4ht` and `xourse.4ht` will be generated, **overwriting** any existing files in `.ximera_local`.
+9) Push changes to your fork of `ximeraLatex`. It is best to make **small commits**, and give detailed descriptions
+10) When ready, submit a pull request from your fork
 
 
 # A Non-Official Changelog
