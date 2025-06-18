@@ -190,6 +190,10 @@ if [[ -d .ximera_local ]]; then
     mv /root/texmf/tex/latex/ximeraLatex /root/ximeraLatex.ORI
     # mkdir /root/texmf/tex/latex/ximeraLatex
     ln -s /code/.ximera_local/ /root/texmf/tex/latex/ximeraLatex
+    if [[ -f .ximera_local/xmScripts/xmlatex ]]; then
+       PATH=.ximera_local/xmScripts/:$PATH
+       echo "USING local xmlatex script ($(type xmlatex))"
+    fi
 fi
 
 # [[ -n "$DEBUG" ]]  && ls -al /root/texmf/tex/latex/ximeraLatex/
@@ -335,7 +339,7 @@ xake_name() {
   [[ -z "$GPG"  && -n "$VERBOSE" ]] && GPG="gpg " 
   [[ -z "$GPG"                   ]] && GPG="gpg --quiet" 
   
-    XIMERA_URL="${XIMERA_URL%/}/"    # make sure there's a trainlg /  (needed to appen XIMERA_NAME)
+    XIMERA_URL="${XIMERA_URL%/}/"    # make sure there's a trailing /  (needed to append XIMERA_NAME)
 
     $CURL -sS -o /dev/null ${XIMERA_URL} || error "Problem with Ximera server $XIMERA_URL"
 
@@ -501,20 +505,7 @@ xake_name() {
 
 }
 
-reset_file_times
-
-
-if [[ "$COMMAND" == "bash" ]]
-then
-    # interactive shell
-    shift  #  remove "bash"
-    /bin/bash $*
-    # declare -p >.xmvariables.txt
-    # ${XAKE%xake} /bin/bash --rcfile <(cat .xmvariables.txt)  $*
-    # rm -f .xmvariables.txt
-elif [[ "$COMMAND" == "genKey" ]]
-then
-    shift   # remove "genKey"
+xake_genKey() {
 
     [[ -z "$YOUR_EMAIL" && -n "$1" ]] && YOUR_EMAIL="$1"
     [[ -z "$YOUR_NAME" && -n "$2" ]] && YOUR_NAME="$*"
@@ -529,6 +520,8 @@ then
     fi
 
     KEY_UID="$YOUR_NAME <$YOUR_EMAIL>"
+
+    echo "Starting generation of GPG key" 
 
     if [[ -f .keyconfig ]] then
         echo "WARNING: Using existing .keyconfig" 
@@ -612,6 +605,26 @@ EOF
     echo "If you only want to test something on a local ximeraServer it's most convenient to use a temporary .xmKeyFile,"
     echo "   and generate a new key next time."
 fi
+
+}
+
+
+reset_file_times
+
+
+if [[ "$COMMAND" == "bash" ]]
+then
+    # interactive shell
+    shift  #  remove "bash"
+    /bin/bash $*
+    # declare -p >.xmvariables.txt
+    # ${XAKE%xake} /bin/bash --rcfile <(cat .xmvariables.txt)  $*
+    # rm -f .xmvariables.txt
+elif [[ "$COMMAND" == "genKey" ]]
+then
+    shift   # remove "genKey"
+    
+    xake_genKey || exit 1
 
     exit 0
 
@@ -796,8 +809,12 @@ then
     echo "Starting Github-action build (name; bake/frost/serve)"
     shift
     
-    # Unfortunately, 'name' can not (yet?) be integrated into luaxake ...
-    git remote show ximera >/dev/null 2>&1 || xake_name
+    # Unfortunately, 'name' and 'genKey' can not (yet?) be integrated into luaxake ...
+
+    [[ -z "$GPG_KEY_ID" ]] && xake_genKey  # If no key present, try genKey (which might find and set one, or generate a new one)
+    
+    # git remote show ximera >/dev/null 2>&1 || xake_name
+    xake_name    # set the name (should only be needed if not-yet-set, OR CHANGED)
 
     $LUAXAKE ghaction $* || error "Exiting..."
 
