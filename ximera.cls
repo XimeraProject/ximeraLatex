@@ -672,11 +672,32 @@ Interactive
 \newcommand{\graph}[2][]{\text{Graph of $#2$}}
 
 
-\newcommand*{\link}[2][]{%
-  \ifstrempty{#1}%
-    {\url{#2}}%
-    {#1\footnote{See #1 at \url{#2}}}%
-}
+%% \link[name]{url}   (opens in new tab)
+%% \link*[name]{url}   (opens in *same* tab)  (this was default behaviour for \link till 2025/06))
+%%  In PDF  \link[name]{url} uses \href but adds a Footnote with the url
+%%  The footnote is not added after  \let\xmLinkHasFootnote\undefined
+\def\xmLinkHasFootnote{1}
+\NewDocumentCommand{\link}{s o m}%
+ {%
+\ifdefined\HCode%
+  \IfBooleanTF{#1}%
+    { % Starred version    %
+      \IfNoValueTF{#2}%
+        {    \HCode{<a href="#3">}\Hurl{#3}\HCode{</a>}}%
+        {    \HCode{<a href="#3">}#2\HCode{</a>}}%
+    }%
+    { % Unstarred version%
+      \IfNoValueTF{#2}%
+        {    \HCode{<a href="#3" target="_blank">}\Hurl{#3}\HCode{</a>}}%
+        {    \HCode{<a href="#3" target="_blank">}#2\HCode{</a>}}%
+    }%
+\else   % PDF %
+      \IfNoValueTF{#2}%
+        {\url{#3}}%
+        {\href{#3}{#2}\ifdefined\xmLinkHasFootnote\footnote{See #2 at \url{#3}}\fi}% SWITCH ARGS ... !%
+ \fi%
+ }%
+
 
 \newcommand{\youtube}[1]{YouTube link: \url{https://www.youtube.com/watch?v=#1}}
 

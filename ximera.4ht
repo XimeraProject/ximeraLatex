@@ -197,10 +197,6 @@
 
 \renewcommand{\xkcd}[1]{\ifvmode \IgnorePar\fi \EndP\HCode{<img src="https://imgs.xkcd.com/comics/#1.png">}}
 
-\renewcommand*{\link}[2][]{%
-\ifthenelse{\equal{#1}{}}%
-{\url{#2}}
-{\href{#2}{#1}}}
 
 \AtBeginDocument{\renewcommand{\ref}[1]{\HCode{<a class="reference" href="\##1">#1</a>}}}
 

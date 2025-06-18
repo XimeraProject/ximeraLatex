@@ -1,4 +1,4 @@
-PWD /code
+PWD /code/.ximera_local
 INPUT /usr/local/texlive/2024/texmf.cnf
 INPUT /usr/local/texlive/2024/texmf-dist/web2c/texmf.cnf
 INPUT /usr/local/texlive/2024/texmf-var/web2c/pdftex/pdflatex.fmt
