@@ -2,6 +2,8 @@ name: Build and Publish Docker Image on Tag
 
 on:
   push:
+    branches:
+      - '**'         # match all branches
     tags-ignore:
       - '**'
 jobs:
