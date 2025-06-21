@@ -113,7 +113,11 @@ RUN tlmgr option repository http://ftp.math.utah.edu/pub/tex/historic/systems/te
         fontawesome stix  \
         latexindent \
         wrapfig \
-        wallpaper
+        wallpaper \
+        gillius \
+        pagecolor \
+        tabularray \
+        ninecolors
 
 # make4ht is not in /usr/local/bin if installed with tlmgr!!!
 ENV PATH="$PATH:/usr/local/texlive/2024/bin/x86_64-linux"
