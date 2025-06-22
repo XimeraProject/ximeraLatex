@@ -10,7 +10,7 @@
     %% The following HCode should setup the javascript function that shows or hides the footnote. If you want to change the footnote location, you may want to change the 'inline' part of x.style.display = 'inline'; to another CSS display type, like 'block' or 'inherit'. Current the `x.display.color' seems to not be working.
     \HCode{
     <script type="text/javascript">
-            function footnotefunction(ID) {
+            function footnotefun(ID) {
               var x = document.getElementById(ID);
               if (x.style.display === "none") {
                 x.style.color = "blue";
@@ -18,27 +18,24 @@
               } else {
                 x.style.display = "none";
               }
-            }
-    </script>
-    }
+            }}
+    \HCode{</script>}
     %% The next command needs \expandafter in order to expand the counter footnoteNum into a roman character for the footnote ID. These seem to work better than arabic numerals in some cases, although why is not clear.
     %% The next HCode controls the formatting for the actual footnote reference number (ie the superscript), but not the footnote itself.
     \expandafter\HCode{
-    <span style=
-            "position=relative;
-            vertical-align=baseline;"
-            >
+    <span style="position=relative;
+            vertical-align=baseline;">
             <button onclick='footnotefun("footnote\roman{footnoteNum}")'
                 style=
                 "background:none!important;
                  color:inherit;
-                 border:none; 
+                 border:none;
                  padding:0!important;
                  font: inherit;
                  cursor: pointer;"
                 >
-            	<sup>}[\arabic{footnoteNum}]\HCode{</sup></button>
-        }
+             <sup>}[\arabic{footnoteNum}]
+             \HCode{</sup></button>}
     %% The next command needs \expandafter in order to expand the counter footnoteNum into a roman character for the footnote ID. These seem to work better than arabic numerals in some cases, although why is not clear. Note that the ID counter style choice (roman vs arabic etc) needs to match the previous HCode choice.
     %% Currently most of the formatting doesn't seem to work as intended, so that still needs to be figured out and fixed. Ideally we would have the footnote appear as a bubble above the footnote superscript when the footnote superscript is clicked.
     \expandafter\HCode{

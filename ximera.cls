@@ -550,7 +550,7 @@
 \let\endabstract\relax
 \NewEnviron{abstract}{\protected@xdef\theabstract{\BODY}}
 \let\@emptyauthor\@author
-\def\author#1{\gdef\@author{#1}}
+\def\author#1{\gdef\@author{#1}\gdef\@authorfoot{#1}}
 \def\@author{\@latex@warning@no@line{No \noexpand\author given}}
 \def\and{and }
 
@@ -578,7 +578,7 @@
   \ifnumbers\addcontentsline{toc}{section}{\thetitlenumber~\@title}\else\addcontentsline{toc}{section}{\@title}\fi
   \vskip .6em\noindent\textit\theabstract\setcounter{problem}{0}\setcounter{section}{0}\setcounter{subsection}{0}\par\vspace{2em}
   %\ifnooutcomes\else\let\thefootnote\relax\footnote{Learning outcomes: \theoutcomes}\fi% Depreciated with new outcome mechanism.
-  \ifnoauthor\else\let\thefootnote\relax\footnote{Author(s):~\@author}\fi
+  \ifnoauthor\else\ifcsname @authorfoot\endcsname \footnote{Author(s):~\@author}\fi \fi
   \aftergroup\@afterindentfalse
   \aftergroup\@afterheading}
 
