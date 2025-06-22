@@ -539,7 +539,24 @@ xake_genKey() {
 
     KEY_UID="$YOUR_NAME <$YOUR_EMAIL>"
 
-    [[ -z "$GPG_KEY_ID" ]]  &&  echo "No GPG_KEY_ID found: I'll generate a key for $KEY_UID" 
+    if [[ -z "$GPG_KEY_ID" ]] && tty -s  # Only if interactive shell
+    then 
+        echo "No GPG_KEY_ID found: I'll generate a key for $KEY_UID"
+        echo "This key will identify you when publishing Ximera courses to a ximeraServer." 
+        echo "If you just want to test something locally, and even commit some changes, press enter."
+        echo "Only if you want to use this key for publication to an external ximera-server, please enter your name and email."
+
+        read -e -i "$YOUR_NAME" -p "Enter your name: " KEY_NAME
+        read -e -i "$YOUR_EMAIL" -p "Enter your email: " KEY_EMAIL
+        KEY_NAME=${KEY_NAME:-$YOUR_NAME}
+        KEY_EMAIL=${KEY_EMAIL:-$YOUR_EMAIL}
+
+        KEY_UID="$KEY_NAME <$KEY_EMAIL>"
+        YOUR_NAME="$KEY_NAME"
+        YOUR_EMAIL="$KEY_EMAIL"
+    fi
+
+    echo "Generating GPG key for $KEY_UID"
 
     if [[ -f .keyconfig ]] then
         echo "WARNING: Using existing .keyconfig" 
