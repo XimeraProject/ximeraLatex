@@ -550,7 +550,7 @@
 \let\endabstract\relax
 \NewEnviron{abstract}{\protected@xdef\theabstract{\BODY}}
 \let\@emptyauthor\@author
-\def\author#1{\gdef\@author{#1}}
+\def\author#1{\gdef\@author{#1}\gdef\@authorfoot{#1}}
 \def\@author{\@latex@warning@no@line{No \noexpand\author given}}
 \def\and{and }
 
@@ -578,7 +578,7 @@
   \ifnumbers\addcontentsline{toc}{section}{\thetitlenumber~\@title}\else\addcontentsline{toc}{section}{\@title}\fi
   \vskip .6em\noindent\textit\theabstract\setcounter{problem}{0}\setcounter{section}{0}\setcounter{subsection}{0}\par\vspace{2em}
   %\ifnooutcomes\else\let\thefootnote\relax\footnote{Learning outcomes: \theoutcomes}\fi% Depreciated with new outcome mechanism.
-  \ifnoauthor\else\let\thefootnote\relax\footnote{Author(s):~\@author}\fi
+  \ifnoauthor\else\ifcsname @authorfoot\endcsname \footnote{Author(s):~\@author}\fi \fi
   \aftergroup\@afterindentfalse
   \aftergroup\@afterheading}
 
@@ -665,7 +665,7 @@ Interactive
 \newcommand{\desmos}[3]{Desmos link: \url{https://www.desmos.com/calculator/#1}}
 \newcommand{\desmosThreeD}[3]{Desmos3D link: \url{https://www.desmos.com/3d/#1}}
 \newcommand{\googleSheet}[5]{%
-  Google Spreadsheet link: \url{https://docs.google.com/spreadsheets/d/#1}%
+  Google Spreadsheet link: \expandafter\url{\detokenize{https://docs.google.com/spreadsheets/d/#1}}%
 }
 
 
