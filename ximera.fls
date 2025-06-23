@@ -1,4 +1,4 @@
-PWD /code/.ximera_local
+PWD /code
 INPUT /usr/local/texlive/2024/texmf.cnf
 INPUT /usr/local/texlive/2024/texmf-dist/web2c/texmf.cnf
 INPUT /usr/local/texlive/2024/texmf-var/web2c/pdftex/pdflatex.fmt
@@ -14,13 +14,13 @@ INPUT src/tikzexport.dtx
 INPUT src/hyperref.dtx
 INPUT src/suppress.dtx
 INPUT src/makeCounter.dtx
+INPUT src/only.dtx
 INPUT src/pagesetup.dtx
 INPUT src/metadata.dtx
 INPUT src/macros.dtx
 INPUT src/theorems.dtx
 INPUT src/enumerate.dtx
 INPUT src/proof.dtx
-INPUT src/only.dtx
 INPUT src/outcomes.dtx
 INPUT src/problem.dtx
 INPUT src/hints.dtx
@@ -53,6 +53,7 @@ INPUT src/ungraded.dtx
 INPUT src/clearEnv.dtx
 INPUT src/hideEnv.dtx
 INPUT src/localization.dtx
+INPUT src/pdfstyling.dtx
 INPUT src/preamble.dtx
 INPUT ximera.dtx
 OUTPUT ./xourse.cls
