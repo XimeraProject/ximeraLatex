@@ -12,13 +12,13 @@
 %% src/hyperref.dtx  (with options: `classXimera')
 %% src/suppress.dtx  (with options: `classXimera')
 %% src/makeCounter.dtx  (with options: `classXimera')
+%% src/only.dtx  (with options: `classXimera')
 %% src/pagesetup.dtx  (with options: `classXimera')
 %% src/metadata.dtx  (with options: `classXimera')
 %% src/macros.dtx  (with options: `classXimera')
 %% src/theorems.dtx  (with options: `classXimera')
 %% src/enumerate.dtx  (with options: `classXimera')
 %% src/proof.dtx  (with options: `classXimera')
-%% src/only.dtx  (with options: `classXimera')
 %% src/outcomes.dtx  (with options: `classXimera')
 %% src/problem.dtx  (with options: `classXimera')
 %% src/hints.dtx  (with options: `classXimera')
@@ -51,6 +51,7 @@
 %% src/clearEnv.dtx  (with options: `classXimera')
 %% src/hideEnv.dtx  (with options: `classXimera')
 %% src/localization.dtx  (with options: `classXimera')
+%% src/pdfstyling.dtx  (with options: `classXimera')
 %% src/preamble.dtx  (with options: `classXimera')
 %% ------------:| ------------------------------------------------------------
 %%       ximera:| Simultaneously writing print and online interactive materials
@@ -172,12 +173,14 @@
 \RequirePackage{listings} %% is this required???
 
 \RequirePackage{xkeyval}
-
+\RequirePackage{tcolorbox}
 \RequirePackage{currfile}
 \RequirePackage{comment}
+
 \RequirePackage{gettitlestring}
 \RequirePackage{nameref}
 \RequirePackage{epstopdf}
+
 \ifdefined\reallyneverever
 
 \ifdefined\HCode
@@ -261,6 +264,54 @@
 }
 }
 
+
+\ifxake
+        \newenvironment{prompt}{}{}
+\else
+\ifhandout
+\NewEnviron{prompt}{}
+    % Breaks when put in mathmode ?
+    % \newenvironment{prompt}{\suppress}{\endsuppress}
+\else
+\newenvironment{prompt}{\bgroup\color{gray!50!black}}{\egroup}
+\fi
+\fi
+\ifdefined\HCode
+\newenvironment{onlyPdf}{\setbox0\vbox\bgroup}{\egroup}
+\newenvironment{onlyHtml}{\bgroup}{\egroup}
+\newenvironment{onlineOnly}{\bgroup}{\egroup}
+\else
+\newenvironment{onlyPdf}{\bgroup}{\egroup}
+\ifdefined\xmPrintHtmlOnlyAlsoInPdf
+\newenvironment{onlyHtml}{\bgroup\color{red!50!black}}{\egroup}
+\newenvironment{onlineOnly}{\bgroup\color{red!50!black}}{\egroup}
+\else
+\newenvironment{onlyHtml}{\setbox0\vbox\bgroup}{\egroup}
+\newenvironment{onlineOnly}{\setbox0\vbox\bgroup}{\egroup}
+\fi
+\fi
+
+
+\ifdefined\HCode
+\newcommand{\pdfOnly}[1]{}
+\newcommand{\htmlOnly}[1]{#1}
+\else
+\ifdefined\xmPrintHtmlOnlyAlsoInPdf
+\newcommand{\pdfOnly}[1]{#1}
+\newcommand{\htmlOnly}[1]{\bgroup\color{red!50!black}#1\egroup}
+\else
+\newcommand{\pdfOnly}[1]{#1}
+\newcommand{\htmlOnly}[1]{}
+\fi
+\fi
+
+\providecommand{\ifonlineTF}[2]{\htmlOnly{#1}\pdfOnly{#2}}
+\newif{\ifonline}
+\ifdefined\HCode
+\onlinetrue
+\else
+\onlinefalse
+\fi
 \setlength{\parindent}{0pt}
 \setlength{\parskip}{5pt}
 \oddsidemargin 62pt
@@ -339,54 +390,6 @@
   {\begin{trivlist}\item[\hskip \labelsep \itshape \bfseries #1{}\hspace{2ex}]}
 {\qed\end{trivlist}}
 
-
-\ifxake
-        \newenvironment{prompt}{}{}
-\else
-\ifhandout
-\NewEnviron{prompt}{}
-    % Breaks when put in mathmode ?
-    % \newenvironment{prompt}{\suppress}{\endsuppress}
-\else
-\newenvironment{prompt}{\bgroup\color{gray!50!black}}{\egroup}
-\fi
-\fi
-\ifdefined\HCode
-\newenvironment{onlyPdf}{\setbox0\vbox\bgroup}{\egroup}
-\newenvironment{onlyHtml}{\bgroup}{\egroup}
-\newenvironment{onlineOnly}{\bgroup}{\egroup}
-\else
-\newenvironment{onlyPdf}{\bgroup}{\egroup}
-\ifdefined\xmPrintHtmlOnlyAlsoInPdf
-\newenvironment{onlyHtml}{\bgroup\color{red!50!black}}{\egroup}
-\newenvironment{onlineOnly}{\bgroup\color{red!50!black}}{\egroup}
-\else
-\newenvironment{onlyHtml}{\setbox0\vbox\bgroup}{\egroup}
-\newenvironment{onlineOnly}{\setbox0\vbox\bgroup}{\egroup}
-\fi
-\fi
-
-
-\ifdefined\HCode
-\newcommand{\pdfOnly}[1]{}
-\newcommand{\htmlOnly}[1]{#1}
-\else
-\ifdefined\xmPrintHtmlOnlyAlsoInPdf
-\newcommand{\pdfOnly}[1]{#1}
-\newcommand{\htmlOnly}[1]{\bgroup\color{red!50!black}#1\egroup}
-\else
-\newcommand{\pdfOnly}[1]{#1}
-\newcommand{\htmlOnly}[1]{}
-\fi
-\fi
-
-\providecommand{\ifonlineTF}[2]{\htmlOnly{#1}\pdfOnly{#2}}
-\newif{\ifonline}
-\ifdefined\HCode
-\onlinetrue
-\else
-\onlinefalse
-\fi
 \newcommand{\preOutcomeLine}{\item }
 \newcommand{\postOutcomeLine}{}
 \newcommand{\preOutcomeBlock}{After completing this content, students should be able to: \begin{itemize}}
@@ -456,7 +459,8 @@
 }%
 \MakeCounter{Iteration@probCnt}
 \MakeCounter{problem}
-\newcommand{\problemNumber}{
+\newif\ifnoNumberedProblems
+\newcommand{\probNumber}{
 \ifcsname c@depth\Roman{problem@Depth}Count\endcsname% Check to see if counter exists
 \else
 \expandafter\newcounter{depth\Roman{problem@Depth}Count}
@@ -477,10 +481,11 @@
 \stepcounter{problem@Depth}% Started a problem, so we've sunk another problem layer.
 \def\spaceatend{#1}%
 \begin{trivlist}%
-\item[\hskip\labelsep\sffamily\bfseries\GetTranslation{#2} \problemNumber% Determine the correct number of the problem, and the format of that number.
+\item[\hskip\labelsep\sffamily\bfseries\GetTranslation{#2} \probNumber% Determine the correct number of the problem, and the format of that number.
 ]%
 \slshape
 }
+
 %%%%% Configure environments end content %%%%%%
 \newcommand{\problemEnvironmentEnd}{%This configures all the end content for a problem.
 \stepcounter{problem@Depth}
@@ -1205,6 +1210,66 @@ Interactive
 \providecommand{\GetTranslation}[1]{#1}% A little hacky to make sure the theorem environments are actually capitalized correctly.
 }
 }% End of 'do this right before begin document' hook.
+%%% Now we colorbox-ize nested theorems and problems.
+\definecolor{xmNestingColorLevelI}{RGB}{102, 255, 178}% Default top level color is Light Green
+\definecolor{xmNestingColorLevelII}{RGB}{102, 178, 255}% Default first nested layer color is Light Blue
+\definecolor{xmNestingColorLevelIII}{RGB}{255, 102, 178}% Default second nested layer color is  Light Pink
+\definecolor{xmNestingColorLevelIV}{RGB}{178, 255, 102}% Default third nested layer color is  Bright Green
+\definecolor{xmBackground}{RGB}{255,255,255}% Default background color is white.
+
+\newif\ifdispNest%% Flag for displaying any kind of nesting indicator via tcolorbox
+\dispNesttrue% Default to showing nesting behavior via tcolorbox.
+
+\newif\ifdispNestColors%% Flag to opt for colored nesting indicators
+\dispNestColorstrue% Default to colored boxes, rather than black and white (toggle false for BW).
+
+\AtBeginDocument{
+  \pdfOnly{
+    \ifdispNestColors
+    \else% If we want non-colored boxes, overwrite the previous color definitions with variations on black.
+      \definecolor{xmNestingColorLevelI}{RGB}{0,0,0}% Black
+      \definecolor{xmNestingColorLevelII}{RGB}{35, 35, 35}% Light Blue
+      \definecolor{xmNestingColorLevelIII}{RGB}{70, 70, 70}% Light Pink
+      \definecolor{xmNestingColorLevelIV}{RGB}{105, 105, 105}% Bright Green
+    \fi
+
+    %% Apply colorboboxes around theorem-like environments in pdfs only to help see nesting.
+    \ifdispNest%% If you want to display nesting behavior via tcolorframebox frames, we now apply them.
+      \tcolorboxenvironment{algorithm}{colframe=xmNestingColorLevel\Roman{tcblayer},colback=transparent}
+      \tcolorboxenvironment{axiom}{colframe=xmNestingColorLevel\Roman{tcblayer},colback=xmBackground}
+      \tcolorboxenvironment{claim}{colframe=xmNestingColorLevel\Roman{tcblayer},colback=xmBackground}
+      \tcolorboxenvironment{conclusion}{colframe=xmNestingColorLevel\Roman{tcblayer},colback=xmBackground}
+      \tcolorboxenvironment{condition}{colframe=xmNestingColorLevel\Roman{tcblayer},colback=xmBackground}
+      \tcolorboxenvironment{conjecture}{colframe=xmNestingColorLevel\Roman{tcblayer},colback=xmBackground}
+      \tcolorboxenvironment{corollary}{colframe=xmNestingColorLevel\Roman{tcblayer},colback=xmBackground}
+      \tcolorboxenvironment{criterion}{colframe=xmNestingColorLevel\Roman{tcblayer},colback=xmBackground}
+      \tcolorboxenvironment{definition}{colframe=xmNestingColorLevel\Roman{tcblayer},colback=xmBackground}
+      \tcolorboxenvironment{example}{colframe=xmNestingColorLevel\Roman{tcblayer},colback=xmBackground}
+      \tcolorboxenvironment{explanation}{colframe=xmNestingColorLevel\Roman{tcblayer},colback=xmBackground}
+      \tcolorboxenvironment{fact}{colframe=xmNestingColorLevel\Roman{tcblayer},colback=xmBackground}
+      \tcolorboxenvironment{formula}{colframe=xmNestingColorLevel\Roman{tcblayer},colback=xmBackground}
+      \tcolorboxenvironment{idea}{colframe=xmNestingColorLevel\Roman{tcblayer},colback=xmBackground}
+      \tcolorboxenvironment{lemma}{colframe=xmNestingColorLevel\Roman{tcblayer},colback=xmBackground}
+      \tcolorboxenvironment{model}{colframe=xmNestingColorLevel\Roman{tcblayer},colback=xmBackground}
+      \tcolorboxenvironment{notation}{colframe=xmNestingColorLevel\Roman{tcblayer},colback=xmBackground}
+      \tcolorboxenvironment{observation}{colframe=xmNestingColorLevel\Roman{tcblayer},colback=xmBackground}
+      \tcolorboxenvironment{proposition}{colframe=xmNestingColorLevel\Roman{tcblayer},colback=xmBackground}
+      \tcolorboxenvironment{paradox}{colframe=xmNestingColorLevel\Roman{tcblayer},colback=xmBackground}
+      \tcolorboxenvironment{procedure}{colframe=xmNestingColorLevel\Roman{tcblayer},colback=xmBackground}
+      \tcolorboxenvironment{remark}{colframe=xmNestingColorLevel\Roman{tcblayer},colback=xmBackground}
+      \tcolorboxenvironment{summary}{colframe=xmNestingColorLevel\Roman{tcblayer},colback=xmBackground}
+      \tcolorboxenvironment{template}{colframe=xmNestingColorLevel\Roman{tcblayer},colback=xmBackground}
+      \tcolorboxenvironment{warning}{colframe=xmNestingColorLevel\Roman{tcblayer},colback=xmBackground}
+
+      %% Apply colorboboxes around problem-like environments in pdfs only to help see nesting.
+      \tcolorboxenvironment{problem}{colframe=xmNestingColorLevel\Roman{tcblayer},colback=xmBackground}
+      \tcolorboxenvironment{question}{colframe=xmNestingColorLevel\Roman{tcblayer},colback=xmBackground}
+      \tcolorboxenvironment{exploration}{colframe=xmNestingColorLevel\Roman{tcblayer},colback=xmBackground}
+      \tcolorboxenvironment{exercise}{colframe=xmNestingColorLevel\Roman{tcblayer},colback=xmBackground}
+
+    \fi
+  }
+}
 \def\input@path{{./}{../}{../../}{../../../}}    % Mmm, do we need to reset it to the previous value ?
 \providecommand{\xmDefaultPreamble}{xmPreamble.tex}
     \IfFileExists{\xmDefaultPreamble}
