@@ -1,0 +1,92 @@
+The idea for Option 1 reorganized dtx file structure is to *massively* cut down on the
+number of dtx files that are floating around, in an effort to make the complexity of things
+like load order and searching significantly lower. 
+
+This comes at the cost of greatly increased complexity of the dtx files themselves however.
+This means on one hand we need to consider the choice of content of the (new) dtx file - and 
+the associated dtx file name carefully. In particular we need to balance how intuitive the
+name and content are, against how much content is in a given dtx file. In other words, the
+name of the dtx file should make it obvious what commands/env/etc are in that dtx file,
+without either having a ton of dtx files (to make it obvious - this is how our current dtx
+works which is why we have almost 60 dtx files), or having so few that the dtx files
+themselves become unwieldy and difficult to find the relevant parts that we need to update
+or change.
+
+Again, as a proof of concept I tried to do something like this with the current dtx files
+by making new dtx files and copy/pasting several of our current dtx files into the new ones
+to merge together a bunch of them in a way that hopefully remains intuitive. This cut the 
+number of dtx files from 58 down to ~17 (not counting translation or validator supplements).
+
+The new dtx files are as follows (description of intuition of content provided)
+
+- authorship
+    - This should contain content that the content author uses for their own 'behind the scenes'
+        displaying of things - like instructorNotes, and clear/hideEnv (used to delete categories
+        of content from the compiled results).
+    - This is the most vague of the categories and I'm unhappy with it, might be better to
+        just delete this and fold the included stuff in elsewhere or at least rename.
+        But again, this is just a proof of concept.
+- depreciating
+    - This contains the content that is still supported, but will be removed in an upcoming release
+        The idea is that anyone can look into the depreciated.dtx and see what content is going to
+        be depreciated soon, and take steps beforehand (in case they miss notifications or 
+        announcements or whatever from us about things getting flagged as depreciated).
+- embeddings
+    - This contains the content that allows for embedding external source material into ximera,
+        e.g. desmos, youtube, etc. 
+    - We could also move image.dtx into here as it is embedding an external file into ximera,
+        which is in the same vein.
+- image
+    - This is the same as the previous image.dtx.
+    - Could be merged into embeddings
+- link
+    - This is the same as the previous link.dtx.
+    - Could be merged into onlineStyling or structure
+- localization
+    - This is the same as the previous localization.dtx.
+    - Could be merged into one of the stylings or structure.
+- macros
+    - This is all the internal macros that should not be used by content authors or users unless
+        they have developer-level experience.
+    - Contains things like jax, MakeCounter, and suppress (among others).
+- onlineStyling
+    - This contains the content that determines styling/presentation of online content.
+    - This should possibly be merged with pdfStyling into one ``styling.dtx`` file for simplicity.
+- options
+    - This is the same as the previous options.dtx except it also includes the optionsXourse.dtx as well.
+- outcomes
+    - This is the same as the previous outcomes.dtx.
+    - Could be merged into structure or authorship.
+- packages
+    - This contains the packages that are loaded
+    - More or less the same as the previous packages.dtx - just merged with hyperref.dtx (placed at bottom).
+- pdfstyling
+    - This contains the content that determines styling/presentation of pdf content.
+    - This should possibly be merged with onlineStyling into one ``styling.dtx`` file for simplicity.
+- problem
+    - This is the same as the previous problem.dtx.
+    - Could be merged into structure or authorship
+- structure
+    - This contains the content that impacts the actual document structure itself, e.g. abstract, 
+        preamble.dtx, title.dtx, etc.
+- submissions
+    - This contains the content that allows students to submit/interact with ximera, e.g.
+        answer.dtx, choice.dtx, etc.
+- triggeredEvents
+    - This contains the content that is triggered by student interaction, e.g. hints.dtx,
+        feedback.dtx, etc.
+
+**NOTE** The above is just a proof of concept - I'm not especially enamoured by any of the
+provided new dtx files. So think of this more as a demo of the kind of thing we could try,
+but after carefully discussing what the new dtx files should be named, and what specific
+criteria should be used to determine what goes in each file. Again we want to try and make
+the new dtx intuitive enough that - for any given command/env implemented/used in Ximera,
+we should know which dtx that thing should be in (or at least, come up with two or three
+that should contain the relevant code, by ideally we should almost always know which 
+specific dtx file has the code we want to find).
+
+**Note from Jason** I think I would vote for Option 2 over Option 1. I worry that option 1
+will result in irritatingly long/complex single dtx files - which may make it more irritating
+to make improvements (especially in tandem with someone else work on another area of the dtx)
+and handle merge requests. In general I prefer smaller and simplier dtx files, but with richer
+organization support to make it easier to find the relevant and/or know what a given dtx is about.

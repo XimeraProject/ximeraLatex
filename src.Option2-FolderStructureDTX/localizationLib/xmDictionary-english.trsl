@@ -1,0 +1,57 @@
+%%%%%%
+%%% This Content is additional translations for Ximera Specific Content
+%%%     Specifically added to the relevant translations.sty package dictionaries. 
+%%% NOTE: If you want to change a translation, and changing it here doesn't work,
+%%%     You should use \DeclareTranslation{language}{Key}{Value} instead of
+%%%     \addtranslation{language}{Key}{Value} to force the update.
+%%%%%%
+
+
+\addtranslation{English}{Problem}{Problem}% Used in problem.dtx
+\addtranslation{English}{Exercise}{Exercise}% Used in problem.dtx
+\addtranslation{English}{Exploration}{Exploration}% Used in problem.dtx
+\addtranslation{English}{Question}{Question}% Used in problem.dtx
+
+\addtranslation{English}{Multiple Choice}{Multiple Choice}% Used in choice.dtx
+\addtranslation{English}{Select All Correct Answers}{Select All Correct Answers}% Used in choice.dtx
+
+\addtranslation{English}{hint}{Hint}% Used in hints.dtx
+
+\addtranslation{English}{Free Response}{Free Response}% Used in freeresponse.dtx
+\addtranslation{English}{Free Response (Given)}{Free Response (Given)}% Used in freeresponse.dtx
+
+\addtranslation{English}{feedback}{Feedback}% Used in feedback.dtx
+\addtranslation{English}{attempt}{attempt}% Used as part of feedback environment indirectly, inside the \PH@Command
+\addtranslation{English}{correct}{correct}% Used as part of feedback environment indirectly, inside the \PH@Command
+
+\addtranslation{English}{Instructor Introduction}{Instructor Introduction}% Used in instructornotes.dtx
+\addtranslation{English}{Instructor Notes}{Instructor Notes}% Used in instructornotes.dtx
+
+\addtranslation{English}{theorem}{Theorem}% Used in theorems.dtx
+\addtranslation{English}{algorithm}{Algorithm}% Used in theorems.dtx
+\addtranslation{English}{axiom}{Axiom}% Used in theorems.dtx
+\addtranslation{English}{claim}{Claim}% Used in theorems.dtx
+\addtranslation{English}{conclusion}{Conclusion}% Used in theorems.dtx
+\addtranslation{English}{condition}{Condition}% Used in theorems.dtx
+\addtranslation{English}{conjecture}{Conjecture}% Used in theorems.dtx
+\addtranslation{English}{corollary}{Corollary}% Used in theorems.dtx
+\addtranslation{English}{criterion}{Criterion}% Used in theorems.dtx
+\addtranslation{English}{definition}{Definition}% Used in theorems.dtx
+\addtranslation{English}{example}{Example}% Used in theorems.dtx
+\addtranslation{English}{explanation}{Explanation}% Used in theorems.dtx
+\addtranslation{English}{fact}{Fact}% Used in theorems.dtx
+\addtranslation{English}{lemma}{Lemma}% Used in theorems.dtx
+\addtranslation{English}{formula}{Formula}% Used in theorems.dtx
+\addtranslation{English}{idea}{Idea}% Used in theorems.dtx
+\addtranslation{English}{notation}{Notation}% Used in theorems.dtx
+\addtranslation{English}{model}{Model}% Used in theorems.dtx
+\addtranslation{English}{observation}{Observation}% Used in theorems.dtx
+\addtranslation{English}{proposition}{Proposition}% Used in theorems.dtx
+\addtranslation{English}{paradox}{Paradox}% Used in theorems.dtx
+\addtranslation{English}{procedure}{Procedure}% Used in theorems.dtx
+\addtranslation{English}{remark}{Remark}% Used in theorems.dtx
+\addtranslation{English}{summary}{Summary}% Used in theorems.dtx
+\addtranslation{English}{template}{Template}% Used in theorems.dtx
+\addtranslation{English}{warning}{Warning}% Used in theorems.dtx
+
+\addtranslation{English}{Solution}{Solution}% Used in solution.dtx

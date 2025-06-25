@@ -1,0 +1,62 @@
+% \subsubsection{Learning Outcomes}
+%    \begin{macrocode}
+%<*classXimera>
+\newcommand{\preOutcomeLine}{\item }
+\newcommand{\postOutcomeLine}{}
+\newcommand{\preOutcomeBlock}{After completing this content, students should be able to: \begin{itemize}}
+\newcommand{\postOutcomeBlock}{\end{itemize} So go forth and learn!}
+
+\newcommand{\outcomeHeader}{Goals for this Section}
+\htmlOnly{
+  \newcommand{\outcomeBlock}{\ifvmode\IgnorePar\fi\EndP\HCode{<div class="outcomeHead">} \outcomeHeader \ifvmode\IgnorePar\fi\EndP\HCode{</div>} \ifvmode\IgnorePar\fi\EndP\HCode{<div class="outcomeContent">}}
+}
+
+
+\newwrite\outcomefile
+\immediate\openout\outcomefile=\jobname.oc
+\newcommand{\outcome}[1]{%
+  \immediate\write\outcomefile{\expandafter\unexpanded\expandafter{\preOutcomeLine #1} \expandafter\unexpanded\expandafter{\postOutcomeLine}}
+}
+
+\newcommand{\displayOutcomes}[1][]{%
+  \immediate\closeout\outcomefile
+  \IfFileExists{\currfiledir\currfilebase.oc}{
+    \htmlOnly{\outcomeBlock}
+      \expandafter\preOutcomeBlock
+      \input{\currfiledir\currfilebase.oc}
+      \postOutcomeBlock
+      \htmlOnly{\ifvmode\IgnorePar\fi\EndP\HCode{</div>}}
+    }
+    {
+    \IfFileExists{\currfilebase.oc}{
+      \htmlOnly{\outcomeBlock}
+        \expandafter\preOutcomeBlock
+        \input{\currfilebase.oc}
+        \postOutcomeBlock
+        \htmlOnly{\ifvmode\IgnorePar\fi\EndP\HCode{</div>}}
+      }
+      {
+        No outcome file found.
+      }
+    }
+  }
+%
+%</classXimera>
+%    \end{macrocode}
+% These can appear in either the preamble or in problem environments.
+% with pdflatex, we produce the .oc file which includes ALL the
+% outcomes; in the tex4ht world, we just produce spans for the
+% specific outcomes.
+%    \begin{macrocode}
+%<*cfgXimera>
+\renewcommand{\outcome}[1]{
+  \Configure{@HEAD}{\HCode{<meta name="learning-outcome" content="#1"/>\Hnewline}}
+}
+% Sometimes there are no outcomes at all
+\IfFileExists{\jobname.oc}{\input{\jobname.oc}}{}
+
+\renewcommand{\outcome}[1]{%
+  \HCode{<span class="learning-outcome">#1</span>}
+}
+%</cfgXimera>
+%    \end{macrocode}

@@ -1,0 +1,263 @@
+% \section{Depreciating Elements}
+% This is a section that will contain anything that has been moved to the depreciated category,
+% allowing content authors to have a single place to quickly check what (if any) commands, environments, etc 
+% that are being phased out in a future release of Ximera, so that they can make any necessary changes.
+% 
+% 
+% \subsection{Grading by points}
+% \DescribeEnv{graded}{The |graded| environment does nothing in latex,
+% but in html, it wraps the activities in a div in order to assign
+% some weight to them for grading.}
+%    \begin{macrocode}
+%<*classXourse>
+\newenvironment{graded}[1]{}{}
+%</classXourse>
+%    \end{macrocode}
+% So indeed this environment in html wraps the activities in a div in
+% order to assign some number of points to them.
+%    \begin{macrocode}
+%<*htXourse>
+\renewenvironment{graded}[1]{%
+\ifvmode \IgnorePar\fi \EndP\HCode{<div class="graded" data-weight="#1">}\IgnoreIndent%
+}{
+\ifvmode \IgnorePar\fi \EndP\HCode{</div>}\IgnoreIndent%
+}
+%</htXourse>
+%    \end{macrocode}
+
+% \subsubsection{Ungraded activities}
+% \DescribeEnv{ungraded}{The |ungraded| environment is used to record
+% that certain parts of activities should not be worth points.  For
+% example, if you want to use a multipleChoice as a survey question,
+% you can place it inside an |ungraded| environment.}
+% On the \LaTeX\ side, the |ungraded| environment does nothing.
+%    \begin{macrocode}
+%<*classXimera>
+\newenvironment{ungraded}{}{}
+%</classXimera>
+%    \end{macrocode}
+% But on the html side, |ungraded| wraps the activities in a div in
+% order to assign some weight to them for grading.
+%    \begin{macrocode}
+%<*htXimera>
+\renewenvironment{ungraded}{%
+\ifvmode \IgnorePar\fi \EndP\HCode{<div class="ungraded">}\IgnoreIndent%
+}{
+\ifvmode \IgnorePar\fi \EndP\HCode{</div>}\IgnoreIndent%
+}
+%</htXimera>
+%    \end{macrocode}
+
+% \subsubsection{Leashes}
+% \DescribeEnv{leash}{Put content inside a scrollable box.}
+%    \begin{macrocode}
+%<*classXimera>
+
+\newenvironment{leash}[1]{%
+}{%
+}
+
+
+%</classXimera>
+%    \end{macrocode}
+
+%    \begin{macrocode}
+%<*htXimera>
+\renewenvironment{leash}[1]{\ifvmode \IgnorePar\fi \EndP\HCode{<div style="overflow: auto; height: #1px">}}{\HCode{</div>}\IgnoreIndent}
+%</htXimera>
+%    \end{macrocode}
+
+% \subsubsection{Foldable}
+% The package \verb|mdframed| is used to make pretty foldable, but the
+% amsthm/mdframed conflict also messes up the .jax file so we don't
+% load mdframed when performing the xake step.  But even the below
+% isn't enough to fix this.
+%    \begin{macrocode}
+%\iftikzexport\else\RequirePackage[framemethod=TikZ]{mdframed}\fi
+%    \end{macrocode}
+% \DescribeEnv{foldable}{Does it fold?}
+%    \begin{macrocode}
+%<*classXimera>
+
+\colorlet{textColor}{black} % since textColor is referenced below
+\colorlet{background}{white} % since background is referenced below
+
+% The core environments. Find results in 4ht file.
+%% pretty-foldable
+%\iftikzexport
+\newenvironment{foldable}{%
+}{%
+}
+%\else
+%\renewmdenv[
+%  font=\upshape,
+%  outerlinewidth=3,
+%  topline=false,
+%  bottomline=false,
+%  leftline=true,
+%  rightline=false, 
+%  leftmargin=0,
+%  innertopmargin=0pt,
+%  innerbottommargin=0pt,
+%  skipbelow=\baselineskip,
+%  linecolor=textColor!20!white,
+%  fontcolor=textColor,
+%  backgroundcolor=background
+%]{foldable}%
+%\fi
+
+%% pretty-expandable
+%\iftikzexport
+%% Overwritten in .4ht, but probably also in accordion!
+\ifdefined\xmNotExpandableAsAccordion
+\newenvironment{expandable}{}{}
+\else
+\newenvironment{expandable}[2]{}{}
+\fi
+%\else
+%\newmdenv[
+%  font=\upshape,
+%  outerlinewidth=3,
+%  topline=false,
+%  bottomline=false,
+%  leftline=true,
+%  rightline=false, 
+%  leftmargin=0,
+%  innertopmargin=0pt,
+%  innerbottommargin=0pt,
+%  skipbelow=\baselineskip,
+%  linecolor=black,
+%]{expandable}%
+%\fi
+
+\newcommand{\unfoldable}[1]{#1}
+
+%</classXimera>
+%    \end{macrocode}
+% On the web, these foldable elements could be HTML5 details and summary.
+%    \begin{macrocode}
+%<*htXimera>
+\renewenvironment{foldable}{\stepcounter{identification}\ifvmode \IgnorePar\fi \EndP\HCode{<div id="foldable\arabic{identification}" class="foldable">}}{\HCode{</div>}\IgnoreIndent}
+
+\ifdefined\xmNotExpandableAsAccordion
+\renewenvironment{expandable}{\stepcounter{identification}\ifvmode \IgnorePar\fi \EndP\HCode{<div data-original="expandable" id="foldable\arabic{identification}" class="foldable">}}{\HCode{</div>}\IgnoreIndent}
+\fi
+
+\renewcommand{\unfoldable}[1]{\HCode{<span class="unfoldable">}#1\HCode{</span>}}
+%</htXimera>
+%    \end{macrocode}
+
+
+% \subsubsection{Accordion}
+% The package \verb|mdframed| is used to make pretty foldable, but the
+% amsthm/mdframed conflict also messes up the .jax file so we don't
+% load mdframed when performing the xake step.  But even the below
+% isn't enough to fix this.
+%    \begin{macrocode}
+%\iftikzexport\else\RequirePackage[framemethod=TikZ]{mdframed}\fi
+%    \end{macrocode}
+%    \begin{macrocode}
+%<*classXimera>
+
+
+\colorlet{textColor}{black} % since textColor is referenced below
+\colorlet{background}{white} % since background is referenced below
+
+% The core environments. Find results in 4ht file.
+%% accordion container
+\newenvironment{accordion}{%
+}{%
+}
+%% pretty-accordion
+\iftikzexport
+  \newenvironment{accordion-item}[1][]{%
+  }{%
+  }
+\else
+  \newenvironment{accordion-item}[1][]{%
+	  \paragraph{#1}
+  }{%
+  }
+\fi
+
+%</classXimera>
+%    \end{macrocode}
+% On the web, these accordions result in a jquery accordion with multiple accordion-items.
+%    \begin{macrocode}
+%<*htXimera>
+\renewenvironment{accordion}{\ifvmode \IgnorePar\fi \EndP\HCode{<div class="accordion">}
+}{\HCode{</div>}\IgnoreIndent}
+
+\renewenvironment{accordion-item}[1][]{\stepcounter{identification}\ifvmode \IgnorePar\fi \EndP\HCode{<h3>}#1\HCode{</h3><div id="accordion-item\arabic{identification}" class="accordion-item">}
+}{\HCode{</div>}\IgnoreIndent}
+
+
+\ifdefined\xmNotHintAsExpandable\else
+%\let\hint\relax
+%\let\endhint\relax
+\RenewEnviron{hint}{%
+ \begin{expandable}{xmhint}{}%
+   \BODY%
+ \end{expandable}%
+}
+\fi
+
+\ifdefined\xmNotExpandableAsAccordion\else
+%% re-implement expandable (04/2023)
+\let\expandable\relax
+\let\endexpandable\relax
+\newenvironment{expandable}[2]{%
+  \stepcounter{identification}%
+  \ifvmode \IgnorePar\fi \EndP%
+  \HCode{<div class="accordion">\Hnewline}%
+  \HCode{<h3 class="#1">}#2\HCode{</h3>\Hnewline}%
+  \HCode{<div id="accordion-item\arabic{identification}" class="accordion-item #1-content">\Hnewline}
+}%
+{%
+  \HCode{</div>\Hnewline</div>\Hnewline}\IgnoreIndent
+}
+\fi
+
+%</htXimera>
+%    \end{macrocode}
+
+
+% \subsubsection{Including widgets}
+% \DescribeMacro{\includeinteractive}{Cognate to |includegraphics| but
+% instead of a graphics file, accepts a |.js| file which will be
+% loaded as an interactive widget.}
+%    \begin{macrocode}
+%<*classXimera>
+\define@key{interactive}{id}{\def\interactive@id{#1}}
+\setkeys{interactive}{id=}
+\newcommand{\includeinteractive}[2][]{
+\setkeys*{interactive}{#1}%
+\ifthenelse{\equal{\interactive@id}{}}{}{\recordvariable{\interactive@id}}
+Interactive
+}
+%</classXimera>
+%    \end{macrocode}
+%    \begin{macrocode}
+%<*htXimera>
+\renewcommand{\includeinteractive}[2][]{\stepcounter{identification}\ifvmode \IgnorePar\fi \EndP\HCode{<div id="interactive\arabic{identification}" class="interactive"> </div>}\HCode{<script src="#2" data-argument="#1" data-target="interactive\arabic{identification}"> </script>}\IgnoreIndent}
+%</htXimera>
+%    \end{macrocode}
+
+
+% \subsubsection{XKCD}
+% \DescribeMacro{\xkcd}{Reference an XKCD cartoon.}
+%    \begin{macrocode}
+%<*classXimera>
+\newcommand{\xkcd}[1]{#1}
+%</classXimera>
+%    \end{macrocode}
+% On the web, this should be an image linked to the actual XKCD website.
+%    \begin{macrocode}
+%<*htXimera>
+\renewcommand{\xkcd}[1]{\ifvmode \IgnorePar\fi \EndP\HCode{<img src="https://imgs.xkcd.com/comics/#1.png">}}
+%</htXimera>
+%    \end{macrocode}
+
+
+
+

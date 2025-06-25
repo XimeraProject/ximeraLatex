@@ -1,0 +1,42 @@
+% Hyperlinks to outside documents
+%    \begin{macrocode}
+%<*classXimera>
+%% \link[name]{url}   (opens in new tab)
+%% \link*[name]{url}   (opens in *same* tab)  (this was default behaviour for \link till 2025/06))
+%%  In PDF  \link[name]{url} uses \href but adds a Footnote with the url
+%%  The footnote is not added after  \let\xmLinkHasFootnote\undefined
+\def\xmLinkHasFootnote{1}
+\NewDocumentCommand{\link}{s o m}%
+ {%
+\ifdefined\HCode%
+  \IfBooleanTF{#1}%
+    { % Starred version    %
+      \IfNoValueTF{#2}%
+        {    \HCode{<a href="#3">}\Hurl{#3}\HCode{</a>}}%
+        {    \HCode{<a href="#3">}#2\HCode{</a>}}%
+    }%
+    { % Unstarred version%
+      \IfNoValueTF{#2}%
+        {    \HCode{<a href="#3" target="_blank">}\Hurl{#3}\HCode{</a>}}%
+        {    \HCode{<a href="#3" target="_blank">}#2\HCode{</a>}}%
+    }%
+\else   % PDF %
+      \IfNoValueTF{#2}%
+        {\url{#3}}%
+        {\href{#3}{#2}\ifdefined\xmLinkHasFootnote\footnote{See #2 at \url{#3}}\fi}% SWITCH ARGS ... !%
+ \fi%
+ }%
+
+%</classXimera>
+%    \end{macrocode}
+
+
+%    \begin{macrocode}
+%<*htXimera>
+
+% because hyperref redefines stuff atbegindocument, we do too.
+% NOTE 202506: Is this needed/wanted?
+\AtBeginDocument{\renewcommand{\ref}[1]{\HCode{<a class="reference" href="\##1">#1</a>}}}
+
+%</htXimera>
+%    \end{macrocode}

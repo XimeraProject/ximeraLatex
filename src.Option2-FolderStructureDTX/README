@@ -1,0 +1,58 @@
+The idea of option 2 is to allow a large amount of dtx files with minimal contents,
+ideally an individual dtx file per environment/command (or group of environment/commands
+that are all doing the same basic thing - e.g. only one dtx for all theorem-like environments).
+But we still want some sane organization, so instead of cutting down the number of dtx files,
+we enrich the folder organization - grouping dtx according to some relatively general properties.
+Currently I have come up with the included folder structure as a proof of concept, **but** 
+we should discuss what specific way we want to structure the folders to attain the ideal number 
+of folders and intuition about what should be inside each folder. 
+
+Ideally each folder would have some kind of README or description somewhere (either in the folder
+itself or perhaps listed somewhere in the top level README) that gives the description as to
+what should intuitively be included in that folder - that way we have a static guideline to use
+for any future dtx files... rather than letting scope creep bloat specific folders into losing
+their narrow intuitive contents.
+
+Right now I have the following folder structure (intuitive description of contents provided below)
+
+- documentElements
+    - This contains dtx files for commands/elements that address actual structural elements
+        of the document, e.g. the abstract, title page, ToC, etc.
+    - As a related topic, it also contains content that connects or groups these kinds of 
+        structural elements, e.g. labels, options, graded, etc. (options is a bit iffy here?)
+- embeddables
+    - This contains dtx files for commands/elements that embed an external source into the
+        ximera page. This includes all the obvious things like desmos, geogebra, etc.
+    - This also includes the image.dtx content, specifically the stuff that support embedding
+        any external file (like images) into the ximera document or webpage.
+- interactables
+    - This contains dtx files for commands/elements that students/users (not content authors)
+        can/will actually interact with (answer commands, choice environments, etc)
+    - As a related topic, this also includes page interactives that students actually interact
+        with, e.g. accordian, foldable, etc.
+    - A somewhat iffy inclusion is all the problem.dtx content. Although not *technically* an
+        interactive itself, it basically exists to wrap interactives in a way that grades can
+        be assigned and tracked so it seemed like it should be either here, or in documentElements?
+- internals
+    - This contains dtx files for commands/elements that are only used inside the cls by developers.
+        e.g. banner, makeCounter, preamble, suppress, etc.
+    - As a related topic, this also includes package loading and meta-content that should never be changed
+        e.g. jax.dtx
+- localizationLib
+    - This contains the files that are loaded as dictionaries for localization (i.e. the .trsl files)
+- styling
+    - This contains dtx files for commands/elements that implement/impact styling/presentation
+        (for either the pdf or online), e.g. html.dtx, textcolor.dtx, pagesetup.dtx.
+    - As a related topic, this also contains elements that convert from pdf to html content for
+        things that may not be obvious how to do this stylistically (e.g. footnotes)
+    - As a related (iffy?) topic, this also includes environments that are designed to stylistically
+        separate content for users, e.g. proof.dtx, solution.dtx, theorems.dtx.
+- validatorLib
+    - This contains the files that contain the new validator code that has been designated for
+        core code implementation, e.g. factorCheck.dtx, multiAns.dtx, etc.
+
+There should be no more than 2-3 dtx files (ideally none!) at the top level src folder, i.e.
+the ''src'' folder should have only subfolders, and no files directly in the src folder. 
+If there are ever more than 2-3 files directly in the src folder, it is a signal that we should
+discuss which folder to put them in, and/or if we need to create a new ''category'' (subfolder)
+in the src folder.

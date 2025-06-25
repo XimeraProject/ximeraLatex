@@ -1,0 +1,201 @@
+% \section{Online Styling}
+% This contains the content that directly impacts how online content is displayed.
+% 
+% On the HTML side, there is more complicated page setup to perform.
+%    \begin{macrocode}
+%<*cfgXimera>
+\Preamble{xhtml,mathjax}
+
+% We don't want to translate font suggestions with ugly wrappers like
+% <span class="cmti-10"> for italic text
+\NoFonts
+
+% Don't output xml version tag
+% \Configure{VERSION}{}
+ 
+% Output HTML5 doctype instead of the default for HTML4
+% \Configure{DOCTYPE}{\HCode{<!doctype html>\Hnewline}}
+ 
+% Custom page opening
+% \Configure{HTML}{\HCode{<html lang="en">\Hnewline}}{\HCode{\Hnewline</html>}}
+
+% Reset <head>, aka delete all default boilerplate; alternatively set up new content
+% \Configure{@HEAD}{\HCode{<meta name="generator" content="TeX4ht (http://www.cse.ohio-state.edu/\string~gurari/TeX4ht/)" />\Hnewline}}
+\Configure{@HEAD}{\HCode{<meta name="ximera" content="version 2.5.1" />\Hnewline}}
+\Configure{@HEAD}{\HCode{<link href="https://ximera.osu.edu/public/stylesheets/standalone.css" rel="stylesheet" media="screen"/>\Hnewline}}
+\Configure{@HEAD}{\HCode{<script type="text/javascript" async src="https://ximera.osu.edu/public/javascripts/standalone.min.js"></script>\Hnewline}}
+
+% OVERWRITE css in ximera-server (to be removed whenever this has been fixed in the server; 10/2024)
+\catcode`\%=11
+\Configure{@BODY}{\HCode{<style>    
+.activity-body pre { 
+    white-space: pre; 
+    background-color: lightgray; 
+}
+.xmyoutube {
+    aspect-ratio: 16/9;
+    min-width: 75%;
+}
+.image-environment img {
+    width: unset;
+}
+</style>\Hnewline}} 
+\catcode`\%=14
+
+%</cfgXimera>
+%    \end{macrocode}
+% Disable certain ligatures in HTML.
+%    \begin{macrocode}
+%<*htXimera>
+\usepackage{microtype}
+\DisableLigatures[f]{encoding=*}
+%</htXimera>
+%    \end{macrocode}
+% I am not sure what this does.
+%    \begin{macrocode}
+%<*htXimera>
+\NewEnviron{html}{\HCode{\BODY}}
+%</htXimera>
+%    \end{macrocode}
+
+% Xourse files can have parts.
+% \DescribeMacro{\part}{The name of a large part of a xourse.}
+%    \begin{macrocode}
+%<*htXourse>
+\newcounter{ximera@part}
+\setcounter{ximera@part}{0}
+\renewcommand\part[1]{%
+\stepcounter{ximera@part}%
+\ifvmode \IgnorePar\fi \EndP%
+%\HCode{<h1 id="part\arabic{ximera@part}" class="card part">}#1\HCode{</h1>}% makes cards disappear?
+\HCode{<h1 id="part\arabic{ximera@part}" class="card part">#1</h1>}%
+\IgnoreIndent%
+}
+%</htXourse>
+%    \end{macrocode}
+% Paragraph commands emit spans.
+% \DescribeMacro{\paragraph}{A small heading.}
+%    \begin{macrocode}
+%<*cfgXimera>
+\renewcommand{\paragraph}[1]{%
+  \HCode{<span class="paragraphHead">}%
+  #1%
+  \HCode{</span>}\par\IgnorePar}
+%</cfgXimera>
+%    \end{macrocode}
+% \DescribeMacro{\subparagraph}{An even smaller heading.}
+%    \begin{macrocode}
+%<*cfgXimera>
+\renewcommand{\subparagraph}[1]{%
+  \HCode{<span class="subparagraphHead">}%
+  #1%
+  \HCode{</span>}\par\IgnorePar}
+%</cfgXimera>
+%    \end{macrocode}
+
+% Make \textcolor work using https://tex.stackexchange.com/questions/390127/textcolor-with-tex4ht
+%    \begin{macrocode}
+%<*cfgXimera>
+\makeatletter
+\Configure{textcolor}{\HCode{<span style="color:\#\tsf@color;">}}{\HCode{</span>}}
+% redefine \textcolor command
+\let\oldtextcolor\textcolor
+
+\renewcommand\textcolor[2]{%
+  % we need to convert the current color to hexadecimal form usable in the style attribute
+  % the \tsf@color macro is used in the \Configure{textcolor} configuration to insert the
+  % CSS color
+  \extractcolorspec{#1}{\tsf@color}%
+  \expandafter\convertcolorspec\tsf@color{HTML}\tsf@color%
+  % call the original command
+  \oldtextcolor{#1}{#2}%
+}%
+\makeatother
+%</cfgXimera>
+%    \end{macrocode}
+
+
+% \subsubsection{Semantic HTML}
+% \DescribeMacro{\textbf}{Using \verb|\textbf| emits a \verb|<strong>| tag.}
+%    \begin{macrocode}
+%<*cfgXimera>
+\Configure{textbf}{\ifvmode\ShowPar\fi\HCode{<strong>}}{\HCode{</strong>}}
+%</cfgXimera>
+%    \end{macrocode}
+% \DescribeMacro{\textit}{Using \verb|\textit| or similar emits an \verb|<em>| tag.}
+%    \begin{macrocode}
+%<*cfgXimera>
+\Configure{textit}{\ifvmode\ShowPar\fi\HCode{<em>}}{\HCode{</em>}}
+\Configure{emph}{\ifvmode\ShowPar\fi\HCode{<em>}}{\HCode{</em>}}
+%</cfgXimera>
+%    \end{macrocode}
+% \DescribeMacro{\texttt}{Using \verb|\texttt| emits a \verb|<code>| tag.}
+%    \begin{macrocode}
+%<*cfgXimera>
+\Configure{texttt}{\ifvmode\ShowPar\fi\HCode{<code>}}{\HCode{</code>}}
+%</cfgXimera>
+%    \end{macrocode}
+
+
+% \subsection{How to handle footnotes in this setting.}
+% \DescribeMacro{\footnote}{% Written by Jason Nowell Standard Footnotes in pdf, but expandable parenthetical online. Supports different coloring by using |\colorlet{fncolor}{COLOR}| and setting COLOR to whatever color you want (Default is blue).}%
+% 
+%    \begin{macrocode}
+%<*htXimera>
+\newcounter{footnoteNum}% This will track footnote numbering for the superscript and for the ID.
+\colorlet{fncolor}{red!30!blue}% This is the footnote text coloring. This will allow users to renew this coloring to their own preference if they want to. The default here is a blue coloring. NOTE: Currently; trying to use `footnotecolor' (as a more descriptive color name) breaks everything on my system pretty spectacularly for some reason. This may be just mine or a clash somewhere in the ximera package, so for now I'm leaving it as `fncolor'.
+\renewcommand{\footnote}[1]{\ifvmode\ShowPar\fi
+    \stepcounter{footnoteNum}% Step the counter to make a new footnote
+    %% The following HCode should setup the javascript function that shows or hides the footnote. If you want to change the footnote location, you may want to change the 'inline' part of x.style.display = 'inline'; to another CSS display type, like 'block' or 'inherit'. Current the `x.display.color' seems to not be working.
+    \HCode{
+    <script type="text/javascript">
+            function footnotefun(ID) {
+              var x = document.getElementById(ID);
+              if (x.style.display === "none") {
+                x.style.color = "blue";
+                x.style.display = "inline";
+              } else {
+                x.style.display = "none";
+              }
+            }}
+    \HCode{</script>}
+    %% The next command needs \expandafter in order to expand the counter footnoteNum into a roman character for the footnote ID. These seem to work better than arabic numerals in some cases, although why is not clear.
+    %% The next HCode controls the formatting for the actual footnote reference number (ie the superscript), but not the footnote itself.
+    \expandafter\HCode{
+    <span style="position=relative;
+            vertical-align=baseline;">
+            <button onclick='footnotefun("footnote\roman{footnoteNum}")'
+                style=
+                "background:none!important;
+                 color:inherit;
+                 border:none;
+                 padding:0!important;
+                 font: inherit;
+                 cursor: pointer;"
+                >
+             <sup>}[\arabic{footnoteNum}]
+             \HCode{</sup></button>}
+    %% The next command needs \expandafter in order to expand the counter footnoteNum into a roman character for the footnote ID. These seem to work better than arabic numerals in some cases, although why is not clear. Note that the ID counter style choice (roman vs arabic etc) needs to match the previous HCode choice.
+    %% Currently most of the formatting doesn't seem to work as intended, so that still needs to be figured out and fixed. Ideally we would have the footnote appear as a bubble above the footnote superscript when the footnote superscript is clicked.
+    \expandafter\HCode{
+            <span id="footnote\roman{footnoteNum}"
+                style=
+                "display:none;
+                min-width:20em;
+                position:relative;
+                left:2px;
+                padding:5px;
+                color:blue;
+                word-wrap:break-word;
+                z-index=9999;
+                overflow=auto;"
+                >
+            }
+            \textcolor{fncolor}{(#1)}% Display the actual footnote here with color `fncolor' and within ()'s.
+        \HCode{</span></span>}
+    }% End of footnote definition.
+%</htXimera>
+%    \end{macrocode}
+
+
+

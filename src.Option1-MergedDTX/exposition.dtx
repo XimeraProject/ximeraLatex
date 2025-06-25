@@ -1,0 +1,300 @@
+% \section{Exposition Elements}
+% This section contains the environments/commands/etc that support author exposition.
+% 
+% 
+
+
+% \subsubsection{Dialogues}
+% \DescribeEnv{dialogue}{A dialogue between people.}
+%    \begin{macrocode}
+%<*classXimera>
+\newenvironment{dialogue}{%
+   \renewcommand\descriptionlabel[1]{\hspace{\labelsep}\textbf{##1:}}
+   \begin{description}%
+}{%
+   \end{description}%
+}
+%</classXimera>
+%    \end{macrocode}
+% On the web, the resulting |<dl>| should have an appropriate |class| set.
+%    \begin{macrocode}
+%<*htXimera>
+\renewenvironment{dialogue}{\begin{description}}{\end{description}}
+
+\ConfigureList{dialogue}%
+   {\EndP\HCode{<dl \a:LRdir class="dialogue">}%
+      \PushMacro\end:itm
+\global\let\end:itm=\empty}
+   {\PopMacro\end:itm \global\let\end:itm \end:itm
+\EndP\HCode{</dd></dl>}\ShowPar}
+   {\end:itm \global\def\end:itm{\EndP\Tg</dd>}\HCode{<dt
+        class="actor">}\bgroup \bf}
+   {\egroup\EndP\HCode{</dt><dd\Hnewline class="speech">}}
+%</htXimera>
+%    \end{macrocode}
+
+
+% \subsubsection{Proofs}
+% \DescribeEnv{proof}{A mathematical proof environment.}
+%    \begin{macrocode}
+%<*classXimera>
+\renewcommand{\qedsymbol}{$\blacksquare$}
+\renewenvironment{proof}[1][\proofname]
+  {\begin{trivlist}\item[\hskip \labelsep \itshape \bfseries #1{}\hspace{2ex}]}
+{\qed\end{trivlist}}
+%</classXimera>
+%<*htXimera>
+      % Mmm, (why) do we want/need this ...?
+      \ConfigureTheoremEnv{proof}     
+\ConfigureEnv{proof}{\ifvmode\IgnorePar\fi\EndP\HCode{<div class="proof">}
+\ConfigureList{trivlist}{\ifvmode\IgnorePar\fi\EndP}{}{}{}
+}{\ifvmode\IgnorePar\fi\EndP\HCode{</div>}}{}{}
+%</htXimera>
+%    \end{macrocode}
+
+
+
+% \subsubsection{Solution}
+% \DescribeEnv{solution}{The solution to a problem.}
+%    \begin{macrocode}
+%<*classXimera>
+%% solution environment
+\ifhandout % what follows is handout behavior
+\newenvironment{solution}%
+	       {%
+		 \setbox0\vbox\bgroup
+	       }
+               {%
+		 \egroup
+	       }
+\else
+\newenvironment{solution}%
+	       {%
+		 \begin{trivlist}
+		 \item[\hskip \labelsep\bfseries \GetTranslation{Solution}:\hspace{2ex}]
+	       }
+	       % %% line at the bottom} 
+	       {
+			\end{trivlist}
+		 % (202410: no longer \par\addvspace{.5ex}\nobreak\noindent\hung
+	       }
+\fi
+                        
+                              
+
+%</classXimera>
+%    \end{macrocode}
+
+% \subsubsection{Theorem and theorem-like environments}
+% On the web, a theorem is emitted as a special |<div>|.
+%    \begin{macrocode}
+%<*htXimera>
+\newcommand{\ConfigureTheoremEnv}[1]{%
+\renewenvironment{#1}[1][]{\refstepcounter{problem}%
+\ifthenelse{\equal{##1}{}}{}{%
+  \HCode{<span class="theorem-like-title">}##1\HCode{</span>}%
+}}{}
+\ConfigureEnv{#1}{\stepcounter{identification}\ifvmode \IgnorePar\fi \EndP\HCode{<div class="theorem-like problem-environment #1" id="problem\arabic{identification}" titletext=" \GetTranslation{#1}">}}{\ifvmode\IgnorePar\fi\EndP\HCode{</div>}\IgnoreIndent}{}{}%
+}
+%</htXimera>
+%<classXimera>\theoremstyle{definition} % No italic (because this makes also text in TikZ italic !!!)
+%    \end{macrocode}
+
+% The key is to make sure that the theorem environments are defined in
+% a corresponding fashion on the web and on paper.
+
+% \DescribeEnv{theorem}{Theorem}
+%    \begin{macrocode}
+%<classXimera>      \newtheorem{theorem}{\GetTranslation{Theorem}}
+%<htXimera>      \ConfigureTheoremEnv{theorem}
+%    \end{macrocode}
+
+% \DescribeEnv{algorithm}{Algorithm}
+%    \begin{macrocode}
+%<classXimera>      \newtheorem{algorithm}{\GetTranslation{Algorithm}}
+%<htXimera>      \ConfigureTheoremEnv{algorithm}
+%    \end{macrocode}
+
+% \DescribeEnv{axiom}{Axiom}
+%    \begin{macrocode}
+%<classXimera>      \newtheorem{axiom}{\GetTranslation{Axiom}}
+%<htXimera>      \ConfigureTheoremEnv{axiom}
+%    \end{macrocode}
+
+% \DescribeEnv{claim}{Claim}
+%    \begin{macrocode}
+%<classXimera>      \newtheorem{claim}{\GetTranslation{Claim}}
+%<htXimera>      \ConfigureTheoremEnv{claim}
+%    \end{macrocode}
+
+% \DescribeEnv{conclusion}{Conclusion}
+%    \begin{macrocode}
+%<classXimera>      \newtheorem{conclusion}{\GetTranslation{Conclusion}}
+%<htXimera>      \ConfigureTheoremEnv{conclusion}
+%    \end{macrocode}
+
+% \DescribeEnv{condition}{Condition}
+%    \begin{macrocode}
+%<classXimera>      \newtheorem{condition}{\GetTranslation{Condition}}
+%<htXimera>      \ConfigureTheoremEnv{condition}
+%    \end{macrocode}
+
+% \DescribeEnv{conjecture}{Conjecture}
+%    \begin{macrocode}
+%<classXimera>      \newtheorem{conjecture}{\GetTranslation{Conjecture}}
+%<htXimera>      \ConfigureTheoremEnv{conjecture}
+%    \end{macrocode}
+
+% \DescribeEnv{corollary}{Corollary}
+%    \begin{macrocode}
+%<classXimera>      \newtheorem{corollary}{\GetTranslation{Corollary}}
+%<htXimera>      \ConfigureTheoremEnv{corollary}
+%    \end{macrocode}
+
+% \DescribeEnv{criterion}{Criterion}
+%    \begin{macrocode}
+%<classXimera>      \newtheorem{criterion}{\GetTranslation{Criterion}}
+%<htXimera>      \ConfigureTheoremEnv{criterion}
+%    \end{macrocode}
+
+% \DescribeEnv{definition}{Definition}
+%    \begin{macrocode}
+%<classXimera>      \newtheorem{definition}{\GetTranslation{Definition}}
+%<htXimera>      \ConfigureTheoremEnv{definition}
+%    \end{macrocode}
+
+% \DescribeEnv{example}{Example}
+%    \begin{macrocode}
+%<classXimera>      \newtheorem{example}{\GetTranslation{Example}}
+%<htXimera>      \ConfigureTheoremEnv{example}
+%    \end{macrocode}
+
+% \DescribeEnv{explanation}{Explanation}
+%    \begin{macrocode}
+%<classXimera>      \newtheorem*{explanation}{\GetTranslation{Explanation}}
+%<htXimera>      \ConfigureTheoremEnv{explanation}
+%    \end{macrocode}
+
+% \DescribeEnv{fact}{Fact}
+%    \begin{macrocode}
+%<classXimera>      \newtheorem{fact}{\GetTranslation{Fact}}
+%<htXimera>      \ConfigureTheoremEnv{fact}
+%    \end{macrocode}
+
+% \DescribeEnv{lemma}{Lemma}
+%    \begin{macrocode}
+%<classXimera>      \newtheorem{lemma}{\GetTranslation{Lemma}}
+%<htXimera>      \ConfigureTheoremEnv{lemma}
+%    \end{macrocode}
+
+% \DescribeEnv{formula}{Formula}
+%    \begin{macrocode}
+%<classXimera>      \newtheorem{formula}{\GetTranslation{Formula}}
+%<htXimera>      \ConfigureTheoremEnv{formula}
+%    \end{macrocode}
+
+% \DescribeEnv{idea}{Idea}
+%    \begin{macrocode}
+%<classXimera>      \newtheorem{idea}{\GetTranslation{Idea}}
+%<htXimera>      \ConfigureTheoremEnv{idea}
+%    \end{macrocode}
+
+% \DescribeEnv{notation}{Notation}
+%    \begin{macrocode}
+%<classXimera>      \newtheorem{notation}{\GetTranslation{Notation}}
+%<htXimera>      \ConfigureTheoremEnv{notation}
+%    \end{macrocode}
+
+% \DescribeEnv{model}{Model}
+%    \begin{macrocode}
+%<classXimera>      \newtheorem{model}{\GetTranslation{Model}}
+%<htXimera>      \ConfigureTheoremEnv{model}
+%    \end{macrocode}
+
+% \DescribeEnv{observation}{Observation}
+%    \begin{macrocode}
+%<classXimera>      \newtheorem{observation}{\GetTranslation{Observation}}
+%<htXimera>      \ConfigureTheoremEnv{observation}
+%    \end{macrocode}
+
+% \DescribeEnv{proposition}{Proposition}
+%    \begin{macrocode}
+%<classXimera>      \newtheorem{proposition}{\GetTranslation{Proposition}}
+%<htXimera>      \ConfigureTheoremEnv{proposition}
+%    \end{macrocode}
+
+% \DescribeEnv{paradox}{Paradox}
+%    \begin{macrocode}
+%<classXimera>      \newtheorem{paradox}{\GetTranslation{Paradox}}
+%<htXimera>      \ConfigureTheoremEnv{paradox}
+%    \end{macrocode}
+
+% \DescribeEnv{procedure}{Procedure}
+%    \begin{macrocode}
+%<classXimera>      \newtheorem{procedure}{\GetTranslation{Procedure}}
+%<htXimera>      \ConfigureTheoremEnv{procedure}
+%    \end{macrocode}
+
+% \DescribeEnv{remark}{Remark}
+%    \begin{macrocode}
+%<classXimera>      \newtheorem{remark}{\GetTranslation{Remark}}
+%<htXimera>      \ConfigureTheoremEnv{remark}
+%    \end{macrocode}
+
+% \DescribeEnv{summary}{Summary}
+%    \begin{macrocode}
+%<classXimera>      \newtheorem{summary}{\GetTranslation{Summary}}
+%<htXimera>      \ConfigureTheoremEnv{summary}
+%    \end{macrocode}
+
+% \DescribeEnv{template}{Template}
+%    \begin{macrocode}
+%<classXimera>      \newtheorem{template}{\GetTranslation{Template}}
+%<htXimera>      \ConfigureTheoremEnv{template}
+%    \end{macrocode}
+
+% \DescribeEnv{warning}{Warning}
+%    \begin{macrocode}
+%<classXimera>      \newtheorem{warning}{\GetTranslation{Warning}}
+%<htXimera>      \ConfigureTheoremEnv{warning}
+%    \end{macrocode}
+
+
+% \subsubsection{Code listing environments}
+% \DescribeEnv{code}{A code answer environment} You cannot use Environ
+% with the fancyvrb/listings package if you want nested environments.
+%
+%    \begin{macrocode}
+%<*classXimera>
+\DefineVerbatimEnvironment{code}{Verbatim}{numbers=left,frame=lines,label=Code,labelposition=topline}
+%</classXimera>
+%    \end{macrocode}
+% \DescribeEnv{python}{A python answer environment} You cannot use
+% Environ with the fancyvrb/listings package if you want nested
+% environments
+%    \begin{macrocode}
+%<*classXimera>
+\DefineVerbatimEnvironment{python}{Verbatim}{numbers=left,frame=lines,label=Python,labelposition=topline}
+%</classXimera>
+%    \end{macrocode}
+% \DescribeEnv{javascriptCode}{A JavaScript answer environment} Unfortunately the name |javascript| is already used for the actual, executed (!) JavaScript interactive.
+% environments
+%    \begin{macrocode}
+%<*classXimera>
+\DefineVerbatimEnvironment{javascriptCode}{Verbatim}{numbers=left,frame=lines,label=JavaScript,labelposition=topline}
+%</classXimera>
+%<*cfgXimera>
+\renewenvironment{javascriptCode}{\NoFonts}{\EndNoFonts}
+\ScriptEnv{javascriptCode}{\stepcounter{identification}\ifvmode \IgnorePar\fi \EndP\HCode{<div class="javascript-code" id="javascript\arabic{identification}"><script type="text/text">}\HtmlParOff}{\HtmlParOn\HCode{\Hnewline</script></div>}}
+%</cfgXimera>
+%    \end{macrocode}
+%%% On the web, translate verbatim and lstlisting blocks into |<pre>|
+%%% elements.
+%%%    \begin{macrocode}
+%%%<*cfgXimera>
+%%\ConfigureEnv{verbatim}{\ifvmode\IgnorePar\fi\EndP\HCode{<pre style="white-space: pre; background-color: lightgray;" >}}{\ifvmode\IgnorePar\fi\EndP\HCode{</pre>}}{}{}
+%%\ConfigureEnv{lstlisting}{\ifvmode\IgnorePar\fi\EndP\HCode{<pre>}}{\ifvmode\IgnorePar\fi\EndP\HCode{</pre>}}{}{}
+%%%</cfgXimera>
+%%%    \end{macrocode}
+
+

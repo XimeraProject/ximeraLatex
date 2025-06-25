@@ -1,0 +1,130 @@
+% \section{Triggered Events}
+% This section contains triggered events that occur either online as a result of a student action 
+% or pedagogically in a pdf (e.g. hints, feedback, etc).
+
+% \subsubsection{Feedback}
+% \DescribeEnv{feedback}{An initially hidden environment that uncovers itself at an appropriate time.}
+% New Validator rewrite code added by Jason Nowell. Original code
+% orovided by Jim Fowler Validator is an environment designed to run a
+% custom check on answers (usually) using javascript code.
+%
+% Define a placeholder command for validator and feedback.
+%    \begin{macrocode}
+%<*classXimera>
+\newcommand{\PH@Command}{}
+%    \end{macrocode}
+% Validator should take an argument and detokenize it and display it
+% at the start of the environment. The original Validator environment
+% had everything framed in an mbox; presumably to make the text look
+% a bit nicer, although this seems redundant with |texttt|. It
+% shouldn't cause any harm so I have left it in for now.
+%    \begin{macrocode}
+\newenvironment{validator}[1][]{
+	\def\PH@Command{#1}% Use PH@Command to hold the content and be a target for "\expandafter" to expand once.
+	\mbox{\texttt{\detokenize\expandafter{\PH@Command}}}% Now expand PH@Command once and then detokenize. 
+	}{}
+%    \end{macrocode}
+% First, if it's a handout, we want feedback to eat everything and
+% then disappear entirely. So we do this:
+%    \begin{macrocode}
+\ifhandout%
+\newenvironment{feedback}
+               {%
+		 \setbox0\vbox\bgroup
+	       }
+               {%
+		 \egroup
+	       }               
+%    \end{macrocode}
+% If this isn't a handout, then we want to display the Feedback by
+% using a label, positioned and formated as a |\item| in a
+% trivlist. It is important that we also detokenize the content of
+% the optional argument, as it is likely to contain javascript or
+% other code that latex won't be able to make sense of.
+%    \begin{macrocode}
+\else
+%    \end{macrocode}
+%    \begin{macrocode}
+\newenvironment{feedback}[1][attempt]{
+
+\edef\PH@Command{\GetTranslation{#1}}% Use PH@Command to hold the content and be a target for "\expandafter" to expand once.
+
+\begin{trivlist}% Begin the trivlist to use formating of the "Feedback" label.
+\item[\hskip \labelsep\small\slshape\bfseries \GetTranslation{Feedback}% Format the "Feedback" label. Don't forget the space.
+\ifonlineTF{% If the feedback is on a pdf, we don't need to detokenize - which messes with the \MakeUppercase command anyway.
+(\texttt{\expandafter\detokenize\expandafter{\PH@Command}})}% Keep the online version the same as before.
+{(\expandafter\texttt{\PH@Command})}:% No need for detokenize in the pdf version
+\hspace{2ex}]\small\slshape% Insert some space before the actual feedback given.
+}{
+\end{trivlist} 
+}
+
+\fi
+%</classXimera>
+%    \end{macrocode}
+% Feedback environments take an optional parameter (which describes
+% when the feedback is to be provided)
+%    \begin{macrocode}
+%<*htXimera>
+\def\feedback{\@ifnextchar[{\@feedbackcode}{\@feedbackattempt}}
+\def\@feedbackattempt{\@feedbackcode[attempt]}
+\def\@feedbackcode[#1]{\stepcounter{identification}%
+\ifvmode \IgnorePar\fi \EndP%
+\ifthenelse{\equal{#1}{attempt}}{\HCode{<div class="feedback" data-feedback="attempt" id="feedback\arabic{identification}" titletext=" \GetTranslation{Feedback} (\GetTranslation{attempt})">}}%
+{\ifthenelse{\equal{#1}{correct}}{\HCode{<div class="feedback" data-feedback="correct" id="feedback\arabic{identification}" titletext=" \GetTranslation{Feedback} (\GetTranslation{correct})">}}%
+{\HCode{<div class="feedback" data-feedback="script" id="feedback\arabic{identification}" titletext=" \GetTranslation{Feedback}"><script type="text/javascript">function feedback\arabic{identification}() }\{\HCode{ return \detokenize{#1}; }\}\HCode{</script>}}}}
+\def\endfeedback{\HCode{</div>}\IgnoreIndent}
+%</htXimera>
+%    \end{macrocode}
+
+% \subsubsection{Hints}
+% \DescribeEnv{hint}{Hint environments can be embedded inside problems.}
+%    \begin{macrocode}
+%<*classXimera>
+%    \end{macrocode}
+% Create a counter that will track how deeply nested the current hint is
+%    \begin{macrocode}
+\newcounter{hintLevel}
+\setcounter{hintLevel}{0}
+%    \end{macrocode}
+% Create an empty shell to renew
+%    \begin{macrocode}
+\newenvironment{hint}{}{}
+%    \end{macrocode}
+% Now we renew the environment as needed, this should allow support
+% for any transition code that treats some parts as a "handout" and
+% some parts as non-handout.  renewing the environment on the fly is a
+% bit hacky.
+%    \begin{macrocode}
+	\renewenvironment{hint}
+	{
+		\ifhandout
+			\setbox0\vbox\bgroup
+		\else
+			\begin{trivlist}\item[\hskip \labelsep\small\slshape\bfseries \GetTranslation{hint}:\hspace{2ex}]
+			\small\slshape
+		\fi
+		\stepcounter{hintLevel}
+	}
+	{
+		\ifhandout
+			\egroup\ignorespacesafterend
+		\else
+			\end{trivlist}
+		\fi
+		\addtocounter{hintLevel}{-1}
+	}
+
+\ifhints
+	\renewenvironment{hint}{
+		\begin{trivlist}\item[\hskip \labelsep\small\slshape\bfseries \GetTranslation{hint}:\hspace{2ex}]
+	\small\slshape
+	}
+	{
+		\end{trivlist}
+	}
+\fi
+
+%</classXimera>
+%    \end{macrocode}
+

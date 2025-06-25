@@ -1,0 +1,276 @@
+% \section{Support/Internal Macros}
+% This DTX implements a large portion of the internal mechanics/macros/definitions that are used in the cls.
+% None of these are intended to be used by content authors or end users, just by developers.
+% This should be executed as early as possible - likely right after packages are loaded.
+% 
+% \subsection{Hard Coded Content}
+% Some content is hard coded in the cls, such as the ximera banner in the console in the browser.
+% This is where that content goes.
+% 
+% \subsubsection{Banner}
+% The banner displayed in the browser console on loading.
+% 
+%    \begin{macrocode}
+%<*classXimera>
+\let\m\message
+\def\w{\m{::}}\def\t{\m{:::}}\def\s{\m{ }}\def\n{\m{^^J}}\def\u{::'}\def\d{'::}\def\v{:::::}
+\n
+\m{\d.}\s\m{.\u}\w\m{}\m{\v}\s\s\m{\v}\m{}\m{.\v\v\v::::.}\s\m{}\t\n
+\s\m{\d.\u}\s\w\t\t\s\t\t\w\m{}\s\s\s\s\s\s\s\t\s\m{\u::}\n
+\s\s\t\s\s\w\t\m{}\t\t\m{}\t\m{ ::::\v}\m{.\v:\u}\m{}\m{\u}\m{\d}\n
+\s\m{.\u::.}\s\w\t\m{}\t\t\m{}\t\w\s\s\s\s\w\m{}\m{\d.}\s\m{\u}\s\m{\d}\n
+\m{.\u}\s\m{\d.}\w\t\s\m{':\u}\s\t\m{\d\v::}\w\s\m{}\m{\d.\u}\s\s\m{\d}\n
+\n
+\let\w\undefined
+\let\t\undefined
+\let\s\undefined
+\let\n\undefined
+\let\u\undefined
+\let\d\undefined
+\let\v\undefined
+\let\m\undefined
+%</classXimera>
+%    \end{macrocode}
+%    
+% \subsection{Conditionals}
+% Below contains the various new conditional definitions for Ximera.
+%    
+% \subsubsection{Only in HTML or PDF}
+% Ximera provides several techniques to display some content only in the PDF, or only online.
+% The \verb|prompt| environment can be used to hide the data-entry part of a problem from the PDF: it's contents only get displayed online.
+% \\
+% The lower level commands \verb|\pdfOnly| and \verb|\htmlOnly| also limit the output to either PDF or online, similarly to the environments
+% \verb|onlyPdf| and \verb|onlyHtml|.
+% \\
+% If \verb|\xmPrintHtmlOnlyAlsoInPdf| is set, the online/html only things are printed in the PDF anyway (e.g. for review).
+% \\
+% Unfortunately it is not possible in \LaTeX\ to have a command and an environment with the same name. We opted for the above (confusing\ldots) names. 
+% \\
+% For backward compatibility, the deprecated environment \verb|onlineOnly| is identical to \verb|onlyHtml|.
+% \\
+% For more advanced usage also commands \verb|\ifonline| and \verb|ifonlineTF| are provided.
+% \\
+% The technique used to distinguish between the PDF-version and the online HTML-version is always the existence of the TeX4ht macro \verb|\HCode|.
+% Older distinctions such as \verb|\ifxake|, \verb|ifhandout| or \verb|\iftikzexport| should no longer be used for this purpose.
+%
+
+% \DescribeEnv{prompt}{The prompt part for mathmode}
+%    \begin{macrocode}
+%<*classXimera>
+\ifxake
+        \newenvironment{prompt}{}{}
+\else
+\ifhandout
+	\NewEnviron{prompt}{}
+    % Breaks when put in mathmode ?
+    % \newenvironment{prompt}{\suppress}{\endsuppress} 
+\else
+	\newenvironment{prompt}{\bgroup\color{gray!50!black}}{\egroup}
+\fi
+\fi
+%    \end{macrocode}
+% \DescribeEnv{onlyHtml}{Only display online}
+% \\
+% \DescribeEnv{onlyPdf}{Only display in the PDF}
+% \\
+% \DescribeEnv{onlineOnly}{Only display online (deprecated: use onlyHtml instead)}
+%    \begin{macrocode}
+\ifdefined\HCode
+	\newenvironment{onlyPdf}{\setbox0\vbox\bgroup}{\egroup}
+	\newenvironment{onlyHtml}{\bgroup}{\egroup}
+	\newenvironment{onlineOnly}{\bgroup}{\egroup}
+\else
+	\newenvironment{onlyPdf}{\bgroup}{\egroup}
+	\ifdefined\xmPrintHtmlOnlyAlsoInPdf
+		\newenvironment{onlyHtml}{\bgroup\color{red!50!black}}{\egroup}
+		\newenvironment{onlineOnly}{\bgroup\color{red!50!black}}{\egroup}
+	\else
+		\newenvironment{onlyHtml}{\setbox0\vbox\bgroup}{\egroup}
+		\newenvironment{onlineOnly}{\setbox0\vbox\bgroup}{\egroup}
+	\fi
+\fi
+
+%    \end{macrocode}
+% \DescribeMacro{\htmlOnly}{Only display online}
+% \\
+% \DescribeMacro{\pdfOnly}{Only display in the PDF}
+%    \begin{macrocode}
+
+\ifdefined\HCode
+	\newcommand{\pdfOnly}[1]{}
+	\newcommand{\htmlOnly}[1]{#1}
+\else
+	\ifdefined\xmPrintHtmlOnlyAlsoInPdf
+		\newcommand{\pdfOnly}[1]{#1}
+		\newcommand{\htmlOnly}[1]{\bgroup\color{red!50!black}#1\egroup}
+	\else
+		\newcommand{\pdfOnly}[1]{#1}
+		\newcommand{\htmlOnly}[1]{}
+	\fi
+\fi
+
+%    \end{macrocode}
+% \DescribeMacro{\ifonline}{Only execute online (ie in HTML version) }
+% \\
+% \DescribeMacro{\ifonlineTF}{Different output online vs PDF}
+%    \begin{macrocode}
+% An alternatife for \pdfOnly/\begin{htmlOnly} : 
+% Usage: Hello \ifonlineTF{online reader}{PDF reader}
+\providecommand{\ifonlineTF}[2]{\htmlOnly{#1}\pdfOnly{#2}}
+\newif{\ifonline}
+\ifdefined\HCode
+\onlinetrue
+\else
+\onlinefalse
+\fi
+%</classXimera>
+%    \end{macrocode}
+
+
+% \subsection{MathJax support}
+% When using mathjax, dump all the |\newcommand|s to a |.jax| file.
+%
+% First, create the |.jax| file.
+% Redefine newcommand appropriately.
+%    \begin{macrocode}
+%<*classXimera>
+%% Pre-202412: .jax file written in non-\HCode, and in a next run inserted by ximera.cfg in .html file
+%% Post-202501: .mjax file written only in \HCode, and in luaxake post-processing inserted in .html file
+%%   ( used luaxake rather than sed ...)
+\newwrite\myfile
+\ifdefined\HCode
+\immediate\openout\myfile=\jobname.xmjax
+
+%% From |only.dtx| we must also create |prompt| on the MathJax side.
+\immediate\write\myfile{\unexpanded{\newenvironment}{prompt}{}{}}
+
+%% Write all newcommands to .xmjax file, that will be included in the .html via luaxake 
+\let\@oldargdef\@argdef
+\long\def\@argdef#1[#2]#3{%
+\immediate\write\myfile{\unexpanded{\newcommand}{\unexpanded{#1}}[\unexpanded{#2}]{\unexpanded{#3}}}%
+\@oldargdef#1[#2]{#3}%
+}
+
+%% Same for \DeclareMathOperator
+\let\@OldDeclareMathOperator\DeclareMathOperator
+\renewcommand{\DeclareMathOperator}[2]{\@OldDeclareMathOperator{#1}{#2}\immediate\write\myfile{\unexpanded{\DeclareMathOperator}{\unexpanded{#1}}{\unexpanded{#2}}}}
+
+\fi
+
+
+%</classXimera>
+%    \end{macrocode}
+% Include the jax'ed newcommands  (pre-202412 versions ....)
+%    \begin{macrocode}
+%<*cfgXimera>
+
+% 202501: removed sed-manipulation of .jax file; see luaxake now
+
+\Configure{BVerbatimInput}{}{}{}{}
+
+\Configure{verbatiminput}{}{}{}{}
+
+% Instead of a nonbreaking space, use a standard space
+\makeatletter
+\def\FV@Space{\space}
+\makeatother
+
+% Include the (problem-?) .ids in a text/javascript script right at the beginning of the body
+\Configure{BODY}{%
+\HCode{<body>\Hnewline}%
+\Tg<div class="preamble">%
+%% 202501: removed .jax inclusion  (see luaxake)
+
+%% Include the .ids file
+\IfFileExists{\jobname.ids}{\HCode{<script type="text/javascript">\Hnewline}%
+\BVerbatimInput{\jobname.ids}%
+\HCode{</script>\Hnewline}%
+}{}
+\Tg</div>%
+}{%
+\ifvmode\IgnorePar\fi\EndP\HCode{</body>\Hnewline}%
+}
+
+% 202501: removed 'prevent spaces as in  "\begin {align}": this is done in luaxake now
+
+% This is a fix for the LAODE book, which uses matlabEquation as if it were an equation
+\ScriptEnv{matlabEquation}{\ifvmode \IgnorePar\fi \EndP\HCode{<script type="math/tex; mode=display"> \string\begin{equation}\Hnewline}\HtmlParOff}{\HtmlParOn\HCode{\string\end{equation}</script>}}
+
+%</cfgXimera>
+%    \end{macrocode}
+
+% \subsection{MakeCounter}
+%    The below are two different mechanisms for making a new counter or redefining it as needed.
+%    \begin{macrocode}
+%<*classXimera>
+%    \end{macrocode}
+% \begin{macro}{NewCounter}
+%   Improved version of |\newcounter| to check for existance before creating a counter to minimize conflicts with packages.  Added by Jason Nowell
+%    \begin{macrocode}
+\newcommand{\Make@Counter}[1]{% This is an internal macro that should probably be depreciated for the below universal macro.
+% Code located in "Utilitymacros.dtx"
+  \@ifundefined{c@#1}% Check to see if counter exists
+	       {     % If not, create it and set it to 0.
+		\newcounter{#1}
+		\setcounter{#1}{0}
+		}
+		{%If so, reset to 0.
+		\setcounter{#1}{0}
+		}
+}
+
+\newcommand{\MakeCounter}[1]{%% Code located in "Utilitymacros.dtx"
+% Code located in "Utilitymacros.dtx"
+  \@ifundefined{c@#1}% Check to see if counter exists
+	       {     % If not, create it and set it to 0.
+		\newcounter{#1}
+		\setcounter{#1}{0}
+		}
+		{%If so, reset to 0.
+		\setcounter{#1}{0}
+		}
+}
+%    \end{macrocode}
+%</classXimera>
+% \end{macro}
+
+
+
+% \subsubsection{Suppress}
+% \DescribeEnv{suppress}{The suppress environment is a good way to suppress output without
+% commenting it.  This way we can avoid many of the places we use
+% environ package and this should also avoid most of the verbatim
+% conflicts.}
+% This is code adapted from |syntonly.sty|.
+%    \begin{macrocode}
+%<*classXimera>
+\font\dummyft@=dummy \relax
+\def\suppress{%
+  \begingroup\par
+  \parskip\z@
+  \offinterlineskip
+  \baselineskip=\z@skip
+  \lineskip=\z@skip
+  \lineskiplimit=\maxdimen
+  \dummyft@
+  \count@\sixt@@n
+  \loop\ifnum\count@ >\z@
+    \advance\count@\m@ne
+    \textfont\count@\dummyft@
+    \scriptfont\count@\dummyft@
+    \scriptscriptfont\count@\dummyft@
+  \repeat
+  \let\selectfont\relax
+  \let\mathversion\@gobble
+  \let\getanddefine@fonts\@gobbletwo
+  \tracinglostchars\z@
+  \frenchspacing
+  \hbadness\@M}
+\def\endsuppress{\par\endgroup}
+%</classXimera>
+%    \end{macrocode}
+
+
+
+
+

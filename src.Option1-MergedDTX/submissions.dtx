@@ -1,0 +1,403 @@
+% \section{evaluation}
+% This section contains the commands, environments, elements, etc 
+% that are used to take in student submissions
+% 
+% \subsubsection{Answers}
+% \DescribeMacro{\answer}{A math answer}
+%    \begin{macrocode}
+%<*classXimera>
+
+\ifdefined\HCode
+\newcommand{\recordvariable}[1]{}
+\else
+\newwrite\idfile
+\immediate\openout\idfile=\jobname.ids
+\newcommand{\recordvariable}[1]{\ifthenelse{\equal{#1}{}}{}{\immediate\write\idfile{var #1;}}}
+\fi
+%    \end{macrocode}
+% Determines if answer is shown in handout mode.  when |given=true|,
+% show answer in handout mode, show answer in ``given box'' outside
+% handout mode.  When |given=false|, do not show answer in handout
+% mode, show answer outside handout mode
+%    \begin{macrocode}
+\define@key{answer}{given}[true]{\def\ans@given{#1}} 
+%    \end{macrocode}
+% Used for setting numeric answer tolerance for online student input.
+%    \begin{macrocode}
+\define@key{answer}{tolerance}{\def\ans@tol{#1}}
+%    \end{macrocode}
+% Used to run dynamic js code on student provided answers. Note:
+% currently pdf outputs the validator code itself.
+%    \begin{macrocode}
+\define@key{answer}{validator}{}
+%    \end{macrocode}
+% Used for assigning a js ID to answer for dynamic code (eg validators).
+%    \begin{macrocode}
+\define@key{answer}{id}{\def\ans@id{#1}}
+%    \end{macrocode}
+% Used to set anticipated input format; eg "string".
+%    \begin{macrocode}
+\define@key{answer}{format}{}
+%    \end{macrocode}
+% Used to hide the answer input box on the web.
+%    \begin{macrocode}
+\define@key{answer}{onlinenoinput}[false]{}
+%    \end{macrocode}
+% Used to add a `show answer' button to the answer blank.
+%    \begin{macrocode}
+\define@key{answer}{onlineshowanswerbutton}[false]{}
+%    \end{macrocode}
+% Set default values for |\answer| command |key=value| pairs.
+% Default values are |given = false|.
+%    \begin{macrocode}
+\setkeys{answer}{id=,given=false,onlinenoinput=false,onlineshowanswerbutton=false}
+%    \end{macrocode}
+% Basic code for |\answer|.
+%    \begin{macrocode}
+
+% Options for handout
+\newcommand{\answerFormatLength}{2cm}
+
+\newcommand{\answerFormatDots}[1]{\ldots\ldots}
+\newcommand{\answerFormatLine}[1]{\protect\rule{\answerFormatLength}{0.4pt}}
+\newcommand{\answerFormatFlexibleLine}[1]{\protect\rule{\widthof{$#1$}*2}{0.4pt}}
+\newcommand{\answerFormatFlexibleBox}[1]{\fbox{\scalebox{2}{\phantom{$#1$}}}}
+
+% options for default (i.e with answers filled in)
+\newcommand{\answerFormatPlain}[1]{\ensuremath{#1}}
+\newcommand{\answerFormatBlue}[1]{\color{blue}\ensuremath{#1}}
+\newcommand{\answerFormatBoxed}[1]{\fbox{\ensuremath{#1}}}
+\newcommand{\answerFormatBoxedGiven}[1]{\underset{\scriptstyle\mathrm{given}}{\fbox{\ensuremath{#1}}}}
+
+% defaults for handout and default mode, and for \answer[given]
+\let\handoutAnswerFormat\answerFormatDots
+\let\defaultAnswerFormat\answerFormatBlue
+\let\givenAnswerFormat\answerFormatBoxedGiven
+
+\newcommand{\answer}[2][]{%
+	\ifmmode%
+		\setkeys{answer}{#1}%
+		\recordvariable{\ans@id}
+		\ifthenelse{\boolean{\ans@given}}
+			{% Start then statement
+			\ifhandout 
+				#2
+			\else
+				\givenAnswerFormat{#2} %% in case the argument helps formatting
+			\fi
+			}% End then statement
+			{% Start else statement
+			\ifhandout
+				\handoutAnswerFormat{#2} %% in case the argument helps formatting
+			\else% show answer in box outside handout mode
+				\defaultAnswerFormat{#2} %% in case the argument helps formatting
+			\fi
+			}% End else statement
+	\else%
+		\GenericError{\space\space\space\space}% Throw an error based on... something? -- Jason
+		{Attempt to use \@backslashchar answer outside of math mode}
+		{See https://github.com/ximeraProject/ximeraLatex for explanation.}
+		{Need to use either inline or display math.}%
+	\fi
+}
+%</classXimera>
+%    \end{macrocode}
+% On the HTML side, |\answer| emits spans---but it is usually just
+% handled directly by MathJax.
+%    \begin{macrocode}
+%<*htXimera>
+\renewcommand{\answer}[2][false]{\HCode{<span class="answer respondable">}#2\HCode{</span>}}
+
+\def\validator[#1]{\stepcounter{identification}\HCode{<div class="validator" id="validator\arabic{identification}"><script type="text/javascript">function validator\arabic{identification}() }\{\HCode{ return \detokenize{#1}; }\}\HCode{</script>}}
+\def\endvalidator{\HCode{</div>}}
+
+%</htXimera>
+%    \end{macrocode}
+
+% \subsubsection{Multiple choice and the like}
+% \DescribeEnv{multipleChoice}{Multiple choice}
+%    \begin{macrocode}
+%<*classXimera>
+% Jim: Originally this was \renewcommand{\theenumi}{$(\mathrm{\alph{enumi}})$}
+% but that breaks tex4ht because mathmode can only be processed by mathjax.
+% so now I made this just italicized.
+%    \end{macrocode}
+% \subsubsection{Options}
+%    \begin{macrocode}
+\define@key{choice}{value}[]{\def\choice@value{#1}}
+%    \end{macrocode}
+% This flags the answer as the correct answer
+%    \begin{macrocode}
+\define@boolkey{choice}{correct}[true]{\def\choice@correct{#1}}
+%    \end{macrocode}
+% Use an ID to refer to the choice.
+%    \begin{macrocode}
+\define@key{multipleChoice}{id}{\def\mc@id{#1}}
+%    \end{macrocode}
+% |\otherchoice| outputs the item if correct and nothing if incorrect.
+%    \begin{macrocode}
+\define@key{otherchoice}{value}[]{\def\otherchoice@value{#1}}
+\define@boolkey{otherchoice}{correct}[true]{\def\otherchoice@correct{#1}}
+%    \end{macrocode}
+% Default key choices for multiple choice options.
+% Default for choice pairs.
+% Default: answers without the option "correct=true" is "incorrect".
+%    \begin{macrocode}
+\setkeys{choice}{correct=false,value=}
+%    \end{macrocode}
+% Defaults for multipleChoice pairs.
+% Default to no id? -- Jason
+%    \begin{macrocode}
+\setkeys{multipleChoice}{id=}
+%    \end{macrocode}
+% Defaults for otherchoice pairs.
+% Default "otherchoice" to behave like "choice" for error checking.
+%    \begin{macrocode}
+\setkeys{otherchoice}{correct=false,value=}
+%</classXimera>
+%    \end{macrocode}
+%
+% \subsubsection{Choices}
+% \DescribeMacro{\choice}{Like |\item| but for choice environments.}
+% choice command denotes a possible answer choice for the multiple choice question.
+%    \begin{macrocode}
+%<*classXimera>
+\newcommand{\choice}[2][]{%
+\setkeys{choice}{#1}%
+\item{#2}
+\ifthenelse{\boolean{\choice@correct}}
+    {% Begin then result
+    \ifhandout% if it's a handout do nothing.
+    \else% otherwise place a checkmark when you select the "correct choice"... maybe? -- Jason
+        \,\checkmark\,\setkeys{choice}{correct=false}
+    \fi
+    }% End then result
+    {}% Begin/End else result.
+}
+
+%Define an expandable version of choice Not really meant to be used outside this package (used in wordChoice)
+% Is there a reason we can't just always use this as default? -- Jason
+\newcommand{\choiceEXP}[2][]{%
+	\expandafter\setkeys\expandafter{choice}{#1}%
+	\item{#2}
+	\ifthenelse{\boolean{\choice@correct}}
+		{% Begin then result
+		\ifhandout 
+		\else 
+			\,\checkmark\,\setkeys{choice}{correct=false}
+		\fi
+		}% End then result
+		{}% Begin/End else result.
+	} %% note all the {} are needed in case the choice has [] in it.
+
+% \otherchoice is the \choice used in wordChoice command.
+\newcommand{\otherchoice}[2][]{%
+\ignorespaces%
+\setkeys{otherchoice}{#1}%
+\ifthenelse{\boolean{\otherchoice@correct}}%
+{% Start then result
+#2\ignorespaces\setkeys{otherchoice}{correct=false}\ignorespaces%
+}% End then result
+{}% Start/End else result
+\ignorespaces%
+}%
+\newcommand{\inlinechoice}[2][]{%
+\setkeys{choice}{#1}%
+\iffirstinlinechoice
+(\hspace{-.25em}
+\firstinlinechoicefalse
+\else
+/
+\fi
+#2
+\ifthenelse{\boolean{\choice@correct}}%
+{% Start then result
+\ifhandout\else\checkmark\ignorespaces\setkeys{choice}{correct=false}\ignorespaces\fi%
+}% End then result
+{}% Start/End else result
+\hspace{-.25em}\ignorespaces%
+}
+
+%</classXimera>
+%    \end{macrocode}
+% On the HTML side, |\choice| emits |<span>|s.
+%    \begin{macrocode}
+%<*htXimera>
+\newcounter{choiceId}
+\renewcommand{\choice}[2][]{%
+\setkeys{choice}{correct=false}%
+\setkeys{choice}{#1}%
+\stepcounter{choiceId}\IgnorePar%
+\HCode{<span class="choice }%
+\ifthenelse{\boolean{\choice@correct}}{\HCode{correct}}{}
+\HCode{" }
+\ifthenelse{\equal{\choice@value}{}}{}{\HCode{data-value="\choice@value" }}
+\HCode{id="choice\arabic{choiceId}">}%
+#2\HCode{</span>}}
+\let\inlinechoice\choice
+%</htXimera>
+%    \end{macrocode}
+
+% \subsubsection{Environment(s)}
+% The environment |multipleChoice@| is for internal use only. 
+% \DescribeEnv{multipleChoice}{Wrap |\choice|s in a |multipleChoice| environment to make a multiple choice question.}
+%    \begin{macrocode}
+%<*classXimera>
+\newenvironment{multipleChoice}[1][]
+	{% Environment Start Code
+	\setkeys{multipleChoice}{#1}%
+	\recordvariable{\mc@id}%
+	\begin{trivlist}
+		\item[\hskip \labelsep\small\bfseries \GetTranslation{Multiple Choice}:]\hfil
+		\begin{enumerate}
+	}% Note this means that \item has to be the first line after \begin{multipleChoice}.
+	{% Environment End Code
+		\end{enumerate}
+	\end{trivlist}
+	}
+
+%multipleChoice@ is for internal use only! (used in wordChoice)
+%this is simply a wrapper for the sole showing (other)choice.
+\newenvironment{multipleChoice@}[1][]{}{)}
+%</classXimera>
+%    \end{macrocode}
+
+
+
+% On the web, you might also expect these to be "problem environments"
+% but they aren't -- they're respondables.  You might expect a
+% |\setcounter{choiceId}{0}| here --- that would be wrong, because then
+% the generated IDs would no longer be unique.
+%    \begin{macrocode}
+%<*htXimera>
+\renewenvironment{multipleChoice}[1][]
+{\setkeys{multipleChoice}{#1}%
+\stepcounter{identification}\ifvmode \IgnorePar\fi \EndP\HCode{<div class="multiple-choice" }%
+\ifthenelse{\equal{\mc@id}{}}{}{\HCode{data-id="\mc@id" }}%
+\HCode{id="problem\arabic{identification}" titletext=" \GetTranslation{Multiple Choice}">}%
+}{\HCode{</div>}\IgnoreIndent}
+\ConfigureEnv{multipleChoice}{}{}{}{}
+%</htXimera>
+%    \end{macrocode}
+
+% \subsection{Word choice}
+% \DescribeMacro{\wordChoice}{An in-line version of multipleChoice:
+% uses enumitem package note, it is coded as a single line to avoid
+% unwanted spaces in ``given'' mode.}
+%    \begin{macrocode}
+%<*classXimera>
+\newcommand{\wordChoice}[1]{%
+\let\choicetemp\choice% Assign a "choicetemp" command to duplicate choice.
+\ifwordchoicegiven% If wordchoice option is on, we need to juggle around some definitions.
+\let\choice\otherchoice%
+%\begin{multipleChoice@}% -unnecessary (REMOVE THIS LINE IF THE YEAR IS 2019 or Beyond)
+#1
+%\end{multipleChoice@}% -unnecessary (REMOVE THIS LINE IF THE YEAR IS 2019 or Beyond)
+\else% If it isn't the regular "choice" command should work.
+\let\choice\inlinechoice%
+\begin{multipleChoice@}%
+#1%
+\end{multipleChoice@}%
+\fi%
+\let\choice\choicetemp% Now that choicetmp has been manipulated to what we want, replace choice with it.
+}%
+
+
+%</classXimera>
+%    \end{macrocode}
+% This is actually just word choice
+%    \begin{macrocode}
+%<*htXimera>
+\renewenvironment{multipleChoice@}{\refstepcounter{problem}}{}%
+\ConfigureEnv{multipleChoice@}{\stepcounter{identification}\IgnorePar\HCode{<span class="word-choice" id="word-choice\arabic{identification}">}}{\HCode{</span>}\IgnoreIndent}{}{}
+%</htXimera>
+%    \end{macrocode}
+
+% \subsection{Select all}
+% \DescribeEnv{selectAll}{A multiple-multiple choice question}
+%    \begin{macrocode}
+%<*classXimera>
+\newenvironment{selectAll}[1][]
+{\begin{trivlist}\item[\hskip \labelsep\small\bfseries \GetTranslation{Select All Correct Answers}:]\hfil\begin{enumerate}}
+    {\end{enumerate}\end{trivlist}}
+%</classXimera>
+%    \end{macrocode}
+
+% In the future we need this to (optionally) be displayed in the
+% problem, while the actual code lives in the solution. Here is how
+% this could be implemented: Like the title/maketitle commands, the
+% multiple-choice could be stored in |\themultiplechoice|, flip a
+% boolean, and execute |\makemultiplechoice| at the |\end| of the
+% problem.  We should also make a command called |\showchoices| that
+% will show choices in the handout.
+
+% On the web, |selectAll| is handled just like |multipleChoice|.
+%    \begin{macrocode}
+%<*htXimera>
+\renewenvironment{selectAll}{\refstepcounter{problem}}{}%
+\ConfigureEnv{selectAll}{\stepcounter{identification}\ifvmode \IgnorePar\fi \EndP\HCode{<div class="select-all" id="problem\arabic{identification}" titletext=" \GetTranslation{Select All}">}}{\HCode{</div>}\IgnoreIndent}{}{}
+%</htXimera>
+%    \end{macrocode}
+
+% \subsubsection{Free response}
+% \DescribeEnv{freeResponse}{A freeform input box.}
+%    \begin{macrocode}
+%<*classXimera>
+\newboolean{given} %% required for freeResponse
+\setboolean{given}{true} %% could be replaced by a key=value pair later if needed
+
+\ifhandout
+	\newenvironment{freeResponse}[1][false]%
+		{%
+		\def\givenatend{\boolean{#1}}
+		\ifthenelse{\boolean{#1}}
+			{% Begin then result
+			\begin{trivlist}
+				\item
+			}% End then result
+			{% Begin else result
+			\setbox0\vbox\bgroup
+			}% End else result
+%		{}% Don't think this is doing anything? -- Jason
+		}
+		{%
+		\ifthenelse{\givenatend}
+			{% Begin then result
+			\end{trivlist}
+			}% End then result
+			{% Begin else result
+			\egroup
+			}% End else result
+%			{}% Don't think this is doing anything? -- Jason
+		}
+\else
+	\newenvironment{freeResponse}[1][false]%
+		{% Environment Beginning Code
+		  \ifthenelse{\boolean{#1}}%% Could probably change this with just putting the (given) in the boolean?-- Jason
+		  	{% Begin then result
+		  	\begin{trivlist}
+		  		\item[\hskip \labelsep\bfseries \GetTranslation{Free Response (Given)}:\hspace{2ex}]
+		  	}% End then result
+			{% Begin else result
+			\begin{trivlist}
+				\item[\hskip \labelsep\bfseries \GetTranslation{Free Response}:\hspace{2ex}]
+			}% End else result
+		}
+		{% Environment Ending Code
+			\end{trivlist}
+		}
+\fi
+
+%</classXimera>
+%    \end{macrocode}
+
+%    \begin{macrocode}
+%<*htXimera>
+
+\renewenvironment{freeResponse}{\refstepcounter{problem}}{}%
+\ConfigureEnv{freeResponse}{\stepcounter{identification}\ifvmode \IgnorePar\fi \EndP\HCode{<div class="free-response" id="problem\arabic{identification}"  titletext=" \GetTranslation{Free Response}">}}{\HCode{</div>}\IgnoreIndent}{}{}%
+
+%</htXimera>
+%    \end{macrocode}
+
+

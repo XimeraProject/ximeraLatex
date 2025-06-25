@@ -1,0 +1,51 @@
+% \section{pdf Styling}
+% This is the content that directly impacts how the pdf looks when compiled
+% 
+% \subsection{Page setup}
+% We want non-indented spaced-out paragraphs.
+%    \begin{macrocode}
+%<*classXimera>
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{5pt}
+%</classXimera>
+%    \end{macrocode}
+% To avoid weird margins in 2-sided mode, change the margins.
+%    \begin{macrocode}
+%<*classXimera>
+\oddsidemargin 62pt
+\evensidemargin 62pt
+\textwidth 345pt
+\headheight 14pt
+%</classXimera>
+%    \end{macrocode}
+
+% \subsection{Sectioning}
+% Makes the table of contents look a bit better.  This can be
+% redefined in the preamble if you do not like the appearance.
+% \DescribeMacro{\section}{The name of a section inside an activity.}
+%    \begin{macrocode}
+%<*classXourse>
+\renewcommand*\l@section{\@dottedtocline{1}{1.5em}{4.2em}}
+%</classXourse>
+%    \end{macrocode}
+% \DescribeMacro{\subsection}{The name of a subsection inside an activity.}
+%    \begin{macrocode}
+%<*classXourse>
+\renewcommand*\l@subsection{\@dottedtocline{2}{3.8em}{4.2em}}
+%</classXourse>
+%    \end{macrocode}
+
+% \subsubsection{Enumerate fixes}
+% Make enumerate use a letter
+%    \begin{macrocode}
+%<*classXimera>
+\renewcommand{\theenumi}{\textup{(\alph{enumi})}}
+\renewcommand{\labelenumi}{\theenumi}
+\renewcommand{\theenumii}{\textup{(\roman{enumii})}}
+\renewcommand{\labelenumii}{\theenumii}
+%</classXimera>
+%    \end{macrocode}
+
+
+
+

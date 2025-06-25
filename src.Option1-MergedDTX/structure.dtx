@@ -1,0 +1,459 @@
+% \section{Structural Elements}
+% There are some key structural elements that are necessary in ximera, e.g. abstracts and titles.
+% This dtx implements the purely structural elements.
+% Note: This does *not* include elements that content authors can use to impose structure to a document,
+% content in this dtx is for structural elements that are required, or implemented without, author actions.
+% 
+% \subsection{Abstract}
+% \DescribeEnv{abstract}{Every activity should include a short abstract.}
+%    \begin{macrocode}
+%<*classXimera>
+\let\abstract\relax
+\let\endabstract\relax
+% Use of environ package, may want to find a better way.
+% see the messing around with \theabstract in title.dtx ... Is this really needed/wanted?
+\NewEnviron{abstract}{\protected@xdef\theabstract{\BODY}}
+%</classXimera>
+%    \end{macrocode}
+% The abstract has been stored in |\theabstract| and should be emitted
+% as a div. The code below is required for the abstract to show online.
+%    \begin{macrocode}
+%<*cfgXimera>
+\ifvmode\IgnorePar\fi\EndP
+\ConfigureEnv{abstract}{\ifvmode\IgnorePar\fi\EndP\HCode{\Hnewline<div class="abstract">}\par}{\ifvmode\IgnorePar\fi\EndP\HCode{\Hnewline</div>}\par}{}{}
+%</cfgXimera>
+%    \end{macrocode}
+%    \begin{macrocode}
+%<*htXimera>
+\RenewEnviron{abstract}{\BODY}
+%<*htXimera>
+%    \end{macrocode}
+%    
+% \subsection{Activities}
+% The core of the |xourse| system. It works by redefining the
+% |document| environment, thus making the |\begin| and
+%   |\end{document}| of the subfile `transparent' to the
+% inclusion. The redefinition of |\documentclass| is analogous, just
+% having a required and an optional arguments which mean nothing to
+% |\subfile|.
+%    \begin{macrocode}
+%<*classXourse>
+\newcommand{\skip@preamble}{%
+    \let\document\relax\let\enddocument\relax%
+    \newenvironment{document}{\let\input\otherinput}{}%
+    \renewcommand{\documentclass}[2][subfiles]{}}
+%    \end{macrocode}
+% Note that the new command |\subfile| calls for |\skip@preamble| \emph{within a group}. The changes to |document| and |\documentclass| are undone after the inclusion of the subfile.
+%
+% Numbering starts a page too soon without this:
+%    \begin{macrocode}
+\let\otherinput\input 
+%    \end{macrocode}
+% Store usual |\maketitle| as |\othermaketitle|
+%    \begin{macrocode}
+\let\othermaketitle\maketitle
+%    \end{macrocode}
+% \DescribeMacro{\maketitle}{In a \textsf{xourse} file, |\maketitle| is redefined to give course packet title page and toc.}
+%    \begin{macrocode}
+\renewcommand{\maketitle}{ %
+\pagestyle{empty}
+\begin{center}
+~\\ %puts space at top of page to move title down.
+\vskip .25\textheight
+\hrulefill\\
+\vskip 1em
+\bfseries{\Huge \@title} \\
+\hrulefill\\
+\vskip 3em
+{\Large \@author}
+\vskip 2em
+{\large \@date}
+\end{center}
+\clearpage
+%    \end{macrocode}
+% When |notoc| option is used, we do not include a table of contents.
+% Otherwise we include a table of contents in every course packet.
+%    \begin{macrocode}
+\ifnotoc
+\else
+  \tableofcontents\clearpage
+  \clearpage
+\fi
+%    \end{macrocode}        
+% Switch to main pagestyle, just like a document with documentclass \textsf{ximera}.
+%    \begin{macrocode}
+\pagestyle{main}
+%    \end{macrocode}
+% Renew maketitle to usual definition.
+%    \begin{macrocode}
+\let\maketitle\othermaketitle
+%    \end{macrocode}
+% And we finish with our redefinition of |\maketitle|.
+%    \begin{macrocode}
+}
+\relax
+%</classXourse>
+%    \end{macrocode}
+
+% \subsubsection{Regular activities}
+% \DescribeMacro{\activity}{Documents included with |\activity| will
+% be included in the body of the xourse document. Any |\input|
+% commands within included \textsf{ximera} documents will be ignored.
+% Any |\usepackage| commands within included ximera documents will
+% cause an error.  Overlapping |\newcommand| definitions within
+% multiple ximera documents included simultaneously will cause an
+% error.}  The |\activity| command inputs the file name provided
+% without |\documentclass|, without
+% |\begin{document}|/|\end{document}| and without any inputs in the
+% preamble of the included file.
+%    \begin{macrocode}
+%<*classXourse>
+\ifnonewpage
+\newcommand{\activity}[2][]{%
+	\setkeys{activity}{#1}
+  \renewcommand{\input}[1]{}
+  \begingroup\skip@preamble\otherinput{#2}\endgroup\par\vspace{\topsep}
+  \let\input\otherinput}
+\else
+\newcommand{\activity}[2][]{%
+	\setkeys{activity}{#1}
+  \renewcommand{\input}[1]{}
+  \begingroup\skip@preamble\otherinput{#2}\endgroup\clearpage
+  \let\input\otherinput}
+\fi
+\relax
+%</classXourse>
+%    \end{macrocode}
+
+%    \begin{macrocode}
+%<*htXourse>
+\renewcommand\activity[2][]{%
+\ifvmode \IgnorePar\fi \EndP\HCode{<a class="activity card \activitystyle" href="#2" data-options="#1">#2</a>}\IgnoreIndent%
+}
+%</htXourse>
+%    \end{macrocode}
+
+% When running xake, we can just ignore activities
+%    \begin{macrocode}
+%<*classXourse>
+\ifxake
+\renewcommand\activity[2][]{}
+\fi
+%</classXourse>
+%    \end{macrocode}
+
+
+% \subsubsection{Practice activities}
+% \DescribeMacro{\practice}{Like |\activity| but not expecting a title.}
+%    \begin{macrocode}
+%<*classXourse>
+\ifhandout
+\newcommand{\practice}[2][]{
+	\setkeys{practice}{#1}%!!!!!
+  \renewcommand{\input}[1]{}
+  \begingroup\skip@preamble\otherinput{#2}\endgroup
+  \let\input\otherinput}
+\else
+\newcommand{\practice}[2][]{\texttt{\detokenize{#2}}%% gives file name for practice
+	\setkeys{practice}{#1}%!!!!!
+  \renewcommand{\input}[1]{}
+  \begingroup\skip@preamble\otherinput{#2}\endgroup
+  \let\input\otherinput}
+\fi
+\relax
+%</classXourse>
+%    \end{macrocode}
+
+% The practice environment does nothing, but will eventually produce
+% exercises at the end of an activity
+%    \begin{macrocode}
+%<*classXourse>
+\ifxake
+\renewcommand\practice[2][]{}
+\fi
+%</classXourse>
+%    \end{macrocode}
+
+% I suppose it is reasonable for practice cards to NOT have an activitystyle, since the activitystyle is basically PRACTICE.
+%    \begin{macrocode}
+%<*htXourse>
+\renewcommand\practice[2][]{%
+  \ifvmode\IgnorePar\fi\EndP%
+  \HCode{<a class="activity card practice" href="#2" data-options="#1">#2</a>}%
+  \IgnoreIndent%
+}
+%</htXourse>
+%    \end{macrocode}
+%    
+% \subsection{The End}
+% It seems that some of the files need to conclude with something or another.
+%    \begin{macrocode}
+%<*htXimera>
+\Hinput{ximera}
+%</htXimera>
+%    \end{macrocode}
+
+%    \begin{macrocode}
+%<*htXourse>
+\Hinput{xourse}
+%</htXourse>
+%    \end{macrocode}
+
+%    \begin{macrocode}
+%<*cfgXimera>
+\begin{document} 
+\EndPreamble
+%</cfgXimera>
+%    \end{macrocode}
+% 
+% 
+% \subsection{Labels and references}
+% Labels and refs both generate anchors.
+% \DescribeMacro{\label}{A |\label| can be referenced from any file in the xourse.}
+%    \begin{macrocode}
+%<*htXimera>
+\let\oldlabel\label
+\renewcommand{\label}[1]{\oldlabel{#1}\HCode{<a class="ximera-label" id="#1"></a>}}
+%</htXimera>
+%    \end{macrocode}
+% \DescribeMacro{\ref}{A |\ref| can connect one \TeX\ file to another if they are in the same xourse.}
+%    \begin{macrocode}
+%<*htXimera>
+\renewcommand{\ref}[1]{\HCode{<a class="reference" href="\##1">#1</a>}}
+%</htXimera>
+%    \end{macrocode}
+
+% \subsection{Logos}
+% \DescribeMacro{\logo}{A logo for the xourse.}
+%    \begin{macrocode}
+%<*classXourse>
+\newcommand*{\logo}[1]{%
+  \ifx\@onlypreamble\@notprerr
+    \ClassError{xourse}{logo can only be used in the preamble}
+      {Move your logo command to the preamble}
+  \else %
+    \IfFileExists{#1}%
+      {\gdef\xourse@logo{#1}}%
+      {\ClassError{xourse}{logo file does not exist}
+        {To use logo, make sure that the referenced image file exists}}%
+  \fi%
+}
+
+%</classXourse>
+%    \end{macrocode}
+
+% The xourse logo is an |og:image| in the opengraph taxonomy.
+%    \begin{macrocode}
+%<*htXourse>
+\Configure{@HEAD}{%
+  \HCode{<meta name="og:image" content="}%
+\ifdefined\xourse@logo%
+  \xourse@logo%
+\fi%
+\HCode{" />\Hnewline}}%
+%</htXourse>
+%    \end{macrocode}
+
+
+% \subsubsection{Automatically load preambles and/or printstyles}
+% \DescribeMacro{\xmDefaultPreamble}{xmPreamble.tex}
+% \DescribeMacro{\xmDefaultPrinstyle}{xmPrintstyle.sty}
+%   doc todo
+%    \begin{macrocode}
+%<*classXimera>
+% If somewhere a file \xmDefaultPreamble (default:ximerapreamble.tex) 
+% is found: load it
+\def\input@path{{./}{../}{../../}{../../../}}    % Mmm, do we need to reset it to the previous value ?
+\providecommand{\xmDefaultPreamble}{xmPreamble.tex}
+    \IfFileExists{\xmDefaultPreamble}
+    {
+        \typeout{Loading Ximera defaultPreamble \xmDefaultPreamble}
+        \input{\xmDefaultPreamble}
+    }{
+        \typeout{Info: No default preamble loaded (\xmDefaultPreamble)}
+    }
+\providecommand{\xmDefaultPrintstyle}{xmPrintstyle.sty}
+\iftikzexport\else   % only in PDF        
+    \IfFileExists{\xmDefaultPrintstyle}
+    {
+        \typeout{Loading Ximera defaultPrintstyle \xmDefaultPrintstyle}
+        \input{\xmDefaultPrintstyle}
+    }{
+        \typeout{Info: No default printstyle loaded (\xmDefaultPrintstyle)}
+    }    
+\fi
+
+%</classXimera>
+%   \end{macrocode}
+
+% \subsubsection{Metadata}
+% To encourage authors to include relevant parseable metadata in the
+% preamble, we define some currently ignored commands.
+
+% \DescribeMacro{\license}{In the preamble, use |\license| with an SPDX license expression.}
+%    \begin{macrocode}
+%<*classXimera>
+\newcommand{\license}{\excludecomment}
+%</classXimera>
+%    \end{macrocode}
+
+% \DescribeMacro{\acknowledgement}{In the preamble, use |\acknowledgement| to credit others who contributed to the intellectual content beside the author.}
+%    \begin{macrocode}
+%<*classXimera>
+\newcommand{\acknowledgement}{\excludecomment}
+%</classXimera>
+%    \end{macrocode}
+
+% \DescribeMacro{\tag}{In the preamble, a |\tag| provides a free-form taxonomy.}
+%    \begin{macrocode}
+%<*classXimera>
+\renewcommand{\tag}{\excludecomment}
+%</classXimera>
+%    \end{macrocode}
+% On the HTML side, we mark the file as the appropriate kind of
+% object---either activity or xourse.
+%    \begin{macrocode}
+%<*htXourse>
+% Mark this as a xourse file
+\Configure{@HEAD}{\HCode{<meta name="description" content="xourse" />\Hnewline}}
+%</htXourse>
+%    \end{macrocode}
+
+% \subsubsection{Titles and authors}
+%
+% \subsubsection{Authors}
+% \DescribeMacro{\author}{Activities have authors.  Warn the user if no author is provided.}
+%    \begin{macrocode}
+%<*classXimera>
+\let\@emptyauthor\@author
+\def\author#1{\gdef\@author{#1}\gdef\@authorfoot{#1}}
+\def\@author{\@latex@warning@no@line{No \noexpand\author given}}
+%</classXimera>
+%    \end{macrocode}
+% Include author name in meta tags
+%    \begin{macrocode}
+%<*htXimera>
+\Configure{@HEAD}{\HCode{<meta name="author" content="}\@author\HCode{" />\Hnewline}}
+%</htXimera>
+%    \end{macrocode}
+% The |\and| command would emit tabular environments which really
+% should not appear in a meta tag.
+%    \begin{macrocode}
+%<htXimera|classXimera>\def\and{and }
+%    \end{macrocode}
+
+% \subsubsection{Title}
+% \DescribeMacro{\title}{Activities have titles.}
+%    \begin{macrocode}
+%<*classXimera>
+\let\title\relax
+\newcommand{\title}[1][]{{\protected@xdef\@pretitle{#1}}\protected@xdef\@title}
+
+\title{}
+
+\newcounter{titlenumber}
+\renewcommand{\thetitlenumber}{\arabic{titlenumber}}
+%\renewcommand{\thesection}{\arabic{titlenumber}} %% Makes section numbers work
+\setcounter{titlenumber}{0}
+
+\newpagestyle{main}{
+\sethead[\textsl{\ifnumbers\thetitlenumber\hspace{1em}\fi\@title}][][] % even
+{}{}{\textsl{\ifnumbers\thetitlenumber\hspace{1em}\fi\@title}} % odd
+\setfoot[\thepage][][] % even
+{}{}{\thepage} % odd
+}
+\pagestyle{main}
+%    \end{macrocode}
+% \DescribeMacro{\maketitle}{In a \textsf{ximera} document, redefine
+% |\maketitle| and put them in a table of contents.  The
+% |\phantomsection| is to fix the hrefs.}
+%    \begin{macrocode}
+\renewcommand\maketitle{%
+  \addtocounter{titlenumber}{1}%
+  {\flushleft\large\bfseries \@pretitle\par\vspace{-1em}}
+  {\flushleft\LARGE\bfseries {\ifnumbers\thetitlenumber\fi}{\ifnumbers\hspace{1em}\else\hspace{0em}\fi}\@title \par }
+  \phantomsection%
+  \ifnumbers\addcontentsline{toc}{section}{\thetitlenumber~\@title}\else\addcontentsline{toc}{section}{\@title}\fi
+  \vskip .6em\noindent\textit\theabstract\setcounter{problem}{0}\setcounter{section}{0}\setcounter{subsection}{0}\par\vspace{2em}
+  %\ifnooutcomes\else\let\thefootnote\relax\footnote{Learning outcomes: \theoutcomes}\fi% Depreciated with new outcome mechanism.
+  \ifnoauthor\else\ifcsname @authorfoot\endcsname \footnote{Author(s):~\@author}\fi \fi
+  \aftergroup\@afterindentfalse
+  \aftergroup\@afterheading}
+
+\ifnumbers
+\setcounter{secnumdepth}{2}
+\renewcommand{\thesection}{\arabic{titlenumber}.\arabic{section}}
+\renewcommand{\thesubsection}{\arabic{titlenumber}.\arabic{section}.\arabic{subsection}}
+\else
+\setcounter{secnumdepth}{-2}
+\fi
+
+\def\activitystyle{}
+\newcounter{sectiontitlenumber}
+\setcounter{secnumdepth}{2}
+\setcounter{tocdepth}{2}
+\newcommand\chapterstyle{%
+  \def\activitystyle{activity-chapter}
+  \def\maketitle{%
+    \addtocounter{titlenumber}{1}%
+                    {\flushleft\small\sffamily\bfseries\@pretitle\par\vspace{-1.5em}}%
+                    {\flushleft\LARGE\sffamily\bfseries\thetitlenumber\hspace{1em}\@title \par }%
+                    {\vskip .6em\noindent\textit\theabstract\setcounter{problem}{0}\setcounter{section}{0}}%
+                    \par\vspace{2em}
+                    \phantomsection\addcontentsline{toc}{section}{\textbf{\thetitlenumber\hspace{1em}\@title}}%
+}}
+
+
+\newcommand\sectionstyle{%
+  \def\activitystyle{activity-section}
+  \def\maketitle{%
+    \addtocounter{section}{1}
+    \setcounter{sectiontitlenumber}{\value{section}} 
+    {\flushleft\small\sffamily\bfseries\@pretitle\par\vspace{-1.5em}}%
+    {\flushleft\Large\sffamily\bfseries\thetitlenumber.\thesectiontitlenumber\hspace{1em}\@title \par}%
+    {\vskip .6em\noindent\textit\theabstract\setcounter{subsection}{0}}%
+    \par\vspace{2em}
+    \phantomsection\addcontentsline{toc}{section}{\thetitlenumber.\thesectiontitlenumber\hspace{1em}\@title}%
+ \renewcommand\section{\@startsection{subsection}{2}{\z@}%
+                                       {-3.25ex\@plus -1ex \@minus -.2ex}%
+                                       {1.5ex \@plus .2ex}%
+                                       {\normalfont\large\bfseries}}
+
+ \renewcommand\subsection{\@startsection{subsubsection}{3}{\z@}%
+                                          {-3.25ex\@plus -1ex \@minus -.2ex}%
+                                          {1.5ex \@plus .2ex}%
+                                          {\normalfont\normalsize\bfseries}}
+
+}}
+
+
+\iftikzexport%% allows xake to handle \chapterstyle and \sectionstye
+\renewcommand\chapterstyle{\def\activitystyle{chapter}}
+\renewcommand\sectionstyle{\def\activitystyle{section}}
+\else
+\fi
+
+%</classXimera>
+%    \end{macrocode}
+% Eliminate some formatting that we'll handle later with CSS
+%    \begin{macrocode}
+%<*htXimera>
+\renewcommand{\maketitle}{}
+%</htXimera>
+%    \end{macrocode}
+
+% \subsubsection{Macros}
+% Makes everymath display style even when inline, could be optional.
+%    \begin{macrocode}
+%<*classXimera>
+\everymath{\displaystyle}
+%</classXimera>
+%    \end{macrocode}
+% Ok not everything, we also need to configure ``display style'' limits.
+%    \begin{macrocode}
+%<*classXimera>
+\let\prelim\lim
+\renewcommand{\lim}{\displaystyle\prelim} 
+%</classXimera>
+%    \end{macrocode}
+
