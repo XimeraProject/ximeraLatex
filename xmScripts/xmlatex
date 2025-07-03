@@ -603,11 +603,19 @@ EOF
     else
         cat >.xmKeyFile <<EOF
 #
-# This file contains a private GPG key for $KEY_UID to publish Ximera courses.
+# This file contains a private GPG key for 
+#     $KEY_UID 
+# to publish Ximera courses, generated on 
+#    $(date)
 #
-#  These settings will be overwritten by existing environment variables GPG_KEY_ID and GPG_KEY
+# This file is used by xmlatex if 
+# no environment variables GPG_KEY_ID and GPG_KEY are set.
+# (The variables could be set explicitly in your shell,
+#  but they could eg also be added in 
+#  Github Codespaces/Actions from 'Secrets'.
+# )
 #
-#   *** DO NEVER COMMIT THIS FILE ***
+#   *** DO NOT COMMIT THIS FILE ***
 #
 GPG_KEY_ID=$FINGERPRINT
 GPG_KEY="\\
