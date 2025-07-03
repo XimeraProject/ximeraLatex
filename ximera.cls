@@ -1221,7 +1221,7 @@ Interactive
 \dispNesttrue% Default to showing nesting behavior via tcolorbox.
 
 \newif\ifdispNestColors%% Flag to opt for colored nesting indicators
-\dispNestColorstrue% Default to colored boxes, rather than black and white (toggle false for BW).
+\dispNestColorsfalse% Default to all black boxes, rather than colored by level
 
 \AtBeginDocument{
   \pdfOnly{
@@ -1233,7 +1233,7 @@ Interactive
       \definecolor{xmNestingColorLevelIV}{RGB}{105, 105, 105}% Bright Green
     \fi
 
-    %% Apply colorboboxes around theorem-like environments in pdfs only to help see nesting.
+    %% Apply colorboxes around theorem-like environments in pdfs only to help see nesting.
     \ifdispNest%% If you want to display nesting behavior via tcolorframebox frames, we now apply them.
       \tcolorboxenvironment{algorithm}{colframe=xmNestingColorLevel\Roman{tcblayer},colback=transparent}
       \tcolorboxenvironment{axiom}{colframe=xmNestingColorLevel\Roman{tcblayer},colback=xmBackground}
