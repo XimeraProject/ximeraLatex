@@ -1,11 +1,11 @@
 
 This repository contains the source for the `ximera` LaTeX package, and some supporting scripts. 
 
-This repo is *not* directly relevant for (prospective) Ximera authors or endusers.
-They should consult 
-* an [Example Ximera Xourse](https://go.osu.edu/ximera-examples) to see what Ximera is and can do.
-* the [https://github.com/XimeraProject/ximeraFirstSteps] repo to get a hands-on introduction, or
-* the [Ximera Manual](https://ximera.osu.edu/xman) the get a more detailed introduction and overview.
+This repo is *not* directly relevant for (prospective) Ximera authors.
+Authors should consult 
+* [Ximera First Steps](https://github.com/XimeraProject/ximeraFirstSteps) repo to get a hands-on introduction, or
+* [Ximera Manual](https://ximera.osu.edu/xman) the get a more detailed introduction and overview.
+* [Ximera Examples](https://go.osu.edu/ximera-examples) to see what Ximera is and can do.
 
 
 The Ximera document class is available in [CTAN](https://ctan.org/pkg/ximera?lang=en), but it is strongly advised to use Ximera with [Codespaces or docker](https://github.com/XimeraProject/ximeraFirstSteps). 
@@ -46,7 +46,9 @@ For developers, we suggest the following workflow:
 7) Once your changes work, make your changes in the `*.dtx` files. If you developed in `ximera.cls` directly, change its name to `ximeradev.cls`. 
 8) run `make` and a new `ximera.cls`, `xourse.cls`, `ximera.4ht` and `xourse.4ht` will be generated, **overwriting** any existing files in `.ximera_local`.
 9) Push changes to your fork of `ximeraLatex`. It is best to make **small commits**, and give detailed descriptions
-10) When ready, submit a pull request from your fork
+10) When ready, submit a pull-request from your fork
+
+Once your changes have been accepted via a pull-request, Ximera developers will update the branch `master` from the branch `development`. 
 
 
 # A Non-Official Changelog

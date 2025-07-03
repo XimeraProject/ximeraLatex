@@ -522,7 +522,7 @@
 \ifhandout
 \setbox0\vbox\bgroup
 \else
-\begin{trivlist}\item[\hskip \labelsep\small\slshape\bfseries \GetTranslation{Hint}:\hspace{2ex}]
+\begin{trivlist}\item[\hskip \labelsep\small\slshape\bfseries \GetTranslation{hint}:\hspace{2ex}]
 \small\slshape
 \fi
 \stepcounter{hintLevel}
@@ -538,7 +538,7 @@
 
 \ifhints
 \renewenvironment{hint}{
-\begin{trivlist}\item[\hskip \labelsep\small\slshape\bfseries \GetTranslation{Hint}:\hspace{2ex}]
+\begin{trivlist}\item[\hskip \labelsep\small\slshape\bfseries \GetTranslation{hint}:\hspace{2ex}]
 \small\slshape
 }
 {
@@ -550,7 +550,7 @@
 \let\endabstract\relax
 \NewEnviron{abstract}{\protected@xdef\theabstract{\BODY}}
 \let\@emptyauthor\@author
-\def\author#1{\gdef\@author{#1}}
+\def\author#1{\gdef\@author{#1}\gdef\@authorfoot{#1}}
 \def\@author{\@latex@warning@no@line{No \noexpand\author given}}
 \def\and{and }
 
@@ -578,7 +578,7 @@
   \ifnumbers\addcontentsline{toc}{section}{\thetitlenumber~\@title}\else\addcontentsline{toc}{section}{\@title}\fi
   \vskip .6em\noindent\textit\theabstract\setcounter{problem}{0}\setcounter{section}{0}\setcounter{subsection}{0}\par\vspace{2em}
   %\ifnooutcomes\else\let\thefootnote\relax\footnote{Learning outcomes: \theoutcomes}\fi% Depreciated with new outcome mechanism.
-  \ifnoauthor\else\let\thefootnote\relax\footnote{Author(s):~\@author}\fi
+  \ifnoauthor\else\ifcsname @authorfoot\endcsname \footnote{Author(s):~\@author}\fi \fi
   \aftergroup\@afterindentfalse
   \aftergroup\@afterheading}
 
@@ -665,18 +665,39 @@ Interactive
 \newcommand{\desmos}[3]{Desmos link: \url{https://www.desmos.com/calculator/#1}}
 \newcommand{\desmosThreeD}[3]{Desmos3D link: \url{https://www.desmos.com/3d/#1}}
 \newcommand{\googleSheet}[5]{%
-  Google Spreadsheet link: \url{https://docs.google.com/spreadsheets/d/#1}%
+  Google Spreadsheet link: \expandafter\url{\detokenize{https://docs.google.com/spreadsheets/d/#1}}%
 }
 
 
 \newcommand{\graph}[2][]{\text{Graph of $#2$}}
 
 
-\newcommand*{\link}[2][]{%
-  \ifstrempty{#1}%
-    {\url{#2}}%
-    {#1\footnote{See #1 at \url{#2}}}%
-}
+%% \link[name]{url}   (opens in new tab)
+%% \link*[name]{url}   (opens in *same* tab)  (this was default behaviour for \link till 2025/06))
+%%  In PDF  \link[name]{url} uses \href but adds a Footnote with the url
+%%  The footnote is not added after  \let\xmLinkHasFootnote\undefined
+\def\xmLinkHasFootnote{1}
+\NewDocumentCommand{\link}{s o m}%
+ {%
+\ifdefined\HCode%
+  \IfBooleanTF{#1}%
+    { % Starred version    %
+      \IfNoValueTF{#2}%
+        {    \HCode{<a href="#3">}\Hurl{#3}\HCode{</a>}}%
+        {    \HCode{<a href="#3">}#2\HCode{</a>}}%
+    }%
+    { % Unstarred version%
+      \IfNoValueTF{#2}%
+        {    \HCode{<a href="#3" target="_blank">}\Hurl{#3}\HCode{</a>}}%
+        {    \HCode{<a href="#3" target="_blank">}#2\HCode{</a>}}%
+    }%
+\else   % PDF %
+      \IfNoValueTF{#2}%
+        {\url{#3}}%
+        {\href{#3}{#2}\ifdefined\xmLinkHasFootnote\footnote{See #2 at \url{#3}}\fi}% SWITCH ARGS ... !%
+ \fi%
+ }%
+
 
 \newcommand{\youtube}[1]{YouTube link: \url{https://www.youtube.com/watch?v=#1}}
 
@@ -879,7 +900,9 @@ Interactive
 
 \begin{trivlist}% Begin the trivlist to use formating of the "Feedback" label.
 \item[\hskip \labelsep\small\slshape\bfseries \GetTranslation{Feedback}% Format the "Feedback" label. Don't forget the space.
-(\texttt{\expandafter\detokenize\expandafter{\PH@Command}}):% Format (and detokenize) the condition for feedback to trigger
+\ifonlineTF{% If the feedback is on a pdf, we don't need to detokenize - which messes with the \MakeUppercase command anyway.
+(\texttt{\expandafter\detokenize\expandafter{\PH@Command}})}% Keep the online version the same as before.
+{(\expandafter\texttt{\PH@Command})}:% No need for detokenize in the pdf version
 \hspace{2ex}]\small\slshape% Insert some space before the actual feedback given.
 }{
 \end{trivlist}
