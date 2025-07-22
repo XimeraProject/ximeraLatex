@@ -360,7 +360,7 @@ local function serve(force_serving)
     if ret > 0 then
         return ret,output
     end
-    ret, output = osExecute("git push "..force_flag.."ximera "..tagName, false)
+    ret, output = osExecute("git push -f ximera "..tagName, false)    -- always force the tag ...
     if ret > 0 then
         return ret,output
     end
