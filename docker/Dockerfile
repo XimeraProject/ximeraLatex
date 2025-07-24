@@ -118,6 +118,7 @@ RUN tlmgr update --self; \
         gillius \
         pagecolor \
         tabularray \
+        mdframed \
         ninecolors
 
 # make4ht is not in /usr/local/bin if installed with tlmgr!!!
