@@ -119,6 +119,8 @@ RUN tlmgr update --self; \
         pagecolor \
         tabularray \
         mdframed \
+        zref \
+        needspace \
         ninecolors
 
 # make4ht is not in /usr/local/bin if installed with tlmgr!!!
