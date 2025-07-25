@@ -120,7 +120,7 @@ local function frost(tex_files, to_be_compiled_files)
                 end
             end
 
-            -- add all associated_files (images!) to needing_publication
+            -- add all associated_files (images!) to needing_publication    
             table.move(html_file.associated_files, 1, #(html_file.associated_files), #needing_publication + 1, needing_publication)
 
 
@@ -184,8 +184,11 @@ local function frost(tex_files, to_be_compiled_files)
     save_as_json(xmmetadata)
     -- require 'pl.pretty'.dump(tex_xourses)
     needing_publication[#needing_publication + 1] = "metadata.json"
+    
+    -- require 'pl.pretty'.dump(needing_publication)
+    -- osExecute("git status >status.log")
 
-    -- 
+    --
     -- START ACTUAL FROSTING (ie, creating a 'publication tag')
     --
     local _, head_oid = osExecute("git rev-parse HEAD")
@@ -210,41 +213,14 @@ local function frost(tex_files, to_be_compiled_files)
     else 
         log:debug("No ximera-downloads folder, and thus no PDF files will be made available for download")
     end
-    -- require 'pl.pretty'.dump(needing_publication)
 
-    -- 'git add' the files in batches of 10   (risks line-too-long!)
-    -- local files_string = table.concat(needing_publication,",")
-    -- Execute the git add command
-
-    -- local downloads =  list_files("ximera-downloads")
-    -- table.move(downloads, 1, #downloads, #needing_publication + 1, needing_publication)
-
--- if false then
---     local f = io.open(".xmgitindexfiles", "w")
-
---     for _, line in ipairs(needing_publication) do
---         log:trace("ADDING "..line)
---         f:write(line .. "\n")
---     end
---     f:close()
---     -- Close the process to flush stdin and complete execution
---     local proc = io.popen("cat .xmgitindexfiles | git update-index --add  --stdin")
---     local output = proc:read("*a")
---     local success, reason, exit_code = proc:close()
-
---     if not success then
---         log:errorf("git update-index fails with %s (%d)",reason, exit_code)
---     else 
---         log:debugf("Added %d files (%s)", #needing_publication,output)
---     end
-
--- else    
+    -- osExecute("git status >>status.log")
     for _, line in ipairs(needing_publication) do
         log:trace("ADDING "..line)
+        -- osExecute("echo adding "..line.." >>status.log")
         osExecute("git add -f "..line)
     end
--- end
-
+    -- osExecute("git status >>status.log")
 
     local _, new_tree = osExecute("git write-tree")
     if not new_tree then
@@ -302,7 +278,9 @@ local function frost(tex_files, to_be_compiled_files)
         tagName = "publications/"..head_oid
         -- tagName = "publications/"..commit_oid
         log:statusf("Creating tag %s for %s", tagName, commit_oid)
-        ret, output = osExecute("git tag "..tagName.." "..commit_oid)
+
+        -- -f for force, only needed/wanted for local testing, ie frosting/serving without commit
+        ret, output = osExecute("git tag -f "..tagName.." "..commit_oid)
         -- if ret > 0 then
         --     log:errorf("Created tag %s for %s: %s", tagName, commit_oid, output)
         -- end
@@ -361,7 +339,7 @@ local function serve(force_serving)
     local force_flag = force_serving and "-f " or ""
 
 
-    ret, output = osExecute("git push "..force_flag.."ximera", false)
+    ret, output = osExecute("git push "..force_flag.."ximera HEAD:refs/heads/master", false)
     if ret > 0 then
         return ret,output
     end
