@@ -635,7 +635,7 @@ if command == "ghaction" then
     log:statusf("Frost succeeded: " .. msg)
   end
   log:status("Start serve")
-  local ret, msg = frost.serve(true)  -- WITH FORCE (until push/depth issue fixed)
+  local ret, msg = frost.serve(false)  -- NO FORCE (since push/depth issue fixed ?)
   if ret > 0 then
     log:error("Serve failed: " .. msg)
     os.exit(ret)

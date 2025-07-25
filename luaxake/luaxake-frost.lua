@@ -195,12 +195,15 @@ local function frost(tex_files, to_be_compiled_files)
 
     local publication_branch = "PUB_"..head_oid
 
-    local ret, publication_oid = osExecute("git rev-parse --verify --quiet "..publication_branch)
-    if ret > 0 then   -- publication_branch does noy (yet) exist: create it
-        osExecute("git branch "..publication_branch)
-        publication_oid = head_oid
-    end
-    log:debug("GOT publication_oid "..(publication_oid or ""))
+    -- 07/2025: do NOT create a branch, always frost HEAD 
+    --    TO BE CHECKED
+    -- local ret, publication_oid = osExecute("git rev-parse --verify --quiet "..publication_branch)
+    -- if ret > 0 then   -- publication_branch does not (yet) exist: create it
+    --     osExecute("git branch "..publication_branch)
+    --     publication_oid = head_oid
+    -- end
+    publication_oid = head_oid
+    log:debugf("GOT head_oid (publication_oid) %s", publication_oid)
 
     if path.exists("ximera-downloads") then
         osExecute("git add -f ximera-downloads")
@@ -254,6 +257,9 @@ local function frost(tex_files, to_be_compiled_files)
     
     local result, most_recent_publication = osExecute("git for-each-ref --sort=-creatordate --count=1 --format '%(tree) %(objectname) %(refname:strip=2)' refs/tags/publications/*")
     
+    -- NOTE: the 'publication' tag will not be pushed to origin,
+    --       and thus NOT be found in Actions/pipelines/new codespaces/...
+    
     local tagtree_oid, tag_oid,tagName
     if not most_recent_publication or most_recent_publication == "" then
         log:info("No publication tag found")
@@ -278,7 +284,7 @@ local function frost(tex_files, to_be_compiled_files)
     if ret > 0 then
         return ret, commit_oid   -- this is the errormessage in this case!
     end
-    log:debug("GOT commit "..(commit_oid or ""))
+    log:debugf("GOT commit %s.", commit_oid)
     
     if logging.show_level <= logging.levels["trace"] then
         log:tracef("Committed files for %s:", commit_oid)
@@ -293,7 +299,8 @@ local function frost(tex_files, to_be_compiled_files)
         ret, output = osExecute("git update-ref refs/tags/"..tagName.." "..commit_oid)
     else
         --local tagName = "publications/"..os.date("%Y%m%d_%H%M%S")
-        tagName = "publications/"..commit_oid
+        tagName = "publications/"..head_oid
+        -- tagName = "publications/"..commit_oid
         log:statusf("Creating tag %s for %s", tagName, commit_oid)
         ret, output = osExecute("git tag "..tagName.." "..commit_oid)
         -- if ret > 0 then
@@ -350,51 +357,20 @@ local function serve(force_serving)
     
     
     local ret, output
-    if force_serving then
-    
-    --  do not warn-on-error
-        log:statusf("Forced serving (git push -f ximera "..tagName..")")
-        ret, output = osExecute("git push -f ximera "..tagName, true)
-    else
-        ret, output = osExecute("git push ximera "..tagName, true)
-    end
-    if ret > 0 then
-        log:tracef("Could not push to 'ximera' target: %s",output)
-        if true or not force_serving then   -- SKIPPED, see above !
-            return ret, output
-        else
-            log:infof("Retrying push with more power (git push -f ...)")
-            ret, output = osExecute("git push -f ximera "..tagName)
-            if ret > 0 then
-                return ret,output
-            end
-        end
-    end
 
-    
-    local ret, output
-    if force_serving then
-    
-    --  do not warn-on-error
-        log:status("Forced serving (git push -f ximera "..tag_oid..":refs/heads/master)")
-        ret, output = osExecute("git push -f ximera "..tag_oid..":refs/heads/master", true)     -- HACK ???
-    else
-        ret, output = osExecute("git push ximera "..tag_oid..":refs/heads/master", true)     -- HACK ???
-    end
+    local force_flag = force_serving and "-f " or ""
 
+
+    ret, output = osExecute("git push "..force_flag.."ximera", false)
     if ret > 0 then
-        log:tracef("Could not push refs to 'ximera' target: %s",output)
-        if true or not force_serving then
-            return ret,output
-        else
-            log:infof("Retrying push with more power (git push -f ximera  "..tag_oid..":refs/heads/master)")
-            ret, output = osExecute("git push -f ximera "..tag_oid..":refs/heads/master") 
-            if ret > 0 then
-                return ret,output
-            end
-        end
+        return ret,output
     end
-    
+    ret, output = osExecute("git push -f ximera "..tagName, false)    -- always force the tag ...
+    if ret > 0 then
+        return ret,output
+    end
+ 
+   
     log:debugf("Published %s to     %s", tagName, remote_ximera)
     return 0, "Published  " .. tagName .. "to  " .. remote_ximera:gsub(".git","")
 end
