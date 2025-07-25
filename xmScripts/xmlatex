@@ -46,7 +46,9 @@ fi
 #
 # default docker image to run; overwrite with 'export XAKE_IMAGE=myxake:0.1'
 : "${XAKE_BASE:=ximeralatex}"
-: "${XAKE_VERSION:=v2.7.3}"
+: "${XAKE_VERSION:=v2.6.1}"
+# : "${XAKE_BASE:=xake2019}"
+# : "${XAKE_VERSION:=v2.1.1}"
 : "${XAKE_CONTAINER:=$XAKE_BASE:$XAKE_VERSION}"
 : "${DOCKER_REPO:=ghcr.io/ximeraproject/}"
 
@@ -54,7 +56,6 @@ fi
 : "${XAKE_IMAGE:=$DOCKER_REPO$XAKE_CONTAINER}"   # TO BE OBSOLETED
 : "${DOCKER_IMAGE:=$XAKE_IMAGE}"
 : "${DOCKER_DEFAULT_PLATFORM:=linux/amd64}"      # needed for MacOS ?
-export DOCKER_DEFAULT_PLATFORM
 
 : "${SERVER_PORT:=2000}"
 : "${SERVER_NAME:=ximeraserver}"
@@ -81,15 +82,6 @@ export DOCKER_DEFAULT_PLATFORM
 if [[ -f /.dockerenv ]]  
 then
     [[ -n "$DEBUG" ]] && echo "Running in docker container (with local hostname $HOSTNAME)"
-elif [[ -f /.containerenv ]]  
-then
-    [[ -n "$DEBUG" ]] && echo "Running in podman container (with local hostname $HOSTNAME)"
-elif [[ "$container" == "podman" ]]  
-then
-    [[ -n "$DEBUG" ]] && echo "Running in podman container (with local hostname $HOSTNAME)"
-elif [[ -n "$container" ]]  
-then
-    [[ -n "$DEBUG" ]] && echo "Running in container '$container' (with local hostname $HOSTNAME)"
 elif [[ -n "$KUBERNETES_SERVICE_HOST" ]] 
 then
     echo "Running in kubernetes container ($KUBERNETES_SERVICE_HOST)"
@@ -116,39 +108,17 @@ else
         [[ -n "$DEBUG" ]] && echo "Setting LOCAL_IP=$LOCAL_IP"
     fi
 
-    # Determine program to start the docker container (unless already set) 
-    if [[ -z "$DOCKER" ]]
-    then
-        if type podman >/dev/null 2>&1
-        then
-            [[ -n "$DEBUG" ]] && echo "Using podman ($(type podman))"
-            DOCKER=podman
-        # elif type podman.exe >/dev/null 2>&1      ### WON'T WORK because of mounting current folder?
-        # then
-        #     [[ -n "$DEBUG" ]] && echo "Using podman ($(type podman))"
-        #     DOCKER=podman.exe
-        elif type docker >/dev/null 2>&1
-        then
-            [[ -n "$DEBUG" ]] && echo "Using docker ($(type docker))"
-            DOCKER=docker
-        else
-            error "No docker or podman executable found..."
-        fi
-    fi
-    
     if [[ "$1" == "ximeraserver" ]]
     then    
         echo "Starting ximera $SERVER_NAME from $SERVER_IMAGE on port $SERVER_PORT"
-        $DOCKER run --rm --name $SERVER_NAME -p 2000:$SERVER_PORT $SERVER_IMAGE
+        docker run --rm --name $SERVER_NAME -p 2000:$SERVER_PORT $SERVER_IMAGE
         exit
     fi
 
     echo "Restarting myself in docker (from image $DOCKER_IMAGE)"	
-    tty >/dev/null && INTERACTIVE="-it"  # HACK: in terminal run with -it, to process interrupts with CTRL-C
-
     [[ -n "$DEBUG" ]] && echo  \
-    $DOCKER run --env LOCAL_IP --env XIMERA_URL --env XIMERA_NAME --env GPG_KEY --env GPG_KEY_ID --env DEBUG --network host --rm $INTERACTIVE --mount type=bind,source=$MOUNTDIR,target=/code $DOCKER_IMAGE $COMMAND $*
-    $DOCKER run --env LOCAL_IP --env XIMERA_URL --env XIMERA_NAME --env GPG_KEY --env GPG_KEY_ID --env DEBUG --network host --rm $INTERACTIVE --mount type=bind,source=$MOUNTDIR,target=/code $DOCKER_IMAGE $COMMAND $*
+    docker run --env LOCAL_IP --env XIMERA_URL --env XIMERA_NAME --env GPG_KEY --env GPG_KEY_ID --env DEBUG --network host --rm $INTERACTIVE --mount --platform linux/amd64 type=bind,source=$MOUNTDIR,target=/code $DOCKER_IMAGE $COMMAND $*
+    docker run --env LOCAL_IP --env XIMERA_URL --env XIMERA_NAME --env GPG_KEY --env GPG_KEY_ID --env DEBUG --network host --rm $INTERACTIVE --mount  type=bind,source=$MOUNTDIR,target=/code $DOCKER_IMAGE $COMMAND $*
     exit 
 fi
 
@@ -752,4 +722,144 @@ then
         echo "Diffs:"
         git diff --stat $filelist
         echo "I won't update the devenv (unless you set 'export XM_DEVENV_FORCE_EXTRACT=1' in config.txt )"
-exit 1
+        exit 1
+    else
+        echo "No current changes"
+    fi
+
+
+    debug "Extracting $DEVENV_TGZFILE"
+    tar -xzvf "$DEVENV_TGZFILE"
+
+
+    ## Use following line to skip the reset-git-fileowner-hack (e.g. in config.txt)
+    # export  XM_NO_RESET_GIT_FILEOWNER=1
+    if [[ -z "$XM_NO_RESET_GIT_FILEOWNER" ]]
+    then
+    # HACK: try to restore ownership of git files (might be set to root after git push in container ...)
+    # Get the owner and group of .git
+    owner_group=$(stat -c "%u:%g" ".git")
+
+    if [[ "$owner_group" != "0:0" ]]
+    then
+        # Change the ownership of all files in the current directory
+        echo  "Changing ownership of extracted files to $owner_group."
+        chown -R "$owner_group" .
+        # chown -R "$owner_group" .vscode .devcontainer .gitignore xmScripts
+    fi
+
+    fi  # end reset-git-fileowner
+
+
+    if [[ -n $(git status --porcelain $filelist) ]]; 
+    then
+        echo "Diffs:"
+        git --no-pager diff $filelist
+        echo "Diffs summary:"
+        git diff --stat $filelist
+        echo "Please verify and commit/push these changes"
+    else
+        echo "No changes. Your repo was already uptodate."
+    fi
+elif [[ "$COMMAND" == "texHtml" ]]
+then
+    # THIS OPTION WAS CALLED BY xake (versions >= 2.1.1) (and ONLY with this option, at least in xake 2.1.1...!)
+    # as "xmlatex texHtml file.tex"  (without the folder(s), for historical reasons)
+    # THUS: $FILE should (probably...) NOT contain a path,
+    #       and with this option the command is to be called from subfolder containing FILE (as are pdflatex and make4ht!)
+    # Not: one thus has xmlatex-calls-xake-calls-xmlatex !!!
+    FILE=$2
+    echo  "htmlTeXing $FILE (xmlatex $*)"
+    debug pdflatex -file-line-error -shell-escape "\\PassOptionsToClass{tikzexport}{ximera}\\PassOptionsToClass{xake}{ximera}\\PassOptionsToClass{xake}{xourse}\\nonstopmode\\input{$FILE}"
+          pdflatex -file-line-error -shell-escape "\\PassOptionsToClass{tikzexport}{ximera}\\PassOptionsToClass{xake}{ximera}\\PassOptionsToClass{xake}{xourse}\\nonstopmode\\input{$FILE}"
+
+# Option 'tikz+' : USE dvips  (and not dvisvg)
+    debug make4ht -s -c ximera -f html5+dvisvgm_hashes -u  -a debug $FILE "svg,htex4ht,mathjax,-css,info,tikz+" "" "" "--interaction=nonstopmode -shell-escape -file-line-error" 
+          make4ht -s -c ximera -f html5+dvisvgm_hashes -u  -a debug $FILE "svg,htex4ht,mathjax,-css,info,tikz+" "" "" "--interaction=nonstopmode -shell-escape -file-line-error" | tee $FILE.log
+#          make4ht -s -c ximera -f xhtml -u  -a debug $FILE "svg,htex4ht,mathjax,-css,info" "" "" "--interaction=nonstopmode -shell-escape -file-line-error" | tee $FILE.log
+    # make4ht -s -c ximera -f xhtml+tidy -u  -a debug $FILE "svg,htex4ht, mathjax,-css,Gin-percent,info" "" "" "--interaction=nonstopmode -shell-escape -file-line-error" | tee $FILE.log
+    # make4ht  $FILE "ximera,charset=utf-8,-css" "-cunihtf -utf8" "" "--interaction=nonstopmode -shell-escape -file-line-error"
+    # htlatex $FILE "ximera,charset=utf-8,-css" "-cunihtf -utf8" "" "--interaction=nonstopmode -shell-escape -file-line-error"
+
+    # Mmm, is this (still?) needed 
+    #  It removes spurious trailing dashed in the filename of included figures/images in the html files ...
+    debug Fixing svg filenames in ${FILE%.tex}.html
+    sed -i.bak 's/-figure\([0-9]*\)-\.svg/-figure\1.svg/' ${FILE%.tex}.html
+    debug Fixing blanks '\begin {env}' in ${FILE%.tex}.html
+    sed -i 's/\\begin {/\\begin{/g' ${FILE%.tex}.html
+    sed -i 's/\\end {/\\end{/g' ${FILE%.tex}.html
+    exit 0   # DUBIOUS
+elif [[ "$COMMAND" == "texPdf" ]]
+then
+    # THIS OPTION WAS CALLED BY xake (versions >= 2.1.1) (and ONLY with this option, at least in xake 2.1.1...!)
+    # as "xmlatex texHtml file.tex"  (without the folder(s), for historical reasons)
+    # THUS: $FILE should (probably...) NOT contain a path,
+    #       and with this option the command is to be called from subfolder containing FILE (as are pdflatex and make4ht!)
+    # Not: one thus has xmlatex-calls-xake-calls-xmlatex !!!
+    FILE=$2
+    echo  "pdfTeXing $FILE (xmlatex $*)"
+    debug pdflatex -file-line-error -shell-escape -jobname=${FILE%.tex} "\nonstopmode\input{$FILE}"
+    timeout 7m  pdflatex -file-line-error -shell-escape -jobname=${FILE%.tex} "\nonstopmode\input{$FILE}"
+    #            pdflatex -file-line-error -shell-escape -jobname=${FILE%.tex} "\nonstopmode\input{$FILE}"
+
+elif [[ "$COMMAND" == "do" ]]
+then
+    # You can do whatever you want. Be carefull though.
+    shift
+    echo "Starting $*"
+    $*
+elif [[ "$COMMAND" == "name" ]]
+then
+    echo "Starting name (from bash script $0)"
+    xake_name
+## TODO?:  get rid of these combinations, and put them in luaxake ... ?
+elif [[ "$COMMAND" == "all" ]]
+then
+    echo "Starting all (bake/name/frost/serve)"
+    shift
+    $LUAXAKE bake  $* || error "Problem with 'bake'; Exiting..." 
+   
+    # git remote show ximera 2>/dev/null || xake_name
+    
+    xake_name         || error "Problem with 'name'; Exiting ..."
+
+    $LUAXAKE frost $* || error "Problem with 'frost'; Exiting..."
+    $LUAXAKE serve $* || error "Problem with 'serve'; Exiting..."
+elif [[ "$COMMAND" == "ALL" ]]
+then
+    echo "Starting ALL (bake/name/frost/serve, with *force* serving!)"
+    shift
+
+    $LUAXAKE bake  $* || error "Exiting..." 
+   
+    xake_name         || error "Problem with 'name'; Exiting ..."
+
+    $LUAXAKE frost $* || error "Exiting..."
+    $LUAXAKE serve -f $* || error "Exiting..."
+elif [[ "$COMMAND" == "Serve" ]]
+then
+    echo "Starting Serve (name/frost/serve)"
+    shift
+    
+    xake_name
+
+    $LUAXAKE frost $* || error "Exiting..."
+    $LUAXAKE serve $* || error "Exiting..."
+elif [[ "$COMMAND" == "ghaction" ]]
+then
+    echo "Starting Github-action build (name; bake/frost/serve)"
+    shift
+    
+    # Unfortunately, 'name' and 'genKey' can not (yet?) be integrated into luaxake ...
+
+    [[ -z "$GPG_KEY_ID" ]] && xake_findKey  # If no key present, try to find and set one
+    [[ -z "$GPG_KEY_ID" ]] && xake_genKey   # If still no key present, try genKey to generate one)
+    
+    # git remote show ximera >/dev/null 2>&1 || xake_name
+    xake_name    # set the name (should only be needed if not-yet-set, OR CHANGED)
+
+    $LUAXAKE ghaction $* || error "Exiting..."
+
+else
+    $LUAXAKE $*
+fi
