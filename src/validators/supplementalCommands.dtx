@@ -7,7 +7,14 @@
 %    \begin{macrocode}
 %<*classXimera>
 \appendtoverbtoks?
+//<![CDATA[
 var debugInfo = false;
+
+function numberLessThan(a,b) {
+    // Returns true if a is less than b, and false if a is greater than or equal to b.
+    if (Math.min(a,b) == a) return true;
+    if (Math.max(a,b) == a) return false;
+}
 
 function debugText(debugMsg) {
     if (debugInfo) {
@@ -39,6 +46,7 @@ function compSubTree(f, treeOne,treeTwo) {
     // Now we return the validity of their equality using Ximera equality validation.
     return (fTemp.equals(gTemp))
 }
+//]]>
 ?
 %</classXimera>
 %    \end{macrocode}

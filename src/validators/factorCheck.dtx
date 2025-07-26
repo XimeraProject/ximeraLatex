@@ -25,6 +25,7 @@
 %%% Apend code via \appendtoverbtoks
 
 \appendtoverbtoks?
+//<![CDATA[
 /*
 HOW THIS SHOULD WORK:
     Initially check to make sure the submitted answer (and proposed answer) are at least in some kind of theoretically factored form.
@@ -95,7 +96,7 @@ function degreeHunt(tree,position,curDeg) {
         
         var tempDeg = 0;
         
-        for (var j = 1; j < tree[position].length; ++j) {
+        for (var j = 1; j<tree[position].length; ++j) {
             // Walk the array to find any powers of x.
             if (tree[position][j]=='x') {
                 // If the entry is just x, then we have pos deg and we are done.
@@ -201,7 +202,7 @@ function degreeHunt(tree,position,curDeg) {
         debugText('Processing a product sign.');
         
         var tempDeg = 0;
-        for (var j = 0; j < tree[position].length; ++j) {
+        for (var j = 0; j<tree[position].length; ++j) {
             // Add the degree of each thing being multiplied, even though most are probably zero.
             if (tree[position][j]=='x') {
                 // If the entry is just x, then we have deg 1.
@@ -229,7 +230,7 @@ function degreeHunt(tree,position,curDeg) {
         
         debugText('Processing an unknown sign... Specifically: '+tree[position][0]);
         
-        for (var j = 0; j < tree[position].length; ++j) {
+        for (var j = 0; j<tree[position].length; ++j) {
             // Walk the array to find any powers of x.
             if (tree[position][j]=='x') {
                 // If the entry is just x, then we have deg 1.
@@ -251,10 +252,10 @@ function degreeHunt(tree,position,curDeg) {
 // Subfunction just to make sure that the submitted function is in a legitimately factored form.
 
 function JNFisFactored(factorTree) {
-   
-    // First we check to see if we have a negative factored out, which messes everything up in the tree.
-    if ((factorTree[0]=='-')||(factorTree[0]=='*')||((factorTree[0]=='/')*(isNum(JNFoperation[1])))
-    ) {return true} else {return false}
+    // Most recent Math Expressions lib converted -f(x) style to ['-',[f_array]], and
+    // f(x) - g(x) style to ['+' [f_array],['-'[g_array]]], so we can take either '*' or '-' as top operation.
+    if ((factorTree[0]=='-')||(factorTree[0]=='*'))
+    {return true} else {return false}
 }
 
 
@@ -295,7 +296,7 @@ function factorCheck(f,g) {
     // Now we want to fold up any root-level exponents into duplicate children of the master tree,
     //  This lets us assume the top-level node has 1 child per factor.
     debugText('folding up external exponents of studentTree  so factors do not have exponents');
-    for (var i = 0; i < studentAns.length; ++i) {
+    for (var i = 0; i<studentAns.length; ++i) {
         if ((studentAns[i][0] == '^')*(isPosInt(studentAns[i][2]))) {
             studentAns=studentAns.concat(Array(studentAns[i][2]).fill(studentAns[i][1]));
             studentAns.splice(i,1);// This should theoretically remove the original term now that we've duplicated it.
@@ -312,7 +313,7 @@ function factorCheck(f,g) {
 
     // Now re repeat with instructor tree:
     debugText('folding up external exponents of instructorTree so factors do not have exponents')
-    for (var i = 0; i < instructorAns.length; ++i) {
+    for (var i = 0; i<instructorAns.length; ++i) {
         if ((instructorAns[i][0] == '^')*(isPosInt(instructorAns[i][2]))) {
             instructorAns=instructorAns.concat(Array(instructorAns[i][2]).fill(instructorAns[i][1]));
             instructorAns.splice(i,1);// This should theoretically remove the original term now that we've duplicated it.
@@ -331,7 +332,7 @@ function factorCheck(f,g) {
     */
     
     var studentDegList=[0]
-    for (var i = 0; i < studentAns.length; ++i) {
+    for (var i = 0; i<studentAns.length; ++i) {
         if (studentAns[i] == 'x') {
             // If the factor is simply 'x', then it's a degree 1 factor... yay...
             studentDegList.push(1);
@@ -357,7 +358,7 @@ function factorCheck(f,g) {
     */
     
     var instructorDegList=[0]
-    for (var i = 0; i < instructorAns.length; ++i) {
+    for (var i = 0; i<instructorAns.length; ++i) {
         if (instructorAns[i] == 'x') {
             // If the factor is simply 'x', then it's a degree 1 factor... yay...
             instructorDegList.push(1);
@@ -386,7 +387,7 @@ function factorCheck(f,g) {
         return false
         }
     
-    for (var i = 0; i < studentDegList.length; ++i) {
+    for (var i = 0; i<studentDegList.length; ++i) {
         if (studentDegList[i] !== instructorDegList[i]) {
         console.log('Ans Rejected: At least one factor is the wrong degree.');
         return false
@@ -400,6 +401,7 @@ function factorCheck(f,g) {
 
     return (f.equals(g))
 }
+//]]>
 ?
 %</classXimera>
 %    \end{macrocode}
