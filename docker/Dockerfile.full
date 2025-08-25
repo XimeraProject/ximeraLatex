@@ -1,5 +1,7 @@
-FROM registry.gitlab.com/islandoftex/images/texlive:TL2024-2024-11-17-full
+# FROM registry.gitlab.com/islandoftex/images/texlive:TL2024-2024-11-17-full
 # FROM registry.gitlab.com/islandoftex/images/texlive:TL2024-2024-12-15-full
+FROM registry.gitlab.com/islandoftex/images/texlive:TL2025-2025-08-24-full
+
 
 RUN apt-get update -y;  \
     apt-get install -y \

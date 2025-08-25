@@ -2,7 +2,7 @@ name: Build and Publish Docker Image on Tag
 
 on:
   push:
-    branches-ignore: [ '0*', ...,  '9*', 'main', 'master' ]   # match default branches
+    branches: [ '0*', ... '9*' ]   # match all branches
     tags-ignore:
       - '**'
 jobs:
@@ -45,7 +45,7 @@ jobs:
         docker buildx build \
           --cache-from=type=local,src=/tmp/.buildx-cache \
           --cache-to=type=local,dest=/tmp/.buildx-cache,mode=max \
-          --tag ghcr.io/ximeraproject/ximeralatex:latest \
+          --tag ghcr.io/ximeraproject/ximeralatex:${{ github.ref_name }} \
           --file docker/Dockerfile \
           --push .
 

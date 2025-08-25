@@ -1,5 +1,6 @@
 # FROM registry.gitlab.com/islandoftex/images/texlive:TL2025-2025-06-15-medium
-FROM registry.gitlab.com/islandoftex/images/texlive:TL2024-2024-11-17-medium
+# FROM registry.gitlab.com/islandoftex/images/texlive:TL2024-2024-11-17-medium
+FROM registry.gitlab.com/islandoftex/images/texlive:TL2025-2025-08-24-medium
 
 RUN apt-get update -y;  \
     apt-get install -y \
@@ -20,7 +21,7 @@ RUN dpkg -i hashcash_1.22-1_amd64.deb
 
 
 # Extra packages (on top of 'medium')
-RUN tlmgr option repository http://ftp.math.utah.edu/pub/tex/historic/systems/texlive/2024/tlnet-final;
+#RUN tlmgr option repository http://ftp.math.utah.edu/pub/tex/historic/systems/texlive/2024/tlnet-final;
 RUN tlmgr update --self; \
     tlmgr install \
         # afterpage \
