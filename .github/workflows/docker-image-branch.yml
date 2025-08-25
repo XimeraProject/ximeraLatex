@@ -2,7 +2,7 @@ name: Build and Publish Docker Image on Tag
 
 on:
   push:
-    branches: [ '0*', ... '9*' ]   # match all branches
+    branches: [ '0*', '1*', '2*', 3*', '9*', 'main', 'master' ]   # match all branches
     tags-ignore:
       - '**'
 jobs:
