@@ -181,11 +181,17 @@ local function transform_xourse(dom, file)
     if path.extension(newhref) == "" then newhref = newhref .. ".html" end
     
     local relhref = file.relative_dir.."/"..newhref
-    relhref = relhref:gsub("^/","")   -- remove leading /
+
+    -- log:debug("HREF: Got relhref "..relhref)
+   relhref = relhref:gsub("^/","")    -- remove leading /
+   relhref = path.normpath(relhref)   -- normalize A/../B, A//B, A/./B etc (fixes gradebook issue, 2025-08)
+
    if relhref:gsub(".html$","") ~= href then 
       -- The  .html extension breaks the previous/next buttons in ximeraServer 
       log:debug("Resetting href to "..relhref:gsub(".html$","") .. "( from "..href..")") 
       activity:set_attribute("href",relhref:gsub(".html$",""))
+    -- else 
+    --   log:debug("HREF: Keeping original "..href) 
     end
     
     -- the absolute path to .html of the linked activity
@@ -329,12 +335,15 @@ local function get_associated_files(dom, file)
   -- From    <meta content='logo.png' name='og:image' /> 
   for _, meta_logo in ipairs(dom:query_selector("meta[name='og:image']") ) do
     local logo = meta_logo:get_attribute("content");
-    if logo and logo ~= "" then    -- and empty logo would add the FOLDER to ass_files !
-      logo = path.join(file.relative_dir, logo)
-      log:debugf("Found logo %s in %s", logo, file.absolute_path )
-      ass_files[#ass_files+1] = logo
-    end
+    logo = path.join(file.relative_dir, logo)
+
+    log:debugf("Found logo %s in %s", logo, file.absolute_path )
+
+    ass_files[#ass_files+1] = logo
   end
+
+
+
   
   -- Add images 
   for _, img_el in ipairs(dom:query_selector("img") ) do
