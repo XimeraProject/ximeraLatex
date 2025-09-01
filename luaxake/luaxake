@@ -171,6 +171,15 @@ config = {
       output_format = "html",
       infix = "draft" ,
     },    
+    ["htmlexport"] = {
+      command = "make4ht -l -c @{configfile} -f html5 -m draft -d build -j @{basename} -s @{make4ht_extraoptions} @{filename} 'svg,htex4ht,mathjax,-css' '' '' '--interaction=nonstopmode -shell-escape -file-line-error'",
+      check_log = true, -- check log
+      status = 0, -- check that the latex command return 0
+      post_command = 'post_process_html',
+      extension = "html",
+      output_format = "html",
+      infix = "" ,
+    },    
     ["make4ht.html"] = {
       command = "make4ht -l -c @{configfile} -f html5+dvisvgm_hashes          -j @{basename}.make4ht -s @{make4ht_extraoptions} @{filename} 'svg,htex4ht,mathjax,-css' '' '' '--interaction=nonstopmode -shell-escape -file-line-error'",
       check_log = true, -- check log
@@ -188,7 +197,7 @@ config = {
       post_command = 'post_process_html',
       extension = "html",
       output_format = "html",
-      infix = "draft" ,
+      infix = "tikz" ,
     },
     ["test.html"] = {
       -- command = "make4ht -f html5+dvisvgm_hashes -c @{configfile} -sm draft @{filename}",
@@ -210,6 +219,43 @@ config = {
       status = 0, -- check that the latex command return 0
       extension = "sage",   -- ?
     },
+    ["pdftikz"] = {
+      -- this doesn't work well
+      command = 'pdflatex -j @{basename}.pdftikz -interaction=nonstopmode  -file-line-error -shell-escape  "\\PassOptionsToClass{tikzexport}{ximera}\\PassOptionsToClass{xake}{ximera}\\PassOptionsToClass{xake}{xourse}\\nonstopmode\\input{@{filename}}"',
+      -- command = 'pdflatex -interaction=nonstopmode  -file-line-error -shell-escape  "\\PassOptionsToClass{xake}{ximera}\\PassOptionsToClass{xake}{xourse}\\input{@{filename}}"',
+      check_log = true,     -- check log
+      status = 0,           -- check that the latex command return 0
+      infix = "pdftikz" ,          -- used for .handout, and .make4k4
+      extension = "pdf",    -- not used ????
+      output_format = "pdf",-- the extension of the 'final' output file, that is eg checked for uptodate-ness
+      post_command = '',
+      download_folder = 'ximera-downloads/brol',
+      -- post_command = 'post_process_pdf',
+      -- download_folder = 'ximera-downloads/with-answers',
+    },
+    ["pdfonline"] = {
+      -- this doesn't work well
+      command = 'pdflatex -j @{basename}.online -interaction=nonstopmode  -file-line-error -shell-escape  "\\PassOptionsToClass{tikzexport}{ximera}\\PassOptionsToClass{xake}{ximera}\\PassOptionsToClass{xake}{xourse}\\nonstopmode\\input{@{filename}}"',
+      -- command = 'pdflatex -interaction=nonstopmode  -file-line-error -shell-escape  "\\PassOptionsToClass{xake}{ximera}\\PassOptionsToClass{xake}{xourse}\\input{@{filename}}"',
+      check_log = true,     -- check log
+      status = 0,           -- check that the latex command return 0
+      infix = "online" ,          -- used for .handout, and .make4k4
+      extension = "pdf",    -- not used ????
+      output_format = "pdf",-- the extension of the 'final' output file, that is eg checked for uptodate-ness
+      post_command = '',
+      download_folder = 'ximera-downloads/brol',
+      -- post_command = 'post_process_pdf',
+      -- download_folder = 'ximera-downloads/with-answers',
+    },
+    ["htmltikz"] = {
+      command = "make4ht -l -c @{configfile} -f html5 -m draft -j @{basename}.pdftikz -s @{make4ht_extraoptions} @{filename} 'svg,htex4ht,mathjax,-css' '' '' '--interaction=nonstopmode -shell-escape -file-line-error'",
+      check_log = true, -- check log
+      status = 0, -- check that the latex command return 0
+      post_command = 'post_process_html',
+      extension = "html",
+      output_format = "html",
+      infix = "pdftikz" ,
+    }, 
     -- a dummy test: create .ddd files that contain the date ..
     ddd = {
       command = 'date >@{basename}.ddd',     

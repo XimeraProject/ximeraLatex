@@ -463,6 +463,18 @@ local function post_process_html(cmd)
     cmd.error = msg
     return cmd
   end
+
+    -- find all <img> elements
+for _, img in ipairs(dom:query_selector("img")) do
+  local src = img:get_attribute("src")
+  if src then
+    local pat = file.basename .. "(%d+)x%.svg"
+    local new = src:gsub(pat, "tikz/"..file.basename.."-figure%1.svg")
+    log:debugf("Set src in %s to %s (from %s).", file.basename, new, src)
+
+    img:set_attribute("src", new)
+  end
+end
   
 
   local ret, msg =  update_html_fileinfo(file, dom)     -- not really 'post-processing', but implicit checking-of-generated-images
