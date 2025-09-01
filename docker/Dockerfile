@@ -123,6 +123,9 @@ RUN tlmgr update --self; \
         needspace \
         ninecolors
 
+
+RUN apt-get install -y mupdf-tools lsof
+
 # make4ht is not in /usr/local/bin if installed with tlmgr!!!
 ENV PATH="$PATH:/usr/local/texlive/2024/bin/x86_64-linux"
 
