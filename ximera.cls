@@ -538,7 +538,7 @@
 
 \ifhints
 \renewenvironment{hint}{
-\begin{trivlist}\item[\hskip \labelsep\small\slshape\bfseries \GetTranslation{hint}:\hspace{2ex}]
+\begin{trivlist}\item[\hskip \labelsep\small\slshape\bfseries \GetTranslation{Hint}:\hspace{2ex}]
 \small\slshape
 }
 {
