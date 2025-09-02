@@ -844,14 +844,15 @@ then
     echo "Starting name (from bash script $0)"
     xake_name
 ## TODO?:  get rid of these combinations, and put them in luaxake ... ?
-elif [[ "$COMMAND" == "all" ]]
+elif [[ "$COMMAND" == "all" ]]    # OPTION USED FOR ADHOC CALCULUS DEPLOYMENT 2025/09/02
 then
-    echo "Starting NEW all (bake/name/frost/serve)"
+    echo "Starting all (bake pdfexport/bake htmlexport/name/frost/serve; no ximera-downloads)"
     shift
     # HACK: split
     $LUAXAKE bake  --compile pdfexport $* || error "Problem with 'bake'; Exiting..." 
     $LUAXAKE bake  --compile htmlexport $* || error "Problem with 'bake'; Exiting..." 
-    $LUAXAKE bake  $* || error "Problem with 'bake'; Exiting..." 
+
+    rm -rf ximera-downloads/*  # contains pdfexport versions 
    
     # git remote show ximera 2>/dev/null || xake_name
     

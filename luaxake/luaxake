@@ -230,7 +230,7 @@ config = {
       extension = "pdf",    -- not used ????
       output_format = "pdf",-- the extension of the 'final' output file, that is eg checked for uptodate-ness
       post_command = 'post_process_pdf',
-      download_folder = 'ximera-downloads/brol',
+      download_folder = 'ximera-downloads/pdfexport',
       -- post_command = 'post_process_pdf',
       -- download_folder = 'ximera-downloads/with-answers',
     }, 
