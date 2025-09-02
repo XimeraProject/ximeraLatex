@@ -43,7 +43,8 @@ Options:
 --compile       (default none)       Compile sequence (default 'pdf,html', or as set in settings)
 --settingsfile  (default none)       Luaxake settings script
 --configfile    (default none)       TeX4ht config file
--j,--jobs       (optional 1..1000)    Number of compile jobs to run in parallel
+-j,--jobs       (optional 1..1000)   Number of compile jobs to run in parallel
+--img_format    (default svg)        Either svg or png for image-format in HTML
 
 Possible commands:
  bake
@@ -299,6 +300,7 @@ config = {
   -- number of lines in tex files where we should look for \documentclass
   -- dump_fileinfo = "aFirstXourse.tex",
   jobs = 2,
+  img_format = "svg",
 }
 
 
@@ -349,6 +351,7 @@ config.noclean      = args.noclean      or os.getenv("XM_NOCLEAN")         or co
 config.nodependencies = args.nodependencies or os.getenv("XM_NODEPENDENCIES")  or config.nodependencies
 config.force        = args.force        or os.getenv("XM_FORCE")           or config.force
 config.jobs         = args.jobs         or os.getenv("XM_JOBS")            or config.jobs
+config.img_format   = args.img_format   or os.getenv("XM_IMG_FORMAT")      or config.img_format
 
 if args.configfile ~= "none" then 
   config.configfile   =  args.configfile
