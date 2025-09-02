@@ -223,6 +223,7 @@ if [[ -d .ximera_local ]]; then
     if [[ -f .ximera_local/xmScripts/xmlatex ]]; then
        PATH=.ximera_local/xmScripts/:$PATH
        echo "USING local xmlatex script ($(type xmlatex))"
+       # THIS CAN NOT POSSIBLY WORK: the script is running already !!!
     fi
 fi
 
@@ -843,11 +844,15 @@ then
     echo "Starting name (from bash script $0)"
     xake_name
 ## TODO?:  get rid of these combinations, and put them in luaxake ... ?
-elif [[ "$COMMAND" == "all" ]]
+elif [[ "$COMMAND" == "all" ]]    # OPTION USED FOR ADHOC CALCULUS DEPLOYMENT 2025/09/02
 then
-    echo "Starting all (bake/name/frost/serve)"
+    echo "Starting all (bake pdfexport/bake htmlexport/name/frost/serve; no ximera-downloads)"
     shift
-    $LUAXAKE bake  $* || error "Problem with 'bake'; Exiting..." 
+    # HACK: split
+    $LUAXAKE bake  --compile pdfexport $* || error "Problem with 'bake'; Exiting..." 
+    $LUAXAKE bake  --compile htmlexport $* || error "Problem with 'bake'; Exiting..." 
+
+    rm -rf ximera-downloads/*  # contains pdfexport versions 
    
     # git remote show ximera 2>/dev/null || xake_name
     

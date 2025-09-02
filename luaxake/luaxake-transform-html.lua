@@ -367,13 +367,18 @@ local function get_associated_files(dom, file)
     
     ass_files[#ass_files+1] = src
     
-    -- local u = url.parse(src)
-    -- if false and get_extension(u.path) == "svg"
-    -- then
-    --   local png  = u.path:gsub(".svg$", ".png")
-    --   log:debug("also adding  "..png)
-    --   ass_files[#ass_files+1] = png
-    -- end
+    local u = url.parse(src)
+    if get_extension(u.path) == "svg"
+    then
+      local png  = u.path:gsub(".svg$", ".png")
+      log:debugf("also adding PNG %s", png)
+      ass_files[#ass_files+1] = png
+    elseif get_extension(u.path) == "png"
+    then
+      local svg  = u.path:gsub(".png$", ".svg")
+      log:debugf("also adding SVG %s", svg)
+      ass_files[#ass_files+1] = svg
+    end
   
     ::next_image::
   end
@@ -463,6 +468,18 @@ local function post_process_html(cmd)
     cmd.error = msg
     return cmd
   end
+
+    -- find all <img> elements
+for _, img in ipairs(dom:query_selector("img")) do
+  local src = img:get_attribute("src")
+  if src then
+    local pat = file.basename .. "(%d+)x%.svg"
+    local new = src:gsub(pat, "tikz/"..file.basename.."-figure%1." .. config.img_format)
+    log:debugf("Set src in %s to %s (from %s).", file.basename, new, src)
+
+    img:set_attribute("src", new)
+  end
+end
   
 
   local ret, msg =  update_html_fileinfo(file, dom)     -- not really 'post-processing', but implicit checking-of-generated-images

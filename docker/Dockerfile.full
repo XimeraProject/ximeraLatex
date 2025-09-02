@@ -18,6 +18,9 @@ RUN apt-get update -y;  \
 ADD docker/hashcash_1.22-1_amd64.deb .
 RUN dpkg -i hashcash_1.22-1_amd64.deb
 
+RUN apt-get install -y mupdf-tools lsof
+
+
 # Add this complete ximeraLatex repo (is overkill, but allows bugfixing/editing inside the docker image!
 # It automatically adds the luaxake and xmlatex scripts
 RUN mkdir -p /root/texmf/tex/latex
