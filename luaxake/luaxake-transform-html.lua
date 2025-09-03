@@ -335,15 +335,12 @@ local function get_associated_files(dom, file)
   -- From    <meta content='logo.png' name='og:image' /> 
   for _, meta_logo in ipairs(dom:query_selector("meta[name='og:image']") ) do
     local logo = meta_logo:get_attribute("content");
+    if logo and logo ~= "" then    -- and empty logo would add the FOLDER to ass_files !
     logo = path.join(file.relative_dir, logo)
-
     log:debugf("Found logo %s in %s", logo, file.absolute_path )
-
     ass_files[#ass_files+1] = logo
   end
-
-
-
+  end
   
   -- Add images 
   for _, img_el in ipairs(dom:query_selector("img") ) do
