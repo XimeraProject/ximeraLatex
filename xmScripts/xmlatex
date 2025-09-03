@@ -844,6 +844,18 @@ then
     echo "Starting name (from bash script $0)"
     xake_name
 ## TODO?:  get rid of these combinations, and put them in luaxake ... ?
+elif [[ "$COMMAND" == "htmltask" ]]    # OPTION USED FOR TIKZEXPORT compilation
+then
+    echo "Starting all (bake pdfexport/bake htmlexport/name/frost/serve; no ximera-downloads)"
+    shift
+    # HACK: split
+    $LUAXAKE bake  --compile pdfexport $* || error "Problem with 'bake'; Exiting..." 
+    $LUAXAKE bake  --compile htmlexport $* || error "Problem with 'bake'; Exiting..." 
+
+    xake_name         || error "Problem with 'name'; Exiting ..."
+
+    $LUAXAKE frost $* || error "Problem with 'frost'; Exiting..."
+    $LUAXAKE serve $* || error "Problem with 'serve'; Exiting..."
 elif [[ "$COMMAND" == "all" ]]    # OPTION USED FOR ADHOC CALCULUS DEPLOYMENT 2025/09/02
 then
     echo "Starting all (bake pdfexport/bake htmlexport/name/frost/serve; no ximera-downloads)"
@@ -888,12 +900,30 @@ then
     # Unfortunately, 'name' and 'genKey' can not (yet?) be integrated into luaxake ...
 
     [[ -z "$GPG_KEY_ID" ]] && xake_findKey  # If no key present, try to find and set one
-    [[ -z "$GPG_KEY_ID" ]] && xake_genKey   # If still no key present, try genKey to generate one)
+    # [[ -z "$GPG_KEY_ID" ]] && xake_genKey   # If still no key present, try genKey to generate one)
     
     # git remote show ximera >/dev/null 2>&1 || xake_name
     xake_name    # set the name (should only be needed if not-yet-set, OR CHANGED)
 
     $LUAXAKE ghaction $* || error "Exiting..."
+
+elif [[ "$COMMAND" == "servetask" ]]
+then
+    echo "Starting full build (name; bake/frost/serve)"
+    shift
+    
+    $LUAXAKE bake  --compile pdfexport $* || error "Problem with 'bake'; Exiting..." 
+    $LUAXAKE bake  --compile htmlexport $* || error "Problem with 'bake'; Exiting..." 
+
+    # Unfortunately, 'name' and 'genKey' can not (yet?) be integrated into luaxake ...
+    [[ -z "$GPG_KEY_ID" ]] && xake_findKey  # If no key present, try to find and set one
+    [[ -z "$GPG_KEY_ID" ]] && xake_genKey   # If still no key present, try genKey to generate one)
+
+    xake_name         || error "Problem with 'name'; Exiting ..."
+
+    $LUAXAKE frost $* || error "Problem with 'frost'; Exiting..."
+    $LUAXAKE serve $* || error "Problem with 'serve'; Exiting..."
+
 
 else
     $LUAXAKE $*

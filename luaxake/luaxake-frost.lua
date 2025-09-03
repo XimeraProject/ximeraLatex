@@ -61,11 +61,12 @@ local function frost(tex_files, to_be_compiled_files)
     local uncommitted_files = get_git_uncommitted_files()
 
     if #uncommitted_files > 0 then
-        log:warningf("There are %d uncommitted files; should serve only to localhost", #uncommitted_files)
+        log:debugf("Warning: There are %d uncommitted files; should serve only to localhost", #uncommitted_files)
     end
     
     if #to_be_compiled_files > 0 then
-        log:warningf("There are %d file to be compiled; should serve only to localhost", #to_be_compiled_files)
+        -- NOTE: #to_be_compiled_files might very well not be uptodate ...?
+        log:debugf("There are %d file to be compiled; should serve only to localhost", #to_be_compiled_files)
     end
 
     local needing_publication = {}
@@ -244,7 +245,7 @@ local function frost(tex_files, to_be_compiled_files)
 
         tagtree_oid, tag_oid, tagName = most_recent_publication:match("([^%s]+) ([^%s]+) ([^%s]+)")
 
-        log:infof("Found %s  (tree:%s tag:%s) ", tagName, tagtree_oid, tag_oid)
+        log:debugf("Found %s  (tree:%s tag:%s) ", tagName, tagtree_oid, tag_oid)
     end
 
     if tagtree_oid and tagtree_oid == new_tree then
@@ -277,7 +278,7 @@ local function frost(tex_files, to_be_compiled_files)
         --local tagName = "publications/"..os.date("%Y%m%d_%H%M%S")
         tagName = "publications/"..head_oid
         -- tagName = "publications/"..commit_oid
-        log:statusf("Creating tag %s for %s", tagName, commit_oid)
+        log:infof("Creating tag %s for %s", tagName, commit_oid)
 
         -- -f for force, only needed/wanted for local testing, ie frosting/serving without commit
         ret, output = osExecute("git tag -f "..tagName.." "..commit_oid)
@@ -293,7 +294,7 @@ local function frost(tex_files, to_be_compiled_files)
     if not attributes then
         log:warningf("Could not determine owner of .git folder....")
     elseif attributes.uid == 0 then
-        log:warningf("BIZAR: .git folder owned by root ...? Skipping resetting ownership.")
+        log:debugf(".git folder is owned by root. Could be the case in a container. Skipping resetting ownership.")
     else
         local set_uidgid = attributes.uid ..":".. attributes.gid
         log:debugf("Resetting ownership af all files to  uid:gid %s", set_uidgid)
@@ -350,7 +351,7 @@ local function serve(force_serving)
  
    
     log:debugf("Published %s to     %s", tagName, remote_ximera)
-    return 0, "Published  " .. tagName .. "to  " .. remote_ximera:gsub(".git","")
+    return 0, "Published  " .. tagName .. " to " .. remote_ximera:gsub(".git","")
 end
 
 M.frost      = frost
