@@ -365,12 +365,12 @@ local function get_associated_files(dom, file)
     ass_files[#ass_files+1] = src
     
     local u = url.parse(src)
-    if get_extension(u.path) == "svg"
+    if get_extension(u.path) == "svg"and path.isfile(u.path:gsub(".svg$", ".png"))
     then
       local png  = u.path:gsub(".svg$", ".png")
       log:debugf("also adding PNG %s", png)
       ass_files[#ass_files+1] = png
-    elseif get_extension(u.path) == "png"
+    elseif get_extension(u.path) == "png" and path.isfile(u.path:gsub(".png$", ".svg"))
     then
       local svg  = u.path:gsub(".png$", ".svg")
       log:debugf("also adding SVG %s", svg)
