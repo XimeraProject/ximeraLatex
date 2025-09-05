@@ -209,7 +209,7 @@ fi
 if [[ -d .texmf ]]; then
     echo "USING .texmf etc from local repo"
     [[ -d "/root/texmf/tex/generic" ]] || mkdir /root/texmf/tex/generic
-    ln -s /code/.texmf /root/texmf/tex/generic/local
+    ln -s $(pwd)/.texmf /root/texmf/tex/generic/local
     # cp -r .texmf/* /root/texmf/tex/generic/
 fi
 
@@ -219,11 +219,11 @@ if [[ -d .ximera_local ]]; then
     echo "USING .ximera_local from local repo"
     mv /root/texmf/tex/latex/ximeraLatex /root/ximeraLatex.ORI
     # mkdir /root/texmf/tex/latex/ximeraLatex
-    ln -s /code/.ximera_local/ /root/texmf/tex/latex/ximeraLatex
+    ln -s $(pwd)/.ximera_local/ /root/texmf/tex/latex/ximeraLatex
     if [[ -f .ximera_local/xmScripts/xmlatex ]]; then
        PATH=.ximera_local/xmScripts/:$PATH
        echo "USING local xmlatex script ($(type xmlatex))"
-       # THIS CAN NOT POSSIBLY WORK: the script is running already !!!
+       # THIS CAN NOT POSSIBLY WORK for xmLatex itself: the script is running already !!!
     fi
 fi
 
@@ -312,7 +312,7 @@ COMMAND=$1
 debug "COMMAND=$COMMAND"
 
 # Should not occur ...
-[[ -z "$LUAXAKE" ]] && error "Mmm, luaxake command not found: $(type luaxake); $(type kpsewhich)"
+[[ -z "$LUAXAKE" ]] && error "Mmm, luaxake command ($LUAXAKE) not found: $(type luaxake); $(type kpsewhich)"
 
 
 if [[ "$XIMERA_NAME" =~ [^a-z0-9] ]]; then
@@ -864,7 +864,7 @@ then
     $LUAXAKE bake  --compile pdfexport $* || error "Problem with 'bake'; Exiting..." 
     $LUAXAKE bake  --compile htmlexport $* || error "Problem with 'bake'; Exiting..." 
 
-    rm -rf ximera-downloads/*  # contains pdfexport versions 
+    rm -rf ximera-downloads/pdfexport  # 20250905: contains pdfexport versions 
    
     # git remote show ximera 2>/dev/null || xake_name
     
