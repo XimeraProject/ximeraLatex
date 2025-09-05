@@ -219,7 +219,7 @@ local function frost(tex_files, to_be_compiled_files)
     for _, line in ipairs(needing_publication) do
         log:trace("ADDING "..line)
         -- osExecute("echo adding "..line.." >>status.log")
-        osExecute("git add -f "..line)
+        osExecute("git add -f '"..line.."'")
     end
     -- osExecute("git status >>status.log")
 
