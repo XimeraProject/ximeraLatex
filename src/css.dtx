@@ -40,10 +40,11 @@
 
 \ExplSyntaxOff
 
-\ConfigureEnv{image}{%
-  \ifvmode \IgnorePar\fi \EndP%
-  \HCode{<div class="image-environment" role="img" aria-labelledby="image-alt-\arabic{imagealt}">}%
-}{\HCode{</div>}}{}{}
+%% Should be in image.dtx !!
+%%%\ConfigureEnv{image}{%
+%%%  \ifvmode \IgnorePar\fi \EndP%
+%%%  \HCode{<div class="image-environment" role="img" aria-labelledby="image-alt-\arabic{imagealt}">}%
+%%%}{\HCode{</div>}}{}{}
 
 \ConfigureEnv{minipage}{\ifvmode\IgnorePar\fi\EndP\HCode{<div class="minipage" id="minipage\the\mini@count">}}
 {\ifvmode\IgnorePar\fi\EndP\HCode{</div>\Hnewline}%
