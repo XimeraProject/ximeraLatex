@@ -54,8 +54,8 @@
  \HLet\pgfsys@endpicture\:tempa
 
  %  start picture around TikZ and PGF environments
- \ConfigureEnv{tikzpicture}{\texfourht@tikz@begin}{\texfourht@tikz@end}{}{}%
- \ConfigureEnv{pgfpicture}{\texfourht@tikz@begin}{\texfourht@tikz@end}{}{}%
+ \ConfigureEnv{tikzpicture}{\begingroup\texfourht@tikz@begin}{\texfourht@tikz@end\endgroup}{}{}%
+ \ConfigureEnv{pgfpicture}{\begingroup\texfourht@tikz@begin}{\texfourht@tikz@end\endgroup}{}{}%
 }
 
 \def\texfourht@tikz@begin{
