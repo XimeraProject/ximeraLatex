@@ -340,6 +340,13 @@ reset_file_times() {
   # Even aftre a 'cache restore, this would cause re-compile of everything
   # therefore: restore all modif-dates
   echo "Resetting file modif times (this prevents some unneeded recompilations after a recent git checkout ...)"
+
+  if [ -f "/usr/lib/git-core/git-restore-mtime" ]
+  then
+    echo  "Patching git restore-mtime"   ### 
+    sed -i 's/whatchanged --pretty/whatchanged --i-still-use-this --pretty/' /usr/lib/git-core/git-restore-mtime
+  fi
+
   #
   # Construct a git restore-mtime command with proper 'verbosity' (AND allow to overwrite everything by setting a GIT_RESTORE variable!)
   # TODO: is -f really needed/wanted ...?
