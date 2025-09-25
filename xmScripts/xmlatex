@@ -350,9 +350,9 @@ reset_file_times() {
   #
   # Construct a git restore-mtime command with proper 'verbosity' (AND allow to overwrite everything by setting a GIT_RESTORE variable!)
   # TODO: is -f really needed/wanted ...?
-  [[ -z "$GIT_RESTORE" && -n "$VERBOSE" ]] && GIT_RESTORE="git restore-mtime --i-still-use-this -f" 
-  [[ -z "$GIT_RESTORE" && -n "$DEBUG"   ]] && GIT_RESTORE="git restore-mtime --i-still-use-this -f -v" 
-  [[ -z "$GIT_RESTORE"                  ]] && GIT_RESTORE="git restore-mtime --i-still-use-this -f --quiet" 
+  [[ -z "$GIT_RESTORE" && -n "$VERBOSE" ]] && GIT_RESTORE="git restore-mtime -f" 
+  [[ -z "$GIT_RESTORE" && -n "$DEBUG"   ]] && GIT_RESTORE="git restore-mtime -f -v" 
+  [[ -z "$GIT_RESTORE"                  ]] && GIT_RESTORE="git restore-mtime -f --quiet" 
   
   $GIT_RESTORE && debug "Restored modif-times from git"
 
