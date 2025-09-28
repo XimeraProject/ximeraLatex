@@ -1,6 +1,7 @@
 --- DOM module for LuaXML
 -- @module luaxml-domobject
 -- @author Michal Hoftich <michal.h21@gmail.com
+-- CHANGED by Wim Obbels, cfr infra
 local dom = {}
 
 local xml
@@ -630,9 +631,16 @@ parse = function(
     str,
     is_xml
     )
-    -- <> is a dummy element, we just need to wrap everything in some element 
-    str = "<>" .. (str or "") .. "</>"
-    local template = is_xml and parse(str) or parse(str)
+    -- Wim Obbels: changed 20250927, to allow '<' in <script> tags   (is_xml was not implemented ???) 
+    local template
+    if (is_xml)
+    then
+      -- <> is a dummy element, we just need to wrap everything in some element 
+      str = "<>" .. (str or "") .. "</>"
+      template = parse(str) 
+    else 
+      template = html_parse(str) -- has no escaping of '<' !!
+    end
     local root = template:root_node()._children[1]
     return root
   end

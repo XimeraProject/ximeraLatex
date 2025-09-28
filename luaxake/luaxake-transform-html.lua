@@ -1,7 +1,7 @@
 -- post-process HTML files created by TeX4ht to a form suitable for Ximera
 local M = {}
 local log = logging.new("html")
-local domobject = require "luaxml-domobject"
+local domobject = require "luaxake-domobject"    --  NOTE: a luaXAKE copy of luaxml.domobject !!!
 local pl = require "penlight"
 local path = require "pl.path"
 
@@ -538,8 +538,8 @@ end
     local preamble = preambles[1]
     local scrpt = preamble:create_element("script")
     scrpt:set_attribute("type", "math/tex")
-    
-    
+
+
     local f = io.open(jax_file, "r")
     local cmds = f:read("*a")
     f:close()
@@ -570,10 +570,12 @@ end
 
     log:debugf("Adding %d newcommands (from %s,  %d filtered)",n_filtered_cmds, jax_file,   n_cmds - n_filtered_cmds)
 
-    local scrpt_text = scrpt:create_text_node(filtered_cmds)
-    scrpt:add_child_node(scrpt_text)
-    preamble:add_child_node(scrpt)
-
+    -- Prevent escaping of '<' and '>' (as done by create_text_node)
+    -- Needs fix in luaxml-domobjects, as applied in luaxake-domobject)
+    preamble:inner_html("<div><script type='math/tex'>"..filtered_cmds.."</script></div>",false)
+    -- local scrpt_text = scrpt:create_text_node(filtered_cmds)
+    -- scrpt:add_child_node(scrpt_text)
+    -- preamble:add_child_node(scrpt)
   end
 
   
