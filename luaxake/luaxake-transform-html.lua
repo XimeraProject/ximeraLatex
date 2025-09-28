@@ -1,7 +1,7 @@
 -- post-process HTML files created by TeX4ht to a form suitable for Ximera
 local M = {}
 local log = logging.new("html")
-local domobject = require "luaxml-domobject"
+local domobject = require "luaxake-domobject"    --  NOTE: a luaXAKE copy of luaxml.domobject !!!
 local pl = require "penlight"
 local path = require "pl.path"
 
@@ -335,15 +335,12 @@ local function get_associated_files(dom, file)
   -- From    <meta content='logo.png' name='og:image' /> 
   for _, meta_logo in ipairs(dom:query_selector("meta[name='og:image']") ) do
     local logo = meta_logo:get_attribute("content");
+    if logo and logo ~= "" then    -- and empty logo would add the FOLDER to ass_files !
     logo = path.join(file.relative_dir, logo)
-
     log:debugf("Found logo %s in %s", logo, file.absolute_path )
-
     ass_files[#ass_files+1] = logo
   end
-
-
-
+  end
   
   -- Add images 
   for _, img_el in ipairs(dom:query_selector("img") ) do
@@ -368,12 +365,12 @@ local function get_associated_files(dom, file)
     ass_files[#ass_files+1] = src
     
     local u = url.parse(src)
-    if get_extension(u.path) == "svg"
+    if get_extension(u.path) == "svg"and path.isfile(u.path:gsub(".svg$", ".png"))
     then
       local png  = u.path:gsub(".svg$", ".png")
       log:debugf("also adding PNG %s", png)
       ass_files[#ass_files+1] = png
-    elseif get_extension(u.path) == "png"
+    elseif get_extension(u.path) == "png" and path.isfile(u.path:gsub(".png$", ".svg"))
     then
       local svg  = u.path:gsub(".png$", ".svg")
       log:debugf("also adding SVG %s", svg)
@@ -538,8 +535,8 @@ end
     local preamble = preambles[1]
     local scrpt = preamble:create_element("script")
     scrpt:set_attribute("type", "math/tex")
-    
-    
+
+
     local f = io.open(jax_file, "r")
     local cmds = f:read("*a")
     f:close()
@@ -570,8 +567,50 @@ end
 
     log:debugf("Adding %d newcommands (from %s,  %d filtered)",n_filtered_cmds, jax_file,   n_cmds - n_filtered_cmds)
 
-    local scrpt_text = scrpt:create_text_node(filtered_cmds)
-    scrpt:add_child_node(scrpt_text)
+    -- Prevent escaping of '<' and '>' (as done by create_text_node)
+    -- Needs fix in luaxml-domobjects, as applied in luaxake-domobject)
+    preamble:inner_html("<div><script type='math/tex'>"..filtered_cmds.."</script></div>",false)
+    -- local scrpt_text = scrpt:create_text_node(filtered_cmds)
+    -- scrpt:add_child_node(scrpt_text)
+    -- preamble:add_child_node(scrpt)
+  end
+
+  -- 2025-09: experimantal CSS feature
+  log:trace("Process .xmcss file if present")
+  local css_file = src:gsub(".html$", ".xmcss")
+  if not path.exists(css_file) then
+    log:debug("No CSS file with extra CSS config")
+    css_file = nil
+  end
+
+  if css_file then
+
+    local preambles = dom:query_selector("div.preamble")
+      
+    if #preambles == 0 then
+      -- Should not happen ...
+      log:error("No div.preamble in html : please add one") 
+    end
+
+    local preamble = preambles[1]
+    local scrpt = preamble:create_element("style")
+    scrpt:set_attribute("type", "text/css")
+    
+    
+    local f = io.open(css_file, "r")
+    local csslines = f:read("*a")
+    f:close()
+
+
+    csslines= csslines:gsub("\\%%", "%%")      -- remove all 'exotic' characters; _ must be kept...
+    
+    -- local _, n_cmds = cmds:gsub("\n","")
+    -- local _, n_filtered_cmds = filtered_cmds:gsub("\n","")
+
+    log:infof("Adding CSS style : \n %s", csslines)
+
+    local style_text = scrpt:create_text_node(csslines)
+    scrpt:add_child_node(style_text)
     preamble:add_child_node(scrpt)
 
   end

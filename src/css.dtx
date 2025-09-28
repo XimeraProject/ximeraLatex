@@ -1,0 +1,69 @@
+% \subsubsection{CSS support}
+% This section documents an experimental feature to generate CSS for some LateX environments
+%
+%  Tex4ht (sometimes) creates a |.xmcss| file, and luaxake integrates it into the .html
+
+%  Write adhoc css, currently only used/tested for minipage sizing (Wim Obbels, 2025-09-05)
+%    \begin{macrocode}
+%<*cfgXimera>
+
+\makeatletter
+
+%--- open output file for collected CSS
+\newwrite\xmcss@out
+\immediate\openout\xmcss@out=\jobname.xmcss
+
+% \xmCSS{ ... } : appends a line to \jobname.xmcss
+% Important: we temporarily make % an ordinary character so "50%" is preserved.
+\def\xmCSS{\begingroup\catcode`\%=12 \xmcss@grab}
+
+\long\def\xmcss@grab#1{%
+  \begingroup
+    \immediate\write\xmcss@out{#1}%
+  \endgroup
+  \endgroup
+}
+
+% we must refer to minipage from the css file, because tags are being
+% written *before* dimensions ar known
+\newcount\mini@count
+\ExplSyntaxOn
+% save original minipage
+\let\oldiimini\@iiiminipage
+% redefine minipage
+\def\@iiiminipage#1#2[#3]#4{%
+  % calculate minipage dimensions and save it to the CSS file
+  \xmCSS{\#minipage\the\mini@count{width:\fp_eval:n{#4/\textwidth*100}\%;}}%
+  \global\advance\mini@count by 1\relax%
+  \oldiimini{#1}{#2}[#3]{#4}%
+}
+
+\ExplSyntaxOff
+
+%% Should be in image.dtx !!
+%%%\ConfigureEnv{image}{%
+%%%  \ifvmode \IgnorePar\fi \EndP%
+%%%  \HCode{<div class="image-environment" role="img" aria-labelledby="image-alt-\arabic{imagealt}">}%
+%%%}{\HCode{</div>}}{}{}
+
+\ConfigureEnv{minipage}{\ifvmode\IgnorePar\fi\EndP\HCode{<div class="minipage" id="minipage\the\mini@count">}}
+{\ifvmode\IgnorePar\fi\EndP\HCode{</div>\Hnewline}%
+}{}{}
+
+\makeatother
+
+\Css{div.minipage {
+ float: left; 
+ } 
+}
+
+\Css{div.minipage:last-child {
+ clear: none; 
+ float: right; 
+ }
+}
+
+\Css{ div.minipage + :not(.minipage) {clear:both;overflow:auto;width:100\%;}}
+
+%</cfgXimera>
+%    \end{macrocode}
