@@ -371,7 +371,7 @@ end
 
 -- set/add potential default dependencies
 if not config.default_dependencies and path.exists("xmPreamble.tex") then
-  log:info("Adding default dependency xmPreamble.tex")
+  log:debug("Adding default dependency xmPreamble.tex")
   config.default_dependencies = { "xmPreamble.tex" }
 else
   config.default_dependencies = {}
@@ -441,8 +441,10 @@ log:infof("Set compile_sequence=%s (and output_formats=%s)", table.concat(config
 --
 local tex_fileinfos = {}
 
+local first_file_arg = ""
+
 for i,nextarg in ipairs(config.dirs) do 
-  log:infof("Processing argument %d: %s", i,nextarg)
+  log:debugf("Processing argument %d: %s", i,nextarg)
   nextarg = nextarg:gsub("^.//*", "")    -- remove potential leading './' -- vscode-settings sometimes even add .//myfile.tex; it also might confuse skipping hidden .xxx files/folders
 
   --if path.isdir(nextarg) or path.isfile(nextarg) then
@@ -450,14 +452,22 @@ for i,nextarg in ipairs(config.dirs) do
     if not path.isdir(nextarg) then
       local ext = nextarg:match(("%.([^%.]+)$"))
       if ext  ~= "tex" and path.isfile(nextarg..".tex")   then
-        log:trace("Adding .tex to " .. nextarg)
+        log:debug("Adding .tex to " .. nextarg)
         nextarg = nextarg..".tex"
       elseif ext ~= "tex" then 
-        log:warningf("Argument %s not folder nor tex-file (%s): SKIPPING", nextarg, ext)
+        log:errorf("Argument %s not folder nor tex-file (%s)", nextarg, ext)
+        os.exit(1)
         goto nextarg    -- continue ...
       end
     end
-        
+
+    if first_file_arg == ""    -- HACK: save to append to url at serve
+    then 
+      log:debugf("Set first file to %s", nextarg)
+      first_file_arg = "/" .. nextarg:gsub("%.tex",".html")  
+    end   
+
+    
     -- some files might need compilation even if they are not in the args, e.g. _pdf.tex files, or other dependent .tex files
     local all_involved_texfiles = files.get_tex_files_with_status(nextarg, config.output_formats, config.compile_sequence)
 
@@ -529,7 +539,7 @@ elseif #to_be_compiled > 0 then
       log:infof("%3d %s",i,file.relative_path)
     end
 else 
-  log:status("No files need compiling")
+  log:info("No files need compiling")
 end
 
   --
@@ -579,25 +589,24 @@ end
       
   -- TODO: fix commands (cfr xmlatex/xmlatex/lua)
 if command == "bake" or command == "compilePdf" or command ==  "compile" then
-  log:status("Start "..command)
-
+  
   local ret, msg
   if #to_be_compiled == 0 then
-    ret, msg = 0, "Nothing to be baked"
+    log:debug("Nothing to be baked")
   else
+    log:status("Start "..command)
     ret, msg = bake.bake(to_be_compiled, config.jobs)
-  end    -- end baking
-
-  if ret > 0 then
-    log:error("Bake failed: " .. msg)
-    os.exit(ret)
-  else 
-    log:statusf("Bake succeeded: " .. msg)
+    if ret > 0 then
+      log:error("Bake failed: " .. msg)
+      os.exit(ret)
+    else 
+      log:statusf("Bake succeeded: " .. msg)
+    end
   end
 end
 
 if command == "frost" then
-  log:status("Start " .. command)
+  log:info("Start " .. command)
   local ret, msg = frost.frost(tex_files, to_be_compiled)
   if ret > 0 then
     log:error("Frost failed: " .. msg)
@@ -608,13 +617,13 @@ if command == "frost" then
 end
 
 if command == "serve" then
-  log:status("Start " .. command)
+  log:info("Start " .. command)
   local ret, msg = frost.serve(config.force)  
   if ret > 0 then
     log:error("Serve failed: " .. msg)
     os.exit(ret)
   else 
-    log:statusf("Serve succeeded: " .. msg)
+      log:statusf("Serve succeeded: " .. msg .. first_file_arg)
   end
 end
 
@@ -622,10 +631,10 @@ if command == "ghaction" then
 
   local ret, msg
   if #to_be_compiled == 0 then
-    log:status("Nothing to be baked")
+    log:info("Nothing to be baked")
     msg={}
   else
-    log:status("Start bake")
+    log:info("Start bake")
     ret, msg = bake.bake(to_be_compiled, config.jobs)
     
     if ret > 0 then
@@ -652,7 +661,7 @@ if command == "ghaction" then
   to_be_compiled = still_to_be_compiled
   -- end-of-hack to_be_compiled
 
-  log:status("Start frost")
+  log:info("Start frost")
   local ret, msg = frost.frost(tex_files, to_be_compiled)
   if ret > 0 then
     log:error("Frost failed: " .. msg)
@@ -660,13 +669,13 @@ if command == "ghaction" then
   else 
     log:statusf("Frost succeeded: " .. msg)
   end
-  log:status("Start serve")
+  log:info("Start serve")
   local ret, msg = frost.serve(false)  -- NO FORCE (since push/depth issue fixed ?)
   if ret > 0 then
     log:error("Serve failed: " .. msg)
     os.exit(ret)
   else 
-    log:statusf("Serve succeeded: " .. msg)
+    log:statusf("Serve succeeded: " .. msg .. first_file_arg)
   end
 end
 
