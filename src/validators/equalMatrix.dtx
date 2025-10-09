@@ -1,0 +1,112 @@
+% \subsubsection{equalMatrix}
+%%%   This validator implements a way for students to enter in a matrix answer, 
+%%%       and have that compared against an instructor's matrix answer entry-by-entry
+%%%       using the ximera equality algorithm (so this supports algebraic entries).
+%%%   It expects a matrix to be defined using the following formatting:
+%%%       [ [r1c1,r1c2,r1c3],[r2c1,r2c2,r2c3],[r3c1,r3c2,r3c3] ]
+%%%       Where 'rXcY' is the 'row X, column Y' entry of the matrix.
+%%%   Thus both the instructor and the student should input this format for the matrix.
+%%%       So the instructor would write something like:
+%%%           \verb|$\answer{[ [1,2,3],[4,5,6],[7,8,9] ]}$|
+%%%       And the student would click into the answer box and enter in:
+%%%           [ [1,2,3],[4,5,6],[7,8,9] ]
+%%%       This has the (somewhat advantage) of being parsed into something visible by mathjax,
+%%%           rather than the 'invalid symbol' or 'unexpected token' or other error, which is nice.
+%%%
+%    \begin{macrocode}
+%<*classXimera>
+%%% Apend code via \appendtoverbtoks
+
+\appendtoverbtoks?
+//<![CDATA[
+// We want to define a validator that allows us to check a matrix.
+function equalMatrix(f,g) {
+    /* We expect that f is a matrix provided by the student in the format:
+            [ [r1c1,r1c2,r1c3],[r2c1,r2c2,r2c3],[r3c1,r3c2,r3c3] ]
+       We expect that g is a matrix provided by the instructor in the format:
+            [ [r1c1,r1c2,r1c3],[r2c1,r2c2,r2c3],[r3c1,r3c2,r3c3] ]
+    */
+    
+    
+    debugText('Here is the student ans.');
+    
+    debugArray(f);
+    
+    debugText('Here is the instructor ans.');
+    
+    debugArray(g);
+    
+    //  Now we want to make a dummy form of the given variables so we can manipulate them without the original getting recked.
+   
+    var fTree = JSON.parse(JSON.stringify(f.tree));
+    var gTree = JSON.parse(JSON.stringify(g.tree));
+    
+    
+    // Start out by making sure that the format was entered correctly
+    //  in particular, that each sub-list is the same length.
+    //instructorAnsbkup = JSON.parse(JSON.stringify(g.tree));
+    
+    // Santize the instructor's entry.
+    
+    for (var i = 1; i < g.tree.length; ++i) {
+        if (g.tree[1].length==g.tree[i].length) {
+        } else {
+            console.log('Looks like the format for the instructors answer is off, [at least] one of the rows has the wrong number of columns!');
+            return false
+        }
+    }
+
+    // Santize the student entry.
+    for (var i = 1; i < f.tree.length; ++i) {
+        if (f.tree[1].length==f.tree[i].length) {
+        } else {
+            console.log('Looks like the format for the students answer is off, [at least] one of the rows has the wrong number of columns!');
+            return false
+        }
+    }
+    
+    // Now that we have santized the column/rows so that we know we have an actual rectangle, we'll check that the dimensions match.
+    
+    if (f.tree.length!==g.tree.length) {
+        // If the dimensions aren't the same, then the answer definitely doesn't match the instructors.
+        debugText('Looks like the matrix submitted by the student does not have the same dimension as the matrix we expect.');
+        return false;
+    }
+    
+    for (var i = 1; i < f.tree.length; ++i) {
+        if (f.tree[i].length==g.tree[i].length) {
+        } else {
+            debugText('Looks like the matrix submitted by the student does not have the same dimension as the matrix we expect.');
+            return false
+        }
+    }
+    
+    // Finally, we check the actual entries. 
+    // We assume that the matrix is a two dimensional array, i.e. no matrix entries inside our matrix. Tensors can bite me.
+    
+    for (var i = 1; i < f.tree.length; ++i) {
+        for (var j = 1; j < f.tree[i].length; ++j) {
+            debugText('Checking equality of entries in: row ' + i +', column ' + j);
+            
+            if ( compSubTree(f,fTree[i][j],gTree[i][j]) ) {
+                debugText('They appear equal in student and instructors matricies.');
+            } else {
+                console.log('Looks like [at least one] of the entries are wrong!');
+                debugText('The students answers [raw ans then copied obj ans]')
+                debugArray(f.tree[i][j]);
+                debugArray(fTree);
+                debugText('The students answers [raw ans then copied obj ans]')
+                debugArray(g.tree[i][j]);
+                debugArray(gTree);
+                return false
+            }
+        }
+    }
+    
+return true
+}
+//]]>
+?
+%</classXimera>
+%    \end{macrocode}
+

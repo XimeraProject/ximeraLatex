@@ -1,0 +1,42 @@
+% \subsection{localize}
+%%% This section builds the meta commands that support the various language implementations.
+%%% Each new language is added by adding a new file named (languageName).sty in the localization folder.
+%%%   e.g. to add french you would add a french.sty file in the localization folder.
+%%% This file is a list of translations of the relevant environment words.
+%%%   The best way to do add a new language is to:
+%%%       1) copy the english.sty file contents
+%%%       2) replace the second entry in each \addTranslation command 
+%%%           with the translation of the word in the first entry.
+%    \begin{macrocode}
+%<*classXimera>
+%    \end{macrocode}
+%    \begin{macrocode}
+\AddToHook{begindocument/before}{\@ifpackageloaded{babel}{% Only load the translations package if babel is actually loaded.
+\RequirePackage{translations}
+%%% Now load the relevant dictionary file;
+\IfFileExists{xmDictionary-\localename.trsl}{%
+    % If it exists, load it on babel.
+    \input{xmDictionary-\localename.trsl}
+}{% If it doesn't exist, report a warning
+    \PackageWarning{Localization}{I don't see a dictionary file anywhere for your language, it should be named: xmDictionary-\localename.trsl}
+}
+
+\let\selectlanguageOLD\selectlanguage
+\renewcommand{\selectlanguage}[1]{
+    \selectlanguageOLD{#1}
+    \IfFileExists{xmDictionary-#1.trsl}{%
+        % If it exists, load it on babel.
+        \input{xmDictionary-\localename.trsl}
+    }{% If it doesn't exist, report a warning
+        \PackageWarning{Localization}{I don't see a dictionary file anywhere for your language, it should be named: xmDictionary-#1.trsl}
+    }
+}
+}% End of 'if babel package loaded' section.
+{% If babel package isn't loaded, we don't need any of the translation support, just make the '\GetTranslation' return the default.
+\providecommand{\GetTranslation}[1]{#1}% A little hacky to make sure the theorem environments are actually capitalized correctly.
+}
+}% End of 'do this right before begin document' hook.
+%    \end{macrocode}
+%    \begin{macrocode}
+%</classXimera>
+%    \end{macrocode}

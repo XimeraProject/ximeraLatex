@@ -1,7 +1,7 @@
 -- post-process HTML files created by TeX4ht to a form suitable for Ximera
 local M = {}
 local log = logging.new("html")
-local domobject = require "luaxml-domobject"
+local domobject = require "luaxake-domobject"    --  NOTE: a luaXAKE copy of luaxml.domobject !!!
 local pl = require "penlight"
 local path = require "pl.path"
 
@@ -181,11 +181,17 @@ local function transform_xourse(dom, file)
     if path.extension(newhref) == "" then newhref = newhref .. ".html" end
     
     local relhref = file.relative_dir.."/"..newhref
-    relhref = relhref:gsub("^/","")   -- remove leading /
+
+    -- log:debug("HREF: Got relhref "..relhref)
+   relhref = relhref:gsub("^/","")    -- remove leading /
+   relhref = path.normpath(relhref)   -- normalize A/../B, A//B, A/./B etc (fixes gradebook issue, 2025-08)
+
    if relhref:gsub(".html$","") ~= href then 
       -- The  .html extension breaks the previous/next buttons in ximeraServer 
       log:debug("Resetting href to "..relhref:gsub(".html$","") .. "( from "..href..")") 
       activity:set_attribute("href",relhref:gsub(".html$",""))
+    -- else 
+    --   log:debug("HREF: Keeping original "..href) 
     end
     
     -- the absolute path to .html of the linked activity
@@ -329,15 +335,12 @@ local function get_associated_files(dom, file)
   -- From    <meta content='logo.png' name='og:image' /> 
   for _, meta_logo in ipairs(dom:query_selector("meta[name='og:image']") ) do
     local logo = meta_logo:get_attribute("content");
+    if logo and logo ~= "" then    -- and empty logo would add the FOLDER to ass_files !
     logo = path.join(file.relative_dir, logo)
-
     log:debugf("Found logo %s in %s", logo, file.absolute_path )
-
     ass_files[#ass_files+1] = logo
   end
-
-
-
+  end
   
   -- Add images 
   for _, img_el in ipairs(dom:query_selector("img") ) do
@@ -361,13 +364,18 @@ local function get_associated_files(dom, file)
     
     ass_files[#ass_files+1] = src
     
-    -- local u = url.parse(src)
-    -- if false and get_extension(u.path) == "svg"
-    -- then
-    --   local png  = u.path:gsub(".svg$", ".png")
-    --   log:debug("also adding  "..png)
-    --   ass_files[#ass_files+1] = png
-    -- end
+    local u = url.parse(src)
+    if get_extension(u.path) == "svg"and path.isfile(u.path:gsub(".svg$", ".png"))
+    then
+      local png  = u.path:gsub(".svg$", ".png")
+      log:debugf("also adding PNG %s", png)
+      ass_files[#ass_files+1] = png
+    elseif get_extension(u.path) == "png" and path.isfile(u.path:gsub(".png$", ".svg"))
+    then
+      local svg  = u.path:gsub(".png$", ".svg")
+      log:debugf("also adding SVG %s", svg)
+      ass_files[#ass_files+1] = svg
+    end
   
     ::next_image::
   end
@@ -457,6 +465,18 @@ local function post_process_html(cmd)
     cmd.error = msg
     return cmd
   end
+
+    -- find all <img> elements
+for _, img in ipairs(dom:query_selector("img")) do
+  local src = img:get_attribute("src")
+  if src then
+    local pat = file.basename .. "(%d+)x%.svg"
+    local new = src:gsub(pat, "tikz/"..file.basename.."-figure%1." .. config.img_format)
+    log:debugf("Set src in %s to %s (from %s).", file.basename, new, src)
+
+    img:set_attribute("src", new)
+  end
+end
   
 
   local ret, msg =  update_html_fileinfo(file, dom)     -- not really 'post-processing', but implicit checking-of-generated-images
@@ -483,13 +503,16 @@ local function post_process_html(cmd)
   --add_dependencies(dom, file)    -- IS THIS NEEDED???
 
   log:debug("Remove blanks in '\\begin {' if present")
-  for _, mjax in ipairs(dom:query_selector(".mathjax-inline, .mathjax-block")) do
+  for _, mjax in ipairs(dom:query_selector(".mathjax-inline, .mathjax-block, .mathjax-env")) do
     local mtext = mjax:get_text()
     mtext = mtext:gsub("\\begin%s*{", "\\begin{")
+
     mtext = mtext:gsub("\\end%s*{", "\\end{")
     if mtext ~= mjax:get_text() then
       log:tracef("Set mtext to %30.30s.", mtext:gsub("[\n \t]+"," "))
-      mjax.textContent = mtext
+      -- BADBAD: to be done properly ...?!
+      mjax._children[1]._text = mtext
+      -- print(require('pl.pretty').write(mjax))
     end
   end
 
@@ -512,8 +535,8 @@ local function post_process_html(cmd)
     local preamble = preambles[1]
     local scrpt = preamble:create_element("script")
     scrpt:set_attribute("type", "math/tex")
-    
-    
+
+
     local f = io.open(jax_file, "r")
     local cmds = f:read("*a")
     f:close()
@@ -533,6 +556,9 @@ local function post_process_html(cmd)
     filtered_cmds= filtered_cmds:gsub("[^\n]*[:*@].-\n", "")      -- remove all 'exotic' characters; _ must be kept...
     filtered_cmds= filtered_cmds:gsub("[^\n]\\_.-\n", "")          -- remove \_  (Mathax error)
     filtered_cmds= filtered_cmds:gsub("[^\n]\\TU.-\n", "")          -- remove \_  (Mathax error)
+    filtered_cmds= filtered_cmds:gsub("[^\n]\\T1.-\n", "")         -- remove \T1  (Mathax error, babel)
+    filtered_cmds= filtered_cmds:gsub("[^\n]\\%?.-\n", "")         -- remove \?   (Mathax error, babel)
+    filtered_cmds= filtered_cmds:gsub("[^\n]\\label.-\n", "")      -- remove \label  (Mathax error)
     filtered_cmds= filter_newcommands(filtered_cmds)               -- only keep newcommands and declaremathoperator
     filtered_cmds= filtered_cmds:gsub("##(%d)", "#%1")             -- replace ##1 with #1
     
@@ -541,8 +567,50 @@ local function post_process_html(cmd)
 
     log:debugf("Adding %d newcommands (from %s,  %d filtered)",n_filtered_cmds, jax_file,   n_cmds - n_filtered_cmds)
 
-    local scrpt_text = scrpt:create_text_node(filtered_cmds)
-    scrpt:add_child_node(scrpt_text)
+    -- Prevent escaping of '<' and '>' (as done by create_text_node)
+    -- Needs fix in luaxml-domobjects, as applied in luaxake-domobject)
+    preamble:inner_html("<div><script type='math/tex'>"..filtered_cmds.."</script></div>",false)
+    -- local scrpt_text = scrpt:create_text_node(filtered_cmds)
+    -- scrpt:add_child_node(scrpt_text)
+    -- preamble:add_child_node(scrpt)
+  end
+
+  -- 2025-09: experimantal CSS feature
+  log:trace("Process .xmcss file if present")
+  local css_file = src:gsub(".html$", ".xmcss")
+  if not path.exists(css_file) then
+    log:debug("No CSS file with extra CSS config")
+    css_file = nil
+  end
+
+  if css_file then
+
+    local preambles = dom:query_selector("div.preamble")
+      
+    if #preambles == 0 then
+      -- Should not happen ...
+      log:error("No div.preamble in html : please add one") 
+    end
+
+    local preamble = preambles[1]
+    local scrpt = preamble:create_element("style")
+    scrpt:set_attribute("type", "text/css")
+    
+    
+    local f = io.open(css_file, "r")
+    local csslines = f:read("*a")
+    f:close()
+
+
+    csslines= csslines:gsub("\\%%", "%%")      -- remove all 'exotic' characters; _ must be kept...
+    
+    -- local _, n_cmds = cmds:gsub("\n","")
+    -- local _, n_filtered_cmds = filtered_cmds:gsub("\n","")
+
+    log:infof("Adding CSS style : \n %s", csslines)
+
+    local style_text = scrpt:create_text_node(csslines)
+    scrpt:add_child_node(style_text)
     preamble:add_child_node(scrpt)
 
   end

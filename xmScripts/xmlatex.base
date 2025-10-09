@@ -30,6 +30,9 @@
 #
 #
 
+# exit if we receive INT signal
+trap 'exit 130' INT
+
 : "${CONFIG_FILE:=./xmScripts/config.txt}"
 
 if [[ -f "$CONFIG_FILE" ]]
@@ -43,9 +46,7 @@ fi
 #
 # default docker image to run; overwrite with 'export XAKE_IMAGE=myxake:0.1'
 : "${XAKE_BASE:=ximeralatex}"
-: "${XAKE_VERSION:=v2.6.1}"
-# : "${XAKE_BASE:=xake2019}"
-# : "${XAKE_VERSION:=v2.1.1}"
+: "${XAKE_VERSION:=v2.7.3}"
 : "${XAKE_CONTAINER:=$XAKE_BASE:$XAKE_VERSION}"
 : "${DOCKER_REPO:=ghcr.io/ximeraproject/}"
 
@@ -53,6 +54,7 @@ fi
 : "${XAKE_IMAGE:=$DOCKER_REPO$XAKE_CONTAINER}"   # TO BE OBSOLETED
 : "${DOCKER_IMAGE:=$XAKE_IMAGE}"
 : "${DOCKER_DEFAULT_PLATFORM:=linux/amd64}"      # needed for MacOS ?
+export DOCKER_DEFAULT_PLATFORM
 
 : "${SERVER_PORT:=2000}"
 : "${SERVER_NAME:=ximeraserver}"
@@ -79,6 +81,15 @@ fi
 if [[ -f /.dockerenv ]]  
 then
     [[ -n "$DEBUG" ]] && echo "Running in docker container (with local hostname $HOSTNAME)"
+elif [[ -f /.containerenv ]]  
+then
+    [[ -n "$DEBUG" ]] && echo "Running in podman container (with local hostname $HOSTNAME)"
+elif [[ "$container" == "podman" ]]  
+then
+    [[ -n "$DEBUG" ]] && echo "Running in podman container (with local hostname $HOSTNAME)"
+elif [[ -n "$container" ]]  
+then
+    [[ -n "$DEBUG" ]] && echo "Running in container '$container' (with local hostname $HOSTNAME)"
 elif [[ -n "$KUBERNETES_SERVICE_HOST" ]] 
 then
     echo "Running in kubernetes container ($KUBERNETES_SERVICE_HOST)"
@@ -105,17 +116,39 @@ else
         [[ -n "$DEBUG" ]] && echo "Setting LOCAL_IP=$LOCAL_IP"
     fi
 
+    # Determine program to start the docker container (unless already set) 
+    if [[ -z "$DOCKER" ]]
+    then
+        if type podman >/dev/null 2>&1
+        then
+            [[ -n "$DEBUG" ]] && echo "Using podman ($(type podman))"
+            DOCKER=podman
+        # elif type podman.exe >/dev/null 2>&1      ### WON'T WORK because of mounting current folder?
+        # then
+        #     [[ -n "$DEBUG" ]] && echo "Using podman ($(type podman))"
+        #     DOCKER=podman.exe
+        elif type docker >/dev/null 2>&1
+        then
+            [[ -n "$DEBUG" ]] && echo "Using docker ($(type docker))"
+            DOCKER=docker
+        else
+            error "No docker or podman executable found..."
+        fi
+    fi
+    
     if [[ "$1" == "ximeraserver" ]]
     then    
         echo "Starting ximera $SERVER_NAME from $SERVER_IMAGE on port $SERVER_PORT"
-        docker run --rm --name $SERVER_NAME -p 2000:$SERVER_PORT $SERVER_IMAGE
+        $DOCKER run --rm --name $SERVER_NAME -p 2000:$SERVER_PORT $SERVER_IMAGE
         exit
     fi
 
     echo "Restarting myself in docker (from image $DOCKER_IMAGE)"	
+    tty >/dev/null && INTERACTIVE="-it"  # HACK: in terminal run with -it, to process interrupts with CTRL-C
+
     [[ -n "$DEBUG" ]] && echo  \
-    docker run --env LOCAL_IP --env XIMERA_URL --env XIMERA_NAME --env GPG_KEY --env GPG_KEY_ID --env DEBUG --network host --rm $INTERACTIVE --mount type=bind,source=$MOUNTDIR,target=/code $DOCKER_IMAGE $COMMAND $*
-    docker run --env LOCAL_IP --env XIMERA_URL --env XIMERA_NAME --env GPG_KEY --env GPG_KEY_ID --env DEBUG --network host --rm $INTERACTIVE --mount type=bind,source=$MOUNTDIR,target=/code $DOCKER_IMAGE $COMMAND $*
+    $DOCKER run --env LOCAL_IP --env XIMERA_URL --env XIMERA_NAME --env GPG_KEY --env GPG_KEY_ID --env DEBUG --network host --rm $INTERACTIVE --mount type=bind,source=$MOUNTDIR,target=/code $DOCKER_IMAGE $COMMAND $*
+    $DOCKER run --env LOCAL_IP --env XIMERA_URL --env XIMERA_NAME --env GPG_KEY --env GPG_KEY_ID --env DEBUG --network host --rm $INTERACTIVE --mount type=bind,source=$MOUNTDIR,target=/code $DOCKER_IMAGE $COMMAND $*
     exit 
 fi
 

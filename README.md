@@ -1,11 +1,11 @@
 
 This repository contains the source for the `ximera` LaTeX package, and some supporting scripts. 
 
-This repo is *not* directly relevant for (prospective) Ximera authors or endusers.
-They should consult 
-* an [Example Ximera Xourse](https://go.osu.edu/ximera-examples) to see what Ximera is and can do.
-* the [https://github.com/XimeraProject/ximeraFirstSteps] repo to get a hands-on introduction, or
-* the [Ximera Manual](https://ximera.osu.edu/xman) the get a more detailed introduction and overview.
+This repo is *not* directly relevant for (prospective) Ximera authors.
+Authors should consult 
+* [Ximera First Steps](https://github.com/XimeraProject/ximeraFirstSteps) repo to get a hands-on introduction, or
+* [Ximera Manual](https://ximera.osu.edu/xman) the get a more detailed introduction and overview.
+* [Ximera Examples](https://go.osu.edu/ximera-examples) to see what Ximera is and can do.
 
 
 The Ximera document class is available in [CTAN](https://ctan.org/pkg/ximera?lang=en), but it is strongly advised to use Ximera with [Codespaces or docker](https://github.com/XimeraProject/ximeraFirstSteps). 
@@ -34,6 +34,21 @@ Manual local installation of the Ximera LaTeX package is normally never needed, 
 * In the `xmScripts` folder, the (wrapper-) script `xmlatex`. One version goes into the docker image, a simplified 'header' part should go in each ximera-repo (or just once somewhere in the PATH) of your PC.
 
 * In the `docker` folder build files for docker images. Images are automatically build for each tag of this repo, and released versions are available from [github](https://github.com/orgs/XimeraProject/packages)
+
+# Contributing
+For developers, we suggest the following workflow:
+1) Make a **Template** of a testing repository like: https://github.com/XimeraProject/ximeraFirstSteps
+2) **Clone your template**, or work on your template in a GitHub Codespace
+3) **Fork** XimeraLatex
+4) **Clone your fork** of XimeraLatex **into your template**, and switch to the `development` branch (this should be up-to-date with the `master` branch)
+5) **In your template**, rename the folder `ximeraLatex` to `.ximera_local`. Now your template will use this version of Ximera LaTeX
+6) Make your edits by either directly editing **a preamble file** (that overrides the current `ximeraLatex`) or within `ximera.cls` found within `.ximera_local` directly
+7) Once your changes work, make your changes in the `*.dtx` files. If you developed in `ximera.cls` directly, change its name to `ximeradev.cls`. 
+8) run `make` and a new `ximera.cls`, `xourse.cls`, `ximera.4ht` and `xourse.4ht` will be generated, **overwriting** any existing files in `.ximera_local`.
+9) Push changes to your fork of `ximeraLatex`. It is best to make **small commits**, and give detailed descriptions
+10) When ready, submit a pull-request from your fork
+
+Once your changes have been accepted via a pull-request, Ximera developers will update the branch `master` from the branch `development`. 
 
 
 # A Non-Official Changelog

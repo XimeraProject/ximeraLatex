@@ -445,7 +445,7 @@ local function update_output_files(metadata, extensions)
   end
   metadata.needs_compilation = needs_compilation
 
-  log:infof( "Marked source %-12s %-18s for %s", metadata.extension, needs_compilation and 'NEEDS_COMPILATIONS' or 'NO_COMPILATION', metadata.relative_path)
+  log:debugf( "Marked source %-12s %-18s for %s", metadata.extension, needs_compilation and 'NEEDS_COMPILATIONS' or 'NO_COMPILATION', metadata.relative_path)
 
   if metadata.tex_documentclass == "ximera" or metadata.tex_documentclass == "xourse"
   then

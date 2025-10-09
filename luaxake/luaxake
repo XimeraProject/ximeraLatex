@@ -43,7 +43,8 @@ Options:
 --compile       (default none)       Compile sequence (default 'pdf,html', or as set in settings)
 --settingsfile  (default none)       Luaxake settings script
 --configfile    (default none)       TeX4ht config file
--j,--jobs       (optional 1..1000)    Number of compile jobs to run in parallel
+-j,--jobs       (optional 1..1000)   Number of compile jobs to run in parallel
+--img_format    (default svg)        Either svg or png for image-format in HTML
 
 Possible commands:
  bake
@@ -171,6 +172,16 @@ config = {
       output_format = "html",
       infix = "draft" ,
     },    
+    ["htmlexport"] = {   -- NEW, TEST
+      -- command = 'pdflatex -interaction=nonstopmode  -file-line-error -shell-escape  -jobname @{basename}.handout "\\PassOptionsToClass{handout}{ximera}\\PassOptionsToClass{handout}{xourse}\\input{@{filename}}"',
+      command = "make4ht -l -c @{configfile} -f html5 -m draft -d build -j @{basename} -s @{make4ht_extraoptions} @{filename} 'svg,htex4ht,mathjax,-css' '' '' '--interaction=nonstopmode -shell-escape -file-line-error'",
+      check_log = true, -- check log
+      status = 0, -- check that the latex command return 0
+      post_command = 'post_process_html',
+      extension = "html",
+      output_format = "html",
+      infix = "" ,
+    },    
     ["make4ht.html"] = {
       command = "make4ht -l -c @{configfile} -f html5+dvisvgm_hashes          -j @{basename}.make4ht -s @{make4ht_extraoptions} @{filename} 'svg,htex4ht,mathjax,-css' '' '' '--interaction=nonstopmode -shell-escape -file-line-error'",
       check_log = true, -- check log
@@ -188,7 +199,7 @@ config = {
       post_command = 'post_process_html',
       extension = "html",
       output_format = "html",
-      infix = "draft" ,
+      infix = "tikz" ,
     },
     ["test.html"] = {
       -- command = "make4ht -f html5+dvisvgm_hashes -c @{configfile} -sm draft @{filename}",
@@ -201,7 +212,6 @@ config = {
       output_format = "html",
       infix = "make4ht" ,
     },
-
     -- sage not tested/implemented !!!!
     ["sagetex.sage"] = {
       command = "sage @{output_file}",
@@ -210,6 +220,20 @@ config = {
       status = 0, -- check that the latex command return 0
       extension = "sage",   -- ?
     },
+    ["pdfexport"] = {  -- NEW, TEST
+      -- this doesn't work well
+      command = 'pdflatex -j @{basename} -interaction=nonstopmode  -file-line-error -shell-escape  "\\PassOptionsToClass{tikzexport}{ximera}\\PassOptionsToClass{tikzexport}{ximera}\\PassOptionsToClass{tikzexport}{xourse}\\nonstopmode\\input{@{filename}}"',
+      -- command = 'pdflatex -interaction=nonstopmode  -file-line-error -shell-escape  "\\PassOptionsToClass{xake}{ximera}\\PassOptionsToClass{xake}{xourse}\\input{@{filename}}"',
+      check_log = true,     -- check log
+      status = 0,           -- check that the latex command return 0
+      infix = "" ,          -- used for .handout, and .make4k4
+      extension = "pdf",    -- not used ????
+      output_format = "pdf",-- the extension of the 'final' output file, that is eg checked for uptodate-ness
+      post_command = 'post_process_pdf',
+      download_folder = 'ximera-downloads/pdfexport',
+      -- post_command = 'post_process_pdf',
+      -- download_folder = 'ximera-downloads/with-answers',
+    }, 
     -- a dummy test: create .ddd files that contain the date ..
     ddd = {
       command = 'date >@{basename}.ddd',     
@@ -250,7 +274,7 @@ config = {
     -- "aux",
     "4ct",
     "4tc",
-    "oc",
+    -- "oc",
     "md5",
     "dpth",
     "out",
@@ -276,6 +300,7 @@ config = {
   -- number of lines in tex files where we should look for \documentclass
   -- dump_fileinfo = "aFirstXourse.tex",
   jobs = 2,
+  img_format = "svg",
 }
 
 
@@ -326,6 +351,7 @@ config.noclean      = args.noclean      or os.getenv("XM_NOCLEAN")         or co
 config.nodependencies = args.nodependencies or os.getenv("XM_NODEPENDENCIES")  or config.nodependencies
 config.force        = args.force        or os.getenv("XM_FORCE")           or config.force
 config.jobs         = args.jobs         or os.getenv("XM_JOBS")            or config.jobs
+config.img_format   = args.img_format   or os.getenv("XM_IMG_FORMAT")      or config.img_format
 
 if args.configfile ~= "none" then 
   config.configfile   =  args.configfile
@@ -345,7 +371,7 @@ end
 
 -- set/add potential default dependencies
 if not config.default_dependencies and path.exists("xmPreamble.tex") then
-  log:info("Adding default dependency xmPreamble.tex")
+  log:debug("Adding default dependency xmPreamble.tex")
   config.default_dependencies = { "xmPreamble.tex" }
 else
   config.default_dependencies = {}
@@ -415,8 +441,10 @@ log:infof("Set compile_sequence=%s (and output_formats=%s)", table.concat(config
 --
 local tex_fileinfos = {}
 
+local first_file_arg = ""
+
 for i,nextarg in ipairs(config.dirs) do 
-  log:infof("Processing argument %d: %s", i,nextarg)
+  log:debugf("Processing argument %d: %s", i,nextarg)
   nextarg = nextarg:gsub("^.//*", "")    -- remove potential leading './' -- vscode-settings sometimes even add .//myfile.tex; it also might confuse skipping hidden .xxx files/folders
 
   --if path.isdir(nextarg) or path.isfile(nextarg) then
@@ -424,14 +452,22 @@ for i,nextarg in ipairs(config.dirs) do
     if not path.isdir(nextarg) then
       local ext = nextarg:match(("%.([^%.]+)$"))
       if ext  ~= "tex" and path.isfile(nextarg..".tex")   then
-        log:trace("Adding .tex to " .. nextarg)
+        log:debug("Adding .tex to " .. nextarg)
         nextarg = nextarg..".tex"
       elseif ext ~= "tex" then 
-        log:warningf("Argument %s not folder nor tex-file (%s): SKIPPING", nextarg, ext)
+        log:errorf("Argument %s not folder nor tex-file (%s)", nextarg, ext)
+        os.exit(1)
         goto nextarg    -- continue ...
       end
     end
-        
+
+    if first_file_arg == ""    -- HACK: save to append to url at serve
+    then 
+      log:debugf("Set first file to %s", nextarg)
+      first_file_arg = "/" .. nextarg:gsub("%.tex",".html")  
+    end   
+
+    
     -- some files might need compilation even if they are not in the args, e.g. _pdf.tex files, or other dependent .tex files
     local all_involved_texfiles = files.get_tex_files_with_status(nextarg, config.output_formats, config.compile_sequence)
 
@@ -503,7 +539,7 @@ elseif #to_be_compiled > 0 then
       log:infof("%3d %s",i,file.relative_path)
     end
 else 
-  log:status("No files need compiling")
+  log:info("No files need compiling")
 end
 
   --
@@ -553,25 +589,24 @@ end
       
   -- TODO: fix commands (cfr xmlatex/xmlatex/lua)
 if command == "bake" or command == "compilePdf" or command ==  "compile" then
-  log:status("Start "..command)
-
+  
   local ret, msg
   if #to_be_compiled == 0 then
-    ret, msg = 0, "Nothing to be baked"
+    log:debug("Nothing to be baked")
   else
+    log:status("Start "..command)
     ret, msg = bake.bake(to_be_compiled, config.jobs)
-  end    -- end baking
-
-  if ret > 0 then
-    log:error("Bake failed: " .. msg)
-    os.exit(ret)
-  else 
-    log:statusf("Bake succeeded: " .. msg)
+    if ret > 0 then
+      log:error("Bake failed: " .. msg)
+      os.exit(ret)
+    else 
+      log:statusf("Bake succeeded: " .. msg)
+    end
   end
 end
 
 if command == "frost" then
-  log:status("Start " .. command)
+  log:info("Start " .. command)
   local ret, msg = frost.frost(tex_files, to_be_compiled)
   if ret > 0 then
     log:error("Frost failed: " .. msg)
@@ -582,13 +617,13 @@ if command == "frost" then
 end
 
 if command == "serve" then
-  log:status("Start " .. command)
+  log:info("Start " .. command)
   local ret, msg = frost.serve(config.force)  
   if ret > 0 then
     log:error("Serve failed: " .. msg)
     os.exit(ret)
   else 
-    log:statusf("Serve succeeded: " .. msg)
+      log:statusf("Serve succeeded: " .. msg .. first_file_arg)
   end
 end
 
@@ -596,10 +631,10 @@ if command == "ghaction" then
 
   local ret, msg
   if #to_be_compiled == 0 then
-    log:status("Nothing to be baked")
+    log:info("Nothing to be baked")
     msg={}
   else
-    log:status("Start bake")
+    log:info("Start bake")
     ret, msg = bake.bake(to_be_compiled, config.jobs)
     
     if ret > 0 then
@@ -626,7 +661,7 @@ if command == "ghaction" then
   to_be_compiled = still_to_be_compiled
   -- end-of-hack to_be_compiled
 
-  log:status("Start frost")
+  log:info("Start frost")
   local ret, msg = frost.frost(tex_files, to_be_compiled)
   if ret > 0 then
     log:error("Frost failed: " .. msg)
@@ -634,13 +669,13 @@ if command == "ghaction" then
   else 
     log:statusf("Frost succeeded: " .. msg)
   end
-  log:status("Start serve")
-  local ret, msg = frost.serve(true)  -- WITH FORCE (until push/depth issue fixed)
+  log:info("Start serve")
+  local ret, msg = frost.serve(false)  -- NO FORCE (since push/depth issue fixed ?)
   if ret > 0 then
     log:error("Serve failed: " .. msg)
     os.exit(ret)
   else 
-    log:statusf("Serve succeeded: " .. msg)
+    log:statusf("Serve succeeded: " .. msg .. first_file_arg)
   end
 end
 

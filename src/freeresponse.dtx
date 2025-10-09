@@ -35,11 +35,11 @@
 		  \ifthenelse{\boolean{#1}}%% Could probably change this with just putting the (given) in the boolean?-- Jason
 		  	{% Begin then result
 		  	\begin{trivlist}
-		  		\item[\hskip \labelsep\bfseries Free Response (Given):\hspace{2ex}]
+		  		\item[\hskip \labelsep\bfseries \GetTranslation{Free Response (Given)}:\hspace{2ex}]
 		  	}% End then result
 			{% Begin else result
 			\begin{trivlist}
-				\item[\hskip \labelsep\bfseries Free Response:\hspace{2ex}]
+				\item[\hskip \labelsep\bfseries \GetTranslation{Free Response}:\hspace{2ex}]
 			}% End else result
 		}
 		{% Environment Ending Code
@@ -54,7 +54,7 @@
 %<*htXimera>
 
 \renewenvironment{freeResponse}{\refstepcounter{problem}}{}%
-\ConfigureEnv{freeResponse}{\stepcounter{identification}\ifvmode \IgnorePar\fi \EndP\HCode{<div class="free-response" id="problem\arabic{identification}">}}{\HCode{</div>}\IgnoreIndent}{}{}%
+\ConfigureEnv{freeResponse}{\stepcounter{identification}\ifvmode \IgnorePar\fi \EndP\HCode{<div class="free-response" id="problem\arabic{identification}"  titletext=" \GetTranslation{Free Response}">}}{\EndP\HCode{</div>}\IgnoreIndent}{}{}%
 
 %</htXimera>
 %    \end{macrocode}

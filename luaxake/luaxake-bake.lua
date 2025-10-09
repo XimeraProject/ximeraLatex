@@ -136,9 +136,12 @@ local function get_commands_to_run(file, compilers, compile_sequence, only_check
     end
 
 
-    -- HACK: _pdf.tex and _beamer.tex files should by convention NOT generate HTML (as they typically would contain non-TeX4ht-compatible constructs)
-    if extension:match("html$") and ( file.relative_path:match("_pdf.tex$") or file.relative_path:match("_beamer.tex$") ) then
-      log:infof("Skipping HTML compilation of pdf-only file %s",file.relative_path) 
+  -- HACK: _pdf.tex and _beamer.tex files should by convention NOT generate HTML (as they typically would contain non-TeX4ht-compatible constructs)
+    if ( extension:match("html$")  or extension:match("export$") )
+      and 
+      ( file.relative_path:match("_pdf.tex$") or file.relative_path:match("_beamer.tex$") ) then
+
+      log:infof("Skipping %s compilation of pdf-only file %s",extension, file.relative_path) 
 
       -- create/update a dummy outputfile to mark this file 'uptodate'
       local filename = file.absolute_path:gsub(".tex$",".html")

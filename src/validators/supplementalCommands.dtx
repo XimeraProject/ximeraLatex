@@ -1,0 +1,52 @@
+% \subsubsection{supplementalCommands}
+%%%   This initialized a number of debug/verbose functions to be used during the validation process for custom validators.
+%%%       Currently we have two main debug commands, debugText and debugArray.
+%%%       debugText takes in a string and displays that string when debugInfo = true.
+%%%       debugArray takes in an array and displays that array when debugInfo = true.
+%%%
+%    \begin{macrocode}
+%<*classXimera>
+\appendtoverbtoks?
+//<![CDATA[
+var debugInfo = false;
+
+function numberLessThan(a,b) {
+    // Returns true if a is less than b, and false if a is greater than or equal to b.
+    if (Math.min(a,b) == a) return true;
+    if (Math.max(a,b) == a) return false;
+}
+
+function debugText(debugMsg) {
+    if (debugInfo) {
+    console.log(debugMsg);
+    }
+}
+
+function debugArray(array) {
+    if (debugInfo) {
+    console.log(array);
+    }
+}
+
+function compSubTree(f, treeOne,treeTwo) {
+    /* 
+        We assume that the input f is the full matrix expressions object we will need for cloning,
+        treeOne is a level of the tree that is used as the subtree to compare
+        treeTwo is a level of another tree that is used as the subtree to compare.
+        We want to see if f.treeOne = f.treeTwo in the Ximera sense of equality.
+    */
+    // First we duplicate the object structure so the equals command can be used without pitching a fit.
+    let fTemp=Object.create(f);
+    let gTemp=Object.create(f);
+    
+    // Now we assign the subtrees as the full tree of the objects.
+    fTemp.tree = treeOne;
+    gTemp.tree = treeTwo;
+    
+    // Now we return the validity of their equality using Ximera equality validation.
+    return (fTemp.equals(gTemp))
+}
+//]]>
+?
+%</classXimera>
+%    \end{macrocode}

@@ -1,3 +1,4 @@
+# FROM registry.gitlab.com/islandoftex/images/texlive:TL2025-2025-06-15-medium
 FROM registry.gitlab.com/islandoftex/images/texlive:TL2024-2024-11-17-medium
 
 RUN apt-get update -y;  \
@@ -19,10 +20,11 @@ RUN dpkg -i hashcash_1.22-1_amd64.deb
 
 
 # Extra packages (on top of 'medium')
-RUN tlmgr option repository http://ftp.math.utah.edu/pub/tex/historic/systems/texlive/2024/tlnet-final; \
-    tlmgr update --self; \
+RUN tlmgr option repository http://ftp.math.utah.edu/pub/tex/historic/systems/texlive/2024/tlnet-final;
+RUN tlmgr update --self; \
     tlmgr install \
         # afterpage \
+        adjustbox \
         amsmath \
         # amssymb \
         # amsthm \
@@ -60,6 +62,7 @@ RUN tlmgr option repository http://ftp.math.utah.edu/pub/tex/historic/systems/te
         # ifthen \
         # ifxetex \
         # inputenc \
+        lipsum \
         listings \
         makecell \
         makecmds \
@@ -111,7 +114,17 @@ RUN tlmgr option repository http://ftp.math.utah.edu/pub/tex/historic/systems/te
         fontawesome stix  \
         latexindent \
         wrapfig \
-        wallpaper
+        wallpaper \
+        gillius \
+        pagecolor \
+        tabularray \
+        mdframed \
+        zref \
+        needspace \
+        ninecolors
+
+
+RUN apt-get install -y mupdf-tools lsof
 
 # make4ht is not in /usr/local/bin if installed with tlmgr!!!
 ENV PATH="$PATH:/usr/local/texlive/2024/bin/x86_64-linux"

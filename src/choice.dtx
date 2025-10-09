@@ -132,7 +132,7 @@
 	\setkeys{multipleChoice}{#1}%
 	\recordvariable{\mc@id}%
 	\begin{trivlist}
-		\item[\hskip \labelsep\small\bfseries Multiple Choice:]\hfil
+		\item[\hskip \labelsep\small\bfseries \GetTranslation{Multiple Choice}:]\hfil
 		\begin{enumerate}
 	}% Note this means that \item has to be the first line after \begin{multipleChoice}.
 	{% Environment End Code
@@ -158,7 +158,7 @@
 {\setkeys{multipleChoice}{#1}%
 \stepcounter{identification}\ifvmode \IgnorePar\fi \EndP\HCode{<div class="multiple-choice" }%
 \ifthenelse{\equal{\mc@id}{}}{}{\HCode{data-id="\mc@id" }}%
-\HCode{id="problem\arabic{identification}">}%
+\HCode{id="problem\arabic{identification}" titletext=" \GetTranslation{Multiple Choice}">}%
 }{\HCode{</div>}\IgnoreIndent}
 \ConfigureEnv{multipleChoice}{}{}{}{}
 %</htXimera>
@@ -202,7 +202,7 @@
 %    \begin{macrocode}
 %<*classXimera>
 \newenvironment{selectAll}[1][]
-{\begin{trivlist}\item[\hskip \labelsep\small\bfseries Select All Correct Answers:]\hfil\begin{enumerate}}
+{\begin{trivlist}\item[\hskip \labelsep\small\bfseries \GetTranslation{Select All Correct Answers}:]\hfil\begin{enumerate}}
     {\end{enumerate}\end{trivlist}}
 %</classXimera>
 %    \end{macrocode}
@@ -219,7 +219,7 @@
 %    \begin{macrocode}
 %<*htXimera>
 \renewenvironment{selectAll}{\refstepcounter{problem}}{}%
-\ConfigureEnv{selectAll}{\stepcounter{identification}\ifvmode \IgnorePar\fi \EndP\HCode{<div class="select-all" id="problem\arabic{identification}">}}{\HCode{</div>}\IgnoreIndent}{}{}
+\ConfigureEnv{selectAll}{\stepcounter{identification}\ifvmode \IgnorePar\fi \EndP\HCode{<div class="select-all" id="problem\arabic{identification}" titletext=" \GetTranslation{Select All}">}}{\HCode{</div>}\IgnoreIndent}{}{}
 %</htXimera>
 %    \end{macrocode}
 
