@@ -1,0 +1,241 @@
+% tabularray.4ht (2025-06-20-11:36), generated from tex4ht-4ht.tex
+% Copyright 2022-2025 TeX Users Group
+%
+% This work may be distributed and/or modified under the
+% conditions of the LaTeX Project Public License, either
+% version 1.3c of this license or (at your option) any
+% later version. The latest version of this license is in
+%   http://www.latex-project.org/lppl.txt
+% and version 1.3c or later is part of all distributions
+% of LaTeX version 2005/12/01 or later.
+%
+% This work has the LPPL maintenance status "maintained".
+%
+% The Current Maintainer of this work
+% is the TeX4ht Project <http://tug.org/tex4ht>.
+%
+% If you modify this program, changing the
+% version identification would be appreciated.
+\immediate\write-1{version 2025-06-20-11:36}
+
+\NewConfigure{tabularray}{8}
+\NewConfigure{tabularrayignoredcell}{2}
+\NewConfigure{tabularrayattributes}[1]{\concat:config\CellAttributes{#1\space}}
+\NewConfigure{tabularraystyles}[1]{\concat:config\CellStyle{#1}}
+\NewConfigure{tabularraycolumnwidth}{1}
+
+\ExplSyntaxOn
+\NewConfigure{tabularrayhalign}[2]{%
+  \cs_set:cpn{tabularray_halign:#1}{#2}
+}
+
+\NewConfigure{tabularrayvalign}[2]{%
+  \cs_set:cpn{tabularray_valign:#1}{#2}
+}
+\ExplSyntaxOff
+
+%Jeff changed this... there is no inherent reason for this to be here, except that it helps me remember cell attributes versus table attributes. 
+\ExplSyntaxOn
+
+
+
+
+
+\cs_new:Npn \l__tblr_testing_func_three:n #1
+{
+  \tl_set:Nn \l__tblr_colgroup_tl {  }
+  \int_set:Nn \l__tlbr_number_cols_int { \c@colcount }
+  \int_step_variable:nNn { 1 } \l__tblr_A_tl  %%this checks the first row for colhead, I don't think we should support coldhead in the second row
+  {
+  \int_step_variable:nNn {\l__tlbr_number_cols_int } \l__tblr_z_tl  
+  {
+    \tl_set:Nn \ColSpanEx_tl
+          {
+            \__tblr_data_item:neen { cell } { \l__tblr_A_tl } { \l__tblr_z_tl } { colspan } %lines 942 to 951
+          }  
+    %\int_set:Nn \lTblrTestingInt {8000 + \lTblrxmColGroupCheck + #1}
+    \int_set:Nn \lTblrTestingInt {\ColSpanEx_tl} %currently this is an integer, if a later update is needed i think it's better as an integer than a string
+    \ifnum\int_eval:n{\l__tblr_z_tl}>0 %%this if statement is always true, it literally does nothing
+      \prop_put:Nnn \l__tblr_testing_prop {\l__tblr_z_tl } {\lTblrTestingInt} 
+      \prop_get_to_int:NnN \l__tblr_testing_prop { \l__tblr_z_tl  } \lTblrxmColGroupCheck
+      \def\outputV{\@arabic\lTblrxmColGroupCheck }
+      \tl_put_right:Ne \l__tblr_colgroup_tl { <colgroup \space span="\outputV"></colgroup> }
+    \fi
+  }
+  }
+}
+
+
+
+%Jeff moved this here
+
+
+
+
+
+%\prop_get_to_int:NnN \l__tblr_testing_prop {Y} \lTblrxmColGroupCheck %% needs to be in Arabic
+
+
+
+\long\def\:tempa#1#2#3#4{%
+  % insert <table>...</table>
+  \a:tabularray   \o:__tblr_environ_code:nnnn:{#1}{#2}{#3}{#4}\b:tabularray
+}
+
+
+\HLet\__tblr_environ_code:nnnn\:tempa
+
+
+\long\def\:tempa#1{
+  \int_set:Nn \c@rownum {#1}\xdef\HRow{\@arabic\c@rownum}
+  \int_step_function:nnnN { 13 } { 1 } {14} \l__tblr_testing_func_three:n
+  %\int_step_function:nnnN { 13 } { 1 } {14} \l__tblr_testing_func_four:n
+  \int_step_function:nnnN { 13 } { 1 } {14} \l__tblr_write_caption:
+  \def\caption_string{\l__tblr_caption_str}
+  \def\colgroup_string{\l__tblr_colgroup_tl}
+  \def\outputV{\@arabic\lTblrxmColGroupCheck }
+  %% <col> <colgroup \space span="\outputV"></colgroup>
+  \ifnum\HRow=1
+    \HCode{  <caption>\l__tblr_caption_str <span>\l__tblr_summary_str </span> </caption> \colgroup_string } 
+  \fi
+  \c:tabularray\o:__tblr_build_row:N:{#1}\d:tabularray
+  }
+\HLet\__tblr_build_row:N\:tempa
+\ExplSyntaxOff
+
+% disable rules
+\ht:special{t4ht@_}
+\ExplSyntaxOn
+% #1 row number, #2 column, #3 hline number (there can be multiple), #4 css property to be set
+\def\:tblr:hlinestyle#1#2#3#4{
+  % get line height
+  \tl_set:Ne \l__tblr_h_tl{ \__tblr_spec_item:ne { hline } { [#1](#3) / @hline-height } }
+  % get dash style
+  \def\@tblr@dash{} % remove "dash" word from the variable for correct CSS string
+  \tl_set:Ne \l__tblr_f_tl{\__tblr_spec_item:ne { hline } { [#1][#2](#3) / @dash }}
+  % create CSS only when a dash style is set
+  \tl_if_empty:NF\l__tblr_f_tl{
+    % get hline color
+    \tl_set:Ne \l__tblr_g_tl { \__tblr_spec_item:ne { hline } { [#1][#2](#3) / fg } }
+    \def\:hlinecolor{\#000000}
+    % convert color to CSS value if color is set
+    \tl_if_empty:NF\l__tblr_g_tl{\get:xcolorcss{\l__tblr_g_tl}\:hlinecolor}
+    % \Configure{tabularraystyles} doesn't expand attributes, so we need to expand it here
+    % otherwise, we would get wrong color and hline style in the last row, because this macro is called twice here
+    \cs_set:ce{#4:}{#4:\dim_to_decimal_in_unit:nn{\l__tblr_h_tl*2}{1px}px~\l__tblr_f_tl\space~\:hlinecolor;}
+    \Configure{tabularraystyles}{\csname#4:\endcsname}
+  }
+}
+
+
+
+\def\:tblr:vlinestyle#1#2#3#4{
+  \tl_set:Ne \l__tblr_t_tl{ \__tblr_spec_item:ne { vline } { [#2](#3) / @vline-width } }
+  \def\@tblr@dash{} % remove "dash" word from the variable for correct CSS string
+  \tl_set:Ne \l__tblr_f_tl{\__tblr_spec_item:ne { vline } { [#1][#2](#3) / @dash }}
+  \tl_if_empty:NF\l__tblr_f_tl{
+    \tl_set:Ne \l__tblr_g_tl { \__tblr_spec_item:ne { vline } { [#1][#2](#3) / fg } }
+    \def\:hlinecolor{\#000000}
+    % convert color to CSS value if color is set
+    \tl_if_empty:NF\l__tblr_g_tl{\get:xcolorcss{\l__tblr_g_tl}\:hlinecolor}
+    % \Configure{tabularraystyles} doesn't expand attributes, so we need to expand it here
+    % otherwise, we would get wrong color and hline style in the last row, because this macro is called twice here
+    \cs_set:ce{#4:}{#4:\dim_to_decimal_in_unit:nn{\l__tblr_t_tl*2}{1px}px~\l__tblr_f_tl\space~\:hlinecolor;}
+    \Configure{tabularraystyles}{\csname#4:\endcsname}
+  }
+}
+\ExplSyntaxOff
+
+\ExplSyntaxOn
+\long\def\:tempa#1#2{%
+% find columns that are covered by rowspan and colspan
+  \xdef\HCol{\@arabic\c@colnum}
+  \xdef\HRow{\@arabic\c@rownum}
+  %I added the arabic below -- Jeff
+  \xdef\HMultispan{\@arabic\lTblrCellColSpanInt}
+  \xdef\HRowspan{\@arabic\lTblrCellRowSpanInt}
+ 
+
+  %\xdef\XMColGroupCheck{\@arabiclTblrxmColGroupCheck}
+  %\xdef\output_test{\@arabic\lTblrxmColGroupCheck}
+  \let\CellAttributes\@empty
+  \let\CellStyle\@empty
+  % calculate ignored cells, if the current cell uses colspan or rowspan
+  \int_step_inline:nnn{\c@rownum }{\c@rownum - 1 + \lTblrCellRowSpanInt}{
+    \int_step_inline:nnn{\c@colnum }{\c@colnum - 1  + \lTblrCellColSpanInt}{
+      % the loop always matches the current cell, we must ignore it
+      \str_if_eq:eeF{\HCol.\HRow}{####1.##1}{%
+        \cs_gset:cpn{ignoredcell-####1-##1}{}
+      }
+    }
+  }
+  \cs_if_exist_use:c{tabularray_halign:\g__tblr_cell_halign_tl}
+  \cs_if_exist_use:c{tabularray_valign:\g__tblr_cell_valign_tl}
+  % the vertical aligment can be set also in \g__tblr_cell_middle_tl, so we should try it as well
+  \cs_if_exist_use:c{tabularray_valign:\g__tblr_cell_middle_tl}
+  % calculate column width
+  \dim_compare:nNnT {\__tblr_data_item:nen{column}{\HCol}{@col-width}} > {0pt}{
+    \__tblr_get_table_width:% initialize \tablewidth
+    \edef\HColWidth{\fp_eval:n{\__tblr_data_item:nen{column}{\HCol}{@col-width}/\tablewidth*100}\%}
+    % save table width, preferably in CSS
+    \a:tabularraycolumnwidth%
+  }
+  % there can be multiple hlines for each cell, but we only suport the first one, because of limitations of CSS
+  \:tblr:hlinestyle{#1}{#2}{1}{border-top}
+  \int_compare:nNnT{\HRow + \HRowspan - 1} = {\c@rowcount}{%
+    % draw hline below the last row
+    \:tblr:hlinestyle{\int_eval:n{\c@rownum + 1}}{#2}{1}{border-bottom}
+  }
+  % the same is true for vlines
+  \:tblr:vlinestyle{#1}{#2}{1}{border-left}
+  \int_compare:nNnT{\HCol + \HMultispan - 1} = {\c@colcount}{%
+    % draw hline below the last row
+    \:tblr:vlinestyle{#1}{\int_eval:n{\c@colnum + 1}}{1}{border-right}
+  }
+  % support for the background color
+  \tl_set:Ne \l__tblr_b_tl
+  { \__tblr_data_item:neen { cell } {#1} {#2} { background } }
+  % save background color to the list of CSS, if it is set
+  \tl_if_empty:NF \l__tblr_b_tl{
+    \get:xcolorcss{\l__tblr_b_tl}\:bgcolor
+    \Configure{tabularraystyles}{background-color: \:bgcolor;}
+  }
+  % We can use something like \Configure{tabularrayattributes}{rowspan="\HRowspan"} in \Configure{tabularray}
+  % to declare correct attributes for joined cells
+  \int_compare:nNnT {\HRowspan} > {1}{\g:tabularray}
+  \int_compare:nNnT {\HMultispan} > {1}{\h:tabularray}
+  \cs_if_exist:cTF{ignoredcell-\the\c@colnum-\the\c@rownum}{%
+    \a:tabularrayignoredcell\e:tabularray\o:__tblr_build_cell_content:NN:{#1}{#2}\f:tabularray\b:tabularrayignoredcell
+  }{%
+    \e:tabularray\o:__tblr_build_cell_content:NN:{#1}{#2}\f:tabularray
+  }
+  % the ignored cell is global, so we must undefine it after the thes
+  \cs_undefine:c{ignoredcell-\the\c@colnum-\the\c@rownum}%
+}
+\HLet\__tblr_build_cell_content:NN\:tempa
+
+\HLet\__tblr_get_vcenter_box:N\:gobble
+
+%Jeff moved this here
+\def\output{\@arabic\lTblrxmColGroupCheck}
+\def\:colgroupcheck{
+  \ifnum\lTblrxmColGroupCheck>0
+    test="\output" \space
+  \else
+    \space
+  \fi
+}
+
+\def\:testcheck{
+  \ifnum\myInteger>0
+    test="taylor swift" \space
+  \else
+    \space
+  \fi
+}
+
+\ExplSyntaxOff
+
+\Hinput{tabularray}
+\endinput
+
