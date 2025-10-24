@@ -1,4 +1,4 @@
-PWD /home/snapp/texmf/tex/latex/ximeraLatex
+PWD /home/snapp/ximeraProject/listsDeliverables/.ximera_local
 INPUT /etc/texmf/web2c/texmf.cnf
 INPUT /usr/share/texmf/web2c/texmf.cnf
 INPUT /usr/share/texlive/texmf-dist/web2c/texmf.cnf
@@ -67,7 +67,9 @@ OUTPUT ./ximera.cfg
 INPUT src/pagesetup.dtx
 INPUT src/packages.dtx
 INPUT src/jax.dtx
+INPUT src/css.dtx
 INPUT src/sectioning.dtx
+INPUT src/enumerate.dtx
 INPUT src/title.dtx
 INPUT src/abstract.dtx
 INPUT src/image.dtx
