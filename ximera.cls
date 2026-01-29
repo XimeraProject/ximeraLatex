@@ -645,7 +645,15 @@
 \NewEnviron{image}[1][3in]{%
   \begin{center}\resizebox{#1}{!}{\BODY}\end{center}% resize and center
 }
-\newcommand{\alt}[1]{}
+\newcommand{\alt}[1]{}       %% Deprecated
+
+\providecommand\xmaltprint{}
+%% use \undef\xmaltprint to NOT have \xmalt output in the PDF
+\newcommand{\xmalt}[1]{%     %% see infra for HTML implementation;  2026, J. Kuan
+  \ifdefined\xmaltprint%
+     {\smaller\color{gray}Alt text: #1}%
+  \fi%
+}
 
 
 \DefineVerbatimEnvironment{javascript}{Verbatim}{numbers=left,frame=lines,label=JavaScript,labelposition=topline}

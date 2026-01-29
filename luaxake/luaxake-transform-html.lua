@@ -579,7 +579,13 @@ end
   log:trace("Process .xmcss file if present")
   local css_file = src:gsub(".html$", ".xmcss")
   if not path.exists(css_file) then
-    log:debug("No CSS file with extra CSS config")
+    log:debugf("No .xmcss file %s present",css_file)
+    css_file = nil
+  end
+
+  if css_file and path.getsize(css_file) == 0 then
+    log:debug("Removing empty .xmcss file %s", css_file)
+    pl.file.delete(css_file)
     css_file = nil
   end
 
