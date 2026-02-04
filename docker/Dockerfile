@@ -121,7 +121,8 @@ RUN tlmgr update --self; \
         mdframed \
         zref \
         needspace \
-        ninecolors
+        ninecolors \
+        supertabular import boxedminipage chapterfolder sectsty tocbibind sfmath 
 
 
 RUN apt-get install -y mupdf-tools lsof
