@@ -3,7 +3,7 @@ FROM registry.gitlab.com/islandoftex/images/texlive:TL2024-2024-11-17-medium
 
 RUN apt-get update -y;  \
     apt-get install -y \
-    git  git-restore-mtime \
+    git  \
     # mupdf-tools \
     pdf2svg \
     gnupg \
@@ -12,12 +12,17 @@ RUN apt-get update -y;  \
     wget  \
     dos2unix  \
     vim-tiny strace less \
-    nano file
+    nano file \ 
+    mupdf-tools lsof 
 
 # hashcash needed for setting up communication to ximeraServer; seems unfortunately not (easily?) installable with apt..
 ADD docker/hashcash_1.22-1_amd64.deb .
 RUN dpkg -i hashcash_1.22-1_amd64.deb    
 
+# Install git restore-mtime (version in apt is too old ...)
+RUN cd /root; \ 
+    git clone https://github.com/MestreLion/git-tools.git; \
+    echo 'PATH=$PATH:~/git-tools' >> ~/.profile
 
 # Extra packages (on top of 'medium')
 RUN tlmgr option repository http://ftp.math.utah.edu/pub/tex/historic/systems/texlive/2024/tlnet-final;
@@ -125,10 +130,9 @@ RUN tlmgr update --self; \
         supertabular import boxedminipage chapterfolder sectsty tocbibind sfmath 
 
 
-RUN apt-get install -y mupdf-tools lsof
 
 # make4ht is not in /usr/local/bin if installed with tlmgr!!!
-ENV PATH="$PATH:/usr/local/texlive/2024/bin/x86_64-linux"
+ENV PATH="$PATH:/usr/local/texlive/2024/bin/x86_64-linux:/root/git-tools"
 
 # Add this complete ximeraLatex repo (is overkill, but allows bugfixing/editing inside the docker image!
 # It automatically adds the luaxake and xmlatex scripts
