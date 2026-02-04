@@ -173,6 +173,10 @@
   \HCode{<div class="image-environment" role="img" aria-labelledby="image-alt-\arabic{imagealt}">}%
 }{\HCode{</div>}}
 \renewcommand{\alt}[1]{\HCode{<div style="display: none;" id="image-alt-\arabic{imagealt}">}#1\HCode{</div>}}
+\renewcommand{\xmalt}[1]{%   %% implementation 2026, J. Kuan
+   \ifvmode \IgnorePar\fi \EndP%
+   \HCode{<details><summary>Show Alt Text</summary>} #1 \HCode{</details>}%
+}
 \providecommand{\pgfsyspdfmark}[3]{}
 \renewenvironment{dialogue}{\begin{description}}{\end{description}}
 

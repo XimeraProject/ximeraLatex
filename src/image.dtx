@@ -21,9 +21,18 @@
 %</classXimera>
 %    \end{macrocode}
 % \DescribeMacro{\alt}{Inside an |image| environment, |\alt| provides alt-text for assistive technology like screenreaders.}
+% \DescribeMacro{\xmalt}{Generic command to provide alt-text for assistive technology like screenreaders, via the HTML <details> tag.}
 %    \begin{macrocode}
 %<*classXimera>
-\newcommand{\alt}[1]{}
+\newcommand{\alt}[1]{}       %% Deprecated 
+
+\providecommand\xmaltprint{}   
+%% use \undef\xmaltprint to NOT have \xmalt output in the PDF
+\newcommand{\xmalt}[1]{%     %% see infra for HTML implementation;  2026, J. Kuan
+  \ifdefined\xmaltprint%
+     {\footnotesize\color{gray}Alt text: #1}%
+  \fi%
+}
 %</classXimera>
 %    \end{macrocode}
 % The |image| environment doesn't actually work in tex4ht as defined
@@ -39,6 +48,10 @@
   \HCode{<div class="image-environment" role="img" aria-labelledby="image-alt-\arabic{imagealt}">}%
 }{\HCode{</div>}}
 \renewcommand{\alt}[1]{\HCode{<div style="display: none;" id="image-alt-\arabic{imagealt}">}#1\HCode{</div>}}
+\renewcommand{\xmalt}[1]{%   %% implementation 2026, J. Kuan
+   \ifvmode \IgnorePar\fi \EndP%
+   \HCode{<details><summary>Show Alt Text</summary>} #1 \HCode{</details>}%
+}
 %</htXimera>
 %<*cfgXimera>
 %%  Although we accept many formats, SVG is preferred on the web.
