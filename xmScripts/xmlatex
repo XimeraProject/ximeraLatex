@@ -663,6 +663,10 @@ EOF
         echo "I created a .xmKeyFile with a newly generated key for $KEY_UID."
         echo "This is convenient for quick testing, or in some cases while developing on your local PC."
         # echo "*** Do NEVER publish this key (eg by commit/push) ***"
+
+        echo "Using settings from .xmkeyfile"
+        source .xmkeyfile
+	    echo "Using key_id $GPG_KEY_ID (with key ${GPG_KEY:0:5}...)"        
     fi
 
 
