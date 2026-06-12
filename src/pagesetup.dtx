@@ -63,6 +63,20 @@
 %<*htXimera>
 \usepackage{microtype}
 \DisableLigatures[f]{encoding=*}
+\makeatletter
+% Treat layout packages as already loaded so TeX4ht skips them in HTML builds.
+\def\ximera@disablepackage#1{%
+    \expandafter\gdef\csname ver@#1.sty\endcsname{}%
+    \expandafter\gdef\csname ver@#1.cfg\endcsname{}%
+}
+\ximera@disablepackage{geometry}
+\ximera@disablepackage{fullpage}
+\ximera@disablepackage{fullpage1}
+\ximera@disablepackage{setspace}
+\ximera@disablepackage{fancyhdr}
+\ximera@disablepackage{multicol}
+\ximera@disablepackage{ragged2e}
+\makeatother
 %</htXimera>
 %    \end{macrocode}
 % I am not sure what this does.
