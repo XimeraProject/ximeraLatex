@@ -51,5 +51,37 @@
 \RequirePackage{gettitlestring}
 \RequirePackage{nameref}
 \RequirePackage{epstopdf}
+%    \end{macrocode}
+% \subsection{Blocking conflicting packages}
+% The following packages conflict with Ximera's own page layout,
+% header/footer, author, and spacing handling (set up in
+% |src/pagesetup.dtx| and |src/title.dtx|). If a contributor's
+% document tries to load one of these, we make |\usepackage| a
+% no-op instead of erroring, and warn in the compile log.
+%    \begin{macrocode}
+\newcommand{\ximera@blockpkg}[1]{%
+  \@namedef{ver@#1.sty}{9999/99/99}%
+  \@namedef{opt@#1.sty}{}%
+  \PackageWarningNoLine{ximera}{%
+    The `#1' package conflicts with Ximera's page layout and has
+    been disabled. Loading it here was ignored%
+  }%
+}
+
+\ximera@blockpkg{geometry}
+\ximera@blockpkg{fullpage}
+\ximera@blockpkg{authblk}
+\ximera@blockpkg{setspace}
+\ximera@blockpkg{fancyhdr}
+\ximera@blockpkg{multicol}
+\ximera@blockpkg{ragged2e}
+
+\let\ximera@old@pagenumbering\pagenumbering
+\renewcommand{\pagenumbering}[1]{%
+  \PackageWarningNoLine{ximera}{%
+    \string\pagenumbering\space conflicts with Ximera's page
+    numbering and was ignored (argument: #1)%
+  }%
+}
 %</classXimera>
 %    \end{macrocode}
