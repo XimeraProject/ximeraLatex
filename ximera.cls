@@ -179,6 +179,33 @@
 \RequirePackage{gettitlestring}
 \RequirePackage{nameref}
 \RequirePackage{epstopdf}
+\newcommand{\ximera@blockpkg}[1]{%
+  \@namedef{ver@#1.sty}{9999/99/99}%
+  \@namedef{opt@#1.sty}{}%
+  \PackageWarningNoLine{ximera}{%
+    The `#1' package conflicts with Ximera's page layout and has
+    been disabled. Loading it here was ignored%
+  }%
+}
+
+\ximera@blockpkg{geometry}
+\ifdefined\HCode
+  \ximera@blockpkg{fullpage}
+  \ximera@blockpkg{graphics}
+\fi
+\ximera@blockpkg{authblk}
+\ximera@blockpkg{setspace}
+\ximera@blockpkg{fancyhdr}
+\ximera@blockpkg{multicol}
+\ximera@blockpkg{ragged2e}
+
+\let\ximera@old@pagenumbering\pagenumbering
+\renewcommand{\pagenumbering}[1]{%
+  \PackageWarningNoLine{ximera}{%
+    \string\pagenumbering\space conflicts with Ximera's page
+    numbering and was ignored (argument: #1)%
+  }%
+}
 \ifdefined\reallyneverever
 
 \ifdefined\HCode
