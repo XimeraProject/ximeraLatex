@@ -153,6 +153,26 @@ config = {
       post_command = 'post_process_pdf',
       download_folder = 'ximera-downloads/handouts',
     },
+    ["lualatex.pdf"] = {
+      command = 'lualatex -interaction=nonstopmode  -file-line-error -shell-escape  "\\input{@{filename}}"',
+      check_log = true,
+      status = 0,
+      infix = "",
+      extension = "pdf",
+      output_format = "pdf",
+      post_command = 'post_process_pdf',
+      download_folder = 'ximera-downloads/with-answers',
+    },
+    ["lualatex.handout.pdf"] = {
+      command = 'lualatex -interaction=nonstopmode  -file-line-error -shell-escape  -jobname @{basename}.handout "\\PassOptionsToClass{handout}{ximera}\\PassOptionsToClass{handout}{xourse}\\input{@{filename}}"',
+      check_log = true,
+      status = 0,
+      extension = "pdf",
+      output_format = "handout.pdf",
+      infix = "handout",
+      post_command = 'post_process_pdf',
+      download_folder = 'ximera-downloads/handouts',
+    },
     ["html"] = {
       command = "make4ht -l -c @{configfile} -f html5+dvisvgm_hashes -m draft -j @{basename}.online -s @{make4ht_extraoptions} @{filename} 'svg,htex4ht,mathjax,-css' '' '' '--interaction=nonstopmode -shell-escape -file-line-error'",
       check_log = true, -- check log

@@ -51,5 +51,85 @@
 \RequirePackage{gettitlestring}
 \RequirePackage{nameref}
 \RequirePackage{epstopdf}
+%    \end{macrocode}
+% \subsection{Blocking conflicting packages}
+% The following packages conflict with Ximera's own page layout,
+% header/footer, author, and spacing handling (set up in
+% |src/pagesetup.dtx| and |src/title.dtx|). If a contributor's
+% document tries to load one of these, we make |\usepackage| a
+% no-op instead of erroring, and warn in the compile log.
+%    \begin{macrocode}
+\newcommand{\ximera@blockpkg}[1]{%
+  \@namedef{ver@#1.sty}{9999/99/99}%
+  \@namedef{opt@#1.sty}{}%
+  \PackageWarningNoLine{ximera}{%
+    The `#1' package conflicts with Ximera's page layout and has
+    been disabled. Loading it here was ignored%
+  }%
+}
+
+\ximera@blockpkg{geometry}
+%    \end{macrocode}
+% |fullpage| and |graphics| only conflict with Ximera's layout in the
+% HTML build: \cs{HCode} is defined there, which is the standard way
+% Ximera code distinguishes the HTML build from the PDF build (see
+% |src/only.dtx|, used by \cs{pdfOnly}/\cs{htmlOnly}). In a plain PDF
+% build (pdflatex or lualatex) both packages load normally, so
+% \cs{pdfOnly} content that relies on them keeps working.
+%    \begin{macrocode}
+\ifdefined\HCode
+  \ximera@blockpkg{fullpage}
+  \ximera@blockpkg{graphics}
+\fi
+\ximera@blockpkg{authblk}
+\ximera@blockpkg{setspace}
+\ximera@blockpkg{fancyhdr}
+\ximera@blockpkg{multicol}
+\ximera@blockpkg{ragged2e}
+
+\let\ximera@old@pagenumbering\pagenumbering
+\renewcommand{\pagenumbering}[1]{%
+  \PackageWarningNoLine{ximera}{%
+    \string\pagenumbering\space conflicts with Ximera's page
+    numbering and was ignored (argument: #1)%
+  }%
+}
 %</classXimera>
+%    \end{macrocode}
+% \subsection{Suppressing raster images from \texttt{graphics} in HTML}
+% Even where the |graphics| package itself is blocked above, Ximera
+% loads its own \cs{includegraphics} machinery internally, and
+% tex4ht's |graphics.4ht| would otherwise still emit an |<img>| tag
+% (or a dvisvgm fallback) for it in the HTML build. This is
+% suppressed separately here, in the |cfgXimera| (tex4ht config)
+% material, which is only ever read during the HTML build.
+%    \begin{macrocode}
+%<*cfgXimera>
+%% Suppress raster-image output from \includegraphics in HTML.
+%%
+%% tex4ht's graphics.4ht modifies \Gin@setfile (via \HLet) to output HTML
+%% image markers and wraps image content in \PictureOff...\PictureOn so that
+%% dvisvgm also picks up the image.  We need to suppress both mechanisms:
+%%
+%%  1. \Gin@setfile -> no-op: prevents graphicx from calling the tex4ht hook.
+%%     NOTE: the cfg preamble tokenizes with @ as catcode 12, so we must use
+%%     \csname Gin@setfile\endcsname to name the control sequence at exec time.
+%%
+%%  2. \Configure{graphics*}{EXT}{}: clears the \G:cnfg callbacks in html4.4ht
+%%     that write "--- needs ---" DVI specials consumed by t4ht for <img> tags.
+%%     These calls run after html4.4ht's own \Configure{graphics*} calls
+%%     (because \Preamble{} loads html4.4ht first, then our code follows).
+%%
+%% Together these two suppression layers prevent both the <img> tag output
+%% and the dvisvgm-SVG fallback from firing for raster images.
+%% SVG output from tikz pictures uses a completely different code path
+%% (pgfsys-dvisvgm4ht.def / svg-option.4ht) and is unaffected.
+\expandafter\def\csname Gin@setfile\endcsname#1#2#3{}
+\Configure{graphics*}{jpg}{}
+\Configure{graphics*}{jpeg}{}
+\Configure{graphics*}{png}{}
+\Configure{graphics*}{gif}{}
+\Configure{graphics*}{pdf}{}
+\Configure{graphics*}{bmp}{}
+%</cfgXimera>
 %    \end{macrocode}
