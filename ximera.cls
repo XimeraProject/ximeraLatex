@@ -672,7 +672,7 @@ Interactive
 }
 
 \newcommand{\geogebra}[3]{GeoGebra link: \url{https://www.geogebra.org/m/#1}}
-\newcommand{\doenet}[3]{Doenet link: \url{https://beta.doenet.org/activityViewer/#1}}%
+\newcommand{\doenet}[3]{Doenet link: \url{https://doenet.org/activityViewer/#1}}%
 \newcommand{\desmos}[3]{Desmos link: \url{https://www.desmos.com/calculator/#1}}
 \newcommand{\desmosThreeD}[3]{Desmos3D link: \url{https://www.desmos.com/3d/#1}}
 \newcommand{\googleSheet}[5]{%
