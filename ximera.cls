@@ -28,6 +28,7 @@
 %% src/interactives/javascript.dtx  (with options: `classXimera')
 %% src/interactives/include.dtx  (with options: `classXimera')
 %% src/interactives/geogebra.dtx  (with options: `classXimera')
+%% src/interactives/doenet.dtx  (with options: `classXimera')
 %% src/interactives/desmos.dtx  (with options: `classXimera')
 %% src/interactives/google.dtx  (with options: `classXimera')
 %% src/interactives/graph.dtx  (with options: `classXimera')
@@ -522,7 +523,7 @@
 \ifhandout
 \setbox0\vbox\bgroup
 \else
-\begin{trivlist}\item[\hskip \labelsep\small\slshape\bfseries \GetTranslation{hint}:\hspace{2ex}]
+\begin{trivlist}\item[\hskip \labelsep\small\slshape\bfseries \GetTranslation{Hint}:\hspace{2ex}]
 \small\slshape
 \fi
 \stepcounter{hintLevel}
@@ -538,7 +539,7 @@
 
 \ifhints
 \renewenvironment{hint}{
-\begin{trivlist}\item[\hskip \labelsep\small\slshape\bfseries \GetTranslation{hint}:\hspace{2ex}]
+\begin{trivlist}\item[\hskip \labelsep\small\slshape\bfseries \GetTranslation{Hint}:\hspace{2ex}]
 \small\slshape
 }
 {
@@ -645,7 +646,15 @@
 \NewEnviron{image}[1][3in]{%
   \begin{center}\resizebox{#1}{!}{\BODY}\end{center}% resize and center
 }
-\newcommand{\alt}[1]{}
+\newcommand{\alt}[1]{}       %% Deprecated
+
+\providecommand\xmaltprint{}
+%% use \undef\xmaltprint to NOT have \xmalt output in the PDF
+\newcommand{\xmalt}[1]{%     %% see infra for HTML implementation;  2026, J. Kuan
+  \ifdefined\xmaltprint%
+     {\footnotesize\color{gray}Alt text: #1}%
+  \fi%
+}
 
 
 \DefineVerbatimEnvironment{javascript}{Verbatim}{numbers=left,frame=lines,label=JavaScript,labelposition=topline}
@@ -663,6 +672,7 @@ Interactive
 }
 
 \newcommand{\geogebra}[3]{GeoGebra link: \url{https://www.geogebra.org/m/#1}}
+\newcommand{\doenet}[3]{Doenet link: \url{https://beta.doenet.org/activityViewer/#1}}%
 \newcommand{\desmos}[3]{Desmos link: \url{https://www.desmos.com/calculator/#1}}
 \newcommand{\desmosThreeD}[3]{Desmos3D link: \url{https://www.desmos.com/3d/#1}}
 \newcommand{\googleSheet}[5]{%
