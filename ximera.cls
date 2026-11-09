@@ -1100,6 +1100,15 @@ Interactive
 
 
 \IfFileExists{sagetex.sty}{\RequirePackage{sagetex}}{}
+% When SageTeX is unavailable (e.g., in a browser-only installation),
+% accept the SageTeX argument grammar but omit PDF plot output.
+% Do not change SageTeX's original \sageplot command when it is installed.
+\ifdefined\sageplot\else
+  \newcommand{\sageplot}[1][]{%
+    \@ifnextchar[{\xm@sageplot@noop[#1]}{\xm@sageplot@noop[#1][]}%
+  }
+  \def\xm@sageplot@noop[#1][#2]#3{}%
+\fi
 
 \DefineVerbatimEnvironment{sageCell}{Verbatim}{numbers=left,frame=lines,label=SAGE,labelposition=topline}
 
