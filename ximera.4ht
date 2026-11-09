@@ -313,15 +313,17 @@
   \renewenvironment{sagesilent}{\NoFonts}{\EndNoFonts}
 \fi
 \ScriptEnv{sagesilent}{\ifvmode \IgnorePar\fi \EndP\HCode{<script type="text/sagemath">}\HtmlParOff}{\HtmlParOn\HCode{</script></div>}}
-\renewcommand{\sageplot}[1][]{%
-  \@ifnextchar[{\xm@sageplot@html[#1]}{\xm@sageplot@html[#1][]}%
-}
-\def\xm@sageplot@html[#1][#2]#3{%
-  \ifvmode \IgnorePar\fi \EndP%
-  \HCode{<span class="sage-plot"><script type="text/x-sage-plot">}%
-  \HCode{\detokenize{#3}}%
-  \HCode{</script></span>}%
-}
+\ifdefined\sageplot
+  \renewcommand{\sageplot}[1][]{%
+    \@ifnextchar[{\xm@sageplot@html[#1]}{\xm@sageplot@html[#1][]}%
+  }
+  \def\xm@sageplot@html[#1][#2]#3{%
+    \ifvmode \IgnorePar\fi \EndP%
+    \HCode{<span class="sage-plot"><script type="text/x-sage-plot">}%
+    \HCode{\detokenize{#3}}%
+    \HCode{</script></span>}%
+  }
+\fi
 \renewenvironment{ungraded}{%
 \ifvmode \IgnorePar\fi \EndP\HCode{<div class="ungraded">}\IgnoreIndent%
 }{
