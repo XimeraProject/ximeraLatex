@@ -1,0 +1,38 @@
+% \subsubsection{HaLLMos proof-feedback embeds}
+% \DescribeMacro{\hallmos}{Embed a proof statement for HaLLMos on the web.}
+% \DescribeEnv{hallmosEnv}{Environment form of the HaLLMos proof statement.}
+%
+% The optional argument is reserved for instructor metadata and is currently
+% ignored by the remote embed. Both forms preserve the statement as readable
+% content if the remote script is unavailable. In PDF output, only the
+% statement is printed; HaLLMos itself is an online service.
+%    \begin{macrocode}
+%<*classXimera>
+\newcommand{\hallmos}[2][]{\par\noindent #2\par}
+\newenvironment{hallmosEnv}[1][]{\par\noindent}{\par}
+%</classXimera>
+%    \end{macrocode}
+%
+% For HTML, use the markup and script URL required by the existing embed.
+% The figure holds visible statement text, and the optional external script
+% enhances it into an interactive proof-feedback widget.
+%    \begin{macrocode}
+%<*htXimera>
+\renewcommand{\hallmos}[2][]{%
+  \ifvmode\IgnorePar\fi\EndP%
+  \HCode{<script type="text/javascript" src="https://hallmos.com/embed.js"></script>}%
+  \HCode{<figure class="hallmos-embed" data-height="240"><blockquote>}%
+  #2%
+  \ifvmode\IgnorePar\fi\EndP%
+  \HCode{</blockquote></figure>}%
+}
+\renewenvironment{hallmosEnv}[1][]{%
+  \ifvmode\IgnorePar\fi\EndP%
+  \HCode{<script type="text/javascript" src="https://hallmos.com/embed.js"></script>}%
+  \HCode{<figure class="hallmos-embed" data-height="240"><blockquote>}%
+}{%
+  \ifvmode\IgnorePar\fi\EndP%
+  \HCode{</blockquote></figure>}\IgnoreIndent%
+}
+%</htXimera>
+%    \end{macrocode}
