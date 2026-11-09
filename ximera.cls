@@ -32,6 +32,7 @@
 %% src/interactives/desmos.dtx  (with options: `classXimera')
 %% src/interactives/google.dtx  (with options: `classXimera')
 %% src/interactives/graph.dtx  (with options: `classXimera')
+%% src/interactives/hallmos.dtx  (with options: `classXimera')
 %% src/link.dtx  (with options: `classXimera')
 %% src/interactives/video.dtx  (with options: `classXimera')
 %% src/answer.dtx  (with options: `classXimera')
@@ -681,6 +682,9 @@ Interactive
 
 
 \newcommand{\graph}[2][]{\text{Graph of $#2$}}
+
+\newcommand{\hallmos}[2][]{\par\noindent #2\par}
+\newenvironment{hallmosEnv}[1][]{\par\noindent}{\par}
 
 
 %% \link[name]{url}   (opens in new tab)
