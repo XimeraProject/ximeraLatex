@@ -19,6 +19,7 @@
 %% src/xkcd.dtx  (with options: `htXimera')
 %% src/link.dtx  (with options: `htXimera')
 %% src/interactives/graph.dtx  (with options: `htXimera')
+%% src/interactives/hallmos.dtx  (with options: `htXimera')
 %% src/answer.dtx  (with options: `htXimera')
 %% src/choice.dtx  (with options: `htXimera')
 %% src/freeresponse.dtx  (with options: `htXimera')
@@ -207,6 +208,23 @@
 
 
 \renewcommand{\graph}[2][]{\HCode{<div class="graph" data-options="#1">}#2\HCode{</div>}}
+
+\renewcommand{\hallmos}[2][]{%
+  \ifvmode\IgnorePar\fi\EndP%
+  \HCode{<script type="text/javascript" src="https://hallmos.com/embed.js"></script>}%
+  \HCode{<figure class="hallmos-embed" data-height="240"><blockquote>}%
+  #2%
+  \ifvmode\IgnorePar\fi\EndP%
+  \HCode{</blockquote></figure>}%
+}
+\renewenvironment{hallmosEnv}[1][]{%
+  \ifvmode\IgnorePar\fi\EndP%
+  \HCode{<script type="text/javascript" src="https://hallmos.com/embed.js"></script>}%
+  \HCode{<figure class="hallmos-embed" data-height="240"><blockquote>}%
+}{%
+  \ifvmode\IgnorePar\fi\EndP%
+  \HCode{</blockquote></figure>}\IgnoreIndent%
+}
 
 \renewcommand{\answer}[2][false]{\HCode{<span class="answer respondable">}#2\HCode{</span>}}
 
