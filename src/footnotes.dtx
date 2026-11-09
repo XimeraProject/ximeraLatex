@@ -10,22 +10,23 @@
     %% The following HCode should setup the javascript function that shows or hides the footnote. If you want to change the footnote location, you may want to change the 'inline' part of x.style.display = 'inline'; to another CSS display type, like 'block' or 'inherit'. Current the `x.display.color' seems to not be working.
     \HCode{
     <script type="text/javascript">
-            function footnotefun(ID) {
+            function footnotefun(ID, button) {
               var x = document.getElementById(ID);
-              if (x.style.display === "none") {
-                x.style.color = "blue";
-                x.style.display = "inline";
-              } else {
-                x.style.display = "none";
-              }
+              if (!x) return;
+              var expanded = x.style.display === "none";
+              x.style.display = expanded ? "inline" : "none";
+              if (button) button.setAttribute("aria-expanded", expanded ? "true" : "false");
             }}
     \HCode{</script>}
     %% The next command needs \expandafter in order to expand the counter footnoteNum into a roman character for the footnote ID. These seem to work better than arabic numerals in some cases, although why is not clear.
     %% The next HCode controls the formatting for the actual footnote reference number (ie the superscript), but not the footnote itself.
     \expandafter\HCode{
-    <span style="position=relative;
-            vertical-align=baseline;">
-            <button onclick='footnotefun("footnote\roman{footnoteNum}")'
+    <span style="position:relative;
+            vertical-align:baseline;">
+            <button type="button" aria-expanded="false"
+                aria-controls="footnote\roman{footnoteNum}"
+                aria-label="Footnote \arabic{footnoteNum}"
+                onclick='footnotefun("footnote\roman{footnoteNum}", this)'
                 style=
                 "background:none!important;
                  color:inherit;
@@ -46,10 +47,9 @@
                 position:relative;
                 left:2px;
                 padding:5px;
-                color:blue;
                 word-wrap:break-word;
-                z-index=9999;
-                overflow=auto;"
+                z-index:9999;
+                overflow:auto;"
                 >
             }
             \textcolor{fncolor}{(#1)}% Display the actual footnote here with color `fncolor' and within ()'s.
