@@ -4,13 +4,15 @@ FROM registry.gitlab.com/islandoftex/images/texlive:TL2024-2024-11-17-full
 RUN apt-get update -y;  \
     apt-get install -y \
     curl \
-    git  git-restore-mtime \
+    git \  
+    # git-restore-mtime \   ## TOO OLD !!!
     mupdf-tools pdf2svg imagemagick \
     gnupg \
     jq \
     dos2unix \
     vim wget strace less \
-    nano file
+    nano file \
+    lsof
 
 # RUN apt-get install -u hashcash
 
@@ -18,7 +20,13 @@ RUN apt-get update -y;  \
 ADD docker/hashcash_1.22-1_amd64.deb .
 RUN dpkg -i hashcash_1.22-1_amd64.deb
 
-RUN apt-get install -y mupdf-tools lsof
+# Install git restore-mtime (version in apt is too old ...)
+RUN cd /root; \ 
+    git clone https://github.com/MestreLion/git-tools.git; \
+    echo 'PATH=$PATH:~/git-tools' >> ~/.profile
+
+# 
+ENV PATH="$PATH:/root/git-tools"
 
 
 # Add this complete ximeraLatex repo (is overkill, but allows bugfixing/editing inside the docker image!
