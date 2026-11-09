@@ -43,3 +43,27 @@
 \ScriptEnv{sagesilent}{\ifvmode \IgnorePar\fi \EndP\HCode{<script type="text/sagemath">}\HtmlParOff}{\HtmlParOn\HCode{</script></div>}}
 %</htXimera>
 %    \end{macrocode}
+
+
+% \DescribeMacro{\sageplot}{Render a Sage plot where supported.}
+% Preserve the authored Sage expression as passive markup. An optional
+% server renderer (such as Xronos) may process this marker. Servers without
+% a renderer ignore it without requiring Sage or executing the expression.
+% Keep SageTeX's two optional arguments for source compatibility:
+% |\sageplot[includegraphics options][format]{expression}|.
+% In HTML the rendering options are parsed but deliberately ignored.
+%    \begin{macrocode}
+%<*htXimera>
+\ifdefined\sageplot
+  \renewcommand{\sageplot}[1][]{%
+    \@ifnextchar[{\xm@sageplot@html[#1]}{\xm@sageplot@html[#1][]}%
+  }
+  \def\xm@sageplot@html[#1][#2]#3{%
+    \ifvmode \IgnorePar\fi \EndP%
+    \HCode{<span class="sage-plot"><script type="text/x-sage-plot">}%
+    \HCode{\detokenize{#3}}%
+    \HCode{</script></span>}%
+  }
+\fi
+%</htXimera>
+%    \end{macrocode}
