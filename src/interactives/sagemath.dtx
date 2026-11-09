@@ -3,15 +3,6 @@
 %    \begin{macrocode}
 %<*classXimera>
 \IfFileExists{sagetex.sty}{\RequirePackage{sagetex}}{}
-% When SageTeX is unavailable (e.g., in a browser-only installation),
-% accept the SageTeX argument grammar but omit PDF plot output.
-% Do not change SageTeX's original \sageplot command when it is installed.
-\ifdefined\sageplot\else
-  \newcommand{\sageplot}[1][]{%
-    \@ifnextchar[{\xm@sageplot@noop[#1]}{\xm@sageplot@noop[#1][]}%
-  }
-  \def\xm@sageplot@noop[#1][#2]#3{}%
-\fi
 %</classXimera>
 %    \end{macrocode}
 
@@ -63,14 +54,16 @@
 % In HTML the rendering options are parsed but deliberately ignored.
 %    \begin{macrocode}
 %<*htXimera>
-\renewcommand{\sageplot}[1][]{%
-  \@ifnextchar[{\xm@sageplot@html[#1]}{\xm@sageplot@html[#1][]}%
-}
-\def\xm@sageplot@html[#1][#2]#3{%
-  \ifvmode \IgnorePar\fi \EndP%
-  \HCode{<span class="sage-plot"><script type="text/x-sage-plot">}%
-  \HCode{\detokenize{#3}}%
-  \HCode{</script></span>}%
-}
+\ifdefined\sageplot
+  \renewcommand{\sageplot}[1][]{%
+    \@ifnextchar[{\xm@sageplot@html[#1]}{\xm@sageplot@html[#1][]}%
+  }
+  \def\xm@sageplot@html[#1][#2]#3{%
+    \ifvmode \IgnorePar\fi \EndP%
+    \HCode{<span class="sage-plot"><script type="text/x-sage-plot">}%
+    \HCode{\detokenize{#3}}%
+    \HCode{</script></span>}%
+  }
+\fi
 %</htXimera>
 %    \end{macrocode}
