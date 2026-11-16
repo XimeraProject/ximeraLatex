@@ -1,0 +1,415 @@
+XRONOS / XIMERA WORKFLOW WALKTHROUGH
+INDIVIDUAL ANSWER-BOX VALIDATORS: \answer[validator=...]
+===========================================================
+Researched: November 9, 2026
+Status: CURRENT-BEHAVIOR REFERENCE — not a proposed redesign.
+Repository containing this walkthrough: xronosuf/server
+Code examined: XimeraProject/ximeraLatex (master) and
+               xronosuf/server (production).
+Audience: course authors, maintainers, and future auditors.
+
+WHAT THIS IS
+------------
+An individual-answer validator changes how ONE answer box judges a student's
+entry. For example, in an authored .tex file:
+
+    \answer[validator=factorCheck]{x^2-1}
+
+There is an ordinary instructor answer, x^2-1, and a named JavaScript checker,
+factorCheck. The checker is given the student's parsed answer and the
+instructor's parsed answer. It decides whether the individual box is correct.
+
+This is NOT the same as a \begin{validator}...\end{validator} environment,
+which groups several answers under a shared Check work button. That separate
+mechanism has its own file, 02-grouped-validator-environment.txt, and is
+currently considered broken/not recommended for new content.
+
+ONE-PAGE ROAD MAP
+-----------------
+  1. Author writes the \answer command in .tex.
+  2. XimeraLaTeX publishes a page as HTML with math still represented as TeX.
+  3. Xronos serves the published HTML (it does not recompile LaTeX per visit).
+  4. On page load, browser-side MathJax reads \answer and its optional keys.
+  5. MathJax creates the input widget, retaining options as data-* attributes.
+  6. The instructor's answer is parsed into MathML / a math-expressions value.
+     If the answer contains \sage{...}, Sage resolves that answer value.
+  7. The page links each input to its underlying instructor-answer model and
+     restores previously saved student work.
+  8. When the student presses Check, the browser parses the student's input
+     and selects the built-in check or the custom validator.
+  9. The browser records correctness, updates the page, saves progress, and
+     emits an answer-attempt (xAPI) event.
+
+IMPORTANT DISTINCTION: "VALIDATOR" DOES NOT MEAN SERVER-SIDE GRADING HERE.
+The custom comparison itself runs in the student's browser. The server stores
+the resulting state and answer-attempt event; it does not independently
+recalculate the mathematics in this path. Nor is the instructor's answer a
+secret from a determined student inspecting browser code.
+
+PART A — WHAT HAPPENS WHILE THE AUTHOR PUBLISHES
+------------------------------------------------
+
+A1. The author writes LaTeX.
+
+Typical form:
+
+    \answer[validator=myChecker]{\sage{instructorValue}}
+
+The part in square brackets is the optional answer configuration.
+The braces hold the instructor's expected answer. Other supported keys
+include id, given, format, tolerance, onlinenoinput, and
+onlineshowanswerbutton.
+
+A checker named by validator=... must be available as JavaScript in the page's
+browser environment. The answer option is a reference to JavaScript, not a
+separate compiled Python/Sage function. Authors can supply page JavaScript
+using the \begin{javascript}...\end{javascript} facility or use other
+JavaScript made available to the page. See "Where validator functions live"
+below.
+
+A2. XimeraLaTeX accepts the option while producing print/PDF output.
+
+Ximera's src/answer.dtx defines the LaTeX answer keys and the \answer macro.
+The validator key is defined in the LaTeX class, but its class-side handler is
+empty. In other words, the PDF/print path does not execute the JavaScript
+validator; the PDF normally renders the author-provided answer using the
+document's print/handout rules.
+
+Important nuance: there are MULTIPLE representations of \answer:
+- the LaTeX class definition, used for print/PDF;
+- the TeX4ht/HTML definition and published TeX;
+- the actual MathJax \answer implementation, installed by Xronos in the
+  browser. Do not diagnose browser validation using only the LaTeX macro.
+
+A3. XimeraLaTeX and luaxake produce the publishable activity HTML.
+
+The HTML-producing TeX4ht configuration contains a simple \answer treatment,
+but the interactive answer box actually depends on the browser processing the
+math/TeX source. The page preserves \answer[...]{...} for MathJax to interpret.
+An authored \begin{javascript} environment is emitted as a JavaScript script
+in the page. An authored sagesilent block becomes script[type=text/sagemath].
+The generated .xmjax definitions can be included in published HTML so
+MathJax knows the author's mathematics macros.
+
+The publishing toolchain is upstream of Xronos's runtime; it is not itself
+the code that invokes the validator.
+
+PART B — WHAT HAPPENS WHEN A STUDENT OPENS THE PAGE
+---------------------------------------------------
+
+B1. Xronos serves the already-published activity.
+
+The server looks up the published activity from its repository/metadata,
+retrieves the stored HTML, applies limited HTML compatibility repairs, and
+inserts the HTML into the page template. The page includes the Xronos
+browser-side JavaScript and the MathJax runtime. This is not an occasion for
+the server to run the student's validator.
+
+Important files:
+  routes/page.js                      — chooses and renders an activity
+  views/page.pug                      — puts activity.html into the page
+  lib/activity-html-compat.js         — limited compatibility repairs
+  public/javascripts/mathjax.js       — configures MathJax 2
+
+B2. MathJax recognizes \answer.
+
+During MathJax initialization, main.js registers a custom TeX command:
+  TEXDEF.macros.answer = "answer";
+and adds a handler to the MathJax TeX parser.
+
+The handler begins with GetBrackets(name), reading the optional [key=value]
+text. It creates a form with class "mathjaxed-input" and turns each key into
+an HTML data-* attribute. For example:
+
+  \answer[validator=factorCheck,format=expression]{...}
+
+leads to attributes equivalent to:
+  data-validator="factorCheck"
+  data-format="expression"
+
+The CURRENT parser is simple:
+  - It splits the bracketed text on every comma.
+  - For each segment, it splits the name from its value at the first "="
+    (the remaining pieces are joined back with "=").
+  - It copies the resulting key/value text directly into data-* attributes.
+  - It does not trim whitespace from the keys.
+  - It does not parse LaTeX, MathML, or Sage inside those option values.
+  - It does not interpret options as a nested call-argument grammar.
+  - If a key is written without "=value", the resulting attribute value is
+    the empty string (its presence is still meaningful for some flags).
+
+This is a description of the code TODAY, not a statement about how options
+should ultimately be designed.
+
+B3. MathJax also reads the instructor answer (the braces).
+
+For ordinary mathematical expressions the handler uses ParseArg(name),
+which processes the contents as TeX, including MathJax macro expansion.
+The mathematical content is held in the MathJax element/model, with a
+hidden/phantom representation so the browser can attach the input form.
+The instructor answer is not simply the raw TeX string.
+
+Different answer formats follow different routes:
+  expression (default)  — MathJax/MathML, then math-expressions.
+  string                — literal text, with special Sage string handling.
+  integer               — integer conversion.
+  float                 — floating-number conversion.
+
+At answer connection, math-answer.js converts the instructor model into
+MathML and then into a math-expressions value when format=expression.
+It tries Expression.fromLatex, a lowercase retry in one fallback case,
+and Expression.fromMml in an exception path. If parsing fails completely,
+it logs an instructor-answer error and substitutes an error-sentinel
+expression involving sqrt(-1). This can create confusing incorrect results:
+an authoring/parse error is not necessarily shown to the student as such.
+
+B4. Sage is a separate, earlier asynchronous calculation.
+
+A page may include sagesilent setup and \sage{...} in the instructor's
+answer body. Before MathJax's initial processing, Xronos captures an
+ordered manifest of authored Sage calculations, including Sage expressions
+inside answer bodies. The current canonical Sage page system submits that
+work to Xronos's SageCell proxy and associates the resulting values with
+their original positions. Inline \sage{...} placeholders are filled with
+generated MathJax/MathML results, and the page's readiness machinery
+tracks whether the required computation and display have settled.
+
+One code-specific distinction: the Sage manifest scanner recognizes a
+\sage{...} as an "answer-key" consumer when it is inside the BRACE ARGUMENT
+of \answer. The scanner does not similarly mark Sage text in the optional
+validator=... field as answer-key content. MathJax's current optional-key
+handler passes that field along as text. Merely pressing Check later does
+not cause a raw \sage command inside the option to execute as Sage.
+
+Sage may execute or replay during initial load, after a Retry, and after
+"Try Another" generates a new version. These are separate from clicking
+an answer's Check button. Author answers relying on Sage need a settled,
+current generation.
+
+B5. The answer widget is attached to the problem and saved work.
+
+On MathJax's "New Math" event, main.js finds the .mathjaxed-input elements,
+associates them with the MathJax answer models, assigns stable in-page
+identities (e.g., answer8problem2), and calls connectMathAnswer().
+
+Current code waits for initial saved-state availability before initially
+connecting the saved-state-dependent logic. Reprocessing can recreate
+MathJax DOM nodes, so runtime tracking retains logical answer identities
+and supports repair/reconnection.
+
+The answer widget consists of an input, a Check button, correct/incorrect/
+checking states, and potentially a Show Answer control. Typing writes the
+raw student response to persistentData("response"). An authored data-id
+can also expose a parsed student entry as a browser global variable,
+followed by re-evaluation of dependent authored JavaScript.
+
+PART C — WHAT ACTUALLY HAPPENS WHEN THE STUDENT PRESSES CHECK
+-------------------------------------------------------------
+
+C1. Student input is parsed in the browser.
+
+math-answer.js reads the text box and parseFormattedInput() converts it:
+  expression  -> Expression.fromText, then Expression.fromLatex fallback
+  integer     -> parseInt
+  float       -> parseFloat
+  string      -> the raw string
+If both expression parsers fail, the code treats the entry as undefined
+and uses an error-sentinel expression involving sqrt(-1).
+
+C2. The check follows one of three branches, in this order.
+
+FIRST: If the answer element has a truthy data-tolerance attribute,
+the code uses the built-in numerical tolerance check:
+  abs(instructor.evaluate({}) - student.evaluate({})) <= parseFloat(tolerance)
+This branch has priority over validator=..., so specifying both does NOT
+automatically combine the two checks.
+
+SECOND: Otherwise, if data-validator is present and truthy, the code
+evaluates the validator option as JavaScript and invokes the custom checker.
+
+THIRD: If there is no active custom validator, it uses the default rule:
+  expression -> studentAnswer.equals(correctAnswer)
+  string     -> case-insensitive string equality (uppercase comparison)
+  other      -> JavaScript == comparison
+
+C3. The exact current custom-validator calling convention.
+
+The key code is:
+
+  var code = result.attr('data-validator');
+  var f = Function('return ' + code + ';');
+  correct = f.call(studentAnswer);
+  if (typeof correct === 'function')
+      correct = correct(studentAnswer, correctAnswer);
+
+In plain language:
+  1. The browser reads the HTML attribute, for example "factorCheck".
+  2. It treats that text as a JavaScript expression.
+  3. It evaluates the expression.
+  4. If the expression evaluates to a function, it calls that function
+     with TWO parsed arguments: student answer first, instructor answer
+     second. This ordering is important.
+  5. If the expression directly produces a non-function value (for
+     example a Boolean), that value is used as the check result instead.
+
+The function call uses math-expressions objects for normal mathematical
+answers, not raw TeX strings. Those objects provide methods such as
+equals(), evaluate(), derivative(), toLatex(), and an expression tree.
+A validator may use these methods rather than doing its own text parsing.
+
+Errors thrown by the validator are caught, logged to the browser console,
+and currently treated as an incorrect answer. This can make a broken
+custom validator look like a student's incorrect mathematics.
+
+The code also recognizes a returned Promise ("then" function): while it
+settles the UI shows a checking state. Success updates saved correctness.
+A rejection currently goes down a legacy alert path. The code does not yet
+provide a complete, reliable submission-transaction protocol for stale
+async results or all error cases; see the runtime TODO.
+
+C4. The result is recorded and displayed.
+
+The answer stores correctness and attempt details using persistentData.
+It emits events such as ximera:attempt and, on success, ximera:correct.
+The enclosing problem watches registered answers and marks itself complete
+when all required answers are correct, which contributes to course progress.
+
+The saved state travels through Xronos's browser database and WebSocket
+differential-synchronization path; recent code attempts to synchronize
+submitted correctness/attempt changes promptly.
+
+An xAPI "answered" statement is also constructed by tincan.js and sent
+to the server's xAPI endpoint. It records the response string and success
+flag. This explains browser-console records such as:
+
+  object.id = .../problems/problem2/answers/answer8problem2
+  result.response = "...student text..."
+  result.success = false
+
+That event reports the outcome. It does NOT disclose the instructor answer
+or explain which part of a custom validator failed.
+
+After a correct answer, the browser generally replaces the interactive
+answer display with a blue rendered version of the student's submitted
+expression, preserves the ability to restore the original TeX when a new
+randomized version is generated, and maintains the saved correctness state.
+The instructor's exact original answer is not necessarily what is shown.
+
+PART D — WHERE CUSTOM VALIDATORS COME FROM
+------------------------------------------
+
+D1. JavaScript included in a lesson.
+
+XimeraLaTeX's javascript environment publishes JavaScript into the page.
+A named function available to the browser can be referenced by an answer's
+validator=... attribute. Such author JavaScript is managed separately from
+Sage. Ordinary setup scripts execute as the browser parses the page; legacy
+random-seeded JavaScript may also re-run after saved state becomes available.
+
+D2. Shared validator implementations in the XimeraLaTeX source.
+
+XimeraProject/ximeraLatex includes source examples such as:
+  src/validators/sameDerivative.dtx
+  src/validators/factorCheck.dtx
+  src/validators/multiAns.dtx
+  src/validators/equalMatrix.dtx
+
+These demonstrate individual-answer functions taking (student, instructor),
+typically using math-expressions methods. There is also a validatorHook.dtx
+mechanism intended to append shared JavaScript definitions.
+
+IMPORTANT: In the currently inspected upstream ximera.dtx generator,
+the lines that include validatorHook.dtx and these shared validator .dtx
+files are commented out. Therefore their presence in the repository does
+NOT, by itself, prove that a function is automatically present on every
+published page. Confirm the actual generated page and whichever Ximera
+toolchain the publishing repository uses.
+
+D3. Nothing in this workflow requires a separate validator request.
+
+The server provides the lesson assets, Sage service as needed, saved-state
+transport, and xAPI reporting. Once the page and functions are loaded, the
+individual JavaScript validator runs locally at answer submission time.
+
+PART E — PRACTICAL AUDIT CHECKLIST
+----------------------------------
+
+When an individual validator unexpectedly rejects a good answer, inspect:
+
+  1. The actual published page generation. Is the intended .tex/HTML version
+     live? Is "Try Another" on the version you are checking?
+  2. The authored \answer[...]{...} and any macros or Sage variables inside
+     the instructor answer.
+  3. The generated .mathjaxed-input element's data-validator, data-format,
+     data-tolerance, and data-id attributes.
+  4. Whether the named JavaScript function actually exists in the page.
+  5. The arguments it receives: student first, instructor second; both
+     generally math-expressions objects for expression format.
+  6. Whether the instructor answer was parsed successfully from MathJax.
+  7. Whether any Sage answer-key placeholders completed successfully and
+     correspond to the current randomized version.
+  8. Whether a tolerance attribute changed which validation branch is used.
+  9. The browser console for validation errors and diagnostics.
+ 10. The answer-attempt xAPI event and saved state, remembering these only
+     show submitted text and outcome, not the mathematical reason.
+
+KNOWN LIMITS AND QUIRKS (CURRENT IMPLEMENTATION)
+-------------------------------------------------
+- The optional answer keys are parsed by splitting text on commas, with no
+  nested syntax or awareness of quoted/parenthesized commas.
+- The option value is retained as raw text. It is not itself compiled into
+  math-expressions or automatically expanded as Sage.
+- The current custom function receives student and instructor inputs in
+  that order; no additional inputs are automatically injected.
+- A non-function JavaScript expression can also be evaluated as the validator.
+- The built-in tolerance branch takes precedence over validator=....
+- Browser-side correctness is not a formal symbolic proof; math-expressions
+  equality and numerical evaluation have their own limitations.
+- Custom checker exceptions currently look like incorrect submissions.
+- Asynchronous validation, re-rendering, and saved-state restoration require
+  care. Existing runtime TODOs record deferred reliability improvements.
+- These observations describe the inspected source, not a fresh browser
+  integration test of every format or historical Ximera publication version.
+
+SOURCE MAP — WHERE TO LOOK NEXT TIME
+------------------------------------
+XimeraProject/ximeraLatex:
+  src/answer.dtx                         LaTeX answer keys and print behavior
+  ximera.4ht                             HTML-side command/environment definitions
+  src/interactives/javascript.dtx        javascript environment and \js
+  src/interactives/sagemath.dtx          Sage-related HTML script environments
+  src/jax.dtx                            generated MathJax macro setup
+  src/validators/*.dtx                  optional existing checker implementations
+  ximera.dtx                            which validator sources are activated
+
+xronosuf/server (production):
+  routes/page.js                        source/HTML serving and rendering
+  views/page.pug                        published HTML in student page
+  lib/activity-html-compat.js           HTML compatibility transformations
+  public/javascripts/mathjax.js         MathJax setup
+  public/javascripts/main.js            \answer macro, data-* options,
+                                       \sage macro, "New Math" attachment
+  public/javascripts/sagemath.js        canonical Sage manifest and answer-key
+                                       source scanning
+  public/javascripts/math-answer.js     parsing and per-box validation
+  public/javascripts/math-answer-tex.js completed-answer TeX replacement
+  public/javascripts/javascript.js      authored JavaScript/reevaluation
+  public/javascripts/problem.js         answer registration and completion
+  public/javascripts/database.js        persistent state and WebSocket syncing
+  public/javascripts/tincan.js          xAPI "answered" event
+  public/javascripts/page-runtime.js    readiness/diagnostic coordination
+  documentation/page-runtime/CURRENT_PIPELINE.md
+  documentation/page-runtime/TODO.md
+
+Useful permanent source URLs:
+  https://github.com/xronosuf/server/blob/production/public/javascripts/main.js
+  https://github.com/xronosuf/server/blob/production/public/javascripts/math-answer.js
+  https://github.com/xronosuf/server/blob/production/public/javascripts/sagemath.js
+  https://github.com/XimeraProject/ximeraLatex/blob/master/src/answer.dtx
+  https://github.com/XimeraProject/ximeraLatex/blob/master/ximera.dtx
+
+RESEARCH BOUNDARY
+-----------------
+This is a read-only code walkthrough, not an implementation specification.
+No new validator API, argument syntax, Sage-in-option behavior, or server-side
+grading redesign is proposed or implemented here.

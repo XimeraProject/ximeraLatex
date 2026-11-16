@@ -1,0 +1,465 @@
+XRONOS / XIMERA WORKFLOW WALKTHROUGH
+GROUPED-ANSWER VALIDATOR ENVIRONMENT: \begin{validator}...\end{validator}
+=======================================================================
+Researched: November 9, 2026
+Status: CURRENT-BEHAVIOR REFERENCE — not an implementation proposal.
+Repository holding this walkthrough temporarily: xronosuf/server
+Intended permanent documentation home: xronosuf/ximeraLatexDev.
+Code reviewed: XimeraProject/ximeraLatex (master), xronosuf/server (production).
+
+*** IMPORTANT CURRENT STATUS — READ BEFORE USING ***
+THE GROUPED VALIDATOR ENVIRONMENT IS CURRENTLY CONSIDERED BROKEN.
+DO NOT USE IT FOR NEW STUDENT-FACING CONTENT AT PRESENT.
+
+It is a valuable intended feature, NOT deprecated, NOT scheduled for
+removal. We are retaining it for existing content and future repair,
+but repair is not currently a high-priority project. Some runtime
+failure-containment fixes are present; these do NOT mean that normal
+grouped submissions are considered reliable.
+
+The deferred repair list is in the server repository:
+  documentation/page-runtime/TODO.md
+  subsection: "Grouped validator project"
+
+WHAT THIS FEATURE WAS INTENDED TO DO
+------------------------------------
+An individual answer box normally judges itself. In contrast, the
+validator ENVIRONMENT groups several answer boxes and evaluates them
+as one unit. This can express conditions involving multiple answers.
+
+Example of the intended authoring pattern (illustrative only; do not
+adopt for new student content until the mechanism is repaired):
+
+    \begin{validator}[isCorrectPair(xValue,yValue)]
+      \[
+        x=\answer[id=xValue]{2},
+        \qquad
+        y=\answer[id=yValue]{3}
+      \]
+    \end{validator}
+
+Here xValue and yValue are the names of browser-side values created
+when students type in the corresponding answer boxes, and
+isCorrectPair is a JavaScript function available on the page.
+The optional expression inside [ ... ] must evaluate to a Boolean.
+
+IMPORTANT: This is NOT the same as:
+
+    \answer[validator=myChecker]{authorAnswer}
+
+The second form selects a checker for ONE answer and calls it with
+(studentAnswer, instructorAnswer). It is described separately in:
+    workflow workthroughs/01-individual-answer-validator.txt
+
+The grouped environment produces its own wrapper and a zero-argument
+JavaScript function. It does not automatically receive the individual
+student/instructor answer pairs.
+
+QUICK SUMMARY OF TODAY'S PIPELINE
+---------------------------------
+  1. Author wraps several \answer fields in \begin{validator}[...]...
+  2. XimeraLaTeX publishes HTML containing a ".validator" div and an
+     associated JavaScript function with the matching ID.
+  3. The Xronos server retrieves and serves the published HTML.
+  4. Browser MathJax creates the nested individual answer widgets.
+  5. The activity initializer adds one GROUP "Check work" control.
+  6. Student input updates saved responses and, if assigned id=...
+     values, exposes parsed values as browser variables.
+  7. Clicking the group button invokes its JavaScript function with
+     zero arguments; the result must be a Boolean.
+  8. Group correctness is propagated into each contained answer's
+     saved state and into problem completion.
+
+The above is the intended/currently coded sequence. The interaction
+is NOT reliable across all keyboard, rerender, and saved-state cases.
+Detailed known problems appear later in this file.
+
+PART A: HOW THE LaTeX BECOMES AN HTML GROUP
+------------------------------------------
+
+A1. Print/PDF side
+
+XimeraLaTeX's src/feedback.dtx defines the LaTeX "validator"
+environment with an optional argument. When typesetting printed
+content, the supplied JavaScript expression is detokenized and
+shown as text; it is NOT run.
+
+Individual \answer commands inside the environment retain their
+ordinary LaTeX print/handout representation. The id= option on
+an answer has a class-side declaration in src/answer.dtx.
+
+A2. Web/HTML side
+
+The HTML configuration in src/answer.dtx and ximera.4ht defines
+a different rendering: it outputs a div with class "validator",
+a generated ID based on an identification counter, and an inline
+JavaScript script defining a function whose name matches that ID.
+
+Conceptually, the resulting HTML looks like this:
+
+    <div class="validator" id="validator17">
+      <script type="text/javascript">
+        function validator17() {
+          return isCorrectPair(xValue,yValue);
+        }
+      </script>
+      ... the authored contents of the environment ...
+    </div>
+
+The source uses TeX4ht output commands (\HCode) and detokenization;
+the example is explanatory rather than a literal printout.
+
+The wrapper and its matching function are produced at PUBLISH time,
+not on Check. When the student later checks the group, Xronos
+looks up window["validator17"] and calls it.
+
+A3. What exactly is passed to the group function?
+
+The group's expression is inserted into a generated JavaScript
+function and returned. No parameters are defined or supplied.
+If the expression references xValue or yValue, those values must
+already be accessible in the browser environment.
+
+For instance, a nested answer with id=xValue can cause the student's
+parsed input to be assigned to window.xValue as the student types.
+The group expression can then inspect xValue. An author's
+\begin{javascript}...\end{javascript} block can supply additional
+functions. This is JavaScript running in the browser, not Sage.
+
+Caution: the environment's optional expression is NOT the same
+kind of content as the MathJax/TeX body of an \answer. The normal
+Sage answer-body substitution does not simply run over the
+environment's JavaScript expression.
+
+PART B: HOW THE PUBLISHED PAGE LOADS
+------------------------------------
+
+B1. Serving the activity
+
+The Xronos server routes the requested activity, selects its
+published activity blob, repairs a narrow class of historical
+HTML entity encoding issues, and inserts the published HTML into
+the "page" template.
+
+Relevant server files:
+  routes/page.js
+  lib/activity-html-compat.js
+  views/page.pug
+
+The server DOES NOT execute the grouped validator every time the
+page is requested. The browser handles the interactive checking.
+
+B2. The individual answer widgets are still MathJax answer boxes
+
+In public/javascripts/main.js, Xronos adds its own MathJax TeX
+handler for \answer. Each nested answer becomes a ".mathjaxed-input"
+form with a student field and submission control. The author
+answer is separately processed by MathJax and, when relevant, Sage.
+
+The server's page-runtime coordinator tracks initial math answer
+attachment and Sage readiness. A group may exist in the HTML
+before all its answer widgets are fully attached.
+
+B3. Initializing the outer validator control
+
+In public/javascripts/activity.js, initializeActivity() invokes:
+
+    $(".validator", activity).validator();
+
+This calls code in public/javascripts/validator.js, which:
+  - appends the outer Check work / Correct / Try again controls;
+  - triggers "ximera:answer-needed" for the group;
+  - installs a persistent-data callback to update button visibility;
+  - installs the grouped submission click handler.
+
+The surrounding problem registers the group as ONE requirement
+for completion.
+
+Xronos records a page-runtime component named "validators" as
+initializing/initialized. This reports that its initialization
+ran; it is not an assurance that the feature is working correctly.
+
+B4. Intended handling of individual buttons
+
+In public/javascripts/math-answer.js, connectMathAnswer() detects
+whether an answer is located inside a ".validator" ancestor:
+
+    if (result.parents('.validator').length > 0) {
+      buttonless = true;
+    }
+
+When buttonless is true, that individual input does not trigger
+its ordinary "ximera:answer-needed", because the outer grouped
+validator represents the requirement for problem completion.
+
+But there is an important inconsistency: the default per-answer
+template still includes an individual submit button. Earlier
+buttonless-template code is commented out. Detecting that an
+answer is in a group therefore does NOT reliably suppress every
+individual submit control. The source itself contains a TODO
+about this.
+
+B5. How the student values become visible to the group
+
+When the student types in a nested answer, math-answer.js writes
+the raw response into the per-answer persistent state:
+
+    persistentData("response", typedText)
+
+If the author used id=someName on the answer, Xronos parses
+the text according to the answer's format and assigns:
+
+    window["someName"] = parsedStudentAnswer
+
+The parser may produce a math-expressions object, integer, float,
+or raw string depending on the format. It also requests
+re-evaluation of dependent authored JavaScript.
+
+Those assigned browser variables are the usual way a group
+function can inspect multiple student answers. The group does
+not automatically receive an array of author or student answers.
+
+B6. Restoring answers / MathJax rerendering
+
+Answers are connected to the saved-state database. When saved
+values arrive, their fields are restored. Because MathJax can
+rebuild rendered DOM nodes during processing, Xronos also has
+logical-answer tracking and recovery machinery.
+
+Existing runtime documentation reports that grouped validators
+can behave differently during Enter submission and ordinary
+outer-button clicks. Rerender/DOM replacement has historically
+been associated with visible blinking or disappearing responses
+in some grouped examples.
+
+PART C: WHAT HAPPENS WHEN THE OUTER BUTTON IS CLICKED
+----------------------------------------------------
+
+In public/javascripts/validator.js, checkAnswer() proceeds as
+follows:
+
+1. Read the outer div's id, e.g. "validator17".
+2. Look up window[validatorId].
+3. Require that lookup to be a function.
+4. Invoke the function with NO arguments:
+       correct = validatorFunction();
+5. Require that returned value have JavaScript type "boolean".
+6. If evaluation fails or returns the wrong type, catch/log the
+   error and set correct to false.
+7. Save the group's persistentData("correct") and emit
+   "ximera:attempt".
+8. For EACH contained ".mathjaxed-input" answer, save its
+   current response as persistentData("attempt") and assign
+   persistentData("correct") to the GROUP'S Boolean result.
+9. If correct, emit "ximera:correct" for the outer group.
+10. Emit "ximera:answers-changed" so the group's UI responds.
+
+Important consequence: the group judges the condition as one
+unit. A correct group predicate can mark all contained answers
+correct at once. An incorrect group predicate can mark them
+all incorrect, even if some individual entries are perfectly
+fine. This is different from independent per-answer grading.
+
+The surrounding problem listens for "ximera:correct", checks
+its recorded requirements, and may mark the problem complete,
+unlocking its next nested items. The browser database transmits
+progress to Xronos using differential synchronization.
+
+PART D: WHY THIS IS CURRENTLY CONSIDERED BROKEN
+-----------------------------------------------
+
+The following items come from source inspection and existing
+runtime/inventory records. Some were reproduced historically;
+others are unfinished handling documented by the code. They
+are not claims that every page always fails in exactly this way.
+
+D1. Individual Check buttons may still be visible/active.
+
+The per-answer markup includes its own submit button, while
+the group intends to own submission. The current "buttonless"
+flag does not consistently implement the intended UI.
+
+D2. Pressing Enter is not equivalent to clicking the group button.
+
+math-answer.js tries to forward Enter from a contained input
+to the outer group's Check button. However, the original
+individual control is an HTML form, and the group Enter path
+does not reliably prevent the browser's native form submission.
+
+The runtime TODO explicitly records an unwanted native GET
+navigation whose URL may end in "?". This can disrupt a student's
+work and create inconsistent behavior compared with a click.
+
+D3. Blink/cleared-response issues.
+
+The browser runtime inventory and current pipeline document
+historic observable answer blinking/clearing in some grouped
+validator interactions. MathJax reprocessing and handlers
+attached to recreated DOM are relevant areas, but the code
+walkthrough alone does not establish that there is one sole
+cause for every occurrence.
+
+D4. Partial submissions and feedback are underspecified.
+
+There is not yet a settled policy for partially filled grouped
+answers. Group correctness is copied to contained fields, which
+can imply each individual entry was wrong even when only one
+field caused the condition to fail. The TODO explicitly asks
+how untouched answers should be marked and whether individual
+correctness should remain hidden.
+
+D5. Submission state is not atomic.
+
+The group and its contained answers receive multiple saved
+state updates. There is not yet a single transaction covering
+all the child updates and group completion. This is tracked
+as deferred work in the runtime TODO.
+
+D6. A historic non-Boolean return could break later saving.
+
+If the authored group expression accidentally returned a
+JavaScript FUNCTION instead of a Boolean, saving that function
+inside persistent page state could cause jsondiffpatch to
+reject subsequent synchronization. This could prevent other
+answers from saving, not just the faulty group.
+
+Current code now checks for exactly a Boolean and catches
+exceptions. It emits a page-runtime diagnostic:
+    operation: grouped-validator / failed
+    code: XR-VALIDATOR-RESULT-101
+with the validator ID, result type, and error details.
+
+This is a useful safety patch, but does NOT fix the rest of
+the grouped workflow. The student generally sees the attempt
+as incorrect; the internal reason is recorded in diagnostics
+and the console.
+
+D7. Promise-based grouped results are not supported here.
+
+The current group checker requires the immediate result to be
+a JavaScript Boolean. A Promise is an object, not a Boolean;
+it is rejected. Do not assume the individual per-answer
+async-validator path works the same way.
+
+D8. Nested-problem combinations have extra concerns.
+
+The page-runtime inventory records compatibility issues where
+grouped validators and nested problems overlap. Any future
+repair/test suite needs to include these combinations.
+
+PART E: GROUP STATE, EVENT HANDLING, AND SAVED PROGRESS
+------------------------------------------------------
+
+The group is a registered answer requirement on the problem.
+Its "ximera:answer-needed" notification arrives through the
+same problem event machinery used for other answer types.
+
+When the group is correct, "ximera:correct" can trigger the
+problem's completion check. The group also listens for
+"ximera:answers-changed" to update "incorrect"/Check button
+visibility, comparing each child's response with its most
+recent saved attempt.
+
+Individual nested answers continue to store their own
+response/attempt/correct fields. It is possible for the
+group's correctness and child states to be observed at
+different moments during the persistence sequence.
+
+The browser's database module commits state and sends changes
+over the websocket. This is distinct from individual-answer
+xAPI recording: the grouped validator's checkAnswer() path
+does not make the same TinCan.answer() call that individual
+math-answer.js makes on a per-box check. Do not assume that
+a grouped attempt will produce an identical individual xAPI
+"answered" record for every child.
+
+PART F: WHEN AUDITING AN EXISTING GROUP
+---------------------------------------
+
+For an older page that uses a grouped validator, inspect:
+
+  1. The authored \begin{validator}[JS expression] and end tag.
+  2. Nested answer boxes and their id= options.
+  3. The published .validator div and matching function name.
+  4. Whether the function is defined and returns a Boolean.
+  5. The author JavaScript used by the expression and the
+     availability/timing of its dependent browser variables.
+  6. The MathJax-created .mathjaxed-input forms and their
+     data-id attributes.
+  7. Whether an individual question-mark Check appears.
+  8. Mouse click of OUTER Check, separately from Enter key.
+  9. Partially completed and completely blank fields.
+ 10. Any display blink, native navigation, or disappearance
+     of student input during MathJax reprocessing.
+ 11. Reloaded saved state and "Try Another" versions.
+ 12. Nested problem conditions and completion behavior.
+ 13. Browser console errors and XR-VALIDATOR-RESULT-101.
+ 14. Whether subsequent unrelated answers still save.
+
+Use a disposable test learner/session when reproducing
+potential navigation or saved-work failures. Do not rely
+on a successful click in one fixture to conclude that the
+feature is repaired.
+
+PART G: SOURCE MAP FOR FUTURE WORK
+----------------------------------
+
+XimeraProject/ximeraLatex:
+  src/feedback.dtx
+      LaTeX/PDF definition of the validator environment.
+  src/answer.dtx
+      LaTeX answer keys and an HTML form of validator wrapper.
+  ximera.4ht
+      Generated TeX4ht/HTML validator environment emission.
+  src/interactives/javascript.dtx
+      Author JavaScript environment.
+  src/jax.dtx
+      Generated MathJax macro setup.
+
+xronosuf/server:
+  routes/page.js
+      Serves the previously published activity.
+  views/page.pug
+      Inserts published activity.html into the student page.
+  public/javascripts/activity.js
+      Calls $(".validator", activity).validator().
+  public/javascripts/validator.js
+      Creates the group controls and runs the zero-argument
+      group function; saves group/child correctness.
+  public/javascripts/main.js
+      MathJax's \answer handler, field generation, attachment,
+      and runtime answer identity.
+  public/javascripts/math-answer.js
+      Nested fields, input persistence, group-detection flag,
+      and Enter-key forwarding.
+  public/javascripts/javascript.js
+      Author JavaScript execution and reevaluation.
+  public/javascripts/problem.js
+      "answer-needed" registration and completion.
+  public/javascripts/database.js
+      Saved state and websocket synchronization.
+  public/javascripts/page-runtime.js
+      Runtime diagnostics.
+  documentation/page-runtime/CURRENT_PIPELINE.md
+      Existing lifecycle observations.
+  documentation/page-runtime/TODO.md
+      Current grouped validator repair project and deferred work.
+  documentation/page-runtime/FEATURE_INVENTORY.md
+      Retain/compatibility inventory.
+  docs/page-runtime-inventory-closeout.md
+      Historical browser/Canvas compatibility inventory.
+
+Stable source URLs:
+  https://github.com/XimeraProject/ximeraLatex/blob/master/src/feedback.dtx
+  https://github.com/XimeraProject/ximeraLatex/blob/master/ximera.4ht
+  https://github.com/xronosuf/server/blob/production/public/javascripts/validator.js
+  https://github.com/xronosuf/server/blob/production/public/javascripts/math-answer.js
+  https://github.com/xronosuf/server/blob/production/documentation/page-runtime/TODO.md
+
+SCOPE / PROVENANCE
+------------------
+This is a description of inspected current source and existing
+runtime notes, NOT a completed browser re-test, a new validator
+design, or a change to the feature itself. The feature remains
+enabled in the codebase but is NOT RECOMMENDED for new content
+until a focused repair and regression pass establishes otherwise.
